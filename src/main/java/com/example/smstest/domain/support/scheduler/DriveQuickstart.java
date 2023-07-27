@@ -1,6 +1,6 @@
-package com.example.smstest.support.scheduler;
+package com.example.smstest.domain.support.scheduler;
 
-import com.example.smstest.support.repository.SupportRepository;
+import com.example.smstest.domain.support.repository.SupportRepository;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -18,7 +18,6 @@ import com.google.api.services.drive.model.FileList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;

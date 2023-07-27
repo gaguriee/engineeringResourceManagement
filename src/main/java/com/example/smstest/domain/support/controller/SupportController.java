@@ -1,0 +1,31 @@
+package com.example.smstest.domain.support.controller;
+
+
+import com.example.smstest.domain.support.Interface.SupportService;
+import com.example.smstest.domain.support.dto.SupportResponse;
+import com.example.smstest.domain.support.entity.Support;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/support")
+public class SupportController {
+    private final SupportService supportService;
+
+    public SupportController(SupportService supportService) {
+        this.supportService = supportService;
+    }
+
+    // 지원제목 검색
+
+    @GetMapping("/search")
+    public List<SupportResponse> searchBoards(@RequestParam(name = "keyword") String keyword) {
+        List<SupportResponse> supports = supportService.searchSupports(keyword);
+        return supports;
+    }
+}

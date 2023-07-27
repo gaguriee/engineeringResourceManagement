@@ -1,6 +1,6 @@
-package com.example.smstest.support.scheduler;
+package com.example.smstest.domain.support.scheduler;
 
-import com.example.smstest.support.repository.SupportRepository;
+import com.example.smstest.domain.support.repository.SupportRepository;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -17,7 +17,6 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.ChangeList;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,9 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,8 +51,8 @@ public class FetchChanges {
 
     final SupportRepository supportRepository;
 
-    @Scheduled(fixedDelay = 1000000)
-//    @Scheduled(cron = "0 0 0,6,12,18 * * ?") // 매일 06시, 12시, 18시, 24시 실행
+//    @Scheduled(fixedDelay = 1000000)
+    @Scheduled(cron = "0 0 0,6,12,18 * * ?") // 매일 06시, 12시, 18시, 24시 실행
     public void fetchChanges() throws InterruptedException, IOException, GeneralSecurityException {
 
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
