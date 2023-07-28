@@ -200,14 +200,15 @@ public class GoogleSheets {
                 data.put("파일명", fileName);
                 data.put("위치", fileLink);
 
+                // 엔지니어 앞 3글자까지만 자르고 공백 없애기
+                String engineer = (String) data.get("담당엔지니어");
+                String truncatedEngineer = engineer.substring(0, Math.min(3, engineer.length())).replace(" ", "");
+
+
                 try{
                     // Support 엔티티 저장
                     String sql = "INSERT INTO support (\"파일id\", \"제품명\", \"고객사\", \"고객담당자\", \"작업구분\", \"이슈구분\", \"업무구분\", \"담당엔지니어\", \"지원일자\", \"지원형태\", \"레드마인_일감\", \"작업제목\", \"작업요약\", \"작업세부내역\", \"파일명\", \"위치\") " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                    // 엔지니어 앞 3글자까지만 자르고 공백 없애기
-                    String engineer = (String) data.get("담당엔지니어");
-                    String truncatedEngineer = engineer.substring(0, Math.min(3, engineer.length())).replace(" ", "");
 
                     jdbcTemplate.update(sql,
                             data.get("파일ID"),
@@ -258,7 +259,7 @@ public class GoogleSheets {
                             data.get("작업구분"),
                             data.get("이슈구분"),
                             data.get("업무구분"),
-                            data.get("담당엔지니어"),
+                            truncatedEngineer,
                             date,
                             data.get("지원형태"),
                             data.get("레드마인_일감"),

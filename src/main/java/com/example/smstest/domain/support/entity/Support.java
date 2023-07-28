@@ -1,75 +1,95 @@
 package com.example.smstest.domain.support.entity;
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Getter
-@Setter
-@Table(name = "support", schema = "public") // Specify the table and schema if needed
+@Data
+@Table(name = "support")
 public class Support {
 
     @Id
-    @Column(name = "support_id", nullable = false)
-    private Integer supportId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "support_id")
+    private Long id;
 
-    @Column(name = "파일id", length = 100, nullable = false)
+    @Column(name = "파일id")
     private String fileId;
 
-    @Column(name = "제품명", length = 100)
-    private String product;
+    @Column(name = "제품명")
+    private String productName;
 
-    @Column(name = "고객사", length = 100)
-    private String customer;
+    @Column(name = "고객사")
+    private String customerName;
 
-    @Column(name = "고객담당자", length = 100)
-    private String manager;
+    @Column(name = "고객담당자")
+    private String customerContact;
 
-    @Column(name = "작업구분", length = 50)
-    private String task;
+    @Column(name = "작업구분")
+    private String taskType;
 
-    @Column(name = "이슈구분", length = 50)
-    private String issue;
+    @Column(name = "이슈구분")
+    private String issueType;
 
-    @Column(name = "업무구분", length = 50)
-    private String state;
+    @Column(name = "업무구분")
+    private String businessType;
 
-    @Column(name = "담당엔지니어", length = 100)
-    private String engineer;
+    @Column(name = "담당엔지니어")
+    private String engineerName;
 
     @Column(name = "지원일자")
-    private Date supportAt;
+    @Temporal(TemporalType.DATE)
+    private Date supportDate;
 
-    @Column(name = "지원형태", length = 50)
-    private String type;
+    @Column(name = "지원형태")
+    private String supportType;
 
-    @Column(name = "레드마인_일감", length = 50)
-    private String redmine;
+    @Column(name = "레드마인_일감")
+    private String redmineIssue;
 
-    @Column(name = "작업제목", length = 200)
-    private String title;
+    @Column(name = "작업제목")
+    private String taskTitle;
 
-    @Column(name = "작업요약")
-    private String summary;
+    @Column(name = "작업요약", columnDefinition = "text")
+    private String taskSummary;
 
-    @Column(name = "작업세부내역")
-    private String details;
+    @Column(name = "작업세부내역", columnDefinition = "text")
+    private String taskDetails;
 
-    @Column(name = "파일명", length = 200)
+    @Column(name = "파일명")
     private String fileName;
 
-    @Column(name = "위치", length = 200)
+    @Column(name = "위치")
     private String location;
 
-    @Column(name = "소속", length = 100)
-    private String team;
+    @Column(name = "소속")
+    private String affiliation;
 
+    @ManyToOne
+    @JoinColumn(name = "고객사_id")
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "팀_id")
+    private Team team;
+
+    @ManyToOne
+    @JoinColumn(name = "제품_id")
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "이슈_id")
+    private Issue issue;
+
+    @ManyToOne
+    @JoinColumn(name = "상태_id")
+    private State state;
+
+    @ManyToOne
+    @JoinColumn(name = "엔지니어_id")
+    private Memp engineer;
 
 }

@@ -3,46 +3,47 @@ package com.example.smstest.domain.support.dto;
 import lombok.Data;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
 public class SupportResponse {
 
-    private Integer supportId;
+    private Long id;
 
-    private String product;
+    private String fileId;
 
-    private String customer;
+    private String productName;
 
-    private String manager;
+    private String customerName;
 
-    private String task;
+    private String customerContact;
 
-    private String issue;
+    private String taskType;
 
-    private String state;
+    private String issueType;
 
-    private String engineer;
+    private String businessType;
 
-    private Date supportAt;
+    private String engineerName;
 
-    private String type;
+    @Temporal(TemporalType.DATE)
+    private Date supportDate;
 
-    private String redmine;
+    private String supportType;
 
-    private String title;
+    private String redmineIssue;
 
-    private String summary;
+    private String taskTitle;
 
-    private String details;
+    private String taskSummary;
+
+    private String taskDetails;
 
     private String fileName;
 
     private String location;
 
-    private String team;
-
+    private String affiliation;
 
 }
