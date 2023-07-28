@@ -21,7 +21,7 @@ public class SupportController {
         this.supportService = supportService;
     }
 
-    // 지원제목 검색
+    // 작업제목 + 작업요약 통합 검색
 
     @GetMapping("/search")
     public List<SupportResponse> searchBoards(@RequestParam(name = "keyword") String keyword) {

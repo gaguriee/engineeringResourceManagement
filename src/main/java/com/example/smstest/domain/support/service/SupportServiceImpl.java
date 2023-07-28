@@ -20,7 +20,7 @@ public class SupportServiceImpl implements SupportService {
 
     @Override
     public List<SupportResponse> searchSupports(String keyword) {
-        List<Support> supports = supportRepository.findByTitleContainingIgnoreCase(keyword);
+        List<Support> supports = supportRepository.findByTitleContainingOrSummaryContainingIgnoreCase(keyword, keyword);
 
         List<Support> supportList = supports;
         List<SupportResponse> responseList = supportList.stream()

@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, String> {
-    List<Support> findByTitleContainingIgnoreCase(String keyword);
+    List<Support> findByTitleContainingOrSummaryContainingIgnoreCase(String keyword, String keyword2);
+
 }
