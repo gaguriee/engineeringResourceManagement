@@ -88,10 +88,20 @@ public class GoogleSheets {
         try {
 
             Map<String, String> allMappings = null;
+            ValueRange is_title = null;
+            try{
+                is_title = service.spreadsheets().values()
+                        .get(spreadsheetId, "B6")
+                        .execute();
+            }
+            catch(GoogleJsonResponseException e){
+                // 503 Service Unavailable
+                Thread.sleep(3000);
+                is_title = service.spreadsheets().values()
+                        .get(spreadsheetId, "B6")
+                        .execute();
+            }
 
-            ValueRange is_title = service.spreadsheets().values()
-                    .get(spreadsheetId, "B6")
-                    .execute();
 
             String b6Value = "";
             if (is_title.getValues()!=null){

@@ -1,14 +1,18 @@
 package com.example.smstest.domain.support.service;
 
 import com.example.smstest.domain.support.Interface.SupportService;
+import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.mapper.SupportMapper;
 import com.example.smstest.domain.support.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.smstest.domain.support.mapper.SupportMapper.INSTANCE;
@@ -42,19 +46,30 @@ public class SupportServiceImpl implements SupportService {
                 .collect(Collectors.toList());
     }
 
-    public List<SupportResponse> getFilteredPosts(Long issueId, Long stateId, Long productId, Long customerId) {
-
-        Issue issue = issueRepository.findById(issueId).orElse(null);
-        State state = stateRepository.findById(stateId).orElse(null);
-        Product product = productRepository.findById(productId).orElse(null);
-        Customer customer = customerRepository.findById(customerId).orElse(null);
-
-        List<Support> supports = supportRepository.findByIssueAndStateAndProductAndCustomer(issue, state, product, customer);
-
-        return supports.stream()
-                .map(INSTANCE::entityToResponse)
-                .collect(Collectors.toList());
+    public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable) {
+        return supportRepository.searchSupportByFilters(criteria, pageable);
     }
+
+    @Override
+    public SupportResponse getDetails(Long supportId) {
+        Optional<Support> support = supportRepository.findById(supportId);
+        SupportResponse supportResponse = INSTANCE.entityToResponse(support.get());
+        return supportResponse;
+    }
+
+//    public List<SupportResponse> getFilteredPosts(Long issueId, Long stateId, Long productId, Long customerId) {
+//
+//        Issue issue = issueRepository.findById(issueId).orElse(null);
+//        State state = stateRepository.findById(stateId).orElse(null);
+//        Product product = productRepository.findById(productId).orElse(null);
+//        Customer customer = customerRepository.findById(customerId).orElse(null);
+//
+//        List<Support> supports = supportRepository.findByIssueAndStateAndProductAndCustomer(issue, state, product, customer);
+//
+//        return supports.stream()
+//                .map(INSTANCE::entityToResponse)
+//                .collect(Collectors.toList());
+//    }
 
     public SupportResponse createSupport(SupportRequest supportRequest) {
 

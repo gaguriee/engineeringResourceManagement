@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface SupportRepository extends JpaRepository<Support, String> {
+public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
     List<Support> findByTaskTitleContainingOrTaskSummaryContainingIgnoreCase(String keyword, String keyword2);
 
     List<Support> findByIssueAndStateAndProductAndCustomer(Issue issue, State state, Product product, Customer customer);

@@ -29,8 +29,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
@@ -147,9 +149,9 @@ public class FetchChanges {
     }
 
     public boolean saveStartPageToken(String savedStartPageToken) {
-        String sql = "UPDATE token SET token_value = ? WHERE token_name = 'start_page_token'";
+        String sql = "UPDATE token SET token_value = ?, updated_at = ? WHERE token_name = 'start_page_token'";
         try {
-            int rowsUpdated = jdbcTemplate.update(sql, savedStartPageToken);
+            int rowsUpdated = jdbcTemplate.update(sql, savedStartPageToken, LocalDateTime.now());
             return rowsUpdated > 0;
         } catch (Exception e) {
             // 오류 처리
