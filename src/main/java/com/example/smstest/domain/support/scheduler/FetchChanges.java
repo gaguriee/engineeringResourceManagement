@@ -93,7 +93,7 @@ public class FetchChanges {
                         File file_ = service.files().get(file.getId()).setFields("name, webViewLink").execute();
                         String webViewLink = file_.getWebViewLink();
 
-                        System.out.printf(file.getName() + " (" + file.getMimeType() + ") : " + webViewLink);
+                        System.out.println(file.getName() + " (" + file.getMimeType() + ") : " + webViewLink);
 
                         googleSheets.insertFile(file.getId(), file.getName(), webViewLink);
                     }
@@ -152,6 +152,9 @@ public class FetchChanges {
         String sql = "UPDATE token SET token_value = ?, updated_at = ? WHERE token_name = 'start_page_token'";
         try {
             int rowsUpdated = jdbcTemplate.update(sql, savedStartPageToken, LocalDateTime.now());
+            String sql2 = "INSERT INTO token_history (\"token_name\", \"token_value\", \"updated_at\") " +
+                    "VALUES (?, ?, ?)";
+            jdbcTemplate.update(sql2,"start_page_token", savedStartPageToken, LocalDateTime.now());
             return rowsUpdated > 0;
         } catch (Exception e) {
             // 오류 처리

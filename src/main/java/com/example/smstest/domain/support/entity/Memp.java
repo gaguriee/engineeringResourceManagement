@@ -1,8 +1,11 @@
 package com.example.smstest.domain.support.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 @Table(name = "memp")
 public class Memp {
 
@@ -14,8 +17,8 @@ public class Memp {
     @Column(name = "이름", nullable = false)
     private String name;
 
-    @Column(name = "팀명", nullable = false)
-    private String teamName;
+    @Column(name = "team_id", nullable = false)
+    private Integer teamId;
 
     @Column(name = "직책", nullable = false)
     private String position;
@@ -23,5 +26,4 @@ public class Memp {
     @Column(name = "직급", nullable = false)
     private String rank;
 
-    // Constructors, getters, setters, and other properties
 }

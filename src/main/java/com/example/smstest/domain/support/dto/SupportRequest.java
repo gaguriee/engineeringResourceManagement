@@ -1,20 +1,18 @@
 package com.example.smstest.domain.support.dto;
 
-import com.example.smstest.domain.support.entity.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
+@RequiredArgsConstructor
 public class SupportRequest {
 
     private String taskType;
 
     private Date supportDate;
-
-    private String supportType;
 
     private String redmineIssue;
 
@@ -24,15 +22,19 @@ public class SupportRequest {
 
     private String taskDetails;
 
-    private Long customer_id;
+    private String customerContact;
 
-    private Long team_id; // 정규성 위반
+    private Long customerId;
 
-    private Long product_id;
+    private Long productId;
 
-    private Long issue_id;
+    private Long issueId;
 
-    private Long state_id;
+    private Long stateId;
 
-    private Long engineer_id;
+    private Long engineerId;
+
+    private Long supportTypeId;
+
+
 }
