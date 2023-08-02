@@ -39,6 +39,9 @@ public class Support {
     @JoinColumn(name = "고객사_id")
     private Customer customer;
 
+    @Column(name = "고객사")
+    private String customerName;
+
     @ManyToOne
     @JoinColumn(name = "팀_id")
     private Team team;

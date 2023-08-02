@@ -58,6 +58,7 @@ public class SupportServiceImpl implements SupportService {
 
         // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
         support.setCustomer(customerRepository.findById(supportRequest.getCustomerId()).orElse(null));
+        support.setCustomerName(support.getCustomer().getName());
         support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
         support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));

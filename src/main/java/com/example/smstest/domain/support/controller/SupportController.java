@@ -67,14 +67,13 @@ public class SupportController {
             int supportCount = ((Number) row.get("지원내역수")).intValue();
             totalSupportCount += supportCount;
         }
-        Map<String, Double> supportTypeRatios = new HashMap<>();
+        Map<String, Integer> supportTypeRatios = new HashMap<>();
         for (Map<String, Object> row : supportTypeCounts) {
             String supportType = (String) row.get("지원형태");
             int supportCount = ((Number) row.get("지원내역수")).intValue();
-            double ratio = (double) supportCount / totalSupportCount * 100.0;
-            supportTypeRatios.put(supportType, ratio);
+            supportTypeRatios.put(supportType, supportCount);
         }
-        List<Double> supportTypeRatiosValues = new ArrayList<>(supportTypeRatios.values());
+        List<Integer> supportTypeRatiosValues = new ArrayList<>(supportTypeRatios.values());
 
         model.addAttribute("supportTypeRatiosValues", supportTypeRatiosValues);
         model.addAttribute("supportTypeRatios", supportTypeRatios);
@@ -95,17 +94,10 @@ public class SupportController {
             customerTypeRatios.put(supportType, supportCount);
         }
 
-        // Sort the customerTypeRatios by values in descending order
-        LinkedHashMap<String, Integer> sortedCustomerTypeRatios = customerTypeRatios.entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-
-        List<Integer> customerTypeRatiosValues = new ArrayList<>(sortedCustomerTypeRatios.values());
+        List<Integer> customerTypeRatiosValues = new ArrayList<>(customerTypeRatios.values());
 
         model.addAttribute("customerTypeRatiosValues", customerTypeRatiosValues);
-        model.addAttribute("customerTypeRatios", sortedCustomerTypeRatios);
+        model.addAttribute("customerTypeRatios", customerTypeRatios);
 
 
         /**
@@ -122,17 +114,10 @@ public class SupportController {
             teamTypeRatios.put(supportType, supportCount);
         }
 
-        // Sort the customerTypeRatios by values in descending order
-        LinkedHashMap<String, Integer> sortedTeamTypeRatios = teamTypeRatios.entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-
-        List<Integer> teamTypeRatiosValues = new ArrayList<>(sortedTeamTypeRatios.values());
+        List<Integer> teamTypeRatiosValues = new ArrayList<>(teamTypeRatios.values());
 
         model.addAttribute("teamTypeRatiosValues", teamTypeRatiosValues);
-        model.addAttribute("teamTypeRatios", sortedTeamTypeRatios);
+        model.addAttribute("teamTypeRatios", teamTypeRatios);
 
         /**
          * 제품별
@@ -148,22 +133,40 @@ public class SupportController {
             productTypeRatios.put(supportType, supportCount);
         }
         List<Integer> productTypeRatiosValues = new ArrayList<>(productTypeRatios.values());
-        LinkedHashMap<String, Integer> sortedProductTypeRatios = productTypeRatios.entrySet()
-                .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-        model.addAttribute("productTypeRatios", sortedProductTypeRatios);
+        model.addAttribute("productTypeRatios", productTypeRatios);
         model.addAttribute("productTypeRatiosValues", productTypeRatiosValues);
+
+        /**
+         * 인원현황_직급별
+         */
+
+        List<Object[]> jobPositionCounts = mempRepository.countEmployeesByJobPosition();
+        Map<String, Integer> employPositionRatios = new HashMap<>();
+
+        for (Object[] row : jobPositionCounts) {
+            String jobPosition = (String) row[0];
+            Long count = (Long) row[1];
+            employPositionRatios.put(jobPosition, count.intValue());
+        }
+
+        Comparator<String> jobPositionComparator = (position1, position2) -> {
+            List<String> order = Arrays.asList("수석", "책임", "선임", "주임", "엔지니어", "인턴");
+            int index1 = order.indexOf(position1);
+            int index2 = order.indexOf(position2);
+            return Integer.compare(index1, index2);
+        };
+
+        Map<String, Integer> sortedEmployPositionRatios = new TreeMap<>(jobPositionComparator);
+        sortedEmployPositionRatios.putAll(employPositionRatios);
+
+        List<Integer> employPositionRatiosValues = new ArrayList<>(sortedEmployPositionRatios.values());
+
+        model.addAttribute("employPositionRatios", sortedEmployPositionRatios);
+        model.addAttribute("employPositionRatiosValues", employPositionRatiosValues);
 
         return "main";
     }
-
-//    // 작업제목 + 작업요약 통합 검색
-//    @GetMapping("/search")
-//    public List<SupportResponse> searchBoards(@RequestParam(name = "keyword") String keyword) {
-//        return supportService.searchSupports(keyword);
-//    }
 
     // 필터링
     @GetMapping("/filter")
@@ -245,6 +248,7 @@ public class SupportController {
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
+        System.out.println(customers);
         return "create";
     }
 

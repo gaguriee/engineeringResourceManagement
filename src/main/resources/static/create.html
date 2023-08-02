@@ -10,25 +10,49 @@
 <div th:replace="header :: header"></div>
 
 <section class="bg-white dark:bg-gray-900">
+    <!-- drawer component -->
+    <div id="readProductDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
+        <div style="display: flex; margin-top: 48px">
+            <h4 id="drawer-label" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white" >이슈구분 가이드</h4>
+            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+        </div>
+        <div class="separator" style="margin-top: 8px; width: 100%; height: 1px; background-color: lightgray"></div>
+
+        <ul style="margin-top: 12px">
+            <!-- Java 코드로 받아온 issues 리스트를 이용하여 동적으로 리스트를 생성합니다. -->
+            <!-- 여기서는 Thymeleaf의 `th:each` 디렉티브를 사용합니다. -->
+            <li th:each="issue : ${issues}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
+                <!-- 각 이슈의 이름과 설명을 표시합니다. -->
+                <span style="font-size: 14px; font-weight: bolder; margin-bottom: 4px; white-space: pre-wrap;" th:text="${issue.name}"></span>
+                <span style="font-weight: bold; color: gray" th:text="${issue.description}"></span>
+            </li>
+        </ul>
+        <button type="button" data-drawer-dismiss="readProductDrawer" aria-controls="readProductDrawer" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <span class="sr-only">Close menu</span>
+        </button>
+
+    </div>
+
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 등록</h2>
-        <form th:action="@{/post}" method="post">
+        <form th:action="@{/post}" method="post" onsubmit="return validateForm()">
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목</label>
                 <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="20" placeholder="제목은 필수입니다. (20자 이내)"></textarea>
             </div>
-            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6" style="padding-bottom: 24px">
+            <div class="sm:col-span-2" style="padding-bottom: 24px">
+                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색</label>
+                <input type="text" id="customer"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="filterCustomers(this.value)" placeholder="고객사 검색">
+                <ul id="filteredCustomersList"></ul>
 
-                <div>
-                    <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색</label>
-                    <select id="customer" name="customerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <option value="" selected>고객사 검색</option>
-                        <!-- Iterate over the issues list and add each issue's name as an option -->
-                        <th:block th:each="customer : ${customers}">
-                            <option th:value="${customer.id}" th:text="${customer.name}"></option>
-                        </th:block>
-                    </select>
-                </div>
+<!--                TODO : 지워야함-->
+                <label for="customerId"></label><input name="customerId" id="customerId" class="hidden"></input>
+
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6" style="padding-bottom: 24px">
                 <div>
                     <label for="product" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">제품명</label>
                     <select id="product" name="productId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
@@ -40,7 +64,19 @@
                     </select>
                 </div>
                 <div>
-                    <label for="issue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">이슈구분</label>
+                    <div style="display: flex; ">
+                        <label for="issue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">이슈구분</label>
+
+                        <div >
+                            <button id="readProductButton"type="button" data-drawer-target="readProductDrawer" data-drawer-show="readProductDrawer" aria-controls="readProductDrawer">
+                                <svg  style="margin-left: 2px" class="w-3 h-3 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                    </div>
+
                     <select id="issue" name="issueId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="" selected>이슈 구분을 선택해주세요.</option>
                         <!-- Iterate over the issues list and add each issue's name as an option -->
@@ -81,7 +117,7 @@
                 </div>
                 <div>
                     <label for="item-weight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인 일감</label>
-                    <input type="number" name="redmineIssue" id="item-weight" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요." required="" min="0">
+                    <input type="number" name="redmineIssue" id="item-weight" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요."  min="0">
                 </div>
                 <div class="sm:col-span-2" style="padding-bottom: 24px">
                     <label for="customerContact" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >고객 담당자</label>
@@ -100,6 +136,27 @@
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세</label>
                 <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역 스크립트를 작성해주세요."></textarea>
             </div>
+            <div id="alertForm" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; visibility: hidden">
+                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>
+                    <span class="font-medium">필수 항목을 전부 작성해주세요.</span>
+                </div>
+            </div>
+
+
+<!--            <div id="noPostAlert" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">-->
+<!--                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>-->
+<!--                </svg>-->
+<!--                <span class="sr-only">Info</span>-->
+<!--                <div>-->
+<!--                    <span class="font-medium">등록을 막아둔 상태입니다.</span>-->
+<!--                </div>-->
+<!--            </div>-->
+
             <div style="display: flex; align-items: end; justify-content: flex-end;">
                 <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                     등록하기
@@ -107,10 +164,119 @@
             </div>
 
 
+
         </form>
     </div>
 </section>
 <div th:replace="footer :: footer"></div>
+<script  th:inline="javascript">
+    var customers = /*[[${customers}]]*/ []; // Thymeleaf를 사용하여 컨트롤러에서 전달받은 customers 값을 JavaScript 변수에 할당
+
+    function filterCustomers(keyword) {
+
+        const filteredCustomersList = document.getElementById('filteredCustomersList');
+        filteredCustomersList.innerHTML = '';
+
+        if (keyword.trim() === '') {
+            return;
+        }
+
+        const filteredCustomers = customers.filter((customer) => customer.name.includes(keyword));
+
+        filteredCustomers.forEach((customer) => {
+            const listItem = document.createElement('li');
+            listItem.innerText = customer.name;
+
+            listItem.classList.add('bg-gray-50', 'border', 'border-gray-300', 'text-gray-900', 'text-sm', 'p-2.5', 'dark:bg-gray-200', 'dark:border-gray-100', 'dark:placeholder-gray-100', 'dark:text-white');
+            listItem.setAttribute('onclick', `selectCustomer('${customer.id}', '${customer.name}')`);
+            filteredCustomersList.appendChild(listItem);
+        });
+    }
+
+    function selectCustomer(id, name) {
+        const taskTitleInput = document.getElementById('customer');
+        taskTitleInput.value = name;
+
+        const customerId = document.getElementById('customerId');
+        customerId.value = id;
+
+        const filteredCustomersList = document.getElementById('filteredCustomersList');
+        filteredCustomersList.innerHTML = '';
+    }
+
+    // 이슈/제품명 가이드 버튼
+    document.getElementById("readProductButton").addEventListener("click", function() {
+        var readProductDrawer = document.getElementById("readProductDrawer");
+        readProductDrawer.style.transform = "translateX(0)"; // 드로어 보이도록 설정
+    });
+
+    // Close 버튼 클릭 시 드로어 닫기
+    var closeButton = document.querySelector("[data-drawer-dismiss='readProductDrawer']");
+    closeButton.addEventListener("click", function() {
+        var readProductDrawer = document.getElementById("readProductDrawer");
+        readProductDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
+    });
+
+    // 바깥 영역 클릭 시 드로어 닫기
+    document.addEventListener("click", function(event) {
+        var isDrawerClicked = event.target.closest("#readProductDrawer");
+        var isButtonClicked = event.target.closest("#readProductButton");
+        if (!isDrawerClicked && !isButtonClicked) {
+            readProductDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
+        }
+    });
+
+    function validateForm() {
+        // Get the form elements
+        var taskTitle = document.getElementById('taskTitle').value;
+        var customer = document.getElementById('customer').value;
+        var product = document.getElementById('product').value;
+        var issue = document.getElementById('issue').value;
+        var state = document.getElementById('state').value;
+        var engineer = document.getElementById('engineer').value;
+        var supportType = document.getElementById('supportType').value;
+        var redmineIssue = document.getElementById('item-weight').value;
+        var customerContact = document.getElementById('customerContact').value;
+        var supportDate = document.getElementById('supportDate').value;
+        var taskSummary = document.getElementById('taskSummary').value;
+        var taskDetails = document.getElementById('taskDetails').value;
+
+        // Perform form validation
+        if (
+            taskTitle.trim() === '' ||
+            customer === '' ||
+            product === '' ||
+            issue === '' ||
+            state === '' ||
+            engineer === '' ||
+            supportType === '' ||
+            redmineIssue.trim() === '' ||
+            customerContact.trim() === '' ||
+            supportDate.trim() === '' ||
+            taskSummary.trim() === '' ||
+            taskDetails.trim() === ''
+        ) {
+            // Show the alertForm
+            var alertForm = document.getElementById('alertForm');
+            alertForm.style.visibility = 'visible';
+
+            // Return false to prevent form submission
+            return false;
+        }
+
+        // // 등록막아두기
+        // else{
+        //     // Show the alertForm
+        //     var alertForm = document.getElementById('alertForm');
+        //     alertForm.textContent
+        //     alertForm.style.visibility = 'visible';
+        //     return false;
+        // }
+
+        // If all fields are filled, allow form submission
+        return true;
+    }
+</script>
 
 </body>
 </html>

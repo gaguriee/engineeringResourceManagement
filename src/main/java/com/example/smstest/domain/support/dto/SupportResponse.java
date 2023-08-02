@@ -59,7 +59,7 @@ public class SupportResponse {
         return SupportResponse.builder()
                 .id(support.getId())
                 .productName(Optional.ofNullable(support.getProduct()).map(Product::getName).orElse(null))
-                .customerName(Optional.ofNullable(support.getCustomer()).map(Customer::getName).orElse(null))
+                .customerName(support.getCustomerName())
                 .customerContact(support.getCustomerContact())
                 .issueType(Optional.ofNullable(support.getIssue()).map(Issue::getName).orElse(null))
                 .state(Optional.ofNullable(support.getState()).map(State::getName).orElse(null))
