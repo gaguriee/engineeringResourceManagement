@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class SupportFilterCriteria {
     private List<Long> customerId;
-    private List<Long> teamId;
+    private List<Integer> teamId;
     private List<Long> productId;
     private List<Long> issueId;
     private List<Long> stateId;

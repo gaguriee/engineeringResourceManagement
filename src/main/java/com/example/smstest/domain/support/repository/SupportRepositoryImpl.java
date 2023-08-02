@@ -63,7 +63,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         return customerIds != null && !customerIds.isEmpty() ? QSupport.support.customer.id.in(customerIds) : null;
     }
 
-    private BooleanExpression teamIdIn(List<Long> teamIds) {
+    private BooleanExpression teamIdIn(List<Integer> teamIds) {
         return teamIds != null && !teamIds.isEmpty() ? QSupport.support.team.id.in(teamIds) : null;
     }
 

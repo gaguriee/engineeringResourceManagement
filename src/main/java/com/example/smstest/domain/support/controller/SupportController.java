@@ -31,17 +31,19 @@ public class SupportController {
     private final StateRepository stateRepository;
     private final MempRepository mempRepository;
 
+    private final TeamRepository teamRepository;
     private final SupportTypeRepository supportTypeRepository;
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SupportController(SupportService supportService, ProductRepository productRepository, IssueRepository issueRepository, CustomerRepository customerRepository, StateRepository stateRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository, JdbcTemplate jdbcTemplate) {
+    public SupportController(SupportService supportService, ProductRepository productRepository, IssueRepository issueRepository, CustomerRepository customerRepository, StateRepository stateRepository, MempRepository mempRepository, TeamRepository teamRepository, SupportTypeRepository supportTypeRepository, JdbcTemplate jdbcTemplate) {
         this.supportService = supportService;
         this.productRepository = productRepository;
         this.issueRepository = issueRepository;
         this.customerRepository = customerRepository;
         this.stateRepository = stateRepository;
         this.mempRepository = mempRepository;
+        this.teamRepository = teamRepository;
         this.supportTypeRepository = supportTypeRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -171,7 +173,7 @@ public class SupportController {
     // 필터링
     @GetMapping("/filter")
     public String searchSupportByFilters(@RequestParam(required = false) List<Long> customerId,
-                                         @RequestParam(required = false) List<Long> teamId,
+                                         @RequestParam(required = false) List<Integer> teamId,
                                          @RequestParam(required = false) List<Long> productId,
                                          @RequestParam(required = false) List<Long> issueId,
                                          @RequestParam(required = false) List<Long> stateId,
@@ -250,6 +252,31 @@ public class SupportController {
 
         System.out.println(customers);
         return "create";
+    }
+
+    @GetMapping("/team")
+    public String selectTeam(Model model) {
+
+        List<Team> teams = teamRepository.findAll();
+
+        model.addAttribute("teams", teams);
+
+        return "team";
+    }
+
+    @GetMapping("/teamId")
+    public String getTeamInfo(@RequestParam(required = true) Integer teamId, Model model) {
+        Optional<Team> teamOptional = teamRepository.findById(teamId);
+        if (teamOptional.isPresent()) {
+            List<Memp> memps = mempRepository.findAllByTeamId(teamId);
+            model.addAttribute("team", teamOptional.get());
+            model.addAttribute("memps", memps);
+        } else {
+            // 팀을 찾지 못한 경우, 적절한 처리를 수행하거나 에러 메시지를 뷰로 전달할 수 있습니다.
+            model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");
+        }
+
+        return "teamInfo";
     }
 
 }

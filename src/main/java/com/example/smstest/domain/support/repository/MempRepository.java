@@ -11,4 +11,6 @@ public interface MempRepository  extends JpaRepository<Memp, Long> {
 
     @Query("SELECT m.rank, COUNT(m) FROM Memp m GROUP BY m.rank")
     List<Object[]> countEmployeesByJobPosition();
+
+    List<Memp> findAllByTeamId(Integer teamId);
 }
