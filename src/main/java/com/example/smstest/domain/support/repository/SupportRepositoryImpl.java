@@ -87,6 +87,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         return keyword != null
                 ? QSupport.support.taskTitle.contains(keyword)
                 .or(QSupport.support.taskSummary.contains(keyword))
+                .or(QSupport.support.engineer.name.contains(keyword))
                 : null;
     }
 

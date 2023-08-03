@@ -142,6 +142,24 @@ public class SupportController {
         model.addAttribute("productTypeRatiosValues", productTypeRatiosValues);
 
         /**
+         * 제품별
+         */
+        sql = "SELECT 이슈구분, 지원내역수 \n" +
+                "FROM 지원결과_이슈별;";
+        supportTypeCounts = jdbcTemplate.queryForList(sql);
+
+        Map<String, Integer> issueTypeRatios = new HashMap<>();
+        for (Map<String, Object> row : supportTypeCounts) {
+            String supportType = (String) row.get("이슈구분");
+            int supportCount = ((Number) row.get("지원내역수")).intValue();
+            issueTypeRatios.put(supportType, supportCount);
+        }
+        List<Integer> issueTypeRatiosValues = new ArrayList<>(issueTypeRatios.values());
+
+        model.addAttribute("issueTypeRatios", issueTypeRatios);
+        model.addAttribute("issueTypeRatiosValues", issueTypeRatiosValues);
+
+        /**
          * 인원현황_직급별
          */
 

@@ -107,9 +107,8 @@
                         <th scope="col" class="px-4 py-6 w-2/12">작업제목</th>
                         <th scope="col" class="px-4 py-3 w-2/12">제퓸명</th>
                         <th scope="col" class="px-4 py-3 w-2/12">지원일자</th>
-                        <th scope="col" class="px-4 py-3 w-2/12">
-                            <span class="sr-only">Actions</span>
-                        </th>
+                        <th scope="col" class="px-4 py-3 w-2/12">담당엔지니어</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -118,23 +117,12 @@
                         <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
                             <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 <!-- 글자수를 최대 10자로 제한, NULL값 처리 -->
-                                <span th:text="${post.taskTitle != null ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : '제목없음'}"></span>
+                                <span style="font-weight: bold" th:text="${post.taskTitle != null ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : '제목없음'}"></span>
                             </a>
                         </td>
-                        <td class="px-4 py-3" th:text="${post.productName}">Apple</td>
-                        <td class="px-4 py-3" th:text="${post.supportDate}">$2999</td>
-                        <td class="px-4 py-3 flex items-center justify-end">
-                            <button id="${'apple-imac-27-dropdown-button-' + post.id}" data-dropdown-toggle="${'apple-imac-27-dropdown-' + post.id}" class="inline-flex items-center text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 p-1.5 dark:hover-bg-gray-800 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" type="button">
-                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                </svg>
-                            </button>
-                            <div id="${'apple-imac-27-dropdown-' + post.id}" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                                <ul class="py-1 text-sm" aria-labelledby="${'apple-imac-27-dropdown-button-' + post.id}">
-                                    <!-- Dropdown 메뉴 내용 추가 -->
-                                </ul>
-                            </div>
-                        </td>
+                        <td class="px-4 py-3" th:text="${post.productName}">제품명</td>
+                        <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                        <td class="px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
                     </tr>
                     </tbody>
                 </table>

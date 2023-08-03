@@ -13,7 +13,6 @@
     <!-- fullcalendar 언어 CDN -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
 
-    <link rel="stylesheet" th:href="@{/css/tailwind.css}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
 
     <style>
@@ -34,11 +33,17 @@
 <div th:replace="header :: header"></div>
 
 <section class="bg-white dark:bg-gray-900"   >
-    <div class="py-8 px-4 mx-auto max-w-8xl lg:py-16">
-        <h1 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${member.name}"></h1>
+    <div class="py-8 px-4 mx-auto max-w-8xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
+        <hr style="margin-bottom: 48px">
+        <span class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="margin-bottom: 48px; font-size: x-large; text-align: left" th:text="'엔지니어 ' + ${member.name}"></span>
+
+        <hr style="margin-bottom: 48px">
+
+        <span class="mb-4 text-xl font-bold text-gray-700 dark:text-white" style="margin-bottom: 24px; font-size: large; text-align: left">지원내역 조회</span>
+
         <!-- calendar 태그 -->
-        <div id='calendar-container' >
-            <div id='calendar'></div>
+        <div id='calendar-container'>
+            <div id='calendar' style="margin-bottom: 24px"></div>
         </div>
     </div>
 </section>
@@ -78,16 +83,27 @@
 
             // supports 리스트 순회하여 events 배열에 데이터 추가
             supports.forEach(function (support) {
-                var backgroundColor = '#343a40'; // 기본 색상
-                backgroundColor =support.supportType.calenderColor;
+                var event = null;
+                if (support.supportType != null){
+                    var backgroundColor = support.supportType.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
-                var event = {
-                    title: support.customerName + " (" + support.supportType.name + ")",
-                    start: support.supportDate,
-                    backgroundColor: backgroundColor, // 색상 지정
-                    url: '/details?supportId=' + support.id
-                };
+                    event = {
+                        title: support.customerName + " (" + support.supportType.name + ")",
+                        start: support.supportDate,
+                        backgroundColor: backgroundColor, // 색상 지정
+                        url: '/details?supportId=' + support.id
+                    };
+                }
+                else{
+                    event = {
+                        title: support.customerName + " (지원형태 없음)",
+                        start: support.supportDate,
+                        backgroundColor: '#007bff', // 색상 지정
+                        url: '/details?supportId=' + support.id
+                    };
+                }
                 events.push(event);
+
             });
 
             // 캘린더 랜더링 시 'events' 배열 사용
@@ -98,5 +114,7 @@
         });
     })();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+
 </body>
 </html>

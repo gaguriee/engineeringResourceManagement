@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/tailwind.css}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <!-- Resources -->
     <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
@@ -18,88 +17,95 @@
 <main style="display: grid; align-items: center; justify-items: center; padding: 48px; margin-top: 24px; margin-bottom: 48px">
     <!-- 그래프들 3개씩 묶어서 그룹으로 나누기 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <!--    지원형태별-->
-    <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
 
-        <div class="flex justify-between items-center w-full">
-            <div class="flex-col items-center">
-                <div class="flex items-center mb-1">
-                    <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">지원형태별</h5>
+        <!--    이슈별-->
+        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
+
+            <div class="flex justify-between items-center w-full">
+                <div class="flex-col items-center">
+                    <div class="flex items-center mb-1">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">이슈별</h5>
+                    </div>
                 </div>
             </div>
+
+            <div id="chart_div3"></div>
         </div>
+        <!--    지원형태별-->
+        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
 
-        <div id="chart_div"></div>
-<!--        <div class="py-6" id="pie-chart"></div>-->
-<!--        <div id="chartdiv" style="  width: 100%;-->
-<!--  height: 1200px;">-->
-    </div>
-
-    <!--    제품별-->
-    <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-
-        <div class="flex justify-between items-start w-full">
-            <div class="flex-col items-center">
-                <div class="flex items-center mb-1">
-                    <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">제품별</h5>
+            <div class="flex justify-between items-center w-full">
+                <div class="flex-col items-center">
+                    <div class="flex items-center mb-1">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">지원형태별</h5>
+                    </div>
                 </div>
             </div>
+
+            <div id="chart_div"></div>
         </div>
 
-        <!-- Line Chart -->
-        <div id="chart_div2" style="align-self: center"></div>
+        <!--    제품별-->
+        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
 
-    </div>
-
-    <!--    고객사별-->
-    <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-
-        <div class="flex justify-between items-start w-full">
-            <div class="flex-col items-center">
-                <div class="flex items-center mb-1">
-                    <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">고객사별</h5>
+            <div class="flex justify-between items-start w-full">
+                <div class="flex-col items-center">
+                    <div class="flex items-center mb-1">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">제품별</h5>
+                    </div>
                 </div>
             </div>
-            <div>
-      <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">
-        지원내역 상위 10개
-      </span>
-            </div>
+            <div id="chart_div2" style="align-self: center"></div>
+
         </div>
 
-        <div id="column-chart"></div>
-    </div>
+        <!--    고객사별-->
+        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
 
-    <!--    팀별-->
-    <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-        <div class="flex justify-between items-start w-full">
-            <div class="flex-col items-center">
-                <div class="flex items-center mb-1">
-                    <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">팀별</h5>
+            <div class="flex justify-between items-start w-full">
+                <div class="flex-col items-center">
+                    <div class="flex items-center mb-1">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">고객사별</h5>
+                    </div>
+                </div>
+                <div>
+          <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">
+            지원내역 상위 10개
+          </span>
                 </div>
             </div>
+
+            <div id="column-chart"></div>
         </div>
 
-        <div id="column-chart2"></div>
-
-    </div>
-
-    <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-        <div class="flex justify-between items-start w-full">
-            <div class="flex-col items-center">
-                <div class="flex items-center mb-1">
-                    <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">직급별 인원수</h5>
+        <!--    팀별-->
+        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
+            <div class="flex justify-between items-start w-full">
+                <div class="flex-col items-center">
+                    <div class="flex items-center mb-1">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">팀별</h5>
+                    </div>
                 </div>
             </div>
+
+            <div id="column-chart2"></div>
+
         </div>
 
-        <div id="chartdiv" ></div>
+        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
+            <div class="flex justify-between items-start w-full">
+                <div class="flex-col items-center">
+                    <div class="flex items-center mb-1">
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">직급별 인원수</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chartdiv" ></div>
+
+        </div>
 
     </div>
-
-    </div>
-
-    <!-- Chart code -->
 </main>
 <div th:replace="footer :: footer"></div>
 
@@ -109,9 +115,10 @@
     }
 
     .chart-container:hover {
-        transform: scale(1.5); /* 호버 시에 그래프를 1.1배 확대 */
+        transform: scale(1.5); /* 호버 시에 그래프를 1.5배 확대 */
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
 
@@ -128,8 +135,6 @@
         data.addColumn('number', 'ratio');
         data.addRows(supportTypeRatios.map((category, index) => [category, supportTypeRatiosValues[index]]));
 
-        // Define custom colors or use Google Charts default colors
-        // For example, you can use ['#1C64F2', '#16BDCA', '#9061F9'] for custom colors
         var colors = [
             '#C7E2FF',
             '#B4F1EC',
@@ -141,15 +146,7 @@
             '#FFE680',
         ];
         var options = {
-            // 'width': 700,
-            // 'height': 500,
-            // legend: 'none',
             pieSliceText: 'label',
-            // pieStartAngle: 120,
-            // slices: {
-            //     1: {offset: 0.2},
-            //     3: {offset: 0.3}
-            // },
             is3D: true,
             colors: colors, // Apply custom colors here
         };
@@ -157,6 +154,39 @@
 
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
+    }
+
+
+    // 이슈별
+    const issueTypeRatiosValues  = /*[[${issueTypeRatiosValues }]]*/ [];
+    const issueTypeRatios  = Object.keys(/*[[${issueTypeRatios }]]*/);
+    google.charts.setOnLoadCallback(drawGooglePieChart3);
+
+    function drawGooglePieChart3() {
+        var data3 = new google.visualization.DataTable();
+        data3.addColumn('string', 'Category');
+        data3.addColumn('number', 'ratio');
+        data3.addRows(issueTypeRatios.map((category, index) => [category, issueTypeRatiosValues[index]]));
+
+        var colors = [
+            '#C7E2FF',
+            '#B4F1EC',
+            '#DDB9FF',
+            '#FFA5A5',
+            '#B0FFD7',
+            '#FFD280',
+            '#80C0C0',
+            '#FFE680',
+        ];
+        var options3 = {
+            pieSliceText: 'label',
+            is3D: true,
+            colors: colors,
+        };
+
+
+        var chart3 = new google.visualization.PieChart(document.getElementById('chart_div3'));
+        chart3.draw(data3, options3);
     }
 
 
@@ -176,13 +206,11 @@
             ],
             chart: {
                 type: "bar",
-                // height: "320px",
                 fontFamily: "Inter, sans-serif",
                 toolbar: {
                     show: false,
                 },
             },
-            // ... (rest of the options)
             xaxis: {
                 floating: false,
                 labels: {
@@ -199,7 +227,6 @@
                     show: false,
                 },
             },
-            // ... (rest of the options)
         };
 
         if (document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
@@ -224,13 +251,11 @@
             ],
             chart: {
                 type: "bar",
-                // height: "320px",
                 fontFamily: "Inter, sans-serif",
                 toolbar: {
                     show: false,
                 },
             },
-            // ... (rest of the options)
             xaxis: {
                 floating: false,
                 labels: {
@@ -247,7 +272,6 @@
                     show: false,
                 },
             },
-            // ... (rest of the options)
         };
 
         if (document.getElementById("column-chart2") && typeof ApexCharts !== 'undefined') {
@@ -281,17 +305,10 @@
             '#FFE680',
         ];
         var options = {
-            // 'width': 700,
-            // 'height': 500,
-            // legend: 'none',
             pieSliceText: 'label',
             pieStartAngle: 120,
-            // slices: {
-            //     1: {offset: 0.2},
-            //     3: {offset: 0.3}
-            // },
             is3D: false,
-            colors: colors, // Apply custom colors here
+            colors: colors,
         };
 
 
@@ -299,7 +316,6 @@
         chart.draw(data, options);
     }
 
-    // Thymeleaf를 사용하여 Java 코드에서 전달받은 값을 JavaScript로 변환
     var employPositionRatios = /*[[${employPositionRatios}]]*/ {};
 
     am4core.ready(function() {
@@ -320,7 +336,7 @@
         series.alignLabels = true;
 
         series.labelsContainer.paddingLeft = 15;
-        series.labels.template.fontSize = 12; // 원하는 크기로 설정하세요.
+        series.labels.template.fontSize = 12;
 
         chart.legend.disabled = true;
         chart.legend = new am4charts.Legend();
