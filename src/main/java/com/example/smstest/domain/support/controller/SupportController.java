@@ -33,10 +33,11 @@ public class SupportController {
 
     private final TeamRepository teamRepository;
     private final SupportTypeRepository supportTypeRepository;
+    private final SupportRepository supportRepository;
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SupportController(SupportService supportService, ProductRepository productRepository, IssueRepository issueRepository, CustomerRepository customerRepository, StateRepository stateRepository, MempRepository mempRepository, TeamRepository teamRepository, SupportTypeRepository supportTypeRepository, JdbcTemplate jdbcTemplate) {
+    public SupportController(SupportService supportService, ProductRepository productRepository, IssueRepository issueRepository, CustomerRepository customerRepository, StateRepository stateRepository, MempRepository mempRepository, TeamRepository teamRepository, SupportTypeRepository supportTypeRepository, SupportRepository supportRepository, JdbcTemplate jdbcTemplate) {
         this.supportService = supportService;
         this.productRepository = productRepository;
         this.issueRepository = issueRepository;
@@ -45,6 +46,7 @@ public class SupportController {
         this.mempRepository = mempRepository;
         this.teamRepository = teamRepository;
         this.supportTypeRepository = supportTypeRepository;
+        this.supportRepository = supportRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -277,6 +279,16 @@ public class SupportController {
         }
 
         return "teamInfo";
+    }
+
+    @GetMapping("/memberInfo")
+    public String getmemberInfo(@RequestParam(required = true) Long memberId, Model model) {
+        Optional<Memp> memp = mempRepository.findById(memberId);
+        List<Support> supports = supportRepository.findByEngineerId(memberId);
+
+        model.addAttribute("member", memp.get());
+        model.addAttribute("supports", supports);
+        return "memberInfo";
     }
 
 }

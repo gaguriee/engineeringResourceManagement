@@ -16,4 +16,7 @@ public class SupportType {
 
     @Column(name = "지원상태", nullable = false)
     private String name;
+
+    @Column(name = "캘린더색상", nullable = false)
+    private String calenderColor;
 }

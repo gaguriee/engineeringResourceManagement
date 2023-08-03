@@ -10,5 +10,6 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
     List<Support> findByTaskTitleContainingOrTaskSummaryContainingIgnoreCase(String keyword, String keyword2);
 
     List<Support> findByIssueAndStateAndProductAndCustomer(Issue issue, State state, Product product, Customer customer);
+    List<Support> findByEngineerId(Long engineerId);
 
 }
