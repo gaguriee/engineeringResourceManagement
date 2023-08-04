@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "somansa-test1",
+  "private_key_id": "a819852bb2a35c464e7081d61e2e5cfcc82bde32",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC4Iu/01IJwY6M/\nxMQV7rQrIo1X0K3q0oWaHhKmllMzmyzTJ7ud9UxViN+uCckNkmzB/aGtRft8twOl\nJ/23EmGoyD1Gr+DsXFFZcBE01vlD3NXZ9zU+GYSorWfnqfI4cKtuFX77oxYYWzV7\nk2QEaGhYlmbNQUGBsUR5w+OSAmtVFfscxMUWoTDHSQIs0nKD4P0zrS5fcA/kfQsK\nLHvHK6ABr9YTgoGUJczlYjVqu7fppQXF8pkt4/+bKBfJiHRfDJu07RCdTgIxC/K1\nLOfAx1GQ+AOJLxT30l0EnLRYslQX1CYuigw/b4Jiof3KL8g7JNIqJIMK9mfDoeW5\nNBMHuEQ1AgMBAAECggEAAm+b4w5Ip3n59+b/fRbKVWPAoO/GzTt5vv802fVVJnKg\nFi8JYV6UYvFLnD7O5RoRzEMxt1wcppq5Np8f0SMyHYyAmwXKoPXbsaY05BEP/SDX\nx2loz+iAg8a/gCYUaUC8U9l+849FxI64V2kswo4rCzj6JS7+0dtpf37i7NSRXO/G\ntgnhfVnRd9mx57ScyoMdtiAIzXOykVg+rumvMU2oeE2GkQJxay0x1MNvz9tSVbB2\nl3sBPl6ZjgHnNVQ4YqOKpMskfMshcJgiTnr82aseIpMAXHiAkww5NEDeeBgy0vTx\nGv5SP2N8RyYQVqYa1/CWuxdKEeUsAW78II3GiRuJYQKBgQD3/QKBEolYijP1sF31\nsn75OPy7htZPtqo1cEn6RFtsi8eOscd6evk/joVrOsMNrctHk2+nAfUni7Pfpidc\npfA5I2+aJ+ZL7TRyDFKDAd8d7BOQiqxUpxCnORNrGbvmKjQKH4UbI3engLrW5nS8\n5TFR9PrleriSKO1QZfbfpLHrHQKBgQC+FdcS7r4ivqh2Ey+K9ECVegawagWE0Snu\nW3lbuE0q6MTiiUtJ8SGf9Cmvhr3ZeVObXzdwJE1aZA/DcAXwMsi9abENXGt7SsJF\nuB7MfMaZTu2fJTtIReQutyQXD4Wo78Lu5ryHfOVZ9P6hN3Trbuvrx+gEjv0zBscF\nEuYRwqvZ+QKBgB26BoLSZgRnDLN24MyDCRV271TLZQVJMD4Xp8aISy1H1DQWu4LD\nGv2zZ+risF8DZkq+MbQjV+/Vn0o/8Jf6jEFNLiOchM61MIQ7Vei+YLCFjBLXjLDZ\nFfX1sY41F4EPrg1ImfwW1FEP7VW1amj6UF8yrqCzhUx/+3KXxnAonetBAoGBAILs\n4Bq2PlgIIlhRlqmK2wEZ74mLPQniV5NJhilapCwt745pKmZfo91ce2ne0Nz96ExY\nJQMkvfLIgOMIQc7T69gq+DxPr+hX8b+7tdr7Bn+KEblQF6kMGsLiegU4N8PIgOe0\nHZ7ks8RmLwwz+mA/IlhgdLrPEi8XN/WSss0A3QVhAoGBAKJIpUGAo3uiZuxXBX5s\nAgVJzX15ifXEc3Y0/3eBJRys21WA7K2mOvqBermBKy+xc548fRnlVqKMBjfyI9fP\n1eEmcsditQBPx3VLnkEHlbvbdNrTrFWosL4QNKb7Cq2VGViEJhW7HuIsDefmNXQd\n5MdP5oNgR55/C72Iy3vwMnPM\n-----END PRIVATE KEY-----\n",
+  "client_email": "sms-test-account@somansa-test1.iam.gserviceaccount.com",
+  "client_id": "105966814563930571550",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sms-test-account%40somansa-test1.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

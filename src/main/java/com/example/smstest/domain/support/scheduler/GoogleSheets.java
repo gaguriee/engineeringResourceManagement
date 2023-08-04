@@ -14,6 +14,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -41,37 +42,32 @@ public class GoogleSheets {
     private final JdbcTemplate jdbcTemplate;
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens_sheets";
+    private static final String TOKENS_DIRECTORY_PATH = "src/main/resources/tokens_sheets";
+    private static final String CREDENTIALS_FILE_PATH = "/token/service_key.json";
 
     static int sheetCnt = 0;
     private static final List<String> SCOPES =
             Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-
 //    @Scheduled(fixedDelay = 1000000)
 //    public void main() throws GeneralSecurityException, IOException {
 //        insertFile("1amJES-e9ehGL7cLviMSrv3ru0BoSu_z1ghEwNHpbAZ0", "경기도 교육청_용인 교육지원청_20230721", "https://docs.google.com/spreadsheets/d/1amJES-e9ehGL7cLviMSrv3ru0BoSu_z1ghEwNHpbAZ0/edit#gid=0" );
 //    }
 
-    @Async("threadPoolTaskExecutor")
-    protected Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
+
+    @Async
+    Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
-        // Load client secrets.
-        InputStream in = GoogleSheets.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        // Load service account credentials from JSON file
+        InputStream in = FetchChanges.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
-        GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        GoogleCredential credential = GoogleCredential.fromStream(in, HTTP_TRANSPORT, JSON_FACTORY)
+                .createScoped(SCOPES);
+
+
+        return credential;
     }
     @Async("threadPoolTaskExecutor")
     public void insertFile(String spreadsheetId, String fileName, String fileLink) throws IOException, GeneralSecurityException {

@@ -58,7 +58,7 @@ public class SupportController {
     }
 
     // 메인페이지
-    @GetMapping("/main")
+    @GetMapping("/")
     public String main(Model model) {
 
         /**
@@ -191,7 +191,7 @@ public class SupportController {
     }
 
     // 필터링
-    @GetMapping("/filter")
+    @GetMapping("/search")
     public String searchSupportByFilters(@RequestParam(required = false) List<Long> customerId,
                                          @RequestParam(required = false) List<Integer> teamId,
                                          @RequestParam(required = false) List<Long> productId,

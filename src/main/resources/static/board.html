@@ -141,7 +141,7 @@
     </span>
                 <ul class="inline-flex items-stretch -space-x-px">
                     <li>
-                        <a href="#" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#" id="prevBtn" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                             <span class="sr-only">Previous</span>
                             <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -149,22 +149,29 @@
                         </a>
                     </li>
                     <!-- 페이지 번호를 반복하여 링크 생성 -->
-                    <li th:each="groupNo : ${#numbers.sequence(0, (totalPages-1)/10)}" th:if="${currentPage >= groupNo*10}">
-                        <ul class="inline-flex items-stretch -space-x-px">
-                            <li th:each="pageNo : ${#numbers.sequence(groupNo*10, (groupNo*10)+9)}" th:if="${pageNo <= totalPages}">
+                    <!-- Determine the current group number (e.g., 0 for 1-10, 1 for 11-20, etc.) -->
+                    <th:block th:with="currentGroupNo=${currentPage/10}">
+
+                        <!-- Calculate the start and end page numbers for the current group -->
+                        <th:block th:with="startPageNo=${currentGroupNo*10 + 1}, endPageNo=${(currentGroupNo + 1)*10}">
+
+                            <!-- Iterate over the page numbers in the current group -->
+                            <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
                                 <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                 <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().build().toUri().query}">
                                     <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                    <a th:href="@{/filter(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
+                                    <a th:href="@{/search(page=${pageNo}-1)} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
                                        th:classappend="${pageNo == currentPage} ? 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
-                                       th:text="${pageNo + 1}">
+                                       th:text="${pageNo}">
                                     </a>
                                 </th:block>
                             </li>
-                        </ul>
-                    </li>
+
+                        </th:block>
+
+                    </th:block>
                     <li>
-                        <a href="#" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <a href="#" id="nextBtn" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                             <span class="sr-only">Next</span>
                             <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -223,7 +230,34 @@
     </div>
 </div>
 <div th:replace="footer :: footer"></div>
-<script>
+<script th:inline="javascript">
+
+    const currentPage = /*[[${currentPage }]]*/;
+    const totalPages = /*[[${totalPages }]]*/;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            console.log(currentPage);
+            if (currentPage > 0) {
+                const prevPage = currentPage - 1;
+                window.location.href = '/search?page=' + prevPage;
+            }
+        });
+
+        nextBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (currentPage < totalPages - 1) {
+                console.log(currentPage);
+
+                const nextPage = currentPage + 1;
+                window.location.href = '/search?page=' + nextPage;
+            }
+        });
+    });
 
     // 필터를 적용하는 공통 함수
     function applyFilter(filterName) {
@@ -238,7 +272,7 @@
         var queryParams = {};
         urlParams.forEach((value, key) => (queryParams[key] = value));
         queryParams[filterName + "Id"] = selectedIdsString;
-        var filterUrl = "/filter?" + new URLSearchParams(queryParams).toString();
+        var filterUrl = "/search?" + new URLSearchParams(queryParams).toString();
         // 필터링된 페이지로 리다이렉트합니다.
         window.location.href = filterUrl;
     }
@@ -251,9 +285,6 @@
     document.getElementById("issueFilterApplyBtn").addEventListener("click", function() {
         applyFilter("issue");
     });
-
-    // ... 다른 필터에 대한 이벤트 리스너들을 필요에 따라 추가합니다 ...
-
 
     document.addEventListener("DOMContentLoaded", function() {
         const dropdownButton = document.getElementById("productFilterDropdownButton");
@@ -295,10 +326,10 @@
         const currentPage = 0; // Change this value to the current page number
         if (searchQuery !== "") {
             // Redirect to the URL with the search keyword and current page number
-            window.location.href = "/filter?page=" + currentPage + "&Keyword=" + encodeURIComponent(searchQuery);
+            window.location.href = "/search?page=" + currentPage + "&Keyword=" + encodeURIComponent(searchQuery);
         } else {
             // Redirect to the URL without the search keyword (remove the query parameter)
-            window.location.href = "/filter?page=" + currentPage;
+            window.location.href = "/search?page=" + currentPage;
         }
         return false;
     }
