@@ -228,6 +228,10 @@ public class SupportController {
         List<Issue> allIssues = issueRepository.findAll();
         model.addAttribute("allIssues", allIssues);
 
+        // State 엔티티의 모든 데이터를 가져와서 Model에 추가
+        List<State> allStates = stateRepository.findAll();
+        model.addAttribute("allStates", allStates);
+
         return "board";
     }
 
