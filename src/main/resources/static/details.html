@@ -56,11 +56,13 @@
         <hr style="margin-bottom: 24px">
         <dl style="padding-top: 24px; margin-bottom: 24px" class="content-wrapper">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업요약</dt>
-            <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.taskSummary} ?: ' '">Standard glass ,3.8GHz 8-core 10th-generation Intel Core i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic Keyboard - US.</dd>
+            <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.taskSummary} ?: ' '"></dd>
         </dl>
         <dl style="padding-top: 24px; padding-bottom: 96px" class="content-wrapper">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
-            <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.taskDetails} ?: ' '">Standard glass ,3.8GHz 8-core 10th-generation Intel Core i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic Keyboard - US.</dd>
+            <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+        <pre th:inline="text">[[${support.taskDetails} ?: ' ']]</pre>
+            </dd>
         </dl>
 
         <div class="flex items-center space-x-4" style="padding-top: 48px">
