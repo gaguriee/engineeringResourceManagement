@@ -59,6 +59,9 @@
                     </ul>
                 </li>
             </ul>
+            <!-- HTML -->
+            <input type="date" id="startDate" name="startDate">
+            <input type="date" id="endDate" name="endDate">
             <button id="FilterApplyBtn" onclick="applyFilters()" class="mt-5 w-full p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-400 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                 적용하기
             </button>
@@ -89,9 +92,9 @@
                   </button>
                 </div>
 
-                <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 12px">
+                <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 8px">
                     <div th:each="product : ${selectedProducts}" style="display: block" >
-                        <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300" th:text="${product.getName()}">Default</span>
+                        <span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${product.getName()}">Red</span>
                     </div>
                     <div th:each="issue : ${selectedIssues}" style="display: block">
                         <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"  th:text="${issue.getName()}">Green</span>
@@ -99,6 +102,19 @@
                     <div th:each="state : ${selectedStates}"style="display: block" >
                         <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${state.getName()}">Yellow</span>
                     </div>
+
+                </div>
+                <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 12px">
+                <span th:if="${startDate != null}" th:text="'start '+ ${startDate}" class="mt-1 bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                      <svg class="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                      </svg>
+                    </span >
+                <span  th:if="${endDate != null}" th:text="'end '+ ${endDate}" class="mt-1 bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
+                      <svg class="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                      </svg>
+                    </span>
                 </div>
             <div class="max-h-64 overflow-auto">
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -215,6 +231,10 @@
         // 선택된 issue ID들을 저장할 배열
         const selectedStateIds = [];
 
+        // 선택된 시작 날짜와 종료 날짜를 가져옴
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
         // 모든 product 체크박스들을 가져와서 선택된 ID들을 배열에 추가
         const productCheckboxes = document.querySelectorAll('[id^="product_"]');
         productCheckboxes.forEach((checkbox) => {
@@ -244,6 +264,8 @@
             productId: selectedProductIds,
             issueId: selectedIssueIds,
             stateId: selectedStateIds,
+            startDate: startDate,
+            endDate: endDate
         });
 
         // filterApplyBtn을 눌렀을 때 @GetMapping("/search")로 이동하며, URL 파라미터를 전달

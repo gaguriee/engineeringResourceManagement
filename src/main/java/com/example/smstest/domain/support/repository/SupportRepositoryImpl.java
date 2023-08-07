@@ -38,7 +38,13 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         whereClause.and(stateIdIn(criteria.getStateId()));
         whereClause.and(engineerIdIn(criteria.getEngineerId()));
         whereClause.and(taskContains(criteria.getTaskKeyword()));
+        if (criteria.getStartDate() != null) {
+            whereClause.and(support.supportDate.goe(criteria.getStartDate()));
+        }
 
+        if (criteria.getEndDate() != null) {
+            whereClause.and(support.supportDate.loe(criteria.getEndDate()));
+        }
         List<Support> result = queryFactory
                 .selectFrom(support)
                 .leftJoin(support.customer).fetchJoin()

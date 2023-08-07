@@ -2,6 +2,8 @@ package com.example.smstest.domain.support.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -12,5 +14,7 @@ public class SupportFilterCriteria {
     private List<Long> issueId;
     private List<Long> stateId;
     private List<Long> engineerId;
-    private String taskKeyword; // 작업제목+요약 필터링에 사용할 키워드
+    private String taskKeyword;
+    private Date startDate;
+    private Date endDate;
 }

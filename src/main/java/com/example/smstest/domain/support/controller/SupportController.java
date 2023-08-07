@@ -11,6 +11,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -199,6 +201,8 @@ public class SupportController {
                                          @RequestParam(required = false) List<Long> stateId,
                                          @RequestParam(required = false) List<Long> engineerId,
                                          @RequestParam(required = false) String Keyword,
+                                         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
                                          Pageable pageable,
                                          Model model) {
         SupportFilterCriteria criteria = new SupportFilterCriteria();
@@ -209,6 +213,8 @@ public class SupportController {
         criteria.setStateId(stateId);
         criteria.setEngineerId(engineerId);
         criteria.setTaskKeyword(Keyword);
+        criteria.setStartDate(startDate);
+        criteria.setEndDate(endDate);
         Page<Support> result = supportService.searchSupportByFilters(criteria, pageable);
         Page<SupportResponse> responsePage = new PageImpl<>(
                 result.getContent().stream()
@@ -255,6 +261,14 @@ public class SupportController {
             model.addAttribute("selectedStates", new ArrayList<State>());
         }
 
+        if (startDate != null) {
+            String formattedStartDate = new SimpleDateFormat("yyyy-MM-dd").format(startDate);
+            model.addAttribute("startDate", formattedStartDate);
+        }
+        if (endDate != null) {
+            String formattedEndDate = new SimpleDateFormat("yyyy-MM-dd").format(endDate);
+            model.addAttribute("endDate", formattedEndDate);
+        }
         return "board";
     }
 
