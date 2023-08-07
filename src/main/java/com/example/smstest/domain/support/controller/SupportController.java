@@ -232,6 +232,29 @@ public class SupportController {
         List<State> allStates = stateRepository.findAll();
         model.addAttribute("allStates", allStates);
 
+        // 필터링 대상 엔티티만 가져옴
+// Model에 선택된 products, issues, states 추가
+        if (productId != null) {
+            List<Product> selectedProducts = productRepository.findAllById(productId);
+            model.addAttribute("selectedProducts", selectedProducts);
+        } else {
+            model.addAttribute("selectedProducts", new ArrayList<Product>());
+        }
+
+        if (issueId != null) {
+            List<Issue> selectedIssues = issueRepository.findAllById(issueId);
+            model.addAttribute("selectedIssues", selectedIssues);
+        } else {
+            model.addAttribute("selectedIssues", new ArrayList<Issue>());
+        }
+
+        if (stateId != null) {
+            List<State> selectedStates = stateRepository.findAllById(stateId);
+            model.addAttribute("selectedStates", selectedStates);
+        } else {
+            model.addAttribute("selectedStates", new ArrayList<State>());
+        }
+
         return "board";
     }
 
@@ -307,8 +330,10 @@ public class SupportController {
     public String getmemberInfo(@RequestParam(required = true) Long memberId, Model model) {
         Optional<Memp> memp = mempRepository.findById(memberId);
         List<Support> supports = supportRepository.findByEngineerId(memberId);
+        Optional<Team> team = teamRepository.findById(memp.get().getTeamId());
 
         model.addAttribute("member", memp.get());
+        model.addAttribute("team", team.get());
         model.addAttribute("supports", supports);
         return "memberInfo";
     }

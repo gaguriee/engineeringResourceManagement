@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
 </head>
 <body>
@@ -24,8 +25,8 @@
             <!-- 여기서는 Thymeleaf의 `th:each` 디렉티브를 사용합니다. -->
             <li th:each="issue : ${issues}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
                 <!-- 각 이슈의 이름과 설명을 표시합니다. -->
-                <span style="font-size: 14px; font-weight: bolder; margin-bottom: 4px; white-space: pre-wrap;" th:text="${issue.name}"></span>
-                <span style="font-weight: bold; color: gray" th:text="${issue.description}"></span>
+                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;" th:text="${issue.name}"></span>
+                <span style="font-weight: normal; color: gray" th:text="${issue.description}"></span>
             </li>
         </ul>
         <button type="button" data-drawer-dismiss="readProductDrawer" aria-controls="readProductDrawer" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
@@ -130,6 +131,7 @@
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskSummary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >작업 요약</label>
                 <textarea name = "taskSummary" id="taskSummary" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역을 요약해주세요."></textarea>
+
             </div>
             <div class="sm:col-span-2">
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세</label>
