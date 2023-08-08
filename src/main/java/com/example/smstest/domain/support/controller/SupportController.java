@@ -238,6 +238,15 @@ public class SupportController {
         List<State> allStates = stateRepository.findAll();
         model.addAttribute("allStates", allStates);
 
+        // Team 엔티티의 모든 데이터를 가져와서 Model에 추가
+        List<Team> allTeams = teamRepository.findAll();
+        model.addAttribute("allTeams", allTeams);
+
+        // Member 엔티티의 모든 데이터를 가져와서 Model에 추가
+        List<Memp> allMemps = mempRepository.findAll();
+        model.addAttribute("allMemps", allMemps);
+
+
         // 필터링 대상 엔티티만 가져옴
 // Model에 선택된 products, issues, states 추가
         if (productId != null) {

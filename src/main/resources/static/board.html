@@ -59,26 +59,51 @@
                     </ul>
                 </li>
             </ul>
+            <div class="mx-auto max-w-2xl mb-2.5" style="margin-top: 24px">
+                <span class="mb-4 font-normal text-gray-900 dark:text-white pb-2.5" >소속 선택</span>
+                <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <select id="team" name="teamId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <option value="" selected>소속을 선택해주세요.</option>
+                    <!-- Iterate over the issues list and add each issue's name as an option -->
+                    <th:block th:each="team : ${allTeams}">
+                        <option th:value="${team.id}" th:text="${team.name}" th:attr="data-teamId=${team.id}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="mx-auto max-w-2xl">
+                <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <select id="member" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <option value="all" selected>엔지니어를 선택해주세요.</option>
+                    <!-- Iterate over the issues list and add each issue's name as an option -->
+                    <th:block th:each="memp : ${allMemps}">
+                        <!-- Check if the memp's teamId matches the selected team's id -->
+                        <option th:value="${memp.id}" th:text="${memp.name}" th:attr="data-memTeamId=${memp.teamId}, data-memId=${memp.id}"></option>
+                    </th:block>
+                </select>
+            </div>
             <!-- HTML -->
-            <div date-rangepicker class="mt-5 block items-center align-middle" >
-                <span class="mx-2 text-gray-500 mt-5.5 font-normal">시작일</span>
+            <div style="margin-top: 24px">
+                <span class="font-normal text-gray-900 dark:text-white" >기간 선택</span>
+                <div date-rangepicker class="block items-center align-middle" >
+                    <span class="font-normal" style="font-size: 12px" >시작일</span>
 
-                <div class="relative mb-2.5">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                        </svg>
+                    <div class="relative mb-2.5">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
+                        </div>
+                        <input name="start" id="startDate" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
                     </div>
-                    <input name="start" id="startDate" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
-                </div>
-                <span class="mx-2 text-gray-500 mt-5.5 font-normal">종료일</span>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                        </svg>
+                    <span class="mt-5.5 font-normal" style="font-size: 12px">종료일</span>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
+                        </div>
+                        <input name="end" id="endDate" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
                     </div>
-                    <input name="end" id="endDate" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
                 </div>
             </div>
             <button id="FilterApplyBtn" onclick="applyFilters()" class="mt-5 w-full p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-600 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
@@ -87,29 +112,40 @@
         </div>
     </aside>
 
+
     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+
         <!-- Start coding here -->
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-            <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
-              <div class="w-full md:w-full flex mb-2.5">
+        <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg mb-2.5">
+            <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+                <div class="w-full md:w-1/2">
                     <form class="flex items-center" onsubmit="return submitSearch(event)">
                         <label for="simple-search" class="sr-only">Search</label>
-                        <div class="relative w-full">
+                        <div class="relative w-1/2">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
+                            <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
                         </div>
                         <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Search
                         </button>
+                        <button id="filterBtn" data-dropdown-toggle="filterDropdown" class="ml-2.5 flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                            </svg>
+                            Filter
+                        </button>
                     </form>
-                  <button style="align-self: end; align-items: end" type="submit" id="filterBtn" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-400 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:bg-gray-700">
-                      Filter
-                  </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Start coding here -->
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+            <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
 
                 <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 8px">
                     <div th:each="product : ${selectedProducts}" style="display: block" >
@@ -239,8 +275,37 @@
 
 <script th:inline="javascript">
 
+    const teamSelect = document.getElementById('team');
+    const memberSelect = document.getElementById('member');
+
+    // 초기 멤버 리스트 저장
+    const initialMembers = [...document.querySelectorAll('#member option')];
+
+    // 팀 선택 변경 시 이벤트 핸들러
+    teamSelect.addEventListener('change', function() {
+        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
+        TeamId = selectedTeamId
+
+        // 멤버 선택 옵션 초기화
+        memberSelect.innerHTML = '<option value="all" th:attr="data-memId=null" selected>전체</option>\n';
+
+        // 선택된 팀에 해당하는 멤버만 보여주기
+        for (const memberOption of initialMembers) {
+            const memberTeamId = memberOption.getAttribute('data-memTeamId');
+
+            if (memberTeamId === selectedTeamId || selectedTeamId === '') {
+                console.log(memberOption)
+                memberSelect.appendChild(memberOption.cloneNode(true));
+            }
+        }
+    });
+
     // JavaScript
     function applyFilters() {
+
+        const teamSelect = document.getElementById('team');
+        const memberSelect = document.getElementById('member');
+
         // 선택된 product ID들을 저장할 배열
         const selectedProductIds = [];
 
@@ -278,14 +343,20 @@
             }
         });
 
+        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
+        const selectedMemberId = memberSelect.options[memberSelect.selectedIndex].getAttribute('data-memId');
+
         // URL 파라미터로 선택된 ID들을 전달하여 필터링된 결과를 보여줌
-        const queryParams = new URLSearchParams({
-            productId: selectedProductIds,
-            issueId: selectedIssueIds,
-            stateId: selectedStateIds,
-            startDate: startDate,
-            endDate: endDate
-        });
+        const queryParams = new URLSearchParams();
+
+        if (selectedProductIds.length>0) queryParams.append('productId', selectedProductIds);
+        if (selectedIssueIds.length>0) queryParams.append('issueId', selectedIssueIds);
+        if (selectedStateIds.length>0) queryParams.append('stateId', selectedStateIds);
+        if (startDate) queryParams.append('startDate', startDate);
+        if (endDate) queryParams.append('endDate', endDate);
+        if (selectedTeamId) queryParams.append('teamId', selectedTeamId);
+        if (selectedMemberId) queryParams.append('engineerId', selectedMemberId);
+
 
         // filterApplyBtn을 눌렀을 때 @GetMapping("/search")로 이동하며, URL 파라미터를 전달
         window.location.href = '/search?' + queryParams.toString();

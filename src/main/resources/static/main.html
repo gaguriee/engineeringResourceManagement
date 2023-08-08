@@ -20,19 +20,20 @@
     <!-- 그래프들 3개씩 묶어서 그룹으로 나누기 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <!--    이슈별-->
+        <!--  이슈별 -->
         <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-
-            <div class="flex justify-between items-center w-full">
+            <div class="flex justify-between items-start w-full">
                 <div class="flex-col items-center">
                     <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">이슈별</h5>
+                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">팀별</h5>
                     </div>
                 </div>
             </div>
 
             <div id="chart_div3"></div>
+
         </div>
+
         <!--    지원형태별-->
         <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
 
@@ -119,6 +120,8 @@
     .chart-container:hover {
         transform: scale(1.5); /* 호버 시에 그래프를 1.5배 확대 */
     }
+
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
@@ -160,36 +163,48 @@
 
 
     // 이슈별
-    const issueTypeRatiosValues  = /*[[${issueTypeRatiosValues }]]*/ [];
-    const issueTypeRatios  = Object.keys(/*[[${issueTypeRatios }]]*/);
-    google.charts.setOnLoadCallback(drawGooglePieChart3);
+    const issueTypeRatiosValues = /*[[${issueTypeRatiosValues}]]*/;
+    const issueTypeRatios = Object.keys(/*[[${issueTypeRatios}]]*/);
 
-    function drawGooglePieChart3() {
-        var data3 = new google.visualization.DataTable();
-        data3.addColumn('string', 'Category');
-        data3.addColumn('number', 'ratio');
-        data3.addRows(issueTypeRatios.map((category, index) => [category, issueTypeRatiosValues[index]]));
-
-        var colors = [
-            '#C7E2FF',
-            '#B4F1EC',
-            '#DDB9FF',
-            '#FFA5A5',
-            '#B0FFD7',
-            '#FFD280',
-            '#80C0C0',
-            '#FFE680',
-        ];
-        var options3 = {
-            pieSliceText: 'label',
-            is3D: true,
-            colors: colors,
+    window.addEventListener("load", function() {
+        const options = {
+            series: [
+                {
+                    name: "Support Count",
+                    color: "#abdb1a",
+                    data: issueTypeRatiosValues.map((value, index) => ({ x: issueTypeRatios[index], y: value })),
+                }
+            ],
+            chart: {
+                type: "bar",
+                fontFamily: "Inter, sans-serif",
+                toolbar: {
+                    show: false,
+                },
+            },
+            xaxis: {
+                floating: false,
+                labels: {
+                    show: true,
+                    style: {
+                        fontFamily: "Inter, sans-serif",
+                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+                    }
+                },
+                axisBorder: {
+                    show: false,
+                },
+                axisTicks: {
+                    show: false,
+                },
+            },
         };
 
-
-        var chart3 = new google.visualization.PieChart(document.getElementById('chart_div3'));
-        chart3.draw(data3, options3);
-    }
+        if (document.getElementById("chart_div3") && typeof ApexCharts !== 'undefined') {
+            const chart = new ApexCharts(document.getElementById("chart_div3"), options);
+            chart.render();
+        }
+    });
 
 
     // 고객사별
