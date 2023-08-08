@@ -222,7 +222,6 @@ public class SupportController {
                         .collect(Collectors.toList()),
                 result.getPageable(),
                 result.getTotalElements());
-        System.out.println(responsePage.stream().findFirst().get());
         model.addAttribute("posts", responsePage);
         model.addAttribute("totalPages", result.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
@@ -281,8 +280,6 @@ public class SupportController {
         SupportResponse supportResponse = supportService.getDetails(supportId);
         model.addAttribute("support", supportResponse);
 
-        System.out.println(supportResponse.getTaskDetails());
-
         return "details";
     }
 
@@ -313,7 +310,6 @@ public class SupportController {
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
-        System.out.println(customers);
         return "create";
     }
 

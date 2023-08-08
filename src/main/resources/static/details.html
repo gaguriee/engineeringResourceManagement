@@ -18,7 +18,7 @@
 <div th:replace="header :: header"></div>
 <section class="dark:bg-gray-900 p-3 sm:p-5 antialiased" style="margin-top: 48px; margin-bottom: 84px">
     <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16">
-        <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${support.taskTitle} ?: '제목 없음'">Apple iMac 25"</h1>
+        <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${(support.taskTitle != null && support.taskTitle.trim().length() > 0) ? support.taskTitle : '제목 없음'}">Apple iMac 25"</h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.customerName} ?: ' '">$2999</h3>
         <dl class="flex text-sm items-start space-x-3 flex-wrap" style="padding-top: 24px;">
             <div style="margin-right: 20px;">
@@ -54,11 +54,11 @@
             </div>
         </dl>
         <hr style="margin-bottom: 24px">
-        <dl style="padding-top: 24px; margin-bottom: 24px" class="content-wrapper">
+        <dl style="padding-top: 24px; margin-bottom: 24px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업요약</dt>
             <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.taskSummary} ?: ' '"></dd>
         </dl>
-        <dl style="padding-top: 24px; padding-bottom: 96px" class="content-wrapper">
+        <dl style="padding-top: 24px; padding-bottom: 96px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
             <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
         <pre th:inline="text">[[${support.taskDetails} ?: ' ']]</pre>
