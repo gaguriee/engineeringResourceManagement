@@ -12,4 +12,10 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
     List<Support> findByIssueAndStateAndProductAndCustomer(Issue issue, State state, Product product, Customer customer);
     List<Support> findByEngineerId(Long engineerId);
 
+    Long countByEngineerId(Long engineerId);
+
+    Long countByTeamIdAndIssueId(Integer engineerId, Long issueId);
+    Long countByTeamIdAndStateId(Integer engineerId, Long issueId);
+    Long countByTeamIdAndProductId(Integer engineerId, Long issueId);
+
 }

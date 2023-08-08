@@ -28,7 +28,85 @@
                 </button>
             </div>
         </form>
+
+        <div id="container" class="w-full" style="display: grid">
+            <div class="w-full relative overflow-x-auto mt-8">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            이름
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            직책
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            직급
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            처리 건수
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="memp : ${memps}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="px-6 py-4" style="color: black" th:text="${memp.name}"></td>
+                        <td class="px-6 py-4" th:text="${memp.position}"></td>
+                        <td class="px-6 py-4" th:text="${memp.rank}"></td>
+                        <td class="px-6 py-4 text-red-600" th:text="${engineerSupportCounts[memp.getId()]}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex">
+                <div class="w-1/2 pr-2">
+                    <div class="relative overflow-x-auto mt-8 ">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    제품명
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    처리 건수
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="product : ${products}" th:if="${productSupportCounts[product.getId()] > 0}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-6 py-4" style="color: black" th:text="${product.name}"></td>
+                                <td class="px-6 py-4 text-red-600" th:text="${productSupportCounts[product.getId()]}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="w-1/2 pl-2" style="display: grid">
+                    <div class="w-full relative overflow-x-auto mt-8">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    이슈
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    처리 건수
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="state : ${states}" th:if="${stateSupportCounts[state.getId()] > 0}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="px-6 py-4 text-gray-950" style="color: black" th:text="${state.name}"></td>
+                                <td class="px-6 py-4 text-red-600" th:text="${stateSupportCounts[state.getId()]}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 
 </section>
 

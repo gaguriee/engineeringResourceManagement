@@ -339,6 +339,41 @@ public class SupportController {
             List<Memp> memps = mempRepository.findAllByTeamId(teamId);
             model.addAttribute("team", teamOptional.get());
             model.addAttribute("memps", memps);
+
+            // Collect engineerId and corresponding support count
+            Map<Long, Long> engineerSupportCounts = new HashMap<>();
+            for (Memp memp : memps) {
+                Long engineerId = memp.getId();
+                Long supportCount = supportRepository.countByEngineerId(engineerId);
+                engineerSupportCounts.put(engineerId, supportCount);
+            }
+
+            model.addAttribute("engineerSupportCounts", engineerSupportCounts);
+
+
+            List<State> states = stateRepository.findAll();
+            model.addAttribute("states", states);
+
+            Map<Long, Long> stateSupportCounts = new HashMap<>();
+            for (State state : states) {
+                Long supportCount = supportRepository.countByTeamIdAndStateId(teamId, state.getId());
+                stateSupportCounts.put(state.getId(), supportCount);
+            }
+
+            model.addAttribute("stateSupportCounts", stateSupportCounts);
+
+            List<Product> products = productRepository.findAll();
+            model.addAttribute("products", products);
+
+            Map<Long, Long> productSupportCounts = new HashMap<>();
+            for (Product product : products) {
+                Long supportCount = supportRepository.countByTeamIdAndProductId(teamId, product.getId());
+                productSupportCounts.put(product.getId(), supportCount);
+            }
+
+            model.addAttribute("productSupportCounts", productSupportCounts);
+
+
         } else {
             // 팀을 찾지 못한 경우, 적절한 처리를 수행하거나 에러 메시지를 뷰로 전달할 수 있습니다.
             model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");
