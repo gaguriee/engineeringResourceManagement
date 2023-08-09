@@ -16,7 +16,7 @@ public interface SupportService {
 
     // 필터링
 //    List<SupportResponse> getFilteredPosts(Long issueId, Long stateId, Long productId, Long customerId);
-    Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable);
+    Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort);
 
 
     // 상세보기

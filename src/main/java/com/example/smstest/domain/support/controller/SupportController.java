@@ -8,9 +8,7 @@ import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -203,6 +201,7 @@ public class SupportController {
                                          @RequestParam(required = false) String Keyword,
                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+                                         @RequestParam(required = false, defaultValue = "desc")  String sortOrder, // 추가된 파라미터
                                          Pageable pageable,
                                          Model model) {
         SupportFilterCriteria criteria = new SupportFilterCriteria();
@@ -215,7 +214,10 @@ public class SupportController {
         criteria.setTaskKeyword(Keyword);
         criteria.setStartDate(startDate);
         criteria.setEndDate(endDate);
-        Page<Support> result = supportService.searchSupportByFilters(criteria, pageable);
+
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<Support> result = supportService.searchSupportByFilters(criteria, pageable, sortOrder);
         Page<SupportResponse> responsePage = new PageImpl<>(
                 result.getContent().stream()
                         .map(SupportResponse::entityToResponse)
@@ -223,6 +225,8 @@ public class SupportController {
                 result.getPageable(),
                 result.getTotalElements());
         model.addAttribute("posts", responsePage);
+        System.out.println(responsePage.stream().findFirst());
+
         model.addAttribute("totalPages", result.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
 
@@ -246,9 +250,10 @@ public class SupportController {
         List<Memp> allMemps = mempRepository.findAll();
         model.addAttribute("allMemps", allMemps);
 
+        model.addAttribute("sortOrder", sortOrder);
 
         // 필터링 대상 엔티티만 가져옴
-// Model에 선택된 products, issues, states 추가
+        // Model에 선택된 products, issues, states 추가
         if (productId != null) {
             List<Product> selectedProducts = productRepository.findAllById(productId);
             model.addAttribute("selectedProducts", selectedProducts);

@@ -6,6 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface SupportRepositoryCustom {
-    Page<Support> searchSupportByFilters(SupportFilterCriteria supportFilterCriteria, Pageable pageable);
+    Page<Support> searchSupportByFilters(SupportFilterCriteria supportFilterCriteria, Pageable pageable, String sort);
 
 }

@@ -3,6 +3,7 @@ import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.entity.QSupport;
 import com.example.smstest.domain.support.entity.Support;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
     }
 
     @Override
-    public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable) {
+    public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort) {
         QSupport support = QSupport.support;
 
         BooleanBuilder whereClause = new BooleanBuilder();
@@ -45,6 +46,15 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         if (criteria.getEndDate() != null) {
             whereClause.and(support.supportDate.loe(criteria.getEndDate()));
         }
+
+        // 정렬 조건 추가
+        OrderSpecifier<?> orderSpecifier = null;
+        if ("asc".equalsIgnoreCase(sort)) {
+            orderSpecifier = support.supportDate.asc();
+        } else {
+            orderSpecifier = support.supportDate.desc();
+        }
+
         List<Support> result = queryFactory
                 .selectFrom(support)
                 .leftJoin(support.customer).fetchJoin()
@@ -55,6 +65,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
                 .where(whereClause)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(orderSpecifier) // 정렬 조건 추가
                 .fetch();
 
         long totalCount = queryFactory

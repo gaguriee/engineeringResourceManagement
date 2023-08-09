@@ -33,8 +33,8 @@ public class SupportServiceImpl implements SupportService {
         this.supportTypeRepository = supportTypeRepository;
     }
 
-    public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable) {
-        return supportRepository.searchSupportByFilters(criteria, pageable);
+    public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort) {
+        return supportRepository.searchSupportByFilters(criteria, pageable, sort);
     }
 
     @Override
