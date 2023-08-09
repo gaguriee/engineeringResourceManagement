@@ -230,23 +230,29 @@ public class SupportController {
         model.addAttribute("totalPages", result.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
 
-        // Product 엔티티의 모든 데이터를 가져와서 Model에 추가
+        // Product 엔티티
         List<Product> allProducts = productRepository.findAll();
         model.addAttribute("allProducts", allProducts);
 
-        // Issue 엔티티의 모든 데이터를 가져와서 Model에 추가
+        // Issue 엔티티
         List<Issue> allIssues = issueRepository.findAll();
         model.addAttribute("allIssues", allIssues);
 
-        // State 엔티티의 모든 데이터를 가져와서 Model에 추가
+        Map<Integer, List<Issue>> groupedIssues = new HashMap<>();
+        for (Issue issue : allIssues) {
+            groupedIssues.computeIfAbsent(issue.get대분류(), k -> new ArrayList<>()).add(issue);
+        }
+        model.addAttribute("groupedIssues", groupedIssues);
+
+        // State 엔티티
         List<State> allStates = stateRepository.findAll();
         model.addAttribute("allStates", allStates);
 
-        // Team 엔티티의 모든 데이터를 가져와서 Model에 추가
+        // Team 엔티티
         List<Team> allTeams = teamRepository.findAll();
         model.addAttribute("allTeams", allTeams);
 
-        // Member 엔티티의 모든 데이터를 가져와서 Model에 추가
+        // Member 엔티티
         List<Memp> allMemps = mempRepository.findAll();
         model.addAttribute("allMemps", allMemps);
 
@@ -273,6 +279,20 @@ public class SupportController {
             model.addAttribute("selectedStates", selectedStates);
         } else {
             model.addAttribute("selectedStates", new ArrayList<State>());
+        }
+
+        if (teamId != null) {
+            List<Team> selectedTeams = teamRepository.findAllById(teamId);
+            model.addAttribute("selectedTeams", selectedTeams);
+        } else {
+            model.addAttribute("selectedTeams", new ArrayList<Team>());
+        }
+
+        if (engineerId != null) {
+            List<Memp> selectedMemps = mempRepository.findAllById(engineerId);
+            model.addAttribute("selectedMemps", selectedMemps);
+        } else {
+            model.addAttribute("selectedMemps", new ArrayList<Memp>());
         }
 
         if (startDate != null) {

@@ -38,9 +38,10 @@
                         <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                     </button>
                     <ul id="issueDropdown" class="hidden ml-2.5 py-2 space-y-2">
-                        <li th:each="issue : ${allIssues}" class="flex items-center">
-                            <input th:id="'issue_' + ${issue.id}" th:value="${issue.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 issue-checkbox">
-                            <label th:for="'issue_' + ${issue.id}"  class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${issue.name} "></label>
+                        <!-- Loop through the keys (대분류) in groupedIssues -->
+                        <li th:each="category : ${groupedIssues.keySet()}">
+                            <button type="button" th:text="${category}" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" onclick="showCategoryIssues('${category}')">
+                            </button>
                         </li>
                     </ul>
                 </li>
@@ -152,7 +153,12 @@
                     <div th:each="state : ${selectedStates}"style="display: block" >
                         <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${state.getName()}">Yellow</span>
                     </div>
-
+                    <div th:each="team : ${selectedTeams}"style="display: block" >
+                        <span class="bg-orange-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${team.getName()}">Yellow</span>
+                    </div>
+                    <div th:each="memp : ${selectedMemps}"style="display: block" >
+                        <span class="bg-purple-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${memp.getName()}">Yellow</span>
+                    </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 12px">
                 <span th:if="${startDate != null}" th:text="'start '+ ${startDate}" class="mt-1 bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
@@ -300,6 +306,19 @@ const teamSelect = document.getElementById('team');
             }
         }
     });
+
+const groupedIssues = /*[[${groupedIssues }]]*/ [];
+
+function showCategoryIssues(category) {
+    const issues = groupedIssues[category]; // 해당 대분류에 속하는 이슈 리스트
+    const issueList = document.getElementById('issueList'); // 이슈를 표시할 엘리먼트
+
+    // 이슈 리스트를 화면에 표시
+    issueList.innerHTML = '';
+    issues.forEach(issue => {
+        issueList.innerHTML += `<li>${issue.issueName}</li>`; // 이슈 이름 또는 다른 정보
+    });
+}
 
 
     function applyFilters() {

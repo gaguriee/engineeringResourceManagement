@@ -24,7 +24,7 @@ public class SupportRequest {
 
     private String customerContact;
 
-    private Long customerId;
+    private String customerName;
 
     private Long productId;
 

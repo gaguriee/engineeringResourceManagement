@@ -44,15 +44,16 @@
                 <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="20" placeholder="제목은 필수입니다. (20자 이내)"></textarea>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
-                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색</label>
-                <input type="text" id="customer"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="filterCustomers(this.value)" placeholder="고객사 검색">
-                <ul id="filteredCustomersList"></ul>
+                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사</label>
+                <textarea name = "customerName" id="customer" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="20" placeholder="고객사를 입력해주세요."></textarea>
 
-<!--                TODO : 지워야함-->
-                <label for="customerId"></label><input name="customerId" id="customerId" class="hidden"></input>
+<!--                <input type="text" id="customer"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="filterCustomers(this.value)" placeholder="고객사 검색">-->
+<!--                <ul id="filteredCustomersList"></ul>-->
+<!--&lt;!&ndash;                TODO : 지워야함&ndash;&gt;-->
+<!--                <label for="customerId"></label><input name="customerId" id="customerId" class="hidden"></input>-->
 
             </div>
-            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6" style="padding-bottom: 24px">
+            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-8">
                 <div>
                     <label for="product" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">제품명</label>
                     <select id="product" name="productId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
@@ -62,6 +63,11 @@
                             <option th:value="${product.id}" th:text="${product.name}"></option>
                         </th:block>
                     </select>
+                </div>
+
+                <div class="sm:col-span-2" >
+                    <label for="supportDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지원일자</label>
+                    <input type="date" name="supportDate" id="supportDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" max="2023-08-01">
                 </div>
                 <div>
                     <div style="display: flex; ">
@@ -119,14 +125,6 @@
                     <label for="item-weight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인 일감</label>
                     <input type="number" name="redmineIssue" id="item-weight" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요."  min="0">
                 </div>
-                <div class="sm:col-span-2" style="padding-bottom: 24px">
-                    <label for="customerContact" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >고객 담당자</label>
-                    <textarea name = "customerContact" id="customerContact" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="고객 담당자를 입력해주세요."></textarea>
-                </div>
-                <div class="sm:col-span-2" style="padding-bottom: 24px">
-                    <label for="supportDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지원일자</label>
-                    <input type="date" name="supportDate" id="supportDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" max="2023-08-01">
-                </div>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskSummary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >작업 요약</label>
@@ -147,17 +145,6 @@
                 </div>
             </div>
 
-
-            <div id="noPostAlert" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Info</span>
-                <div>
-                    <span class="font-medium">등록을 막아둔 상태입니다.</span>
-                </div>
-            </div>
-
             <div style="display: flex; align-items: end; justify-content: flex-end;">
                 <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                     등록하기
@@ -174,37 +161,37 @@
 <script  th:inline="javascript">
     var customers = /*[[${customers}]]*/ []; // Thymeleaf를 사용하여 컨트롤러에서 전달받은 customers 값을 JavaScript 변수에 할당
 
-    function filterCustomers(keyword) {
-
-        const filteredCustomersList = document.getElementById('filteredCustomersList');
-        filteredCustomersList.innerHTML = '';
-
-        if (keyword.trim() === '') {
-            return;
-        }
-
-        const filteredCustomers = customers.filter((customer) => customer.name.includes(keyword));
-
-        filteredCustomers.forEach((customer) => {
-            const listItem = document.createElement('li');
-            listItem.innerText = customer.name;
-
-            listItem.classList.add('bg-gray-50', 'border', 'border-gray-300', 'text-gray-900', 'text-sm', 'p-2.5', 'dark:bg-gray-200', 'dark:border-gray-100', 'dark:placeholder-gray-100', 'dark:text-white');
-            listItem.setAttribute('onclick', `selectCustomer('${customer.id}', '${customer.name}')`);
-            filteredCustomersList.appendChild(listItem);
-        });
-    }
-
-    function selectCustomer(id, name) {
-        const taskTitleInput = document.getElementById('customer');
-        taskTitleInput.value = name;
-
-        const customerId = document.getElementById('customerId');
-        customerId.value = id;
-
-        const filteredCustomersList = document.getElementById('filteredCustomersList');
-        filteredCustomersList.innerHTML = '';
-    }
+    // function filterCustomers(keyword) {
+    //
+    //     const filteredCustomersList = document.getElementById('filteredCustomersList');
+    //     filteredCustomersList.innerHTML = '';
+    //
+    //     if (keyword.trim() === '') {
+    //         return;
+    //     }
+    //
+    //     const filteredCustomers = customers.filter((customer) => customer.name.includes(keyword));
+    //
+    //     filteredCustomers.forEach((customer) => {
+    //         const listItem = document.createElement('li');
+    //         listItem.innerText = customer.name;
+    //
+    //         listItem.classList.add('bg-gray-50', 'border', 'border-gray-300', 'text-gray-900', 'text-sm', 'p-2.5', 'dark:bg-gray-200', 'dark:border-gray-100', 'dark:placeholder-gray-100', 'dark:text-white');
+    //         listItem.setAttribute('onclick', `selectCustomer('${customer.id}', '${customer.name}')`);
+    //         filteredCustomersList.appendChild(listItem);
+    //     });
+    // }
+    //
+    // function selectCustomer(id, name) {
+    //     const taskTitleInput = document.getElementById('customer');
+    //     taskTitleInput.value = name;
+    //
+    //     const customerId = document.getElementById('customerId');
+    //     customerId.value = id;
+    //
+    //     const filteredCustomersList = document.getElementById('filteredCustomersList');
+    //     filteredCustomersList.innerHTML = '';
+    // }
 
     // 이슈/제품명 가이드 버튼
     document.getElementById("readProductButton").addEventListener("click", function() {
@@ -237,8 +224,6 @@
         var state = document.getElementById('state').value;
         var engineer = document.getElementById('engineer').value;
         var supportType = document.getElementById('supportType').value;
-        var redmineIssue = document.getElementById('item-weight').value;
-        var customerContact = document.getElementById('customerContact').value;
         var supportDate = document.getElementById('supportDate').value;
         var taskSummary = document.getElementById('taskSummary').value;
         var taskDetails = document.getElementById('taskDetails').value;
@@ -252,7 +237,6 @@
             state === '' ||
             engineer === '' ||
             supportType === '' ||
-            redmineIssue.trim() === '' ||
             customerContact.trim() === '' ||
             supportDate.trim() === '' ||
             taskSummary.trim() === '' ||
@@ -261,16 +245,11 @@
             // Show the alertForm
             var alertForm = document.getElementById('alertForm');
             alertForm.style.visibility = 'visible';
-
             // Return false to prevent form submission
             return false;
         }
 
-        // 등록막아두기
-        else{
-            return false;
-        }
-
+        return true;
     }
 </script>
 

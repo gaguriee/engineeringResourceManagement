@@ -73,6 +73,8 @@ public class GoogleSheets {
     public void insertFile(String spreadsheetId, String fileName, String fileLink) throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
+        System.out.println("\n"+spreadsheetId+"\n");
+
         Sheets service = new Sheets.Builder(new NetHttpTransport(),
                 GsonFactory.getDefaultInstance(),
                 getCredentials(HTTP_TRANSPORT))
@@ -280,6 +282,9 @@ public class GoogleSheets {
                     System.out.println("sheetCnt : " + sheetCnt);
                     System.out.println("업데이트 성공!! " + data);
 
+                }
+                catch (Exception e){
+                    System.out.println("ERROR : "+e.getMessage()+", PASS ("+e.getMessage()+")");
                 }
             }
 

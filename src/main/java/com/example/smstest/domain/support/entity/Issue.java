@@ -20,5 +20,8 @@ public class Issue {
     @Column(name = "참조")
     private String description;
 
+    @Column(name = "대분류_이슈_id")
+    private Integer 대분류;
+
     // Constructors, getters, setters, and other properties
 }
