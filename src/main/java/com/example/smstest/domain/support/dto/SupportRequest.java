@@ -34,7 +34,10 @@ public class SupportRequest {
 
     private Long engineerId;
 
+    private String subEngineerName;
+
     private Long supportTypeId;
 
+    private Integer supportTypeHour;
 
 }

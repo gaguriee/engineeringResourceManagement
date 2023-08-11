@@ -26,4 +26,7 @@ public class Memp {
     @Column(name = "직급", nullable = false)
     private String rank;
 
+    @Column(name = "캘린더색상", nullable = false)
+    private String calenderColor;
+
 }

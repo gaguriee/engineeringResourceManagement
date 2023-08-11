@@ -11,6 +11,7 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
 
     List<Support> findByIssueAndStateAndProductAndCustomer(Issue issue, State state, Product product, Customer customer);
     List<Support> findByEngineerId(Long engineerId);
+    List<Support> findByTeamId(Integer teamId);
 
     Long countByEngineerId(Long engineerId);
 

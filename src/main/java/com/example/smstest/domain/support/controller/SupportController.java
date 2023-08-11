@@ -399,6 +399,9 @@ public class SupportController {
             model.addAttribute("productSupportCounts", productSupportCounts);
 
 
+            List<Support> supports = supportRepository.findByTeamId(teamId);
+            model.addAttribute("supports", supports);
+
         } else {
             // 팀을 찾지 못한 경우, 적절한 처리를 수행하거나 에러 메시지를 뷰로 전달할 수 있습니다.
             model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");

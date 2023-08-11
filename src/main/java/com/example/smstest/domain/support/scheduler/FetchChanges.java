@@ -55,7 +55,7 @@ public class FetchChanges {
     final SupportRepository supportRepository;
 
 //    @Scheduled(fixedDelay = 1000000000)
-    @Scheduled(cron = "0 0 0,6,12,18 * * *") // 매일 06시, 12시, 18시, 24시 실행
+//    @Scheduled(cron = "0 0 0,6,12,18 * * *") // 매일 06시, 12시, 18시, 24시 실행
     public void fetchChanges() throws InterruptedException, IOException, GeneralSecurityException {
 
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();

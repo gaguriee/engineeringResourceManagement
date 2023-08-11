@@ -17,5 +17,9 @@ public class Product {
     @Column(name = "제품명", nullable = false)
     private String name;
 
-    // Constructors, getters, setters, and other properties
+    @Column(name = "참조")
+    private String description;
+
+    @Column(name = "대분류_제품_id")
+    private Integer 대분류;
 }

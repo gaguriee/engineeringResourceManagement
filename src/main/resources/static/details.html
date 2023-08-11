@@ -31,7 +31,7 @@
             </div>
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">담당 엔지니어</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.engineerName} ?: ' '"> </dd>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.subEngineerName != null and support.subEngineerName != '' ? support.engineerName +', '+ support.subEngineerName : support.engineerName}"></dd>
             </div>
         </dl>
         <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
@@ -41,7 +41,7 @@
             </div>
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">지원형태</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.supportType} ?: ' '"></dd>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.supportType+' '+support.supportTypeHour+'H'} ?: ' '"></dd>
             </div>
 
             <div style="margin-right: 20px;">
@@ -56,8 +56,8 @@
         </dl>
         <dl style="padding-top: 24px; padding-bottom: 96px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
-            <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-        <pre th:inline="text">[[${support.taskDetails} ?: ' ']]</pre>
+            <dd class="w-full mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400 line-break" >
+                <pre class="w-full" th:inline="text">[[${support.taskDetails} ?: ' ']]</pre>
             </dd>
         </dl>
 
@@ -75,6 +75,12 @@
     </div>
 </section>
 <div th:replace="footer :: footer"></div>
-
+<style>
+    pre{
+        padding:10px;
+        overflow: auto;
+        white-space: pre-wrap; /* pre tag내에 word wrap */
+    }
+</style>
 </body>
 </html>

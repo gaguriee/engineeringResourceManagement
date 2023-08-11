@@ -3,7 +3,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -62,9 +61,14 @@ public class Support {
     @JoinColumn(name = "엔지니어_id")
     private Memp engineer;
 
+    @Column(name = "부엔지니어")
+    private String subEngineerName;
+
     @ManyToOne
     @JoinColumn(name = "지원형태_id")
     private SupportType supportType;
 
+    @Column(name = "지원형태_시간")
+    private Integer supportTypeHour;
 
 }

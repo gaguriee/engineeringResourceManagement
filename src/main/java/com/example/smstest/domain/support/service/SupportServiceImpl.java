@@ -19,16 +19,16 @@ public class SupportServiceImpl implements SupportService {
     private final StateRepository stateRepository;
 
     private final ProductRepository productRepository;
-    private final CustomerRepository customerRepository;
+    private final TeamRepository teamRepository;
     private final MempRepository mempRepository;
     private final SupportTypeRepository supportTypeRepository;
 
-    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, CustomerRepository customerRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository) {
+    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, CustomerRepository customerRepository, TeamRepository teamRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository) {
         this.supportRepository = supportRepository;
         this.issueRepository = issueRepository;
         this.stateRepository = stateRepository;
         this.productRepository = productRepository;
-        this.customerRepository = customerRepository;
+        this.teamRepository = teamRepository;
         this.mempRepository = mempRepository;
         this.supportTypeRepository = supportTypeRepository;
     }
@@ -55,6 +55,8 @@ public class SupportServiceImpl implements SupportService {
         support.setTaskSummary(supportRequest.getTaskSummary());
         support.setTaskDetails(supportRequest.getTaskDetails());
         support.setCustomerContact(supportRequest.getCustomerContact());
+        support.setSubEngineerName(supportRequest.getSubEngineerName());
+        support.setSupportTypeHour(supportRequest.getSupportTypeHour());
 
         // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
         support.setCustomerName(supportRequest.getCustomerName());
@@ -62,6 +64,7 @@ public class SupportServiceImpl implements SupportService {
         support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
         support.setEngineer(mempRepository.findById(supportRequest.getEngineerId()).orElse(null));
+        support.setTeam(teamRepository.findById(support.getEngineer().getTeamId()).orElse(null));
 
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 

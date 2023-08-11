@@ -241,46 +241,46 @@ public class GoogleSheets {
                 }
                 catch (DuplicateKeyException e) {
                     System.out.println("중복된 key값, PASS ("+e.getMessage()+")");
-
-                    String sql = "UPDATE support " +
-                            "SET \"제품명\" = ?, " +
-                            "\"고객사\" = ?, " +
-                            "\"고객담당자\" = ?, " +
-                            "\"작업구분\" = ?, " +
-                            "\"이슈구분\" = ?, " +
-                            "\"업무구분\" = ?, " +
-                            "\"담당엔지니어\" = ?, " +
-                            "\"지원일자\" = ?, " +
-                            "\"지원형태\" = ?, " +
-                            "\"레드마인_일감\" = ?, " +
-                            "\"작업제목\" = ?, " +
-                            "\"작업요약\" = ?, " +
-                            "\"작업세부내역\" = ?, " +
-                            "\"파일명\" = ?, " +
-                            "\"위치\" = ? " +
-                            "WHERE \"파일id\" = ?";
-
-                    jdbcTemplate.update(sql,
-                            data.get("제품명"),
-                            data.get("고객사"),
-                            data.get("고객담당자"),
-                            data.get("작업구분"),
-                            data.get("이슈구분"),
-                            data.get("업무구분"),
-                            truncatedEngineer,
-                            date,
-                            data.get("지원형태"),
-                            data.get("레드마인_일감"),
-                            data.get("작업제목"),
-                            data.get("작업요약"),
-                            data.get("작업세부내역"),
-                            data.get("파일명"),
-                            data.get("위치"),
-                            data.get("파일ID")
-                    );
-                    sheetCnt++;
-                    System.out.println("sheetCnt : " + sheetCnt);
-                    System.out.println("업데이트 성공!! " + data);
+//
+//                    String sql = "UPDATE support " +
+//                            "SET \"제품명\" = ?, " +
+//                            "\"고객사\" = ?, " +
+//                            "\"고객담당자\" = ?, " +
+//                            "\"작업구분\" = ?, " +
+//                            "\"이슈구분\" = ?, " +
+//                            "\"업무구분\" = ?, " +
+//                            "\"담당엔지니어\" = ?, " +
+//                            "\"지원일자\" = ?, " +
+//                            "\"지원형태\" = ?, " +
+//                            "\"레드마인_일감\" = ?, " +
+//                            "\"작업제목\" = ?, " +
+//                            "\"작업요약\" = ?, " +
+//                            "\"작업세부내역\" = ?, " +
+//                            "\"파일명\" = ?, " +
+//                            "\"위치\" = ? " +
+//                            "WHERE \"파일id\" = ?";
+//
+//                    jdbcTemplate.update(sql,
+//                            data.get("제품명"),
+//                            data.get("고객사"),
+//                            data.get("고객담당자"),
+//                            data.get("작업구분"),
+//                            data.get("이슈구분"),
+//                            data.get("업무구분"),
+//                            truncatedEngineer,
+//                            date,
+//                            data.get("지원형태"),
+//                            data.get("레드마인_일감"),
+//                            data.get("작업제목"),
+//                            data.get("작업요약"),
+//                            data.get("작업세부내역"),
+//                            data.get("파일명"),
+//                            data.get("위치"),
+//                            data.get("파일ID")
+//                    );
+//                    sheetCnt++;
+//                    System.out.println("sheetCnt : " + sheetCnt);
+//                    System.out.println("업데이트 성공!! " + data);
 
                 }
                 catch (Exception e){

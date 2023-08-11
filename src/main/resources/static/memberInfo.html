@@ -28,7 +28,7 @@
 <div th:replace="header :: header"></div>
 
 <section class="bg-white dark:bg-gray-900"   >
-    <div class="py-8 px-4 mx-auto max-w-8xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
+    <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
         <hr style="margin-bottom: 48px">
         <div style="display: flex">
             <span class="mb-4 text-xl font-bold text-gray-400 dark:text-white mr-2.5 align-bottom" style="font-size: medium; text-align: left" th:text="${team.name}"></span>
@@ -65,7 +65,7 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth, listWeek'
+                    right: 'dayGridMonth,listWeek'
                 },
                 initialView: 'dayGridMonth',
                 navLinks: true,
@@ -86,7 +86,7 @@
                     var backgroundColor = support.supportType.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
                     event = {
-                        title: support.customerName + " (" + support.supportType.name + ")",
+                        title: support.customerName + " (" + support.supportType.name + " " + support.supportTypeHour + "h)",
                         start: support.supportDate,
                         backgroundColor: backgroundColor, // 색상 지정
                         url: '/details?supportId=' + support.id
