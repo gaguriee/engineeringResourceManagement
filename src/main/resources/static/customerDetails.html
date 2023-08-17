@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>상세보기</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<section class="bg-white dark:bg-gray-900">
+    <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${customer.name}"></h2>
+
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 h-36]">
+            <tr>
+                <th>년도</th>
+                <th>월</th>
+                <th>제품명</th>
+                <th>담당엔지니어</th>
+                <th>상태</th>
+                <th>건수</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <tr th:each="summary : ${supportSummary}">
+                <td th:text="${summary.getYear}"></td>
+                <td th:text="${summary.getMonth}"></td>
+                <td th:text="${summary.getProduct}"></td>
+                <td th:text="${summary.getEngineer}"></td>
+                <td th:text="${summary.getState}"></td>
+                <td th:text="${summary.getCount}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

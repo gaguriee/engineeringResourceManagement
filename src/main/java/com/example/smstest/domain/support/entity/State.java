@@ -16,6 +16,4 @@ public class State {
 
     @Column(name = "상태", nullable = false)
     private String name;
-
-    // Constructors, getters, setters, and other properties
 }

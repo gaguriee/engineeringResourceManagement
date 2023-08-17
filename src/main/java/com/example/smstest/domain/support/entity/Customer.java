@@ -16,6 +16,4 @@ public class Customer {
 
     @Column(name = "고객사", nullable = false)
     private String name;
-
-    // Constructors, getters, setters, and other properties
 }
