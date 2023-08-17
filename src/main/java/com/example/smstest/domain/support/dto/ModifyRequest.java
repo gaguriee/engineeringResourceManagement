@@ -2,15 +2,14 @@ package com.example.smstest.domain.support.dto;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 
 @Data
 @RequiredArgsConstructor
-public class SupportRequest {
+public class ModifyRequest {
 
-    private String taskType;
+    private Long supportId;
 
     private Date supportDate;
 
@@ -39,7 +38,5 @@ public class SupportRequest {
     private Long supportTypeId;
 
     private Integer supportTypeHour;
-
-    private String password;
 
 }

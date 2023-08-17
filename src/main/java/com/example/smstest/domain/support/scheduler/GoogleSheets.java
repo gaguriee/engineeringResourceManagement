@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,13 +28,16 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class GoogleSheets {
 
@@ -50,7 +54,7 @@ public class GoogleSheets {
             Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
 //    @Scheduled(fixedDelay = 1000000)
 //    public void main() throws GeneralSecurityException, IOException {
-//        insertFile("1amJES-e9ehGL7cLviMSrv3ru0BoSu_z1ghEwNHpbAZ0", "경기도 교육청_용인 교육지원청_20230721", "https://docs.google.com/spreadsheets/d/1amJES-e9ehGL7cLviMSrv3ru0BoSu_z1ghEwNHpbAZ0/edit#gid=0" );
+//        insertFile("153wuNU3ncKmFpnNnGhwIrYnJAOmyOyV-XQVvMybzpxQ", "서울시 교육청_기술 지원 내역서_20230811", "https://docs.google.com/spreadsheets/d/153wuNU3ncKmFpnNnGhwIrYnJAOmyOyV-XQVvMybzpxQ/edit#gid=0" );
 //    }
 
 
@@ -98,6 +102,16 @@ public class GoogleSheets {
                 is_title = service.spreadsheets().values()
                         .get(spreadsheetId, "B6")
                         .execute();
+            }
+            catch (SocketTimeoutException ex){
+                // Read timed out
+                Thread.sleep(3000);
+                is_title = service.spreadsheets().values()
+                        .get(spreadsheetId, "B6")
+                        .execute();
+            }
+            catch (Exception ex){
+                log.error(ex.getMessage() + " Filelink: "+fileLink);
             }
 
 
@@ -241,46 +255,46 @@ public class GoogleSheets {
                 }
                 catch (DuplicateKeyException e) {
                     System.out.println("중복된 key값, PASS ("+e.getMessage()+")");
-//
-//                    String sql = "UPDATE support " +
-//                            "SET \"제품명\" = ?, " +
-//                            "\"고객사\" = ?, " +
-//                            "\"고객담당자\" = ?, " +
-//                            "\"작업구분\" = ?, " +
-//                            "\"이슈구분\" = ?, " +
-//                            "\"업무구분\" = ?, " +
-//                            "\"담당엔지니어\" = ?, " +
-//                            "\"지원일자\" = ?, " +
-//                            "\"지원형태\" = ?, " +
-//                            "\"레드마인_일감\" = ?, " +
-//                            "\"작업제목\" = ?, " +
-//                            "\"작업요약\" = ?, " +
-//                            "\"작업세부내역\" = ?, " +
-//                            "\"파일명\" = ?, " +
-//                            "\"위치\" = ? " +
-//                            "WHERE \"파일id\" = ?";
-//
-//                    jdbcTemplate.update(sql,
-//                            data.get("제품명"),
-//                            data.get("고객사"),
-//                            data.get("고객담당자"),
-//                            data.get("작업구분"),
-//                            data.get("이슈구분"),
-//                            data.get("업무구분"),
-//                            truncatedEngineer,
-//                            date,
-//                            data.get("지원형태"),
-//                            data.get("레드마인_일감"),
-//                            data.get("작업제목"),
-//                            data.get("작업요약"),
-//                            data.get("작업세부내역"),
-//                            data.get("파일명"),
-//                            data.get("위치"),
-//                            data.get("파일ID")
-//                    );
-//                    sheetCnt++;
-//                    System.out.println("sheetCnt : " + sheetCnt);
-//                    System.out.println("업데이트 성공!! " + data);
+
+                    String sql = "UPDATE support " +
+                            "SET \"제품명\" = ?, " +
+                            "\"고객사\" = ?, " +
+                            "\"고객담당자\" = ?, " +
+                            "\"작업구분\" = ?, " +
+                            "\"이슈구분\" = ?, " +
+                            "\"업무구분\" = ?, " +
+                            "\"담당엔지니어\" = ?, " +
+                            "\"지원일자\" = ?, " +
+                            "\"지원형태\" = ?, " +
+                            "\"레드마인_일감\" = ?, " +
+                            "\"작업제목\" = ?, " +
+                            "\"작업요약\" = ?, " +
+                            "\"작업세부내역\" = ?, " +
+                            "\"파일명\" = ?, " +
+                            "\"위치\" = ? " +
+                            "WHERE \"파일id\" = ?";
+
+                    jdbcTemplate.update(sql,
+                            data.get("제품명"),
+                            data.get("고객사"),
+                            data.get("고객담당자"),
+                            data.get("작업구분"),
+                            data.get("이슈구분"),
+                            data.get("업무구분"),
+                            truncatedEngineer,
+                            date,
+                            data.get("지원형태"),
+                            data.get("레드마인_일감"),
+                            data.get("작업제목"),
+                            data.get("작업요약"),
+                            data.get("작업세부내역"),
+                            data.get("파일명"),
+                            data.get("위치"),
+                            data.get("파일ID")
+                    );
+                    sheetCnt++;
+                    System.out.println("sheetCnt : " + sheetCnt);
+                    System.out.println("업데이트 성공!! " + data);
 
                 }
                 catch (Exception e){

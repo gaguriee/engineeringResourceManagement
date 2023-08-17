@@ -2,37 +2,25 @@ package com.example.smstest.domain.support.scheduler;
 
 import com.example.smstest.domain.support.repository.SupportRepository;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.json.GoogleJsonError;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
-import com.google.api.services.sheets.v4.model.ValueRange;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -50,13 +38,18 @@ public class DriveQuickstart {
     final SupportRepository supportRepository;
     private static final String CREDENTIALS_FILE_PATH = "/token/service_key.json";
     private final JdbcTemplate jdbcTemplate;
-
+    List<String> lists;
     static int driveCnt = 0;
 
 //    @Scheduled(fixedDelay = 1000000000)
-    @Scheduled(cron = "0 0 6 * * *") // 매일 06시 실행
+//    @Scheduled(cron = "0 0 6 * * *") // 매일 06시 실행
     public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
+        String sql = "SELECT DISTINCT \"파일id\" FROM support";
+        lists = jdbcTemplate.queryForList(sql, String.class);
+        Thread.sleep(2000);
+        System.out.println(lists);
         getFiles(FOLDER_ID);
+
     }
 
     @Async
@@ -77,41 +70,61 @@ public class DriveQuickstart {
 
     @Async
     public void getFiles(String folderId) throws GeneralSecurityException, IOException, InterruptedException {
+
+        String nextPageToken = null;
+        do {
+            try{
+                nextPageToken = getFiles(folderId, nextPageToken);
+            }
+            catch(SocketTimeoutException ex){ // Read timed out
+                Thread.sleep(3000);
+                nextPageToken = getFiles(folderId, nextPageToken);
+            }
+            catch (Exception ex){
+                log.error(ex.getMessage() + " folderId : " + folderId + " nextPageToken : "+nextPageToken);
+            }
+
+
+        } while (nextPageToken != null);
+    }
+
+    public String getFiles(String folderId, String nextPageToken) throws GeneralSecurityException, IOException, InterruptedException {
+
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        String nextPageToken = null;
-        do {
-            FileList result = service.files().list()
-                    .setQ("'" + folderId + "' in parents")
-                    .setPageSize(100)
-                    .setFields("nextPageToken, files")
-                    .setPageToken(nextPageToken)
-                    .execute();
 
-            List<File> files = result.getFiles();
-            if (files == null || files.isEmpty()) {
-                System.out.println("No files found.");
-            } else {
-                System.out.println("======= Files in Folder ("+folderId+")==========");
+        FileList result = service.files().list()
+                .setQ("'" + folderId + "' in parents")
+                .setPageSize(100)
+                .setFields("nextPageToken, files")
+                .setPageToken(nextPageToken)
+                .execute();
 
-                for (File file : files) {
-                    if (file.getMimeType().equals("application/vnd.google-apps.folder")){
-                        getFiles(file.getId());
-                        System.out.println(file.getName() +  " (" + file.getMimeType()+ ") : "+ file.getWebViewLink());
-                    }
-                    else if (file.getMimeType().equals("application/vnd.google-apps.spreadsheet")){
-                        driveCnt++;
-                        System.out.println("driveCnt : "+ driveCnt);
-                        googleSheets.insertFile(file.getId(), file.getName(), file.getWebViewLink());
+        List<File> files = result.getFiles();
+        if (files == null || files.isEmpty()) {
+            System.out.println("No files found.");
+        } else {
+            System.out.println("======= Files in Folder ("+folderId+")==========");
 
-                    }
+            for (File file : files) {
+                if (file.getMimeType().equals("application/vnd.google-apps.folder")){
+                    getFiles(file.getId());
+                    System.out.println(file.getName() +  " (" + file.getMimeType()+ ") : "+ file.getWebViewLink());
+                }
+                else if (file.getMimeType().equals("application/vnd.google-apps.spreadsheet") && !lists.contains(file.getId())){
+                    driveCnt++;
+                    System.out.println("driveCnt : "+ driveCnt+ " " + file.getName() +  " (" + file.getMimeType()+ ") : "+ file.getWebViewLink());
+                    googleSheets.insertFile(file.getId(), file.getName(), file.getWebViewLink());
+
                 }
             }
-            nextPageToken = result.getNextPageToken();
-        } while (nextPageToken != null);
+        }
+        nextPageToken = result.getNextPageToken();
+
+        return nextPageToken;
     }
 
 

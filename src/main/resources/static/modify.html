@@ -62,7 +62,9 @@
 
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 등록</h2>
-        <form th:action="@{/post}" method="post" onsubmit="return validateForm()">
+        <form th:action="@{/modify}" method="post" onsubmit="return validateForm()">
+            <input type="hidden" th:name="supportId" th:value="${support.id}" />
+
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목</label>
                 <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="30" placeholder="제목은 필수입니다. (30자 이내)"></textarea>
@@ -70,12 +72,6 @@
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사</label>
                 <textarea name = "customerName" id="customer" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="20" placeholder="고객사를 입력해주세요."></textarea>
-
-<!--                <input type="text" id="customer"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="filterCustomers(this.value)" placeholder="고객사 검색">-->
-<!--                <ul id="filteredCustomersList"></ul>-->
-<!--&lt;!&ndash;                TODO : 지워야함&ndash;&gt;-->
-<!--                <label for="customerId"></label><input name="customerId" id="customerId" class="hidden"></input>-->
-
             </div>
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-8">
                 <div>
@@ -142,35 +138,14 @@
                     </div>
                 </div>
                 <div>
-                    <div>
-                        <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분</label>
-                        <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option value="" selected>업무 구분을 선택해주세요.</option>
-                            <!-- Iterate over the issues list and add each issue's name as an option -->
-                            <th:block th:each="state : ${states}">
-                                <option th:value="${state.id}" th:text="${state.name}"></option>
-                            </th:block>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어</label>
-                        <select id="engineer" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option value="" selected>주 담당 엔지니어 (필수)</option>
-                            <!-- Iterate over the issues list and add each issue's name as an option -->
-                            <th:block th:each="mem : ${memps}">
-                                <option th:value="${mem.id}" th:text="${mem.name}"></option>
-                            </th:block>
-                        </select>
-
-                        <select id="subengineer" name="subEngineerName" class="mt-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option value="" selected>부 담당 엔지니어 (없으면 생략 가능)</option>
-                            <!-- Iterate over the issues list and add each issue's name as an option -->
-                            <th:block th:each="mem : ${memps}">
-                                <option th:value="${mem.name}" th:text="${mem.name}"></option>
-                            </th:block>
-                        </select>
-                    </div>
-
+                    <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분</label>
+                    <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="" selected>업무 구분을 선택해주세요.</option>
+                        <!-- Iterate over the issues list and add each issue's name as an option -->
+                        <th:block th:each="state : ${states}">
+                            <option th:value="${state.id}" th:text="${state.name}"></option>
+                        </th:block>
+                    </select>
                 </div>
 
                 <div class="w-full">
@@ -179,7 +154,6 @@
                         <div class="w-1/2 pr-1">
                             <select id="supportType" name="supportTypeId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                 <option value="" selected>지원 형태</option>
-                                <!-- Iterate over the issues list and add each issue's name as an option -->
                                 <th:block th:each="supportType : ${supportTypes}">
                                     <option th:value="${supportType.id}" th:text="${supportType.name}"></option>
                                 </th:block>
@@ -195,9 +169,24 @@
                 </div>
                 <div>
                     <label for="item-weight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인 일감</label>
-                    <input type="number" name="redmineIssue" id="item-weight" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요."  min="0">
+                    <input type="number" name="redmineIssue" id="redmineIssue" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요."  min="0">
                 </div>
+                <div>
+                    <label for="engineer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어</label>
+                    <select id="engineer" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="" selected>주 담당 엔지니어 (필수)</option>
+                        <th:block th:each="mem : ${memps}">
+                            <option th:value="${mem.id}" th:text="${mem.name}"></option>
+                        </th:block>
+                    </select>
 
+                    <select id="subengineer" name="subEngineerName" class="mt-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="" selected>부 담당 엔지니어 (없으면 생략 가능)</option>
+                        <th:block th:each="mem : ${memps}">
+                            <option th:value="${mem.name}" th:text="${mem.name}"></option>
+                        </th:block>
+                    </select>
+                </div>
             </div>
 
 
@@ -220,18 +209,15 @@
                 </div>
             </div>
 
-            <div class="sm:col-span-2">
-                <textarea name = "password" id="password" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="4자 이상, 12자 이내의 비밀번호를 입력해주세요." minlength="4" maxlength="12"></textarea>
-            </div>
-            <div id="noPostAlert" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Info</span>
-                <div>
-                    <span class="font-medium">등록을 막아둔 상태입니다.</span>
-                </div>
-            </div>
+<!--            <div id="noPostAlert" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">-->
+<!--                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">-->
+<!--                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>-->
+<!--                </svg>-->
+<!--                <span class="sr-only">Info</span>-->
+<!--                <div>-->
+<!--                    <span class="font-medium">등록을 막아둔 상태입니다.</span>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div style="display: flex; align-items: end; justify-content: flex-end;">
                 <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
@@ -247,6 +233,44 @@
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script  th:inline="javascript">
+
+    // 기존 정보 입력
+
+    var taskTitleInput = document.getElementById('taskTitle');
+    var customerInput = document.getElementById('customer');
+    var productInput = document.getElementById('product');
+    var issueInput = document.getElementById('issue');
+    var stateInput = document.getElementById('state');
+    var engineerInput = document.getElementById('engineer');
+    var supportTypeInput = document.getElementById('supportType');
+    var supportTypeHourInput = document.getElementById('supportTypeHour');
+    var supportDateInput = document.getElementById('supportDate');
+    var taskSummaryInput = document.getElementById('taskSummary');
+    var taskDetailsInput = document.getElementById('taskDetails');
+    var redmineInput = document.getElementById('redmineIssue');
+
+    const support = /*[[${support }]]*/;
+    console.log(support);
+
+    function assignValue(inputElement, value) {
+        if (value !== null) {
+            inputElement.value = value;
+        }
+    }
+
+    assignValue(taskTitleInput, support.taskTitle);
+    assignValue(taskSummaryInput, support.taskSummary);
+    assignValue(taskDetailsInput, support.taskDetails);
+    assignValue(customerInput, support.customerName);
+    assignValue(productInput, support.product?.id);
+    assignValue(issueInput, support.issue?.id);
+    assignValue(stateInput, support.state?.id);
+    assignValue(engineerInput, support.engineer?.id);
+    assignValue(supportTypeInput, support.supportType?.id);
+    assignValue(supportTypeHourInput, support.supportTypeHour);
+    assignValue(supportDateInput, support.supportDate);
+    assignValue(supportDateInput, support.supportDate);
+    assignValue(redmineInput, support.redmineIssue);
 
     // 지원 날짜 max 오늘로 제한
     function getTodayDate() {
@@ -270,7 +294,6 @@
     }
 
     // 최대 날짜를 오늘 날짜로 설정
-    const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
     supportDateInput.min = getSevenDaysAgo();
 
@@ -327,7 +350,6 @@
         var supportDate = document.getElementById('supportDate').value;
         var taskSummary = document.getElementById('taskSummary').value;
         var taskDetails = document.getElementById('taskDetails').value;
-        var password = document.getElementById('password').value;
 
         // Perform form validation
         if (
@@ -342,13 +364,8 @@
             customerContact.trim() === '' ||
             supportDate.trim() === '' ||
             taskSummary.trim() === '' ||
-            taskDetails.trim() === '' ||
-            password.trim() === ''
-
-    ) {
-            console.log(password === '')
-            console.log(password.trim() === '')
-
+            taskDetails.trim() === ''
+        ) {
             // Show the alertForm
             var alertForm = document.getElementById('alertForm');
             alertForm.style.visibility = 'visible';

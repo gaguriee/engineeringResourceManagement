@@ -71,4 +71,7 @@ public class Support {
     @Column(name = "지원형태_시간")
     private Integer supportTypeHour;
 
+    @Column(name = "password")
+    private String password;
+
 }

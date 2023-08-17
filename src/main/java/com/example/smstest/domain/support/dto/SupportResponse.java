@@ -42,8 +42,10 @@ public class SupportResponse {
 
     private String taskDetails;
 
+    private String password;
+
     @Builder
-    public SupportResponse(Long id, String productName, String customerName, String customerContact, String issueType, String state, String engineerName, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
+    public SupportResponse(Long id, String productName, String customerName, String customerContact, String issueType, String state, String engineerName, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails, String password) {
         this.id = id;
         this.productName = productName;
         this.customerName = customerName;
@@ -59,6 +61,7 @@ public class SupportResponse {
         this.taskTitle = taskTitle;
         this.taskSummary = taskSummary;
         this.taskDetails = taskDetails;
+        this.password = password;
     }
 
 
@@ -79,6 +82,7 @@ public class SupportResponse {
                 .taskTitle(support.getTaskTitle())
                 .taskSummary(support.getTaskSummary())
                 .taskDetails(support.getTaskDetails())
+                .password(support.getPassword())
                 .build();
     }
 
