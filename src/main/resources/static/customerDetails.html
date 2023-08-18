@@ -12,6 +12,12 @@
     <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${customer.name}"></h2>
 
+        <div class="mt-8 mb-6">
+
+                <iframe th:src="@{'http://10.104.40.193:8080/explore/?standalone=2&slice_id=4&customer_id=' + ${customer.id}}" width="100%" height="500" scrolling="no" ></iframe>
+
+        </div>
+
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 h-36]">
             <tr>

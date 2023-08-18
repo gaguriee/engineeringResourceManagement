@@ -68,7 +68,7 @@ public class FetchChanges {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        String savedStartPageToken = "16873";
+        String savedStartPageToken = getStartPageToken();
 
         try {
             String pageToken = savedStartPageToken;

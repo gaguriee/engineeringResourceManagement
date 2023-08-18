@@ -65,6 +65,8 @@ dependencies {
 
     // Spring Security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.5'
+
+    
 }
 
 tasks.named('test') {

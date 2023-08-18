@@ -3,6 +3,7 @@
 <head>
     <!-- 화면 해상도에 따라 글자 크기 대응(모바일 대응) -->
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<!--    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">-->
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <!-- Resources -->
@@ -18,14 +19,10 @@
 
 <main style="display: grid; align-items: center; justify-items: center; padding: 48px; margin-top: 24px; margin-bottom: 48px">
 
-    <!--텍스트 필드 삽입-->
-<!--    <iframe-->
-<!--            :src="http://10.104.40.193:8080/superset/dashboard/1/"-->
-<!--            frameborder="0"-->
-<!--            width="100%"-->
-<!--            height="100%"-->
-<!--            allowtransparency>-->
-<!--    </iframe>-->
+    <div class="m-4">
+        <iframe src="http://10.104.40.193:8080/superset/dashboard/1/?standalone=2" width="1200" height="450" ></iframe>
+    </div>
+
 
     <!-- 그래프들 3개씩 묶어서 그룹으로 나누기 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
