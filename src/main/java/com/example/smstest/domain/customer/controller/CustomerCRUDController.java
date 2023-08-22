@@ -1,7 +1,6 @@
-package com.example.smstest.domain.support.controller;
+package com.example.smstest.domain.customer.controller;
 
 
-import com.example.smstest.domain.support.dto.CustomerRequest;
 import com.example.smstest.domain.support.dto.SupportSummary;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;

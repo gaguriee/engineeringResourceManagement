@@ -3,9 +3,7 @@ package com.example.smstest.domain.support.dto;
 import com.example.smstest.domain.support.entity.*;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.Optional;
 
@@ -16,7 +14,7 @@ public class SupportResponse {
 
     private String productName;
 
-    private String customerName;
+    private Customer customer;
 
     private String customerContact;
 
@@ -45,10 +43,10 @@ public class SupportResponse {
     private String password;
 
     @Builder
-    public SupportResponse(Long id, String productName, String customerName, String customerContact, String issueType, String state, String engineerName, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails, String password) {
+    public SupportResponse(Long id, String productName, Customer customer, String customerContact, String issueType, String state, String engineerName, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails, String password) {
         this.id = id;
         this.productName = productName;
-        this.customerName = customerName;
+        this.customer = customer;
         this.customerContact = customerContact;
         this.issueType = issueType;
         this.state = state;
@@ -69,7 +67,7 @@ public class SupportResponse {
         return SupportResponse.builder()
                 .id(support.getId())
                 .productName(Optional.ofNullable(support.getProduct()).map(Product::getName).orElse(null))
-                .customerName(support.getCustomerName())
+                .customer(support.getCustomer())
                 .customerContact(support.getCustomerContact())
                 .issueType(Optional.ofNullable(support.getIssue()).map(Issue::getName).orElse(null))
                 .state(Optional.ofNullable(support.getState()).map(State::getName).orElse(null))

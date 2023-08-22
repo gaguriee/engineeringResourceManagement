@@ -55,7 +55,7 @@ public class SupportCRUDController {
 
     // 필터링
     @GetMapping("/search")
-    public String searchSupportByFilters(@RequestParam(required = false) List<Long> customerId,
+    public String searchSupportByFilters(@RequestParam(required = false) List<Integer> customerId,
                                          @RequestParam(required = false) List<Integer> teamId,
                                          @RequestParam(required = false) List<Long> productId,
                                          @RequestParam(required = false) List<Long> issueId,
@@ -88,8 +88,6 @@ public class SupportCRUDController {
                 result.getPageable(),
                 result.getTotalElements());
         model.addAttribute("posts", responsePage);
-        System.out.println(responsePage.stream().findFirst());
-
         model.addAttribute("totalPages", result.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
 
@@ -184,6 +182,7 @@ public class SupportCRUDController {
     @PostMapping("/post")
     public String createSupport(@ModelAttribute SupportRequest supportRequest, RedirectAttributes redirectAttributes) {
 
+        System.out.println(supportRequest);
         SupportResponse supportResponse = supportService.createSupport(supportRequest);
 //        redirectAttributes.addFlashAttribute("support", supportResponse);
 
@@ -198,6 +197,7 @@ public class SupportCRUDController {
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
+        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         List<SupportType> supportTypes = supportTypeRepository.findAll();
 
         model.addAttribute("customers", customers);
@@ -224,6 +224,7 @@ public class SupportCRUDController {
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
+        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         List<SupportType> supportTypes = supportTypeRepository.findAll();
 
         model.addAttribute("customers", customers);

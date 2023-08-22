@@ -6,18 +6,15 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "team")
-public class Team {
+@Table(name = "department")
+public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "팀_id")
+    @Column(name = "소속_id")
     private Integer id;
 
-    @Column(name = "팀명", nullable = false)
+    @Column(name = "소속", nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "소속_id")
-    private Department department;
 }

@@ -10,19 +10,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
-    List<Support> findByTaskTitleContainingOrTaskSummaryContainingIgnoreCase(String keyword, String keyword2);
-
-    List<Support> findByIssueAndStateAndProductAndCustomer(Issue issue, State state, Product product, Customer customer);
     List<Support> findByEngineerId(Long engineerId);
-    List<Support> findByTeamId(Integer teamId);
-
     Long countByEngineerId(Long engineerId);
-
-    Long countByTeamIdAndIssueId(Integer engineerId, Long issueId);
-    Long countByTeamIdAndStateId(Integer engineerId, Long issueId);
-    Long countByTeamIdAndProductId(Integer engineerId, Long issueId);
+    Long countByEngineerTeamIdAndStateId(Integer engineerId, Long issueId);
+    Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);
 
     Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateId(Long engineerId, Long customerId, Long productId, Long stateId, Pageable pageable);
+    List<Support> findByEngineerTeamId(Integer teamId);
 
     @Query("SELECT s.customer.id, s.product.id, s.state.id, SUM(s.supportTypeHour) " +
             "FROM Support s " +

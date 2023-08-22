@@ -13,4 +13,7 @@ public interface MempRepository  extends JpaRepository<Memp, Long> {
     List<Object[]> countEmployeesByJobPosition();
 
     List<Memp> findAllByTeamId(Integer teamId);
+
+
+    Memp findOneByName(String mempName);
 }

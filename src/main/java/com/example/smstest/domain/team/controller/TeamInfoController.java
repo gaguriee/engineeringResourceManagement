@@ -1,10 +1,11 @@
-package com.example.smstest.domain.support.controller;
+package com.example.smstest.domain.team.controller;
 
 
 import com.example.smstest.domain.support.dto.AggregatedDataDTO;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -20,25 +21,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
+@RequiredArgsConstructor
 @Slf4j
 public class TeamInfoController {
     private final ProductRepository productRepository;
     private final StateRepository stateRepository;
     private final MempRepository mempRepository;
-
     private final TeamRepository teamRepository;
     private final SupportRepository supportRepository;
     private final CustomerRepository customerRepository;
-
-    public TeamInfoController(ProductRepository productRepository, StateRepository stateRepository, MempRepository mempRepository, TeamRepository teamRepository, SupportRepository supportRepository, CustomerRepository customerRepository) {
-        this.productRepository = productRepository;
-        this.stateRepository = stateRepository;
-        this.mempRepository = mempRepository;
-        this.teamRepository = teamRepository;
-        this.supportRepository = supportRepository;
-        this.customerRepository = customerRepository;
-    }
-
+    private final DepartmentRepository departmentRepository;
 
     // 날짜 형태 bind
     @InitBinder
@@ -47,12 +39,24 @@ public class TeamInfoController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
-    @GetMapping("/team")
-    public String selectTeam(Model model) {
+    @GetMapping("/department")
+    public String selectDepartment(Model model) {
 
-        List<Team> teams = teamRepository.findAll();
+        List<Department> departments = departmentRepository.findAll();
+
+        model.addAttribute("departments", departments);
+
+        return "department";
+    }
+
+    @GetMapping("/team")
+    public String selectTeam(@RequestParam(required = true) Integer departmentId,Model model) {
+
+        List<Team> teams = teamRepository.findByDepartmentId(departmentId);
+        Optional<Department> department = departmentRepository.findById(departmentId);
 
         model.addAttribute("teams", teams);
+        model.addAttribute("department", department.get());
 
         return "team";
     }
@@ -81,7 +85,7 @@ public class TeamInfoController {
 
             Map<Long, Long> stateSupportCounts = new HashMap<>();
             for (State state : states) {
-                Long supportCount = supportRepository.countByTeamIdAndStateId(teamId, state.getId());
+                Long supportCount = supportRepository.countByEngineerTeamIdAndStateId(teamId, state.getId());
                 stateSupportCounts.put(state.getId(), supportCount);
             }
 
@@ -92,14 +96,14 @@ public class TeamInfoController {
 
             Map<Long, Long> productSupportCounts = new HashMap<>();
             for (Product product : products) {
-                Long supportCount = supportRepository.countByTeamIdAndProductId(teamId, product.getId());
+                Long supportCount = supportRepository.countByEngineerTeamIdAndProductId(teamId, product.getId());
                 productSupportCounts.put(product.getId(), supportCount);
             }
 
             model.addAttribute("productSupportCounts", productSupportCounts);
 
 
-            List<Support> supports = supportRepository.findByTeamId(teamId);
+            List<Support> supports = supportRepository.findByEngineerTeamId(teamId);
             model.addAttribute("supports", supports);
 
         } else {
@@ -129,11 +133,15 @@ public class TeamInfoController {
             dto.setCustomerId((Long) data[0]);
             dto.setProductId((Long) data[1]);
             dto.setStateId((Long) data[2]);
-            dto.setCustomerName(customerRepository.findById(dto.getCustomerId()).get().getName());
-            dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
-            dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
-            dto.setCount((Long) data[3]);
-            dtoList.add(dto);
+
+            if (dto.getCustomerId() != null && dto.getProductId() != null && dto.getStateId() != null) {
+                dto.setCustomerName(customerRepository.findById(dto.getCustomerId()).get().getName());
+                dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
+                dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
+                dto.setCount((Long) data[3]);
+                dtoList.add(dto);
+            }
+
         }
 
         model.addAttribute("aggregatedData", dtoList);
@@ -155,7 +163,9 @@ public class TeamInfoController {
                         .collect(Collectors.toList()),
                 supports.getPageable(),
                 supports.getTotalElements());
-
+        model.addAttribute("memberId", memberId);
+        model.addAttribute("customerId", customerId);
+        model.addAttribute("stateId", stateId);
         model.addAttribute("posts", responsePage);
 
         model.addAttribute("totalPages", supports.getTotalPages()); // 전체 페이지 수

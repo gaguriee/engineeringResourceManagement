@@ -62,14 +62,14 @@ public class SupportServiceImpl implements SupportService {
         support.setTaskDetails(supportRequest.getTaskDetails());
         support.setCustomerContact(supportRequest.getCustomerContact());
         support.setSupportTypeHour(supportRequest.getSupportTypeHour());
+        support.setSubEngineerName(supportRequest.getSubEngineerName());
 
         // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
         support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
         support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-        support.setEngineer(mempRepository.findById(supportRequest.getEngineerId()).orElse(null));
-        support.setTeam(teamRepository.findById(support.getEngineer().getTeamId()).orElse(null));
-        support.setCustomer(customerRepository.findById(supportRequest.getCustomerId()).orElse(null));
+        support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName()));
+        support.setCustomer(customerRepository.findOneByName(supportRequest.getCustomerName()));
 
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 
@@ -96,14 +96,14 @@ public class SupportServiceImpl implements SupportService {
         support.setTaskDetails(modifyRequest.getTaskDetails());
         support.setCustomerContact(modifyRequest.getCustomerContact());
         support.setSupportTypeHour(modifyRequest.getSupportTypeHour());
+        support.setSubEngineerName(modifyRequest.getSubEngineerName());
 
         // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
         support.setProduct(productRepository.findById(modifyRequest.getProductId()).orElse(null));
         support.setIssue(issueRepository.findById(modifyRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(modifyRequest.getStateId()).orElse(null));
-        support.setEngineer(mempRepository.findById(modifyRequest.getEngineerId()).orElse(null));
-        support.setTeam(teamRepository.findById(support.getEngineer().getTeamId()).orElse(null));
-        support.setCustomer(customerRepository.findById(modifyRequest.getCustomerId()).orElse(null));
+        support.setEngineer(mempRepository.findOneByName(modifyRequest.getEngineerName()));
+        support.setCustomer(customerRepository.findOneByName(modifyRequest.getCustomerName()));
 
         support.setSupportType(supportTypeRepository.findById(modifyRequest.getSupportTypeId()).orElse(null));
 

@@ -34,6 +34,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query("SELECT c FROM Customer c JOIN Support s ON c.id = s.customer.id WHERE c.name LIKE %:keyword% GROUP BY c.id ORDER BY COUNT(s.id) DESC")
     Page<Customer> findByNameContainingOrderBySupportCountDesc(@Param("keyword") String keyword, Pageable pageable);
 
+    Customer findOneByName(String customerName);
+
     boolean existsByName(String name);
 
 }

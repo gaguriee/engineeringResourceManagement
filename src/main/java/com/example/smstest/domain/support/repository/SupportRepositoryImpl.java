@@ -58,7 +58,6 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         List<Support> result = queryFactory
                 .selectFrom(support)
                 .leftJoin(support.customer).fetchJoin()
-                .leftJoin(support.team).fetchJoin()
                 .leftJoin(support.product).fetchJoin()
                 .leftJoin(support.issue).fetchJoin()
                 .leftJoin(support.state).fetchJoin()
@@ -76,12 +75,12 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    private BooleanExpression customerIdIn(List<Long> customerIds) {
+    private BooleanExpression customerIdIn(List<Integer> customerIds) {
         return customerIds != null && !customerIds.isEmpty() ? QSupport.support.customer.id.in(customerIds) : null;
     }
 
     private BooleanExpression teamIdIn(List<Integer> teamIds) {
-        return teamIds != null && !teamIds.isEmpty() ? QSupport.support.team.id.in(teamIds) : null;
+        return teamIds != null && !teamIds.isEmpty() ? QSupport.support.engineer.teamId.in(teamIds) : null;
     }
 
     private BooleanExpression productIdIn(List<Long> productIds) {

@@ -42,10 +42,6 @@ public class Support {
     private String customerName;
 
     @ManyToOne
-    @JoinColumn(name = "팀_id")
-    private Team team;
-
-    @ManyToOne
     @JoinColumn(name = "제품_id")
     private Product product;
 
