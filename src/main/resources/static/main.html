@@ -3,7 +3,6 @@
 <head>
     <!-- 화면 해상도에 따라 글자 크기 대응(모바일 대응) -->
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<!--    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">-->
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <!-- Resources -->
@@ -20,102 +19,102 @@
 <main style="display: grid; align-items: center; justify-items: center; padding: 48px; margin-top: 24px; margin-bottom: 48px">
 
     <div class="m-4">
-        <iframe src="http://10.104.40.193:8080/superset/dashboard/1/?standalone=2" width="1200" height="450" ></iframe>
+        <iframe src="https://err2.somansa.com/superset/dashboard/1/?standalone=2" width="1200" height="900" ></iframe>
     </div>
 
 
-    <!-- 그래프들 3개씩 묶어서 그룹으로 나누기 -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!--    &lt;!&ndash; 그래프들 3개씩 묶어서 그룹으로 나누기 &ndash;&gt;-->
+<!--    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">-->
 
-        <!--  이슈별 -->
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-            <div class="flex justify-between items-start w-full">
-                <div class="flex-col items-center">
-                    <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">이슈별</h5>
-                    </div>
-                </div>
-            </div>
+<!--        &lt;!&ndash;  이슈별 &ndash;&gt;-->
+<!--        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">-->
+<!--            <div class="flex justify-between items-start w-full">-->
+<!--                <div class="flex-col items-center">-->
+<!--                    <div class="flex items-center mb-1">-->
+<!--                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">이슈별</h5>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div id="chart_div3"></div>
+<!--            <div id="chart_div3"></div>-->
 
-        </div>
+<!--        </div>-->
 
-        <!--    지원형태별-->
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
+<!--        &lt;!&ndash;    지원형태별&ndash;&gt;-->
+<!--        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">-->
 
-            <div class="flex justify-between items-center w-full">
-                <div class="flex-col items-center">
-                    <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">지원형태별</h5>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="flex justify-between items-center w-full">-->
+<!--                <div class="flex-col items-center">-->
+<!--                    <div class="flex items-center mb-1">-->
+<!--                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">지원형태별</h5>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div id="chart_div"></div>
-        </div>
+<!--            <div id="chart_div"></div>-->
+<!--        </div>-->
 
-        <!--    제품별-->
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
+<!--        &lt;!&ndash;    제품별&ndash;&gt;-->
+<!--        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">-->
 
-            <div class="flex justify-between items-start w-full">
-                <div class="flex-col items-center">
-                    <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">제품별</h5>
-                    </div>
-                </div>
-            </div>
-            <div id="chart_div2" style="align-self: center"></div>
+<!--            <div class="flex justify-between items-start w-full">-->
+<!--                <div class="flex-col items-center">-->
+<!--                    <div class="flex items-center mb-1">-->
+<!--                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">제품별</h5>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div id="chart_div2" style="align-self: center"></div>-->
 
-        </div>
+<!--        </div>-->
 
-        <!--    고객사별-->
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
+<!--        &lt;!&ndash;    고객사별&ndash;&gt;-->
+<!--        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">-->
 
-            <div class="flex justify-between items-start w-full">
-                <div class="flex-col items-center">
-                    <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">고객사별</h5>
-                    </div>
-                </div>
-                <div>
-          <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">
-            지원내역 상위 10개
-          </span>
-                </div>
-            </div>
+<!--            <div class="flex justify-between items-start w-full">-->
+<!--                <div class="flex-col items-center">-->
+<!--                    <div class="flex items-center mb-1">-->
+<!--                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">고객사별</h5>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--          <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">-->
+<!--            지원내역 상위 10개-->
+<!--          </span>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div id="column-chart"></div>
-        </div>
+<!--            <div id="column-chart"></div>-->
+<!--        </div>-->
 
-        <!--    팀별-->
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-            <div class="flex justify-between items-start w-full">
-                <div class="flex-col items-center">
-                    <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">팀별</h5>
-                    </div>
-                </div>
-            </div>
+<!--        &lt;!&ndash;    팀별&ndash;&gt;-->
+<!--        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">-->
+<!--            <div class="flex justify-between items-start w-full">-->
+<!--                <div class="flex-col items-center">-->
+<!--                    <div class="flex items-center mb-1">-->
+<!--                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">팀별</h5>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div id="column-chart2"></div>
+<!--            <div id="column-chart2"></div>-->
 
-        </div>
+<!--        </div>-->
 
-        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">
-            <div class="flex justify-between items-start w-full">
-                <div class="flex-col items-center">
-                    <div class="flex items-center mb-1">
-                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">직급별 인원수</h5>
-                    </div>
-                </div>
-            </div>
+<!--        <div class="max-w-2xl w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 chart-container">-->
+<!--            <div class="flex justify-between items-start w-full">-->
+<!--                <div class="flex-col items-center">-->
+<!--                    <div class="flex items-center mb-1">-->
+<!--                        <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white mr-1">직급별 인원수</h5>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div id="chartdiv" ></div>
+<!--            <div id="chartdiv" ></div>-->
 
-        </div>
+<!--        </div>-->
 
-    </div>
+<!--    </div>-->
 </main>
 <div th:replace="footer :: footer"></div>
 
@@ -134,241 +133,241 @@
 <script th:inline="javascript">
 
 
-    // 지원형태별
-    const supportTypeRatiosValues  = /*[[${supportTypeRatiosValues }]]*/ [];
-    const supportTypeRatios  = Object.keys(/*[[${supportTypeRatios }]]*/);
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawGooglePieChart);
-
-    function drawGooglePieChart() {
-        // Create the data array for Google Charts
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Category');
-        data.addColumn('number', 'ratio');
-        data.addRows(supportTypeRatios.map((category, index) => [category, supportTypeRatiosValues[index]]));
-
-        var colors = [
-            '#C7E2FF',
-            '#B4F1EC',
-            '#DDB9FF',
-            '#FFA5A5',
-            '#B0FFD7',
-            '#FFD280',
-            '#80C0C0',
-            '#FFE680',
-        ];
-        var options = {
-            pieSliceText: 'label',
-            is3D: true,
-            colors: colors, // Apply custom colors here
-        };
-
-
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-    }
-
-
-    // 이슈별
-    const issueTypeRatiosValues = /*[[${issueTypeRatiosValues}]]*/;
-    const issueTypeRatios = Object.keys(/*[[${issueTypeRatios}]]*/);
-
-    window.addEventListener("load", function() {
-        const options = {
-            series: [
-                {
-                    name: "Support Count",
-                    color: "#abdb1a",
-                    data: issueTypeRatiosValues.map((value, index) => ({ x: issueTypeRatios[index], y: value })),
-                }
-            ],
-            chart: {
-                type: "bar",
-                fontFamily: "Inter, sans-serif",
-                toolbar: {
-                    show: false,
-                },
-            },
-            xaxis: {
-                floating: false,
-                labels: {
-                    show: true,
-                    style: {
-                        fontFamily: "Inter, sans-serif",
-                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-                    }
-                },
-                axisBorder: {
-                    show: false,
-                },
-                axisTicks: {
-                    show: false,
-                },
-            },
-        };
-
-        if (document.getElementById("chart_div3") && typeof ApexCharts !== 'undefined') {
-            const chart = new ApexCharts(document.getElementById("chart_div3"), options);
-            chart.render();
-        }
-    });
-
-
-    // 고객사별
-
-    const customerTypeRatiosValues = /*[[${customerTypeRatiosValues}]]*/ [];
-    const customerTypeLabels = Object.keys(/*[[${customerTypeRatios}]]*/);
-
-    window.addEventListener("load", function() {
-        const options = {
-            series: [
-                {
-                    name: "Support Count",
-                    color: "#1A56DB",
-                    data: customerTypeRatiosValues.map((value, index) => ({ x: customerTypeLabels[index], y: value })),
-                }
-            ],
-            chart: {
-                type: "bar",
-                fontFamily: "Inter, sans-serif",
-                toolbar: {
-                    show: false,
-                },
-            },
-            xaxis: {
-                floating: false,
-                labels: {
-                    show: true,
-                    style: {
-                        fontFamily: "Inter, sans-serif",
-                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-                    }
-                },
-                axisBorder: {
-                    show: false,
-                },
-                axisTicks: {
-                    show: false,
-                },
-            },
-        };
-
-        if (document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
-            const chart = new ApexCharts(document.getElementById("column-chart"), options);
-            chart.render();
-        }
-    });
-
-
-    // 팀별
-    const teamTypeRatiosValues = /*[[${teamTypeRatiosValues}]]*/;
-    const teamTypeCategories = Object.keys(/*[[${teamTypeRatios}]]*/);
-
-    window.addEventListener("load", function() {
-        const options = {
-            series: [
-                {
-                    name: "Support Count",
-                    color: "#1adb71",
-                    data: teamTypeRatiosValues.map((value, index) => ({ x: teamTypeCategories[index], y: value })),
-                }
-            ],
-            chart: {
-                type: "bar",
-                fontFamily: "Inter, sans-serif",
-                toolbar: {
-                    show: false,
-                },
-            },
-            xaxis: {
-                floating: false,
-                labels: {
-                    show: true,
-                    style: {
-                        fontFamily: "Inter, sans-serif",
-                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-                    }
-                },
-                axisBorder: {
-                    show: false,
-                },
-                axisTicks: {
-                    show: false,
-                },
-            },
-        };
-
-        if (document.getElementById("column-chart2") && typeof ApexCharts !== 'undefined') {
-            const chart = new ApexCharts(document.getElementById("column-chart2"), options);
-            chart.render();
-        }
-    });
-
-    // 제품별
-    const productTypeRatiosValues  = /*[[${productTypeRatiosValues }]]*/ [];
-    const productTypeRatios  = Object.keys(/*[[${productTypeRatios }]]*/);
-    google.charts.setOnLoadCallback(drawGooglePieChart2);
-
-    function drawGooglePieChart2() {
-        // Create the data array for Google Charts
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Category');
-        data.addColumn('number', 'ratio');
-        data.addRows(productTypeRatios.map((category, index) => [category, productTypeRatiosValues[index]]));
-
-        // Define custom colors or use Google Charts default colors
-        // For example, you can use ['#1C64F2', '#16BDCA', '#9061F9'] for custom colors
-        var colors = [
-            '#C7E2FF',
-            '#B4F1EC',
-            '#DDB9FF',
-            '#FFA5A5',
-            '#B0FFD7',
-            '#FFD280',
-            '#80C0C0',
-            '#FFE680',
-        ];
-        var options = {
-            pieSliceText: 'label',
-            pieStartAngle: 120,
-            is3D: false,
-            colors: colors,
-        };
-
-
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
-        chart.draw(data, options);
-    }
-
-    var employPositionRatios = /*[[${employPositionRatios}]]*/ {};
-
-    am4core.ready(function() {
-
-        am4core.useTheme(am4themes_animated);
-
-        var chart = am4core.create("chartdiv", am4charts.SlicedChart);
-        chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
-
-        chart.data = Object.entries(employPositionRatios).map(function([name, value]) {
-            return { name: name, value: value };
-        });
-
-        var series = chart.series.push(new am4charts.FunnelSeries());
-        series.colors.step = 2;
-        series.dataFields.value = "value";
-        series.dataFields.category = "name";
-        series.alignLabels = true;
-
-        series.labelsContainer.paddingLeft = 15;
-        series.labels.template.fontSize = 12;
-
-        chart.legend.disabled = true;
-        chart.legend = new am4charts.Legend();
-        chart.legend.position = "left";
-        chart.legend.valign = "top";
-
-        chart.legend.margin(5, 5, 20, 5);
-    });
+//    // 지원형태별
+//    const supportTypeRatiosValues  = /*[[${supportTypeRatiosValues }]]*/ [];
+//    const supportTypeRatios  = Object.keys(/*[[${supportTypeRatios }]]*/);
+//    google.charts.load('current', {'packages':['corechart']});
+//    google.charts.setOnLoadCallback(drawGooglePieChart);
+//
+//    function drawGooglePieChart() {
+//        // Create the data array for Google Charts
+//        var data = new google.visualization.DataTable();
+//        data.addColumn('string', 'Category');
+//        data.addColumn('number', 'ratio');
+//        data.addRows(supportTypeRatios.map((category, index) => [category, supportTypeRatiosValues[index]]));
+//
+//        var colors = [
+//            '#C7E2FF',
+//            '#B4F1EC',
+//            '#DDB9FF',
+//            '#FFA5A5',
+//            '#B0FFD7',
+//            '#FFD280',
+//            '#80C0C0',
+//            '#FFE680',
+//        ];
+//        var options = {
+//            pieSliceText: 'label',
+//            is3D: true,
+//            colors: colors, // Apply custom colors here
+//        };
+//
+//
+//        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+//        chart.draw(data, options);
+//    }
+//
+//
+//    // 이슈별
+//    const issueTypeRatiosValues = /*[[${issueTypeRatiosValues}]]*/;
+//    const issueTypeRatios = Object.keys(/*[[${issueTypeRatios}]]*/);
+//
+//    window.addEventListener("load", function() {
+//        const options = {
+//            series: [
+//                {
+//                    name: "Support Count",
+//                    color: "#abdb1a",
+//                    data: issueTypeRatiosValues.map((value, index) => ({ x: issueTypeRatios[index], y: value })),
+//                }
+//            ],
+//            chart: {
+//                type: "bar",
+//                fontFamily: "Inter, sans-serif",
+//                toolbar: {
+//                    show: false,
+//                },
+//            },
+//            xaxis: {
+//                floating: false,
+//                labels: {
+//                    show: true,
+//                    style: {
+//                        fontFamily: "Inter, sans-serif",
+//                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+//                    }
+//                },
+//                axisBorder: {
+//                    show: false,
+//                },
+//                axisTicks: {
+//                    show: false,
+//                },
+//            },
+//        };
+//
+//        if (document.getElementById("chart_div3") && typeof ApexCharts !== 'undefined') {
+//            const chart = new ApexCharts(document.getElementById("chart_div3"), options);
+//            chart.render();
+//        }
+//    });
+//
+//
+//    // 고객사별
+//
+//    const customerTypeRatiosValues = /*[[${customerTypeRatiosValues}]]*/ [];
+//    const customerTypeLabels = Object.keys(/*[[${customerTypeRatios}]]*/);
+//
+//    window.addEventListener("load", function() {
+//        const options = {
+//            series: [
+//                {
+//                    name: "Support Count",
+//                    color: "#1A56DB",
+//                    data: customerTypeRatiosValues.map((value, index) => ({ x: customerTypeLabels[index], y: value })),
+//                }
+//            ],
+//            chart: {
+//                type: "bar",
+//                fontFamily: "Inter, sans-serif",
+//                toolbar: {
+//                    show: false,
+//                },
+//            },
+//            xaxis: {
+//                floating: false,
+//                labels: {
+//                    show: true,
+//                    style: {
+//                        fontFamily: "Inter, sans-serif",
+//                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+//                    }
+//                },
+//                axisBorder: {
+//                    show: false,
+//                },
+//                axisTicks: {
+//                    show: false,
+//                },
+//            },
+//        };
+//
+//        if (document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
+//            const chart = new ApexCharts(document.getElementById("column-chart"), options);
+//            chart.render();
+//        }
+//    });
+//
+//
+//    // 팀별
+//    const teamTypeRatiosValues = /*[[${teamTypeRatiosValues}]]*/;
+//    const teamTypeCategories = Object.keys(/*[[${teamTypeRatios}]]*/);
+//
+//    window.addEventListener("load", function() {
+//        const options = {
+//            series: [
+//                {
+//                    name: "Support Count",
+//                    color: "#1adb71",
+//                    data: teamTypeRatiosValues.map((value, index) => ({ x: teamTypeCategories[index], y: value })),
+//                }
+//            ],
+//            chart: {
+//                type: "bar",
+//                fontFamily: "Inter, sans-serif",
+//                toolbar: {
+//                    show: false,
+//                },
+//            },
+//            xaxis: {
+//                floating: false,
+//                labels: {
+//                    show: true,
+//                    style: {
+//                        fontFamily: "Inter, sans-serif",
+//                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+//                    }
+//                },
+//                axisBorder: {
+//                    show: false,
+//                },
+//                axisTicks: {
+//                    show: false,
+//                },
+//            },
+//        };
+//
+//        if (document.getElementById("column-chart2") && typeof ApexCharts !== 'undefined') {
+//            const chart = new ApexCharts(document.getElementById("column-chart2"), options);
+//            chart.render();
+//        }
+//    });
+//
+//    // 제품별
+//    const productTypeRatiosValues  = /*[[${productTypeRatiosValues }]]*/ [];
+//    const productTypeRatios  = Object.keys(/*[[${productTypeRatios }]]*/);
+//    google.charts.setOnLoadCallback(drawGooglePieChart2);
+//
+//    function drawGooglePieChart2() {
+//        // Create the data array for Google Charts
+//        var data = new google.visualization.DataTable();
+//        data.addColumn('string', 'Category');
+//        data.addColumn('number', 'ratio');
+//        data.addRows(productTypeRatios.map((category, index) => [category, productTypeRatiosValues[index]]));
+//
+//        // Define custom colors or use Google Charts default colors
+//        // For example, you can use ['#1C64F2', '#16BDCA', '#9061F9'] for custom colors
+//        var colors = [
+//            '#C7E2FF',
+//            '#B4F1EC',
+//            '#DDB9FF',
+//            '#FFA5A5',
+//            '#B0FFD7',
+//            '#FFD280',
+//            '#80C0C0',
+//            '#FFE680',
+//        ];
+//        var options = {
+//            pieSliceText: 'label',
+//            pieStartAngle: 120,
+//            is3D: false,
+//            colors: colors,
+//        };
+//
+//
+//        var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+//        chart.draw(data, options);
+//    }
+//
+//    var employPositionRatios = /*[[${employPositionRatios}]]*/ {};
+//
+//    am4core.ready(function() {
+//
+//        am4core.useTheme(am4themes_animated);
+//
+//        var chart = am4core.create("chartdiv", am4charts.SlicedChart);
+//        chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+//
+//        chart.data = Object.entries(employPositionRatios).map(function([name, value]) {
+//            return { name: name, value: value };
+//        });
+//
+//        var series = chart.series.push(new am4charts.FunnelSeries());
+//        series.colors.step = 2;
+//        series.dataFields.value = "value";
+//        series.dataFields.category = "name";
+//        series.alignLabels = true;
+//
+//        series.labelsContainer.paddingLeft = 15;
+//        series.labels.template.fontSize = 12;
+//
+//        chart.legend.disabled = true;
+//        chart.legend = new am4charts.Legend();
+//        chart.legend.position = "left";
+//        chart.legend.valign = "top";
+//
+//        chart.legend.margin(5, 5, 20, 5);
+//    });
 </script>
 
 

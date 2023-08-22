@@ -16,4 +16,7 @@ public class Customer {
 
     @Column(name = "고객사", nullable = false)
     private String name;
+
+    @Column(name = "프로젝트명", nullable = true)
+    private String project;
 }

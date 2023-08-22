@@ -9,7 +9,46 @@
 <body>
 <div th:replace="header :: header"></div>
 
+<!-- 고객사 등록 모달 -->
+<div id="defaultModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto" style="align-items: center; align-content: center; ">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5" style="align-self: center;">
+            <!-- Modal header -->
+            <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    고객사 신규 등록
+                </h3>
+                <button type="button"  id="closeButton" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div>
+                <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                    <div>
+                        <label for="customerName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사명</label>
+                        <input type="text" name="customerName" id="customerName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="고객사명을 입력해주세요." required="">
+                    </div>
+                    <div>
+                        <label for="projectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트명</label>
+                        <input type="text" name="projectName" id="projectName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트명을 입력해주세요." required="">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content:flex-end ">
+                    <button type="submit" id="customerCreateBtn" class="text-white inline-flex items-center bg-gray-400 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
+                        <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                        등록하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section class="bg-white dark:bg-gray-900">
+
     <!-- drawer component -->
     <div id="readIssueDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
         <div style="display: flex; margin-top: 48px">
@@ -62,21 +101,26 @@
 
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 등록</h2>
+<!--        <form th:action="@{/post}" method="post" onsubmit="return validateForm()">-->
         <form th:action="@{/post}" method="post" onsubmit="return validateForm()">
-            <div class="sm:col-span-2" style="padding-bottom: 24px">
+
+        <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목</label>
                 <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="30" placeholder="제목은 필수입니다. (30자 이내)"></textarea>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
-                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사</label>
-                <textarea name = "customerName" id="customer" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="20" placeholder="고객사를 입력해주세요."></textarea>
+                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색</label>
+                <input type="text" id="customer"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="filterCustomers(this.value)" placeholder="고객사 검색">
+                <ul id="filteredCustomersList"></ul>
 
-<!--                <input type="text" id="customer"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" oninput="filterCustomers(this.value)" placeholder="고객사 검색">-->
-<!--                <ul id="filteredCustomersList"></ul>-->
-<!--&lt;!&ndash;                TODO : 지워야함&ndash;&gt;-->
-<!--                <label for="customerId"></label><input name="customerId" id="customerId" class="hidden"></input>-->
-
+                <label for="customerId"></label><input name="customerId" id="customerId" class="hidden"></input>
+                <div class="mt-1.5 " style="text-align: end; align-content: end; align-items: end">
+                    <button id="defaultModalButton" data-modal-toggle="defaultModal" class="text-white bg-gray-400 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button">
+                        고객사 신규 등록
+                    </button>
+                </div>
             </div>
+
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-8">
                 <div>
                     <div style="display: flex; ">
@@ -221,7 +265,8 @@
             </div>
 
             <div class="sm:col-span-2">
-                <textarea name = "password" id="password" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="4자 이상, 12자 이내의 비밀번호를 입력해주세요." minlength="4" maxlength="12"></textarea>
+                <label for="password"></label>
+                <input type="password" name = "password" id="password" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="4자 이상, 12자 이내의 비밀번호를 입력해주세요." minlength="4" maxlength="12">
             </div>
             <div id="noPostAlert" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
                 <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -239,14 +284,91 @@
                 </button>
             </div>
 
-
-
         </form>
     </div>
+
 </section>
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script  th:inline="javascript">
+
+    var customers = /*[[${customers}]]*/ [];
+
+    var customerName = document.getElementById("customerName");
+    var projectName = document.getElementById("projectName");
+    var customerCreateBtn = document.getElementById("customerCreateBtn");
+    var closeButton = document.getElementById("closeButton");
+
+    if (customerCreateBtn) {
+        customerCreateBtn.addEventListener('click', function () {
+            fetch("/customer/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    customerName: customerName.value,
+                    projectName: projectName.value
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.customerExist) {
+                        alert("이미 존재하는 고객사입니다.");
+                    } else {
+                        var newCustomer = {
+                            id: data.customerId, // Assuming the ID is returned from the server
+                            name: customerName.value,
+                            project: projectName.value
+                        };
+
+                        customers.push(newCustomer);
+                        console.log(customers);
+                        alert("등록이 완료되었습니다.");
+
+                        closeButton.click();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+    }
+
+
+
+    function filterCustomers(keyword) {
+
+        const filteredCustomersList = document.getElementById('filteredCustomersList');
+        filteredCustomersList.innerHTML = '';
+
+        if (keyword.trim() === '') {
+            return;
+        }
+
+        const filteredCustomers = customers.filter((customer) => customer.name.includes(keyword));
+
+        filteredCustomers.forEach((customer) => {
+            const listItem = document.createElement('li');
+            listItem.innerText = customer.name;
+
+            listItem.classList.add('bg-gray-50', 'border', 'border-gray-300', 'text-gray-900', 'text-sm', 'p-2.5', 'dark:bg-gray-200', 'dark:border-gray-100', 'dark:placeholder-gray-100', 'dark:text-white');
+            listItem.setAttribute('onclick', `selectCustomer('${customer.id}', '${customer.name}')`);
+            filteredCustomersList.appendChild(listItem);
+        });
+    }
+
+    function selectCustomer(id, name) {
+        const taskTitleInput = document.getElementById('customer');
+        taskTitleInput.value = name;
+
+        const customerId = document.getElementById('customerId');
+        customerId.value = id;
+
+        const filteredCustomersList = document.getElementById('filteredCustomersList');
+        filteredCustomersList.innerHTML = '';
+    }
+
 
     // 지원 날짜 max 오늘로 제한
     function getTodayDate() {

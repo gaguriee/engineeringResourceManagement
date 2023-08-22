@@ -43,12 +43,79 @@
         <div id='calendar-container'>
             <div id='calendar' style="margin-bottom: 24px"></div>
         </div>
+
+<!--        <div class="mt-8 mb-6">-->
+
+<!--            <iframe th:src="@{'http://10.104.40.193:8080/superset/dashboard/3/?standalone=2&slice_id=4&member_id=' + ${member.id}}" width="100%" height="500" scrolling="false" ></iframe>-->
+
+<!--        </div>-->
+
+        <table id="supportTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-8 mb-8">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">고객사</th>
+                <th scope="col" class="px-6 py-3">제품명</th>
+                <th scope="col" class="px-6 py-3">상태</th>
+                <th scope="col" class="px-6 py-3">누적 지원시간</th>
+            </tr>
+            </thead>
+
+            <tr th:each="data : ${aggregatedData}" class="border">
+                <td class="px-6 py-4 text-black font-bold border" style="color: black" th:text="${data.customerName}"></td>
+                <td class="px-6 py-4 border" th:text="${data.productName}"></td>
+                <td class="px-6 py-4 border" th:text="${data.stateName}"></td>
+                <td class="px-6 py-4 text-red-600 font-bold border" style="color: red; cursor: pointer;" th:text="${data.count}"
+                    th:data-memberId="${member.id}"
+                    th:data-customerId="${data.customerId}"
+                    th:data-productId="${data.productId}"
+                    th:data-stateId="${data.stateId}"
+                    onclick="redirectToMemberInfoDetail(this)">
+                </td>
+            </tr>
+
+        </table>
     </div>
 </section>
 
 <div th:replace="footer :: footer"></div>
 
 <script th:inline="javascript">
+
+    function redirectToMemberInfoDetail(element) {
+        const memberId = element.getAttribute('data-memberId');
+        const customerId = element.getAttribute('data-customerId');
+        const productId = element.getAttribute('data-productId');
+        const stateId = element.getAttribute('data-stateId');
+
+        const url = `/memberInfoDetail?memberId=${memberId}&customerId=${customerId}&productId=${productId}&stateId=${stateId}`;
+        window.location.href = url;
+    }
+
+    function mergeRows(tableId, columnIndex) {
+        var table = document.getElementById(tableId);
+        var rows = table.getElementsByTagName('tr');
+
+        var currentRowValue = null;
+        var rowSpan = 1;
+
+        for (var i = 1; i < rows.length; i++) {
+            var cell = rows[i].getElementsByTagName('td')[columnIndex];
+
+            if (cell) {
+                if (currentRowValue === cell.innerText) {
+                    cell.style.display = 'none';
+                    rowSpan++;
+                    rows[i - rowSpan + 1].getElementsByTagName('td')[columnIndex].rowSpan = rowSpan;
+                } else {
+                    currentRowValue = cell.innerText;
+                    rowSpan = 1;
+                }
+            }
+        }
+    }
+
+    // 특정 열 인덱스에 따라 행 합치기
+    mergeRows('supportTable', 0); // 0은 고객사 열의 인덱스를 나타냄
 
     const supports  = /*[[${supports }]]*/ [];
 

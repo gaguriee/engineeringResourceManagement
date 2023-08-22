@@ -23,7 +23,7 @@ public class ModifyRequest {
 
     private String customerContact;
 
-    private String customerName;
+    private Long customerId;
 
     private Long productId;
 

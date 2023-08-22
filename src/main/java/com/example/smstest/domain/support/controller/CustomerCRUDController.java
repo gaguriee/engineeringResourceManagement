@@ -1,6 +1,7 @@
 package com.example.smstest.domain.support.controller;
 
 
+import com.example.smstest.domain.support.dto.CustomerRequest;
 import com.example.smstest.domain.support.dto.SupportSummary;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
@@ -68,35 +69,5 @@ public class CustomerCRUDController {
         return "customerDetails";
     }
 
-//    // 등록하기
-//    @PostMapping("/post")
-//    public String createSupport(@ModelAttribute SupportRequest supportRequest, RedirectAttributes redirectAttributes) {
-//
-//        SupportResponse supportResponse = supportService.createSupport(supportRequest);
-////        redirectAttributes.addFlashAttribute("support", supportResponse);
-//
-//        return "redirect:/details?supportId="+supportResponse.getId();
-//    }
-//
-//    @GetMapping("/create")
-//    public String createView(Model model) {
-//
-//        List<Customer> customers = customerRepository.findAll();
-//        List<Issue> issues = issueRepository.findAll();
-//        List<State> states = stateRepository.findAll();
-//        List<Product> products = productRepository.findAll();
-//        List<Memp> memps = mempRepository.findAll();
-//        List<SupportType> supportTypes = supportTypeRepository.findAll();
-//
-//        model.addAttribute("customers", customers);
-//        model.addAttribute("issues", issues);
-//        model.addAttribute("states", states);
-//        model.addAttribute("products", products);
-//        model.addAttribute("memps", memps);
-//        model.addAttribute("supportTypes", supportTypes);
-//
-//        return "create";
-//    }
-//
 
 }

@@ -25,8 +25,9 @@ public class SupportServiceImpl implements SupportService {
     private final MempRepository mempRepository;
     private final SupportTypeRepository supportTypeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CustomerRepository customerRepository;
 
-    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, CustomerRepository customerRepository, TeamRepository teamRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository, PasswordEncoder passwordEncoder) {
+    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, CustomerRepository customerRepository, TeamRepository teamRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository, PasswordEncoder passwordEncoder, CustomerRepository customerRepository1) {
         this.supportRepository = supportRepository;
         this.issueRepository = issueRepository;
         this.stateRepository = stateRepository;
@@ -35,6 +36,7 @@ public class SupportServiceImpl implements SupportService {
         this.mempRepository = mempRepository;
         this.supportTypeRepository = supportTypeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.customerRepository = customerRepository1;
     }
 
     public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort) {
@@ -59,7 +61,6 @@ public class SupportServiceImpl implements SupportService {
         support.setTaskSummary(supportRequest.getTaskSummary());
         support.setTaskDetails(supportRequest.getTaskDetails());
         support.setCustomerContact(supportRequest.getCustomerContact());
-        support.setCustomerName(supportRequest.getCustomerName());
         support.setSupportTypeHour(supportRequest.getSupportTypeHour());
 
         // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
@@ -68,6 +69,7 @@ public class SupportServiceImpl implements SupportService {
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
         support.setEngineer(mempRepository.findById(supportRequest.getEngineerId()).orElse(null));
         support.setTeam(teamRepository.findById(support.getEngineer().getTeamId()).orElse(null));
+        support.setCustomer(customerRepository.findById(supportRequest.getCustomerId()).orElse(null));
 
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 
@@ -93,7 +95,6 @@ public class SupportServiceImpl implements SupportService {
         support.setTaskSummary(modifyRequest.getTaskSummary());
         support.setTaskDetails(modifyRequest.getTaskDetails());
         support.setCustomerContact(modifyRequest.getCustomerContact());
-        support.setCustomerName(modifyRequest.getCustomerName());
         support.setSupportTypeHour(modifyRequest.getSupportTypeHour());
 
         // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
@@ -102,6 +103,7 @@ public class SupportServiceImpl implements SupportService {
         support.setState(stateRepository.findById(modifyRequest.getStateId()).orElse(null));
         support.setEngineer(mempRepository.findById(modifyRequest.getEngineerId()).orElse(null));
         support.setTeam(teamRepository.findById(support.getEngineer().getTeamId()).orElse(null));
+        support.setCustomer(customerRepository.findById(modifyRequest.getCustomerId()).orElse(null));
 
         support.setSupportType(supportTypeRepository.findById(modifyRequest.getSupportTypeId()).orElse(null));
 
