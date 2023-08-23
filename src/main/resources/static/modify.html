@@ -100,18 +100,20 @@
     </div>
 
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 등록</h2>
-        <!--        <form th:action="@{/post}" method="post" onsubmit="return validateForm()">-->
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 수정</h2>
 
         <form th:action="@{/modify}" method="post" onsubmit="return validateForm()">
+
+            <label for="supportId"></label><input class="hidden" name = "supportId" id="supportId">
+
 
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목</label>
                 <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="30" placeholder="제목은 필수입니다. (30자 이내)"></textarea>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
-                <label for="customerInput" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색</label>
-                <input type="text"  name="customerName" id="customerInput" list="customerList" th:attr="placeholder='고객사 검색'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색</label>
+                <input type="text"  name="customerName" id="customer" list="customerList" th:attr="placeholder='고객사 검색'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <datalist id="customerList">
                     <option th:each="customer : ${customers}" th:value="${customer.name}" ></option>
                 </datalist>
@@ -235,8 +237,8 @@
 
                 </div>
                 <div>
-                    <label for="item-weight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인 일감</label>
-                    <input type="number" name="redmineIssue" id="item-weight" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요."  min="0">
+                    <label for="redmineIssue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인 일감</label>
+                    <input type="number" name="redmineIssue" id="redmineIssue" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요."  min="0">
                 </div>
 
             </div>
@@ -251,17 +253,38 @@
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세</label>
                 <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역 스크립트를 작성해주세요."></textarea>
             </div>
-            <div id="alertForm" class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; visibility: hidden">
-                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Info</span>
-                <div>
-                    <span class="font-medium">필수 항목을 전부 작성해주세요.</span>
+            <div id="alert" class="h-36">
+                <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
+                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">등록되지 않은 엔지니어입니다. 관리자에 문의해주세요.</span>
+                    </div>
                 </div>
+                <div id="alertCustomerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
+                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">등록되지 않은 고객사입니다. 신규 등록을 진행해주세요.</span>
+                    </div>
+                </div>
+                <div id="alertForm" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
+                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">필수 항목을 전부 작성해주세요.</span>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="sm:col-span-2">
+            <div class="sm:col-span-2 mb-8">
                 <label for="password"></label>
                 <input type="password" name = "password" id="password" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="4자 이상, 12자 이내의 비밀번호를 입력해주세요." minlength="4" maxlength="12">
             </div>
@@ -289,59 +312,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script  th:inline="javascript">
 
-    var customers = /*[[${customers}]]*/ []; // Thymeleaf를 사용하여 컨트롤러에서 전달받은 customers 값을 JavaScript 변수에 할당
-
-    function filterCustomers(keyword) {
-
-        const filteredCustomersList = document.getElementById('filteredCustomersList');
-        filteredCustomersList.innerHTML = '';
-
-        if (keyword.trim() === '') {
-            return;
-        }
-
-        const filteredCustomers = customers.filter((customer) => customer.name.includes(keyword));
-
-        filteredCustomers.forEach((customer) => {
-            const listItem = document.createElement('li');
-            listItem.innerText = customer.name;
-
-            listItem.classList.add('bg-gray-50', 'border', 'border-gray-300', 'text-gray-900', 'text-sm', 'p-2.5', 'dark:bg-gray-200', 'dark:border-gray-100', 'dark:placeholder-gray-100', 'dark:text-white');
-            listItem.setAttribute('onclick', `selectCustomer('${customer.id}', '${customer.name}')`);
-            filteredCustomersList.appendChild(listItem);
-        });
-    }
-
-    function selectCustomer(id, name) {
-        const taskTitleInput = document.getElementById('customer');
-        taskTitleInput.value = name;
-
-        const customerId = document.getElementById('customerId');
-        customerId.value = id;
-
-        const filteredCustomersList = document.getElementById('filteredCustomersList');
-        filteredCustomersList.innerHTML = '';
-    }
-
     // 기존 정보 입력
 
-    var taskTitleInput = document.getElementById('taskTitle');
-    var customerInput = document.getElementById('customer');
-    var productInput = document.getElementById('product');
-    var issueInput = document.getElementById('issue');
-    var stateInput = document.getElementById('state');
-    var engineerInput = document.getElementById('engineer');
-    var subEngineerInput = document.getElementById('subEngineer');
-    var supportTypeInput = document.getElementById('supportType');
-    var supportTypeHourInput = document.getElementById('supportTypeHour');
-    var supportDateInput = document.getElementById('supportDate');
-    var taskSummaryInput = document.getElementById('taskSummary');
-    var taskDetailsInput = document.getElementById('taskDetails');
-    var redmineInput = document.getElementById('redmineIssue');
-
-    const customerId = document.getElementById('customerId');
-
-    const support = /*[[${support }]]*/;
+    var taskTitle = document.getElementById('taskTitle');
+    var customer = document.getElementById('customer');
+    var product = document.getElementById('product');
+    var issue = document.getElementById('issue');
+    var state = document.getElementById('state');
+    var engineer = document.getElementById('engineer');
+    var subEngineer = document.getElementById('subEngineer');
+    var supportType = document.getElementById('supportType');
+    var supportTypeHour = document.getElementById('supportTypeHour');
+    var supportDate = document.getElementById('supportDate');
+    var taskSummary = document.getElementById('taskSummary');
+    var taskDetails = document.getElementById('taskDetails');
+    var redmineIssue = document.getElementById('redmineIssue');
+    var password = document.getElementById('password');
+    var supportId = document.getElementById('supportId');
 
     function assignValue(inputElement, value) {
         if (value !== null) {
@@ -349,23 +336,73 @@
         }
     }
 
-    assignValue(taskTitleInput, support.taskTitle);
-    assignValue(taskSummaryInput, support.taskSummary);
-    assignValue(taskDetailsInput, support.taskDetails);
-    assignValue(customerInput, support.customer.name);
-    assignValue(productInput, support.product?.id);
-    assignValue(issueInput, support.issue?.id);
-    assignValue(stateInput, support.state?.id);
-    assignValue(engineerInput, support.engineer?.name);
-    assignValue(subEngineerInput, support.subEngineerName);
-    assignValue(supportTypeInput, support.supportType?.id);
-    assignValue(supportTypeHourInput, support.supportTypeHour);
-    assignValue(supportDateInput, support.supportDate);
-    assignValue(supportDateInput, support.supportDate);
-    assignValue(redmineInput, support.redmineIssue);
+    const support = /*[[${support }]]*/;
 
-    customerId.value = id;
-    customerId.value = id;
+    console.log(support)
+
+    assignValue(taskTitle, support.taskTitle);
+    assignValue(customer, support.customer.name);
+    assignValue(product, support.product.id);
+    assignValue(issue, support.issue.id);
+    assignValue(state, support.state.id);
+    assignValue(engineer, support.engineer.name);
+    assignValue(subEngineer, support.subEngineerName);
+    assignValue(supportType, support.supportType.id);
+    assignValue(supportTypeHour, support.supportTypeHour);
+    assignValue(supportDate, support.supportDate);
+    assignValue(taskSummary, support.taskSummary);
+    assignValue(taskDetails, support.taskDetails);
+    assignValue(redmineIssue, support.redmineIssue);
+    assignValue(supportId, support.id);
+
+    /**
+     *     고객사 등록
+     */
+
+    var customers = /*[[${customers}]]*/ [];
+    var memps = /*[[${memps}]]*/ [];
+
+    var customerName = document.getElementById("customerName");
+    var projectName = document.getElementById("projectName");
+    var customerCreateBtn = document.getElementById("customerCreateBtn");
+    var closeButton = document.getElementById("closeButton");
+
+    if (customerCreateBtn) {
+        customerCreateBtn.addEventListener('click', function () {
+            fetch("/customer/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    customerName: customerName.value,
+                    projectName: projectName.value
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.customerExist) {
+                        alert("이미 존재하는 고객사입니다.");
+                    } else {
+                        var newCustomer = {
+                            id: data.customerId, // Assuming the ID is returned from the server
+                            name: customerName.value,
+                            project: projectName.value
+                        };
+
+                        customers.push(newCustomer);
+                        alert("등록이 완료되었습니다.");
+
+                        closeButton.click();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+    }
+
+
 
     // 지원 날짜 max 오늘로 제한
     function getTodayDate() {
@@ -389,6 +426,7 @@
     }
 
     // 최대 날짜를 오늘 날짜로 설정
+    const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
     supportDateInput.min = getSevenDaysAgo();
 
@@ -445,6 +483,35 @@
         var supportDate = document.getElementById('supportDate').value;
         var taskSummary = document.getElementById('taskSummary').value;
         var taskDetails = document.getElementById('taskDetails').value;
+        var password = document.getElementById('password').value;
+
+        // 해당 engineer를 포함하는지 확인
+        var containsEngineerName = memps.some(function(m) {
+            return m.name === engineer;
+        });
+
+        var alertEngineerNotExist = document.getElementById('alertEngineerNotExist');
+        if (! containsEngineerName){ // 기존에 등록되지 않은 엔지니어
+            alertEngineerNotExist.style.display = 'flex';
+            return false;
+        }else{
+            alertEngineerNotExist.style.display = 'hidden';
+        }
+
+        // 해당 customer 포함하는지 확인
+        var containsCustomerName = customers.some(function(c) {
+            return c.name === customer;
+        });
+        var alertCustomerNotExist = document.getElementById('alertCustomerNotExist');
+
+        if (! containsCustomerName){ // 기존에 등록되지 않은 고객사
+            alertCustomerNotExist.style.display = 'flex';
+            return false;
+        }else{
+            alertCustomerNotExist.style.display = 'hidden';
+        }
+
+        var alertForm = document.getElementById('alertForm');
 
         // Perform form validation
         if (
@@ -456,22 +523,19 @@
             engineer === '' ||
             supportType === '' ||
             supportTypeHour === '' ||
-            customerContact.trim() === '' ||
             supportDate.trim() === '' ||
             taskSummary.trim() === '' ||
-            taskDetails.trim() === ''
-        ) {
-            // Show the alertForm
-            var alertForm = document.getElementById('alertForm');
-            alertForm.style.visibility = 'visible';
+            taskDetails.trim() === '' ||
+            password.trim() === ''
 
-            // Return false to prevent form submission
+        ) {
+            alertForm.style.display = 'flex';
             return false;
         }
 
-        // 등록막아두기
         else{
-            return false;
+            alertForm.style.display = 'hidden';
+            return true;
         }
 
     }
