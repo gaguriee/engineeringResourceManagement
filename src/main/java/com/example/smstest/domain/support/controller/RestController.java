@@ -1,12 +1,12 @@
 package com.example.smstest.domain.support.controller;
 
 import com.example.smstest.domain.support.dto.CreateCustomerRequest;
-import com.example.smstest.domain.support.dto.CustomerCreateResponse;
+import com.example.smstest.domain.customer.dto.CustomerCreateResponse;
 import com.example.smstest.domain.support.dto.PasswordComparisonRequest;
 import com.example.smstest.domain.support.dto.PasswordMatchResponse;
-import com.example.smstest.domain.support.entity.Customer;
+import com.example.smstest.domain.customer.entity.Customer;
 import com.example.smstest.domain.support.entity.Support;
-import com.example.smstest.domain.support.repository.CustomerRepository;
+import com.example.smstest.domain.customer.repository.CustomerRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +39,6 @@ public class RestController {
     public CustomerCreateResponse createCustomer(@RequestBody CreateCustomerRequest request) {
         boolean exist = customerRepository.existsByName(request.getCustomerName());
         if (exist){
-            System.out.println("EXIST");
             return new CustomerCreateResponse(true);
         }
         else {

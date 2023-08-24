@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.scheduler;
+package com.example.smstest.scheduler;
 
 import com.example.smstest.domain.support.repository.SupportRepository;
 import com.google.api.client.auth.oauth2.Credential;

@@ -1,4 +1,6 @@
 package com.example.smstest.domain.support.entity;
+import com.example.smstest.domain.customer.entity.Customer;
+import com.example.smstest.domain.team.entity.Memp;
 import lombok.Data;
 
 import javax.persistence.*;

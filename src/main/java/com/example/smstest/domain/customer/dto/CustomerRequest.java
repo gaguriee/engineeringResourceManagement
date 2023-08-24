@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.dto;
+package com.example.smstest.domain.customer.dto;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,17 @@
 package com.example.smstest.domain.team.controller;
 
 
-import com.example.smstest.domain.support.dto.AggregatedDataDTO;
+import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.team.dto.AggregatedDataDTO;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.domain.team.entity.Department;
+import com.example.smstest.domain.team.entity.Memp;
+import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.team.repository.DepartmentRepository;
+import com.example.smstest.domain.team.repository.MempRepository;
+import com.example.smstest.domain.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -130,7 +137,7 @@ public class TeamInfoController {
         List<AggregatedDataDTO> dtoList = new ArrayList<>();
         for (Object[] data : aggregatedData) {
             AggregatedDataDTO dto = new AggregatedDataDTO();
-            dto.setCustomerId((Long) data[0]);
+            dto.setCustomerId((Integer) data[0]);
             dto.setProductId((Long) data[1]);
             dto.setStateId((Long) data[2]);
 

@@ -1,9 +1,9 @@
 package com.example.smstest.domain.customer.controller;
 
 
+import com.example.smstest.domain.customer.entity.Customer;
+import com.example.smstest.domain.customer.repository.CustomerRepository;
 import com.example.smstest.domain.support.dto.SupportSummary;
-import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.support.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -58,7 +58,7 @@ public class CustomerCRUDController {
 
     // 상세보기
     @GetMapping("/details")
-    public String getDetails(@RequestParam(required = false) Long customerId, Model model) {
+    public String getDetails(@RequestParam(required = false) Integer customerId, Model model) {
 
         Customer customer = customerRepository.findById(customerId).get();
         model.addAttribute("customer", customer);

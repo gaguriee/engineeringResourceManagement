@@ -3,11 +3,12 @@ package com.example.smstest.domain.support.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "product")
-public class Product {
+@Table(name = "product_대분류")
+public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +18,6 @@ public class Product {
     @Column(name = "제품명", nullable = false)
     private String name;
 
-    @Column(name = "참조")
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "대분류_제품_id")
-    private ProductCategory 대분류;
-
+    @OneToMany(mappedBy = "대분류", fetch = FetchType.EAGER) // 즉시 로딩으로 변경
+    private List<Product> products;
 }

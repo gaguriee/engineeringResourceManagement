@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.scheduler;
+package com.example.smstest.scheduler;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;

@@ -1,10 +1,17 @@
 package com.example.smstest.domain.support.controller;
 
 
+import com.example.smstest.domain.customer.entity.Customer;
+import com.example.smstest.domain.customer.repository.CustomerRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.*;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.domain.team.entity.Memp;
+import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.team.repository.MempRepository;
+import com.example.smstest.domain.team.repository.TeamRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.*;
@@ -20,30 +27,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
+@RequiredArgsConstructor
 @Slf4j
 public class SupportCRUDController {
     private final SupportService supportService;
     private final ProductRepository productRepository;
+    private final ProductCategoryRepository productCategoryRepository;
     private final IssueRepository issueRepository;
+    private final IssueCategoryRepository issueCategoryRepository;
     private final CustomerRepository customerRepository;
     private final StateRepository stateRepository;
     private final MempRepository mempRepository;
-
     private final TeamRepository teamRepository;
     private final SupportTypeRepository supportTypeRepository;
     private final SupportRepository supportRepository;
-
-    public SupportCRUDController(SupportService supportService, ProductRepository productRepository, IssueRepository issueRepository, CustomerRepository customerRepository, StateRepository stateRepository, MempRepository mempRepository, TeamRepository teamRepository, SupportTypeRepository supportTypeRepository, SupportRepository supportRepository) {
-        this.supportService = supportService;
-        this.productRepository = productRepository;
-        this.issueRepository = issueRepository;
-        this.customerRepository = customerRepository;
-        this.stateRepository = stateRepository;
-        this.mempRepository = mempRepository;
-        this.teamRepository = teamRepository;
-        this.supportTypeRepository = supportTypeRepository;
-        this.supportRepository = supportRepository;
-    }
 
 
     // 날짜 형태 bind
@@ -93,17 +90,16 @@ public class SupportCRUDController {
 
         // Product 엔티티
         List<Product> allProducts = productRepository.findAll();
+        List<ProductCategory> allProductCategories = productCategoryRepository.findAll();
+
         model.addAttribute("allProducts", allProducts);
+        model.addAttribute("allProductCategories", allProductCategories);
 
         // Issue 엔티티
         List<Issue> allIssues = issueRepository.findAll();
+        List<IssueCategory> allIssueCategories = issueCategoryRepository.findAll();
         model.addAttribute("allIssues", allIssues);
-
-        Map<Integer, List<Issue>> groupedIssues = new HashMap<>();
-        for (Issue issue : allIssues) {
-            groupedIssues.computeIfAbsent(issue.get대분류(), k -> new ArrayList<>()).add(issue);
-        }
-        model.addAttribute("groupedIssues", groupedIssues);
+        model.addAttribute("allIssueCategories", allIssueCategories);
 
         // State 엔티티
         List<State> allStates = stateRepository.findAll();
@@ -184,7 +180,6 @@ public class SupportCRUDController {
 
         System.out.println(supportRequest);
         SupportResponse supportResponse = supportService.createSupport(supportRequest);
-//        redirectAttributes.addFlashAttribute("support", supportResponse);
 
         return "redirect:/details?supportId="+supportResponse.getId();
     }

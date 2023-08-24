@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.entity;
+package com.example.smstest.domain.team.entity;
 
 import lombok.Data;
 

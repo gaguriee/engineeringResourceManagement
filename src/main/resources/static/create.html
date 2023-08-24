@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kor">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
@@ -8,6 +8,7 @@
 </head>
 <body>
 <div th:replace="header :: header"></div>
+
 
 <!-- 고객사 등록 모달 -->
 <div id="defaultModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
@@ -250,7 +251,7 @@
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세</label>
                 <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역 스크립트를 작성해주세요."></textarea>
             </div>
-            <div id="alert" class="h-36">
+            <div id="alert" class="h-48">
                 <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
                     <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -445,27 +446,31 @@
         });
 
         var alertEngineerNotExist = document.getElementById('alertEngineerNotExist');
+        var alertCustomerNotExist = document.getElementById('alertCustomerNotExist');
+        var alertForm = document.getElementById('alertForm');
+
         if (! containsEngineerName){ // 기존에 등록되지 않은 엔지니어
             alertEngineerNotExist.style.display = 'flex';
+            alertForm.style.display = 'none';
             return false;
         }else{
-            alertEngineerNotExist.style.display = 'hidden';
+            alertEngineerNotExist.style.display = 'none';
         }
 
         // 해당 customer 포함하는지 확인
         var containsCustomerName = customers.some(function(c) {
             return c.name === customer;
         });
-        var alertCustomerNotExist = document.getElementById('alertCustomerNotExist');
+
 
         if (! containsCustomerName){ // 기존에 등록되지 않은 고객사
             alertCustomerNotExist.style.display = 'flex';
+            alertForm.style.display = 'none';
             return false;
         }else{
-            alertCustomerNotExist.style.display = 'hidden';
+            alertCustomerNotExist.style.display = 'none';
         }
 
-        var alertForm = document.getElementById('alertForm');
 
         // Perform form validation
         if (
@@ -488,7 +493,7 @@
         }
 
         else{
-            alertForm.style.display = 'hidden';
+            alertForm.style.display = 'none';
             return true;
         }
 

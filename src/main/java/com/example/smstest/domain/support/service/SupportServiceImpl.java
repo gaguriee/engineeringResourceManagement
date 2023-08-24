@@ -1,5 +1,6 @@
 package com.example.smstest.domain.support.service;
 
+import com.example.smstest.domain.customer.repository.CustomerRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
@@ -7,6 +8,8 @@ import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.domain.team.repository.MempRepository;
+import com.example.smstest.domain.team.repository.TeamRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;

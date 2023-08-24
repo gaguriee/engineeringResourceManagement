@@ -1,7 +1,6 @@
-package com.example.smstest.domain.support.repository;
+package com.example.smstest.domain.team.repository;
 
-import com.example.smstest.domain.support.entity.Customer;
-import com.example.smstest.domain.support.entity.Memp;
+import com.example.smstest.domain.team.entity.Memp;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

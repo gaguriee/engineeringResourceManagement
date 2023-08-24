@@ -1,6 +1,5 @@
-package com.example.smstest.domain.support.dto;
+package com.example.smstest.domain.team.dto;
 
-import com.example.smstest.domain.support.repository.CustomerRepository;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AggregatedDataDTO {
     private String customerName;
-    private Long customerId;
+    private Integer customerId;
     private String productName;
     private Long productId;
     private String stateName;
@@ -17,7 +16,7 @@ public class AggregatedDataDTO {
     private Long count;
 
     @Builder
-    public AggregatedDataDTO(String customerName, Long customerId, String productName, Long productId, String stateName, Long stateId, Long count) {
+    public AggregatedDataDTO(String customerName, Integer customerId, String productName, Long productId, String stateName, Long stateId, Long count) {
         this.customerName = customerName;
         this.customerId = customerId;
         this.productName = productName;

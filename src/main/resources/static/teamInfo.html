@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <!-- 화면 해상도에 따라 글자 크기 대응(모바일 대응) -->
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <!-- jquery CDN -->
@@ -13,6 +11,8 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>
     <!-- fullcalendar 언어 CDN -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
 
 </head>
 <body>
@@ -51,84 +51,14 @@
                 </div>
             </div>
 
-            <div class="w-full relative overflow-x-auto mt-8">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            이름
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            직책
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            직급
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            처리 건수
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="memp : ${memps}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                        <td class="px-6 py-4" style="color: black" th:text="${memp.name}"></td>
-                        <td class="px-6 py-4" th:text="${memp.position}"></td>
-                        <td class="px-6 py-4" th:text="${memp.rank}"></td>
-                        <td class="px-6 py-4 text-red-600" th:text="${engineerSupportCounts[memp.getId()]}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="flex">
-                <div class="w-1/2 pr-2">
-                    <div class="relative overflow-x-auto mt-8 ">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">
-                                    제품명
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    처리 건수
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="product : ${products}" th:if="${productSupportCounts[product.getId()] > 0}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td class="px-6 py-4" style="color: black" th:text="${product.name}"></td>
-                                <td class="px-6 py-4 text-red-600" th:text="${productSupportCounts[product.getId()]}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="w-1/2 pl-2" style="display: grid">
-                    <div class="w-full relative overflow-x-auto mt-8">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">
-                                    이슈
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    처리 건수
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="state : ${states}" th:if="${stateSupportCounts[state.getId()] > 0}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td class="px-6 py-4 text-gray-950" style="color: black" th:text="${state.name}"></td>
-                                <td class="px-6 py-4 text-red-600" th:text="${stateSupportCounts[state.getId()]}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
+    <div class="mt-8 mb-6">
 
+        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/5/?standalone=2&slice_id=4&team_id=' + ${team.id} }" width="100%" height="450" ></iframe>
+
+    </div>
 </section>
 
 <div th:replace="footer :: footer"></div>
