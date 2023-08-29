@@ -1,6 +1,6 @@
 package com.example.smstest.domain.support.entity;
 import com.example.smstest.domain.customer.entity.Customer;
-import com.example.smstest.domain.team.entity.Memp;
+import com.example.smstest.domain.auth.entity.Memp;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -39,9 +39,6 @@ public class Support {
     @ManyToOne
     @JoinColumn(name = "고객사_id")
     private Customer customer;
-
-    @Column(name = "고객사")
-    private String customerName;
 
     @ManyToOne
     @JoinColumn(name = "제품_id")

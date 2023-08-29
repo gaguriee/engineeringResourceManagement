@@ -13,15 +13,18 @@ import java.util.List;
 public interface SupportService {
 
     // 필터링 검색
-    Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort);
+    Page<SupportResponse> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort);
 
     // 상세보기
     SupportResponse getDetails(Long supportId);
-
 
     // 등록
     SupportResponse createSupport(SupportRequest supportRequest);
 
     // 등록
     SupportResponse modifySupport(ModifyRequest modifyRequest);
+
+    // 삭제
+    void deleteSupport(Long supportId);
+
 }

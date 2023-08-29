@@ -15,21 +15,21 @@
             <ul class="space-y-2">
                 <li>
                     <div th:fragment="dropdownProduct">
-                        <button id="multiLevelDropdownButtonProduct" data-dropdown-toggle="dropdownProduct" class="w-full text-white bg-gray-700 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-gray-800 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                            제품 구분 <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                        </svg>
+                        <button id="multiLevelDropdownButtonProduct" data-dropdown-toggle="dropdownProduct" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
+                            <svg aria-hidden="true" class="w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">제품 구분</span>
+                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </button>
                         <!-- Dropdown menu -->
-                        <div id="dropdownProduct" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2" style="margin-left: 12px">
+                        <div id="dropdownProduct" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2">
                             <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="multiLevelDropdownButton">
                                 <li th:each="category : ${allProductCategories}">
                                     <button th:id="'categoryButton_' + ${category.id}" th:data-dropdown-toggle="'dropdownProduct_' + ${category.id}" th:text="${category.name}" class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                         <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                                     </svg></button>
 
-                                    <div th:id="'dropdownProduct_' + ${category.id}" class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
-                                        <ul class="py-2 px-2 text-sm text-gray-700 dark:text-gray-200" th:each="product : ${category.products}">
+                                    <div th:id="'dropdownProduct_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700" style="max-height: 400px; overflow-y: auto;">
+                                        <ul class="py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200" th:each="product : ${category.products}">
                                             <li>
                                                 <input th:id="'product_' + ${product.id}" th:value="${product.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 product-checkbox">
                                                 <label th:for="'product_' + ${product.id}"  class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${product.name} "></label>
@@ -43,10 +43,10 @@
                 </li>
                 <li class="mt-3">
                     <div th:fragment="dropdownIssue">
-                        <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue" class="text-white w-full bg-gray-700 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-gray-800 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                            이슈 구분 <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                        </svg>
+                        <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
+                            <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">이슈 구분</span>
+                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </button>
                         <!-- Dropdown menu -->
                         <div id="dropdownIssue" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2">
@@ -56,10 +56,10 @@
                                         <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                                     </svg></button>
 
-                                    <div th:id="'dropdownIssue_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
-                                        <ul class="py-2 px-2 text-sm text-gray-700 dark:text-gray-200" th:each="issue : ${category.issues}">
+                                    <div th:id="'dropdownIssue_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700" style="max-height: 400px; overflow-y: auto;">
+                                        <ul class="py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200" th:each="issue : ${category.issues}">
                                             <li>
-                                                <input th:id="'issue_' + ${issue.id}" th:value="${issue.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 product-checkbox">
+                                                <input th:id="'issue_' + ${issue.id}" th:value="${issue.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 issue-checkbox">
                                                 <label th:for="'issue_' + ${issue.id}"  class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${issue.name} "></label>
                                             </li>
                                         </ul>
@@ -67,18 +67,19 @@
                                 </li>
                             </ul>
                         </div>
+
                     </div>
                 </li>
                 <li class="mt-3">
                     <div th:fragment="dropdownState">
-                        <button id="multiLevelDropdownButtonState" data-dropdown-toggle="dropdownState" class="text-white w-full bg-gray-700 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-gray-800 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                            업무 구분 <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                        </svg>
+                        <button id="multiLevelDropdownButtonState" data-dropdown-toggle="dropdownState" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
+                            <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">업무 구분</span>
+                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </button>
                         <!-- Dropdown menu -->
                         <div id="dropdownState" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
-                            <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200" >
+                            <ul class="relative py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200" >
                                 <li th:each="state : ${allStates}" class="flex items-center py-2">
                                     <input th:id="'state_' + ${state.id}" th:value="${state.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" >
                                     <label th:for="'state_' + ${state.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${state.name} "></label>
@@ -105,7 +106,7 @@
                     <!-- Iterate over the issues list and add each issue's name as an option -->
                     <th:block th:each="memp : ${allMemps}">
                         <!-- Check if the memp's teamId matches the selected team's id -->
-                        <option th:value="${memp.id}" th:text="${memp.name}" th:attr="data-memTeamId=${memp.teamId}, data-memId=${memp.id}"></option>
+                        <option th:value="${memp.id}" th:text="${memp.name}" th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
                     </th:block>
                 </select>
             </div>
@@ -129,7 +130,7 @@
                     </div>
                 </div>
             </div>
-            <button id="FilterApplyBtn" onclick="applyFilters()" class="mt-5 w-full p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-600 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+            <button id="FilterApplyBtn" onclick="applyFilters()" class="mt-5 w-full h-14 p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-800 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                 적용하기
             </button>
         </div>
@@ -371,7 +372,23 @@
 
 <script th:inline="javascript">
 
-    // 페이지 로딩 후 실행
+    document.addEventListener("DOMContentLoaded", function() {
+        const categoryButtons = document.querySelectorAll("[data-dropdown-toggle^='dropdownProduct_']");
+
+        categoryButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const categoryId = button.getAttribute("data-dropdown-toggle").replace("dropdownProduct_", "");
+                const productsContainer = document.querySelector("#dropdownProduct_" + categoryId);
+                const checkboxes = productsContainer.querySelectorAll(".product-checkbox");
+
+                if (checkboxes.length === 1) {
+                    checkboxes[0].checked = true;
+                }
+            });
+        });
+    });
+
+        // 페이지 로딩 후 실행
     document.addEventListener("DOMContentLoaded", function () {
         // 대분류 버튼 클릭 시 해당 드롭다운 메뉴 표시/숨김
         const categoryButtonsProduct = document.querySelectorAll("[data-dropdown-toggle^='dropdownProduct_']");
@@ -413,7 +430,6 @@
             const memberTeamId = memberOption.getAttribute('data-memTeamId');
 
             if (memberTeamId === selectedTeamId || selectedTeamId === '') {
-                console.log(memberOption)
                 memberSelect.appendChild(memberOption.cloneNode(true));
             }
         }
@@ -479,20 +495,25 @@ function showCategoryIssues(category) {
         const selectedMemberId = memberSelect.options[memberSelect.selectedIndex].getAttribute('data-memId');
         const selectedSortOrder = sortButton.getAttribute('data-sortOrder');
         // URL 파라미터로 선택된 ID들을 전달하여 필터링된 결과를 보여줌
-        const queryParams = new URLSearchParams();
+        const queryParams = getCurrentURLParams();
 
-        if (selectedProductIds.length>0) queryParams.append('productId', selectedProductIds);
-        if (selectedIssueIds.length>0) queryParams.append('issueId', selectedIssueIds);
-        if (selectedStateIds.length>0) queryParams.append('stateId', selectedStateIds);
-        if (startDate) queryParams.append('startDate', startDate);
-        if (endDate) queryParams.append('endDate', endDate);
-        if (selectedTeamId) queryParams.append('teamId', selectedTeamId);
-        if (selectedMemberId) queryParams.append('engineerId', selectedMemberId);
-        if (selectedSortOrder) queryParams.append('sortOrder', selectedSortOrder);
+        queryParams['productId'] = selectedProductIds.length > 0 ? selectedProductIds : undefined;
+        queryParams['issueId'] = selectedIssueIds.length > 0 ? selectedIssueIds : undefined;
+        queryParams['stateId'] = selectedStateIds.length > 0 ? selectedStateIds : undefined;
+        queryParams['startDate'] = startDate ? startDate : undefined;
+        queryParams['endDate'] = endDate ? endDate : undefined;
+        queryParams['teamId'] = selectedTeamId ? selectedTeamId : undefined;
+        queryParams['engineerId'] = selectedMemberId ? selectedMemberId : undefined;
+        queryParams['sortOrder'] = selectedSortOrder ? selectedSortOrder : undefined;
 
+        Object.keys(queryParams).forEach(key => {
+            if (queryParams[key] === undefined) {
+                delete queryParams[key];
+            }
+        });
 
         // filterApplyBtn을 눌렀을 때 @GetMapping("/search")로 이동하며, URL 파라미터를 전달
-        window.location.href = '/search?' + queryParams.toString();
+        window.location.href = '/search?' + new URLSearchParams(queryParams).toString();
     }
 function getToggledSortOrder() {
         const currentSortOrder = sortButton.getAttribute('data-sortOrder');
@@ -547,7 +568,6 @@ function getToggledSortOrder() {
 
         prevBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            console.log(currentPage);
             if (currentPage >= 5) {
                 const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
                 const currentParams = getCurrentURLParams();
@@ -560,8 +580,6 @@ function getToggledSortOrder() {
             event.preventDefault();
             if (currentPage < totalPages - 1) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
-                console.log(nextPage);
-
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
                 window.location.href = '/search?' + new URLSearchParams(currentParams).toString();
@@ -573,16 +591,16 @@ function getToggledSortOrder() {
 
     function submitSearch(event) {
         event.preventDefault();
+
+        const currentParams = getCurrentURLParams();
+
         const searchInput = document.getElementById("simple-search");
         const searchQuery = searchInput.value.trim();
-        const currentPage = 0; // Change this value to the current page number
-        if (searchQuery !== "") {
-            // Redirect to the URL with the search keyword and current page number
-            window.location.href = "/search?page=" + currentPage + "&Keyword=" + encodeURIComponent(searchQuery);
-        } else {
-            // Redirect to the URL without the search keyword (remove the query parameter)
-            window.location.href = "/search?page=" + currentPage;
-        }
+        currentParams["Keyword"] = searchQuery;
+        currentParams["currentPage"] = 0;
+        const newUrl = "/search?" + new URLSearchParams(currentParams).toString();
+        window.location.href = newUrl;
+
         return false;
     }
 </script>

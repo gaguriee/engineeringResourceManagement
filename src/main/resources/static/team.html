@@ -9,11 +9,20 @@
 <body>
 <div th:replace="header :: header"></div>
 
-<section class="bg-white dark:bg-gray-900">
+<section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
+    <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-3 sm:mb-0">
+            <li>
+                <div class="flex items-center">
+                    <a th:href="'/team?departmentId='+${department.id}" class="font-bold ml-1 text-sm text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white" th:text="${department.name}"></a>
+                </div>
+            </li>
+        </ol>
+    </nav>
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" th:text="${department.name}" style="padding-bottom: 48px"></h2>
 
-        <form action="/teamId" method="get"> <!-- Specify the action and method for the form -->
+        <form id="selectForm" action="/teamInfo" method="get"> <!-- Specify the action and method for the form -->
             <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
             <select id="team" name="teamId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <option value="" selected>팀을 선택해주세요.</option>
@@ -40,7 +49,18 @@
     </div>
 
 </section>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('selectForm');
+        form.addEventListener('submit', function (event) {
+            const selectedTeam = document.getElementById('team').value;
+            if (!selectedTeam) {
+                event.preventDefault(); // Prevent form submission
+                alert('팀을 선택해주세요.'); // You can display an error message to the user
+            }
+        });
+    });
+</script>
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 

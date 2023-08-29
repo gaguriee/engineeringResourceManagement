@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="kor">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
@@ -13,16 +12,15 @@
 
 <div th:replace="header :: header"></div>
 
-<main style="display: grid; align-items: center; justify-items: center; padding: 48px; margin-top: 24px; margin-bottom: 48px">
-    <div class="m-4">
-        <iframe src="https://err2.somansa.com/superset/dashboard/1/?standalone=2" width="1200" height="900" ></iframe>
+<section class="bg-white dark:bg-gray-900">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+        <div class="mx-auto max-w-screen-sm text-center">
+            <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">500</h1>
+            <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Internal Server Error.</p>
+            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">We are already working to solve the problem. </p>
+        </div>
     </div>
-
-    <div class="m-4">
-        <iframe src="https://err2.somansa.com/superset/dashboard/7/?standalone=2" width="1200" height="700" ></iframe>
-    </div>
-
-</main>
+</section>
 <div th:replace="footer :: footer"></div>
 
 <style>

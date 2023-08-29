@@ -42,7 +42,7 @@ public class DriveQuickstart {
     static int driveCnt = 0;
 
 //    @Scheduled(fixedDelay = 1000000000)
-//    @Scheduled(cron = "0 0 6 * * *") // 매일 06시 실행
+    @Scheduled(cron = "0 0 6 * * *") // 매일 06시 실행
     public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
         String sql = "SELECT DISTINCT \"파일id\" FROM support";
         lists = jdbcTemplate.queryForList(sql, String.class);

@@ -2,7 +2,7 @@ package com.example.smstest.domain.support.dto;
 
 import com.example.smstest.domain.customer.entity.Customer;
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.team.entity.Memp;
+import com.example.smstest.domain.auth.entity.Memp;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,6 +26,8 @@ public class SupportResponse {
 
     private String engineerName;
 
+    private Long engineerId;
+
     private String subEngineerName;
 
     private Date supportDate;
@@ -42,10 +44,8 @@ public class SupportResponse {
 
     private String taskDetails;
 
-    private String password;
-
     @Builder
-    public SupportResponse(Long id, String productName, Customer customer, String customerContact, String issueType, String state, String engineerName, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails, String password) {
+    public SupportResponse(Long id, String productName, Customer customer, String customerContact, String issueType, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
         this.id = id;
         this.productName = productName;
         this.customer = customer;
@@ -53,6 +53,7 @@ public class SupportResponse {
         this.issueType = issueType;
         this.state = state;
         this.engineerName = engineerName;
+        this.engineerId = engineerId;
         this.subEngineerName = subEngineerName;
         this.supportDate = supportDate;
         this.supportType = supportType;
@@ -61,7 +62,6 @@ public class SupportResponse {
         this.taskTitle = taskTitle;
         this.taskSummary = taskSummary;
         this.taskDetails = taskDetails;
-        this.password = password;
     }
 
 
@@ -74,6 +74,7 @@ public class SupportResponse {
                 .issueType(Optional.ofNullable(support.getIssue()).map(Issue::getName).orElse(null))
                 .state(Optional.ofNullable(support.getState()).map(State::getName).orElse(null))
                 .engineerName(Optional.ofNullable(support.getEngineer()).map(Memp::getName).orElse(null))
+                .engineerId(Optional.ofNullable(support.getEngineer()).map(Memp::getId).orElse(null))
                 .subEngineerName(support.getSubEngineerName())
                 .supportDate(support.getSupportDate())
                 .supportType(Optional.ofNullable(support.getSupportType()).map(SupportType::getName).orElse(null))
@@ -82,7 +83,6 @@ public class SupportResponse {
                 .taskTitle(support.getTaskTitle())
                 .taskSummary(support.getTaskSummary())
                 .taskDetails(support.getTaskDetails())
-                .password(support.getPassword())
                 .build();
     }
 

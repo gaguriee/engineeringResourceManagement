@@ -1,5 +1,6 @@
 package com.example.smstest.domain.support.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class IssueCategory {
     @Column(name = "이슈", nullable = false)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "대분류", fetch = FetchType.EAGER) // 즉시 로딩으로 변경
     private List<Issue> issues;
 }

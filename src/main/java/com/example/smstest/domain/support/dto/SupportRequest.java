@@ -40,6 +40,4 @@ public class SupportRequest {
 
     private Integer supportTypeHour;
 
-    private String password;
-
 }

@@ -2,9 +2,10 @@ package com.example.smstest.domain.customer.controller;
 
 
 import com.example.smstest.domain.customer.entity.Customer;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.customer.service.CustomerServiceImpl;
 import com.example.smstest.domain.support.dto.SupportSummary;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,52 +22,43 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/customer")
 public class CustomerCRUDController {
-    private final CustomerRepository customerRepository;
+    private final CustomerServiceImpl customerServiceImpl;
 
-    public CustomerCRUDController(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    @Autowired
+    public CustomerCRUDController(CustomerServiceImpl customerServiceImpl) {
+        this.customerServiceImpl = customerServiceImpl;
     }
 
-
-    // 날짜 형태 bind
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
-    // 검색
     @GetMapping("/search")
     public String searchSupportByFilters(
-                                         @RequestParam(required = false) String Keyword,
-                                         Pageable pageable,
-                                         Model model) {
+            @RequestParam(required = false) String keyword,
+            Pageable pageable,
+            Model model) {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Customer> result = customerRepository.findAllBySupportCount(pageable);
-
-        if (Keyword != null){
-            result = customerRepository.findByNameContainingOrderBySupportCountDesc(Keyword, pageable);
-        }
+        Page<Customer> result = customerServiceImpl.searchCustomers(keyword, pageable);
 
         model.addAttribute("customers", result);
-        model.addAttribute("totalPages", result.getTotalPages()); // 전체 페이지 수
-        model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
+        model.addAttribute("totalPages", result.getTotalPages());
+        model.addAttribute("currentPage", pageable.getPageNumber());
         return "customer";
     }
 
-
-    // 상세보기
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Integer customerId, Model model) {
-
-        Customer customer = customerRepository.findById(customerId).get();
+        Customer customer = customerServiceImpl.getCustomerDetails(customerId);
         model.addAttribute("customer", customer);
-        List<SupportSummary> supportSummary = customerRepository.getSupportSummaryByCustomerId(customerId);
+
+        List<SupportSummary> supportSummary = customerServiceImpl.getSupportSummaryByCustomerId(customerId);
         model.addAttribute("supportSummary", supportSummary);
+
         System.out.println(supportSummary);
         return "customerDetails";
     }
-
-
 }

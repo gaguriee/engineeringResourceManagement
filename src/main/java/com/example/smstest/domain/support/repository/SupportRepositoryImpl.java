@@ -80,7 +80,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
     }
 
     private BooleanExpression teamIdIn(List<Integer> teamIds) {
-        return teamIds != null && !teamIds.isEmpty() ? QSupport.support.engineer.teamId.in(teamIds) : null;
+        return teamIds != null && !teamIds.isEmpty() ? QSupport.support.engineer.team.id.in(teamIds) : null;
     }
 
     private BooleanExpression productIdIn(List<Long> productIds) {

@@ -7,15 +7,16 @@ import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.*;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
-import com.example.smstest.domain.team.entity.Memp;
+import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.team.entity.Team;
-import com.example.smstest.domain.team.repository.MempRepository;
+import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -77,89 +77,60 @@ public class SupportCRUDController {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 
-        Page<Support> result = supportService.searchSupportByFilters(criteria, pageable, sortOrder);
-        Page<SupportResponse> responsePage = new PageImpl<>(
-                result.getContent().stream()
-                        .map(SupportResponse::entityToResponse)
-                        .collect(Collectors.toList()),
-                result.getPageable(),
-                result.getTotalElements());
+        Page<SupportResponse> responsePage = supportService.searchSupportByFilters(criteria, pageable, sortOrder);
+
         model.addAttribute("posts", responsePage);
-        model.addAttribute("totalPages", result.getTotalPages()); // 전체 페이지 수
+        model.addAttribute("totalPages", responsePage.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
 
         // Product 엔티티
         List<Product> allProducts = productRepository.findAll();
         List<ProductCategory> allProductCategories = productCategoryRepository.findAll();
-
-        model.addAttribute("allProducts", allProducts);
         model.addAttribute("allProductCategories", allProductCategories);
 
         // Issue 엔티티
         List<Issue> allIssues = issueRepository.findAll();
         List<IssueCategory> allIssueCategories = issueCategoryRepository.findAll();
-        model.addAttribute("allIssues", allIssues);
         model.addAttribute("allIssueCategories", allIssueCategories);
 
         // State 엔티티
         List<State> allStates = stateRepository.findAll();
-        model.addAttribute("allStates", allStates);
 
         // Team 엔티티
         List<Team> allTeams = teamRepository.findAll();
-        model.addAttribute("allTeams", allTeams);
 
         // Member 엔티티
         List<Memp> allMemps = mempRepository.findAll();
+
+        Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(allStates, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(allTeams, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(allMemps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+
+        model.addAttribute("allProducts", allProducts);
+        model.addAttribute("allIssues", allIssues);
+        model.addAttribute("allStates", allStates);
+        model.addAttribute("allTeams", allTeams);
         model.addAttribute("allMemps", allMemps);
+
 
         model.addAttribute("sortOrder", sortOrder);
 
-        // 필터링 대상 엔티티만 가져옴
-        // Model에 선택된 products, issues, states 추가
-        if (productId != null) {
-            List<Product> selectedProducts = productRepository.findAllById(productId);
-            model.addAttribute("selectedProducts", selectedProducts);
-        } else {
-            model.addAttribute("selectedProducts", new ArrayList<Product>());
-        }
+        model.addAttribute("selectedProducts", productId != null ? productRepository.findAllById(productId) : new ArrayList<>());
+        model.addAttribute("selectedIssues", issueId != null ? issueRepository.findAllById(issueId) : new ArrayList<>());
+        model.addAttribute("selectedStates", stateId != null ? stateRepository.findAllById(stateId) : new ArrayList<>());
+        model.addAttribute("selectedTeams", teamId != null ? teamRepository.findAllById(teamId) : new ArrayList<>());
+        model.addAttribute("selectedMemps", engineerId != null ? mempRepository.findAllById(engineerId) : new ArrayList<>());
 
-        if (issueId != null) {
-            List<Issue> selectedIssues = issueRepository.findAllById(issueId);
-            model.addAttribute("selectedIssues", selectedIssues);
-        } else {
-            model.addAttribute("selectedIssues", new ArrayList<Issue>());
-        }
-
-        if (stateId != null) {
-            List<State> selectedStates = stateRepository.findAllById(stateId);
-            model.addAttribute("selectedStates", selectedStates);
-        } else {
-            model.addAttribute("selectedStates", new ArrayList<State>());
-        }
-
-        if (teamId != null) {
-            List<Team> selectedTeams = teamRepository.findAllById(teamId);
-            model.addAttribute("selectedTeams", selectedTeams);
-        } else {
-            model.addAttribute("selectedTeams", new ArrayList<Team>());
-        }
-
-        if (engineerId != null) {
-            List<Memp> selectedMemps = mempRepository.findAllById(engineerId);
-            model.addAttribute("selectedMemps", selectedMemps);
-        } else {
-            model.addAttribute("selectedMemps", new ArrayList<Memp>());
-        }
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (startDate != null) {
-            String formattedStartDate = new SimpleDateFormat("yyyy-MM-dd").format(startDate);
-            model.addAttribute("startDate", formattedStartDate);
+            model.addAttribute("startDate", dateFormat.format(startDate));
         }
         if (endDate != null) {
-            String formattedEndDate = new SimpleDateFormat("yyyy-MM-dd").format(endDate);
-            model.addAttribute("endDate", formattedEndDate);
+            model.addAttribute("endDate", dateFormat.format(endDate));
         }
+
         return "board";
     }
 
@@ -167,9 +138,11 @@ public class SupportCRUDController {
     // 상세보기
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Long supportId, Model model) {
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         SupportResponse supportResponse = supportService.getDetails(supportId);
         model.addAttribute("support", supportResponse);
+        model.addAttribute("user", user);
 
         return "details";
     }
@@ -178,7 +151,6 @@ public class SupportCRUDController {
     @PostMapping("/post")
     public String createSupport(@ModelAttribute SupportRequest supportRequest, RedirectAttributes redirectAttributes) {
 
-        System.out.println(supportRequest);
         SupportResponse supportResponse = supportService.createSupport(supportRequest);
 
         return "redirect:/details?supportId="+supportResponse.getId();
@@ -192,8 +164,15 @@ public class SupportCRUDController {
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
-        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         List<SupportType> supportTypes = supportTypeRepository.findAll();
+
+        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(states, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
@@ -222,6 +201,9 @@ public class SupportCRUDController {
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         List<SupportType> supportTypes = supportTypeRepository.findAll();
 
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("user", user);
+
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
         model.addAttribute("states", states);
@@ -239,14 +221,12 @@ public class SupportCRUDController {
         return "redirect:/details?supportId="+supportResponse.getId();
     }
 
-
     // 삭제
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public String deleteSupport(@RequestParam(required = false) Long supportId, Model model) {
 
-        Support support = supportRepository.findById(supportId).get();
-        supportRepository.delete(support);
-        log.info("===DELETE=== (" +support + ")");
+        supportService.deleteSupport(supportId);
+
         return "redirect:/search?";
     }
 

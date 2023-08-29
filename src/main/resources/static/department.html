@@ -9,10 +9,27 @@
 <body>
 <div th:replace="header :: header"></div>
 
-<section class="bg-white dark:bg-gray-900">
+<section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
+    <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+    </nav>
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+        <div class="mb-8">
+            <a th:href="'/teamInfo?teamId='+${user.getTeam().id}"
+               class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+            <span class="relative font-bold px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+                  th:text="${user.getTeam().getName()} + ' 바로 가기'">
+            </span>
+            </a>
+            <a th:href="'/memberInfo?memberId='+${user.id}"
+               class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+            <span class="relative font-bold px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+                  th:text="${user.getName()} + ' 바로 가기'">
+            </span>
+            </a>
+        </div>
+
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">소속 선택</h2>
-        <form action="/team" method="get"> <!-- Specify the action and method for the form -->
+        <form id="selectForm" action="/team" method="get">
             <label for="department" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
             <select id="department" name="departmentId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <option value="" selected>소속을 선택해주세요.</option>
@@ -30,10 +47,26 @@
         </form>
     </div>
 
+    <div class="mt-8 mb-6">
+
+        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/6/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>
+
+    </div>
 </section>
 
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('selectForm');
+        form.addEventListener('submit', function (event) {
+            const selectedDepartment = document.getElementById('department').value;
+            if (!selectedDepartment) {
+                event.preventDefault(); // Prevent form submission
+                alert('소속을 선택해주세요.'); // You can display an error message to the user
+            }
+        });
+    });
+</script>
 </body>
 </html>
