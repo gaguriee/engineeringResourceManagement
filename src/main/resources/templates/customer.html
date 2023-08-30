@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="favicon" href="/static/images/favicon.ico">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 
 </head>
 <body class="bg-gray-100">
@@ -11,42 +13,41 @@
 <!-- Start block -->
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
 
-
-    <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+    <div class="mx-auto max-w-screen-md px-4 lg:px-12">
         <!-- Start coding here -->
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
-
-            <div class="max-h-64 overflow-hidden">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">고객사</th>
-                        <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">제품명</th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자
-                            <button id="sortButton" th:attr="data-sortOrder=${sortOrder}">
-                                <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5m0 6 4 4 4-4"/>
-                                </svg>
+            <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+                <div class="w-full align-middle" id="list_header" style="justify-items: end; align-items: end">
+                    <form class="flex items-center align-middle m-0 text-center justify-center" onsubmit="return submitSearch(event)">
+                        <div class="flex self-center">
+                            <label for="simple-search" class="sr-only">Search</label>
+                            <div id="search-container" class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
+                            </div>
+                            <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                Search
                             </button>
-                        </th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">담당엔지니어</th>
+                        </div>
+                    </form>
 
-                    </tr>
-                    </thead>
+
+                </div>
+            </div>
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                     <tbody>
-                    <tr th:each="post : ${posts}" class="border-b dark:border-gray-700">
-                        <td class="px-4 py-3" th:text="${post.getCustomer().getName()}">PC</td>
-                        <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
-                            <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
-                                <!-- 글자수를 최대 10자로 제한, NULL값 처리 -->
-                                <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
+                    <tr th:each="customer : ${customers}" class="border-b dark:border-gray-700">
+                        <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem] text-center">
+                            <a th:href="@{/customer/details(customerId=${customer.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
+                                <span style="font-weight: 600" th:text="${customer.name}"></span>
                             </a>
                         </td>
-                        <td class="px-4 py-3" th:text="${post.productName}">제품명</td>
-                        <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
-                        <td class="px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
                     </tr>
+
                     </tbody>
                 </table>
 
@@ -56,11 +57,11 @@
             <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${posts.totalElements > 0} ? ${posts.pageable.offset + 1} : 0">1</span>
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements > 0} ? ${customers.pageable.offset + 1} : 0">1</span>
         -
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${posts.totalElements > 0} ? ${posts.pageable.offset + posts.size} : 0">10</span>
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements > 0} ? ${customers.pageable.offset + customers.size} : 0">10</span>
         of
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${posts.totalElements}">0</span>
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements}">0</span>
     </span>
                 <ul class="inline-flex items-stretch -space-x-px">
                     <li>
@@ -83,7 +84,7 @@
                                 <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                 <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
                                     <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                    <a th:href="@{/search(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
+                                    <a th:href="@{/customer/search(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
                                        th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
                                        th:text="${pageNo}">
                                     </a>
@@ -166,104 +167,12 @@
             margin-bottom: 0;
         }
 
-        #filter_container{
-            display: flex;
-            align-items: end;
-            align-content: end;
-            justify-items: end;
-            justify-content: end;
-        }
-
-        #filterBtn{
-            margin: 0px;
-            width: 100%;
-        }
-
     }
 
 </style>
 
 
 <script th:inline="javascript">
-
-function getToggledSortOrder() {
-        const currentSortOrder = sortButton.getAttribute('data-sortOrder');
-        console.log(sortButton.getAttribute('data-sortOrder'))
-    console.log(currentSortOrder === 'desc')
-    const newSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
-        sortButton.setAttribute('data-sortOrder', newSortOrder);
-        return newSortOrder;
-    }
-
-    sortButton.addEventListener('click', () => {
-        getToggledSortOrder(); // Update data-sortOrder attribute on button click
-        applyFilters(); // Apply filters and sort
-    });
-
-    // filterBtn을 클릭했을 때, aside를 열고 닫기 위한 함수를 정의합니다.
-    const filterBtn = document.getElementById('filterBtn');
-    const sidebar = document.getElementById('default-sidebar');
-
-
-    // filterBtn을 클릭했을 때 사이드바를 열고 닫는 함수
-    filterBtn.addEventListener('click', () => {
-        // 사이드바 상태를 확인하여 열린 상태면 닫고, 닫힌 상태면 열도록 토글링합니다.
-        if (sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-        } else {
-            sidebar.classList.add('open');
-        }
-    });
-
-    // document의 클릭 이벤트를 추가하여 사이드바 외부를 클릭했을 때 사이드바를 닫습니다.
-    document.addEventListener('click', (event) => {
-        // 클릭된 요소가 사이드바가 아닌 경우에만 사이드바를 닫도록 합니다.
-        if (event.target !== sidebar && !sidebar.contains(event.target) && event.target !== filterBtn) {
-            sidebar.classList.remove('open');
-        }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const dropdownButton = document.getElementById("productDropdownButton");
-        const dropdownMenu = document.getElementById("productDropdown");
-
-        const issueDropdownButton = document.getElementById("issueDropdownButton");
-        const issueDropdown = document.getElementById("issueDropdown");
-
-        const stateDropdownButton = document.getElementById("stateDropdownButton");
-        const stateDropdown = document.getElementById("stateDropdown");
-
-        dropdownButton.addEventListener("click", function () {
-            if (dropdownMenu.classList.contains("hidden")) {
-                dropdownMenu.classList.remove("hidden");
-                issueDropdown.classList.add("hidden");
-                stateDropdown.classList.add("hidden");
-
-            } else {
-                dropdownMenu.classList.add("hidden");
-            }
-        });
-
-        issueDropdownButton.addEventListener("click", function () {
-            if (issueDropdown.classList.contains("hidden")) {
-                issueDropdown.classList.remove("hidden");
-                dropdownMenu.classList.add("hidden");
-                stateDropdown.classList.add("hidden");
-            } else {
-                issueDropdown.classList.add("hidden");
-            }
-        });
-
-        stateDropdownButton.addEventListener("click", function () {
-            if (stateDropdown.classList.contains("hidden")) {
-                stateDropdown.classList.remove("hidden");
-                dropdownMenu.classList.add("hidden");
-                issueDropdown.classList.add("hidden");
-            } else {
-                stateDropdown.classList.add("hidden");
-            }
-        });
-    });
 
     const currentPage = /*[[${currentPage }]]*/;
     const totalPages = /*[[${totalPages }]]*/;
@@ -286,7 +195,7 @@ function getToggledSortOrder() {
                 const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = prevPage+1;
-                window.location.href = '/search?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/customer/search?' + new URLSearchParams(currentParams).toString();
             }
         });
 
@@ -298,13 +207,31 @@ function getToggledSortOrder() {
 
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
-                window.location.href = '/search?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/customer/search?' + new URLSearchParams(currentParams).toString();
             }
         });
     });
 
-</script>
 
+
+    function submitSearch(event) {
+        event.preventDefault();
+        const searchInput = document.getElementById("simple-search");
+        const searchQuery = searchInput.value.trim();
+        const currentPage = 0; // Change this value to the current page number
+        if (searchQuery !== "") {
+            // Redirect to the URL with the search keyword and current page number
+            window.location.href = "/customer/search?page=" + currentPage + "&Keyword=" + encodeURIComponent(searchQuery);
+        } else {
+            // Redirect to the URL without the search keyword (remove the query parameter)
+            window.location.href = "/customer/search?page=" + currentPage;
+        }
+        return false;
+    }
+</script>
+<style>
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+</style>
 
 </body>
 </html>

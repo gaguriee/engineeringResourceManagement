@@ -69,7 +69,6 @@ public class SupportServiceImpl implements SupportService {
         support.setTaskTitle(supportRequest.getTaskTitle());
         support.setTaskSummary(supportRequest.getTaskSummary());
         support.setTaskDetails(supportRequest.getTaskDetails());
-        support.setCustomerContact(supportRequest.getCustomerContact());
         support.setSupportTypeHour(supportRequest.getSupportTypeHour());
         support.setSubEngineerName(supportRequest.getSubEngineerName());
 
@@ -100,7 +99,6 @@ public class SupportServiceImpl implements SupportService {
             support.setTaskTitle(modifyRequest.getTaskTitle());
             support.setTaskSummary(modifyRequest.getTaskSummary());
             support.setTaskDetails(modifyRequest.getTaskDetails());
-            support.setCustomerContact(modifyRequest.getCustomerContact());
             support.setSupportTypeHour(modifyRequest.getSupportTypeHour());
             support.setSubEngineerName(modifyRequest.getSubEngineerName());
 

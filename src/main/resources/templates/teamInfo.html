@@ -13,6 +13,8 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
+    <link rel="favicon" href="/static/images/favicon.ico">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 
 </head>
 <body>
@@ -74,7 +76,7 @@
 
     <div class="mt-8 mb-6">
 
-        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/5/?standalone=2&slice_id=4&team_id=' + ${team.id} }" width="100%" height="450" ></iframe>
+        <iframe th:src="@{'https://erm2.somansa.com/superset/dashboard/6/?standalone=2&slice_id=4&team_id=' + ${team.id} }" width="100%" height="450" ></iframe>
 
     </div>
 </section>
@@ -156,5 +158,8 @@
         });
     })();
 </script>
+<style>
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+</style>
 </body>
 </html>

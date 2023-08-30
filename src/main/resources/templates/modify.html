@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="favicon" href="/static/images/favicon.ico">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 
 </head>
 <body>
@@ -111,7 +113,7 @@
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색 *</label>
-                <input type="text"  name="customerName" id="customer" list="customerList" th:attr="placeholder='고객사 검색'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <input type="text"  name="customerName" id="customer" list="customerList" th:attr="placeholder='고객사 검색(내근은 소만사 선택)'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <datalist id="customerList">
                     <option th:each="customer : ${customers}" th:value="${customer.name}" ></option>
                 </datalist>
@@ -265,7 +267,7 @@
             </div>
             <div class="sm:col-span-2">
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세 *</label>
-                <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역 스크립트를 작성해주세요."></textarea>
+                <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)"></textarea>
             </div>
             <div id="alert" class="h-36">
                 <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
@@ -577,6 +579,8 @@
 
     }
 </script>
-
+<style>
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+</style>
 </body>
 </html>

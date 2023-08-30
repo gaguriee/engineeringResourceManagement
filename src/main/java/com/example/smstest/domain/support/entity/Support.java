@@ -17,9 +17,6 @@ public class Support {
     @Column(name = "support_id")
     private Long id;
 
-    @Column(name = "고객담당자")
-    private String customerContact;
-
     @Column(name = "지원일자")
     @Temporal(TemporalType.DATE)
     private Date supportDate;
@@ -65,8 +62,5 @@ public class Support {
 
     @Column(name = "지원형태_시간")
     private Integer supportTypeHour;
-
-    @Column(name = "password")
-    private String password;
 
 }
