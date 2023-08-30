@@ -8,16 +8,16 @@
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 
 </head>
-<body class="bg-gray-100">
+<body>
 <div th:replace="header :: header"></div>
 <!-- Start block -->
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
 
     <div class="mx-auto max-w-screen-md px-4 lg:px-12">
         <!-- Start coding here -->
-        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden p-8">
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
-                <div class="w-full align-middle" id="list_header" style="justify-items: end; align-items: end">
+                <div id="list_header" style="justify-items: end; align-items: end">
                     <form class="flex items-center align-middle m-0 text-center justify-center" onsubmit="return submitSearch(event)">
                         <div class="flex self-center">
                             <label for="simple-search" class="sr-only">Search</label>
@@ -38,31 +38,25 @@
 
                 </div>
             </div>
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
-                    <tbody>
-                    <tr th:each="customer : ${customers}" class="border-b dark:border-gray-700">
-                        <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem] text-center">
-                            <a th:href="@{/customer/details(customerId=${customer.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
-                                <span style="font-weight: 600" th:text="${customer.name}"></span>
-                            </a>
-                        </td>
-                    </tr>
-
-                    </tbody>
-                </table>
-
-
+            <div style="display: flex; flex-wrap: wrap; flex-direction: row;" class="p-8 pl-2 pr-2">
+                <div th:each="customer : ${customers}" style="flex: 0 0 33.33%; box-sizing: border-box; padding: 0.5rem;">
+                    <a th:href="@{/customer/details(customerId=${customer.id})}" class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800" style="width: 100%;">
+                        <span th:text="${customer.name}" class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 w-full"></span>
+                    </a>
+                </div>
             </div>
 
+
+
             <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-        Showing
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements > 0} ? ${customers.pageable.offset + 1} : 0">1</span>
-        -
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements > 0} ? ${customers.pageable.offset + customers.size} : 0">10</span>
-        of
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements}">0</span>
-    </span>
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements > 0} ? ${customers.pageable.offset + 1} : 0">1</span>
+                    -
+                    <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements > 0} ? ${customers.pageable.offset + customers.size} : 0">10</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white" th:text="${customers.totalElements}">0</span>
+                </span>
                 <ul class="inline-flex items-stretch -space-x-px">
                     <li>
                         <a href="#" id="prevBtn" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -104,9 +98,10 @@
                     </li>
                 </ul>
             </nav>
+
+            </div>
+
         </div>
-    </div>
-    </div>
 </section>
 <!-- End block -->
 <div th:replace="footer :: footer"></div>
