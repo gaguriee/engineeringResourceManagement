@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="favicon" href="/static/images/favicon.ico">
+    <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 
 </head>
@@ -46,10 +46,14 @@
     <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16">
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${(support.taskTitle != null && support.taskTitle.trim().length() > 0) ? support.taskTitle : '제목 없음'}">Apple iMac 25"</h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.getCustomer().getName()} ?: ' '">$2999</h3>
-        <dl class="flex text-sm items-start space-x-3 flex-wrap" style="padding-top: 24px;">
+        <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;">
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">제품명</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.productName} ?: ' '">Electronics/PC</dd>
+            </div>
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">업무 구분</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.state} ?: ' '"> </dd>
             </div>
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">이슈 구분</dt>
@@ -89,7 +93,7 @@
             </dd>
         </dl>
 
-        <div th:if="${user.id == support.engineerId}" class="flex items-center space-x-4" style="padding-top: 48px">
+        <div th:if="${user.id == support.engineerId || user.id == 33}" class="flex items-center space-x-4" style="padding-top: 48px">
             <a th:href="'/modify?supportId='+${support.id}" id="editButton"   type="button" class="flex text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-500 dark:hover:bg-gray-600 dark:focus:ring-gray-900">
                 <svg aria-hidden="true" class="mr-1 -ml-1 w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                 수정
@@ -118,7 +122,7 @@
 
     var timeDifference = currentDate - supportDate;
 
-    var daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    var daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
     var deleteButton = document.getElementById("deleteButton");
     var editButton = document.getElementById("editButton");

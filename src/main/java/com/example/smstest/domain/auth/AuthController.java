@@ -52,11 +52,12 @@ public class AuthController {
         return "resetPassword";
     }
     @PostMapping("/resetPassword")
-    public String resetPassword(ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult) {
+    public String resetPassword(ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult, Model model) {
 
         authValidator.validatPassword(resetPasswordRequest, bindingResult);
 
         if(bindingResult.hasErrors()) {
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
             return "resetPassword"; // 실패
         }
         else {

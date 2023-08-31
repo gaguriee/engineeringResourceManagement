@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="favicon" href="/static/images/favicon.ico">
+    <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
 
 </head>
@@ -27,8 +27,8 @@
                     </div>
                     <div class="m-0">
                         <div class="flex m-0">
-                            <div class="grid">
-                                <div class="w-56">
+                            <div class="grid w-56">
+                                <div>
                                     <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
                                     <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="아이디" required="">
                                 </div>
@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <div th:if="${param.error}"  class="alert alert-danger text-sm text-red-600" role="alert">
-                            Invalid username and password
+                            Invalid username or password
                         </div>
 
                         <div th:if="${param.logout}"  class="alert alert-primary text-sm text-red-600" role="alert">

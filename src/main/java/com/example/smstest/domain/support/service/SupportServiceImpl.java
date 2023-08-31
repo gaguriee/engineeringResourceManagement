@@ -1,5 +1,6 @@
 package com.example.smstest.domain.support.service;
 
+import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.customer.repository.CustomerRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
@@ -14,7 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,17 +29,15 @@ public class SupportServiceImpl implements SupportService {
     private final ProductRepository productRepository;
     private final MempRepository mempRepository;
     private final SupportTypeRepository supportTypeRepository;
-    private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
 
-    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository, PasswordEncoder passwordEncoder, CustomerRepository customerRepository1) {
+    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository, CustomerRepository customerRepository1) {
         this.supportRepository = supportRepository;
         this.issueRepository = issueRepository;
         this.stateRepository = stateRepository;
         this.productRepository = productRepository;
         this.mempRepository = mempRepository;
         this.supportTypeRepository = supportTypeRepository;
-        this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository1;
     }
 
@@ -83,6 +82,7 @@ public class SupportServiceImpl implements SupportService {
 
         // Support 엔티티를 저장하고 반환
         Support newsupport = supportRepository.save(support);
+        log.info("===CREATE=== ("+ SupportResponse.entityToResponse(newsupport) +")");
 
         return SupportResponse.entityToResponse(newsupport);
     }
@@ -91,8 +91,9 @@ public class SupportServiceImpl implements SupportService {
     public SupportResponse modifySupport(ModifyRequest modifyRequest) {
 
         Support support = supportRepository.findById(modifyRequest.getSupportId()).get();
-
-        if (support.getEngineer().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (support.getEngineer().getUsername().equals(user.getUsername())
+        || user.getId()==33){
             // SupportRequest를 Support 엔티티로 변환
             support.setSupportDate(modifyRequest.getSupportDate());
             support.setRedmineIssue(modifyRequest.getRedmineIssue());
@@ -113,6 +114,7 @@ public class SupportServiceImpl implements SupportService {
 
             // Support 엔티티를 저장하고 반환
             Support savedsupport = supportRepository.save(support);
+            log.info("===MODIFY=== (" + savedsupport.getTaskTitle() + " :: " + savedsupport.getEngineer().getName() + ")");
 
             return SupportResponse.entityToResponse(savedsupport);
         }
@@ -122,9 +124,11 @@ public class SupportServiceImpl implements SupportService {
 
     @Override
     public void deleteSupport(Long supportId) {
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Support support = supportRepository.findById(supportId).orElse(null);
 
-        if (support != null && support.getEngineer().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+        if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())
+                || user.getId()==33)){
             supportRepository.delete(support);
             log.info("===DELETE=== (" + support.getTaskTitle() + " :: " + support.getEngineer().getName() + ")");
         }

@@ -1,6 +1,7 @@
 package com.example.smstest.domain.support.repository;
 
 import com.example.smstest.domain.support.entity.*;
+import com.example.smstest.domain.team.entity.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,5 +24,9 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
             "WHERE s.engineer.id = :engineerId " +
             "GROUP BY s.customer.id, s.product.id, s.state.id")
     List<Object[]> countAttributesByEngineer(@Param("engineerId") Long engineerId);
+
+    int countByState(State state);
+
+    int countByStateAndEngineer_Team( State state, Team team);
 
 }
