@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
 
 </head>
 <body>
@@ -435,29 +436,6 @@
     if (user.id !== 33){
         supportDateInput.min = getSevenDaysAgo();
     }
-
-    // 이슈/제품명 가이드 버튼
-    document.getElementById("readProductButton").addEventListener("click", function() {
-        var readProductDrawer = document.getElementById("readProductDrawer");
-        readProductDrawer.style.transform = "translateX(0)"; // 드로어 보이도록 설정
-    });
-    // 이슈/제품명 가이드 버튼
-    document.getElementById("readIssueButton").addEventListener("click", function() {
-        var readIssueDrawer = document.getElementById("readIssueDrawer");
-        readIssueDrawer.style.transform = "translateX(0)"; // 드로어 보이도록 설정
-    });
-
-    // Close 버튼 클릭 시 드로어 닫기
-    var ProductcloseButton = document.querySelector("[data-drawer-dismiss='readProductDrawer']");
-    ProductcloseButton.addEventListener("click", function() {
-        var readProductDrawer = document.getElementById("readProductDrawer");
-        readProductDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
-    });
-    var IssuecloseButton = document.querySelector("[data-drawer-dismiss='readIssueDrawer']");
-    IssuecloseButton.addEventListener("click", function() {
-        var readIssueDrawer = document.getElementById("readIssueDrawer");
-        readIssueDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
-    });
 
     // 바깥 영역 클릭 시 드로어 닫기
     document.addEventListener("click", function(event) {

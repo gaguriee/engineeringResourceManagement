@@ -50,6 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/images/**").permitAll()
                 .antMatchers("/account/login").permitAll()
                 .antMatchers("/create").hasRole("USER")
+                .antMatchers("/account/register").hasRole("SUPERUSER")
                 .anyRequest().authenticated()
                 .and().logout().permitAll()
                 .and()
