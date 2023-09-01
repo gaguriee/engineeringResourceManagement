@@ -25,8 +25,10 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
             "GROUP BY s.customer.id, s.product.id, s.state.id")
     List<Object[]> countAttributesByEngineer(@Param("engineerId") Long engineerId);
 
-    int countByState(State state);
+    @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state")
+    Long findTotalSupportTypeHourByState(@Param("state") State state);
 
-    int countByStateAndEngineer_Team( State state, Team team);
+    @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team = :team")
+    Long findTotalSupportTypeHourByStateAndTeam(@Param("state") State state, @Param("team") Team team);
 
 }

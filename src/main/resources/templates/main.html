@@ -8,26 +8,61 @@
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
 
+    <style>
+        * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+        /* PC에서의 스타일 */
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* PC에서는 한 줄에 2개의 열 */
+            gap: 10px; /* 아이템 사이의 간격 */
+        }
+
+        .radar-chart {
+            padding: 24px;
+            padding-left: 164px;
+            padding-right: 164px;
+
+        }
+
+        /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .radar-chart {
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+        }
+    </style>
+
 </head>
 
 <body>
 <div th:replace="header :: header"></div>
 
-<section class="bg-white dark:bg-gray-900" style="padding: 96px; padding-left: 120px; padding-right: 120px">
+<section class="bg-white dark:bg-gray-900" >
 
     <div>
+
+<!--        <iframe src="https://err2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>-->
         <iframe src="https://erm2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>
-        <iframe src="https://erm2.somansa.com/superset/dashboard/2/?standalone=2&slice_id=4" width="100%" height="700" ></iframe>
+
     </div>
-<!--    <div class="flex" style="background-color: #F7F7F7; padding: 32px" >-->
-<!--        <div style="width: 50%; background-color: white; display: flex; justify-content: center; align-items: center;">-->
-<!--            <canvas id="overallRadarChart"></canvas>-->
-<!--        </div>-->
-<!--        <div style="width: 50%; background-color: white; display: flex; justify-content: center; align-items: center;">-->
-<!--            <canvas id="teamRadarChart"></canvas>-->
-<!--        </div>-->
-<!--    </div>-->
+
+    <div class="grid-container"   style="background-color: #F7F7F7; padding: 32px; width: 100%">
+        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <canvas id="overallRadarChart"></canvas>
+        </div>
+        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <canvas id="teamRadarChart"></canvas>
+        </div>
+    </div>
+
 </section>
+
 <div th:replace="footer :: footer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -44,8 +79,7 @@
 
     // 전체 데이터셋 추가
     var overallDataset = [{
-        label: "overall",
-        width: '50%',
+        label: "기술N본부",
         data: overallSupportTypeHourSums,
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
@@ -55,14 +89,14 @@
     // 팀별 데이터셋 추가
     // 미리 정의된 팀 색상 배열
     var teamColors = [
-        'rgba(255, 99, 132, 0.2)', // 붉은색
-        'rgba(75, 192, 192, 0.2)', // 청록색
-        'rgba(54, 162, 235, 0.2)', // 파란색
-        'rgba(255, 159, 64, 0.2)', // 주황색
-        'rgba(153, 102, 255, 0.2)', // 보라색
-        'rgba(255, 205, 86, 0.2)', // 노란색
-        'rgba(220, 20, 60, 0.2)',  // 크림슨
-        'rgba(0, 128, 0, 0.2)'     // 녹색
+        'rgb(255, 99, 132)',  // 붉은색
+        'rgb(75, 192, 192)',  // 청록색
+        'rgb(54, 162, 235)',  // 파란색
+        'rgb(255, 159, 64)',  // 주황색
+        'rgb(153, 102, 255)', // 보라색
+        'rgb(220, 20, 60)',   // 크림슨
+        'rgb(255, 205, 86)',  // 노란색
+        'rgb(0, 128, 0)'      // 녹색
     ];
 
     var teamDatasets = [];
@@ -70,12 +104,13 @@
 
     for (var teamName in teamDataMap) {
         var color = teamColors[colorIndex % teamColors.length]; // 색상을 반복해서 할당
+        var transparentColor = color.replace("rgb", "rgba").replace(")", ", 0.5)"); // 투명도 추가
         colorIndex++;
 
         teamDatasets.push({
             label: teamName,
             data: teamDataMap[teamName],
-            backgroundColor: color,
+            backgroundColor: transparentColor, // 투명도 추가된 색상
             borderColor: color,
             borderWidth: 2
         });
@@ -101,7 +136,7 @@
             plugins: {
                 title: {
                     display: true,
-                    text: "연간 기술본부 업무 집중도 분석",
+                    text: "기술본부 업무 집중도 분석",
                     font: {
                         size: 18 // 제목 글꼴 크기 설정
                     }
@@ -118,7 +153,7 @@
         }
     });
 
-    overallCtx.canvas.style.width = "50%";
+    overallCtx.canvas.style.width = "100%";
 
     var teamRadarChart = new Chart(teamCtx, {
         type: 'radar',
@@ -127,19 +162,20 @@
             datasets: teamDatasets
         },
         options: {
-            scales: {
-                r: {
-                    pointLabels: {
-                        font: {
-                            size: 14 // 글꼴 크기 설정
-                        }
+            r: {
+                angleLines: {
+                    lineWidth: 2, // 폭 간격 조절을 위한 선 두께 설정
+                },
+                pointLabels: {
+                    font: {
+                        size: 14 // 글꼴 크기 설정
                     }
                 }
             },
             plugins: {
                 title: {
                     display: true,
-                    text: "연간 팀별 업무 집중도 분석",
+                    text: "팀별 업무 집중도 분석",
                     font: {
                         size: 18 // 제목 글꼴 크기 설정
                     }
@@ -156,12 +192,10 @@
         }
     });
 
-    teamRadarChart.canvas.style.width = "50%";
+    teamRadarChart.canvas.style.width = "100%";
 
 </script>
 
-<style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
-</style>
+
 </body>
 </html>

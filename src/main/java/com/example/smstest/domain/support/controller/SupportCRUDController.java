@@ -168,7 +168,6 @@ public class SupportCRUDController {
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(states, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

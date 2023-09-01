@@ -38,20 +38,20 @@ public class MainController {
         List<State> states = stateRepository.findAll();
         List<Team> teams = teamRepository.findAll();
 
-        List<Integer> overallSupportTypeHourSums = new ArrayList<>();
-        Map<String, List<Integer>> teamDataMap = new HashMap<>();
+        List<Long> overallSupportTypeHourSums = new ArrayList<>();
+        Map<String, List<Long>> teamDataMap = new HashMap<>();
 
         // 전체 데이터 합계 계산
         for (State state : states) {
-            Integer overallSum = supportRepository.countByState(state);
+            Long overallSum = supportRepository.findTotalSupportTypeHourByState(state);
             overallSupportTypeHourSums.add(overallSum != null ? overallSum : 0);
         }
 
         // 팀별 데이터 계산
         for (Team team : teams) {
-            List<Integer> supportTypeHourSums = new ArrayList<>();
+            List<Long> supportTypeHourSums = new ArrayList<>();
             for (State state : states) {
-                Integer sum = supportRepository.countByStateAndEngineer_Team( state, team );
+                Long sum = supportRepository.findTotalSupportTypeHourByStateAndTeam( state, team );
                 supportTypeHourSums.add(sum != null ? sum : 0);
             }
             teamDataMap.put(team.getName(), supportTypeHourSums);

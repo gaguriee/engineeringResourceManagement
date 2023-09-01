@@ -37,12 +37,12 @@ public class CustomerCRUDController {
 
     @GetMapping("/search")
     public String searchSupportByFilters(
-            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String Keyword,
             Pageable pageable,
             Model model) {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Customer> result = customerServiceImpl.searchCustomers(keyword, pageable);
+        Page<Customer> result = customerServiceImpl.searchCustomers(Keyword, pageable);
 
         model.addAttribute("customers", result);
         model.addAttribute("totalPages", result.getTotalPages());
@@ -58,7 +58,6 @@ public class CustomerCRUDController {
         List<SupportSummary> supportSummary = customerServiceImpl.getSupportSummaryByCustomerId(customerId);
         model.addAttribute("supportSummary", supportSummary);
 
-        System.out.println(supportSummary);
         return "customerDetails";
     }
 }

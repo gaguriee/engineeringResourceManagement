@@ -52,6 +52,30 @@
 <section class="bg-white dark:bg-gray-900">
 
     <!-- drawer component -->
+    <div id="readStateDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
+        <div style="display: flex; margin-top: 48px">
+            <h4 id="drawer-label_state" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white" >업무구분 가이드</h4>
+            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+        </div>
+        <div class="separator" style="margin-top: 8px; width: 100%; height: 1px; background-color: lightgray"></div>
+
+        <ul style="margin-top: 12px">
+            <!-- Java 코드로 받아온 issues 리스트를 이용하여 동적으로 리스트를 생성합니다. -->
+            <!-- 여기서는 Thymeleaf의 `th:each` 디렉티브를 사용합니다. -->
+            <li th:each="state : ${states}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
+                <!-- 각 이슈의 이름과 설명을 표시합니다. -->
+                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;" th:text="${state.name}"></span>
+                <span style="font-weight: normal; color: gray" th:text="${state.description}"></span>
+            </li>
+        </ul>
+        <button type="button" data-drawer-dismiss="readStateDrawer" aria-controls="readStateDrawer" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            <span class="sr-only">Close menu</span>
+        </button>
+
+    </div>
     <div id="readIssueDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
         <div style="display: flex; margin-top: 48px">
             <h4 id="drawer-label_issue" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white" >이슈구분 가이드</h4>
@@ -114,7 +138,7 @@
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색 *</label>
-                <input type="text"  name="customerName" id="customer" list="customerList" th:attr="placeholder='고객사 검색(내근은 소만사 선택)'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <input type="text"  name="customerName" id="customer" list="customerList" th:attr="placeholder='고객사 (내근은 소만사 선택)'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <datalist id="customerList">
                     <option th:each="customer : ${customers}" th:value="${customer.name}" ></option>
                 </datalist>
@@ -128,8 +152,18 @@
 
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-8">
                 <div>
-                    <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분 *</label>
-                    <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <div style="display: flex; ">
+                        <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분 *</label>
+
+                        <div >
+                            <button id="readStateButton" type="button" data-drawer-target="readStateDrawer" data-drawer-show="readStateDrawer" aria-controls="readStateDrawer">
+                                <svg  style="margin-left: 2px" class="w-3 h-3 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                    </div>                    <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="" selected>업무 구분을 선택해주세요.</option>
                         <!-- Iterate over the issues list and add each issue's name as an option -->
                         <th:block th:each="state : ${states}">
@@ -362,16 +396,18 @@
      */
 
     document.addEventListener("DOMContentLoaded", function () {
+
         const stateSelect = document.getElementById("state");
         const issueSelect = document.getElementById("issue");
         const productSelect = document.getElementById("product");
+
+        const allowedIssueIds = ["48", "49", "50", "51"];
+        const allowedProductIds = ["24"];
 
         stateSelect.addEventListener("change", function () {
             const selectedStateId = this.value;
 
             if (selectedStateId === "5") {
-                const allowedIssueIds = ["48", "49", "50", "51"];
-                const allowedProductIds = ["24", "25", "26", "27"];
 
                 issueSelect.querySelectorAll("option").forEach(option => {
                     option.hidden = !allowedIssueIds.includes(option.value);
@@ -380,18 +416,19 @@
                 productSelect.querySelectorAll("option").forEach(option => {
                     option.hidden = !allowedProductIds.includes(option.value);
                 });
+
+                productSelect.value = 24;
+                issueSelect.value = "";
             } else {
                 issueSelect.querySelectorAll("option").forEach(option => {
-                    option.hidden = false;
+                    option.hidden = allowedIssueIds.includes(option.value);
                 });
 
                 productSelect.querySelectorAll("option").forEach(option => {
-                    option.disabled = false;
+                    option.hidden = allowedProductIds.includes(option.value);
                 });
             }
 
-            issueSelect.value = "";
-            productSelect.value = "";
         });
 
     });
@@ -410,6 +447,10 @@
 
     if (customerCreateBtn) {
         customerCreateBtn.addEventListener('click', function () {
+            if (customerName.value.length < 1) {
+                alert("정확한 고객사명을 입력해 주세요.");
+                return;
+            }
             fetch("/customer/create", {
                 method: "POST",
                 headers: {
@@ -466,50 +507,14 @@
         return `${year}-${month}-${day}`;
     }
 
+
     // 최대 날짜를 오늘 날짜로 설정
     const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
-    supportDateInput.min = getSevenDaysAgo();
+    if (user.id !== 33){
+        supportDateInput.min = getSevenDaysAgo();
+    }
 
-    // 이슈/제품명 가이드 버튼
-    document.getElementById("readProductButton").addEventListener("click", function() {
-        var readProductDrawer = document.getElementById("readProductDrawer");
-        readProductDrawer.style.transform = "translateX(0)"; // 드로어 보이도록 설정
-    });
-    // 이슈/제품명 가이드 버튼
-    document.getElementById("readIssueButton").addEventListener("click", function() {
-        var readIssueDrawer = document.getElementById("readIssueDrawer");
-        readIssueDrawer.style.transform = "translateX(0)"; // 드로어 보이도록 설정
-    });
-
-    // Close 버튼 클릭 시 드로어 닫기
-    var ProductcloseButton = document.querySelector("[data-drawer-dismiss='readProductDrawer']");
-    ProductcloseButton.addEventListener("click", function() {
-        var readProductDrawer = document.getElementById("readProductDrawer");
-        readProductDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
-    });
-    var IssuecloseButton = document.querySelector("[data-drawer-dismiss='readIssueDrawer']");
-    IssuecloseButton.addEventListener("click", function() {
-        var readIssueDrawer = document.getElementById("readIssueDrawer");
-        readIssueDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
-    });
-
-    // 바깥 영역 클릭 시 드로어 닫기
-    document.addEventListener("click", function(event) {
-        var readProductDrawer = document.getElementById("readProductDrawer");
-        var readIssueDrawer = document.getElementById("readIssueDrawer");
-
-        var isProductDrawerClicked = event.target.closest("#readProductDrawer");
-        var isProductButtonClicked = event.target.closest("#readProductButton");
-        if (!isProductDrawerClicked && !isProductButtonClicked) {
-            readProductDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
-        }
-        var isIssueDrawerClicked = event.target.closest("#readIssueDrawer");
-        var isIssueButtonClicked = event.target.closest("#readIssueButton");
-        if (!isIssueDrawerClicked && !isIssueButtonClicked) {
-            readIssueDrawer.style.transform = "translateX(-100%)"; // 드로어 숨기도록 설정
-        }
-    });
     function validateForm() {
         // Get the form elements
         var taskTitle = document.getElementById('taskTitle').value;

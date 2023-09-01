@@ -16,4 +16,7 @@ public class State {
 
     @Column(name = "상태", nullable = false)
     private String name;
+
+    @Column(name = "참조")
+    private String description;
 }
