@@ -15,25 +15,37 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <div th:replace="header :: header"></div>
 
-<section class="bg-gray-50 dark:bg-gray-900 flex  w-900">
+<section class="bg-gray-50 dark:bg-gray-900 flex " style="padding: 24px">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
 
-        <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700" style="padding: 48px">
             <div class="p-6 py-12 space-y-4 md:space-y-6 sm:p-8">
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                    Create and account
+                    계정 생성
                 </h1>
-                <form class="form-signin space-y-4 md:space-y-6" th:action="@{/account/register}" method="post" th:object="${accountRequestDto}"> <!-- 요청 보내기-->
+                <form class="form-signin space-y-4 md:space-y-6" th:action="@{/account/register}" method="post" th:object="${accountRequest}"> <!-- 요청 보내기-->
                     <div>
-                        <label for="userId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User Id</label>
-                        <input type="number" name="userId" id="userId" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="user id" required="">
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">이름</label>
+                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="이름을 입력해 주세요." required="">
                     </div>
+                    <label for="position" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">직책</label>
+                    <select th:field="*{position}" id="position" name="position" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option th:each="pos : ${positions}" th:value="${pos.label}" th:text="${pos.label}"></option>
+                    </select>
+
+                    <label for="rank" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">직급</label>
+                    <select th:field="*{rank}" id="rank" name="rank" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option th:each="rk : ${ranks}" th:value="${rk.label}" th:text="${rk.label}"></option>
+                    </select>
+
+                    <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">팀</label>
+                    <select th:field="*{teamId}" id="team" name="team" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+                    </select>
+
                     <div>
                         <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">username</label>
                         <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="아이디" required="">
-<!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">-->
-<!--                            중복회원-->
-<!--                        </div>-->
                     </div>
 
                     <div>
@@ -43,15 +55,12 @@
                     <div>
                         <label for="password_confirm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
                         <input type="password" name="password_confirm" id="password_confirm" placeholder="비밀번호 확인" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
-<!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">-->
-<!--                            비밀번호 불일치-->
-<!--                        </div>-->
                     </div>
 
-                    <button type="submit" class="w-full text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create an account</button>
-                    <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                        <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
-                    </p>
+                    <button type="submit" class="w-full text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">계정 생성</button>
+                    <div th:if="${error}" class="alert alert-danger text-sm text-red-600" role="alert">
+                        <span th:text="${error}"></span>
+                    </div>
                 </form>
             </div>
         </div>

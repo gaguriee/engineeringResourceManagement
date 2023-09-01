@@ -56,9 +56,15 @@ public class Memp {
     }
 
     @Builder
-    public Memp(String username, @NotNull String password){
-        this.username=username;
-        this.password=password;
+    public Memp(String name, Team team, String position, String rank, String calenderColor, String username, @NotNull String password, Role role) {
+        this.name = name;
+        this.team = team;
+        this.position = position;
+        this.rank = rank;
+        this.calenderColor = calenderColor;
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {

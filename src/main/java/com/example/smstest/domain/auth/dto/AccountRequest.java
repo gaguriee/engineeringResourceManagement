@@ -10,7 +10,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AccountRequest {
 
-    private Long userId;
+    private String name;
+
+    private String Position;
+
+    private String Rank;
+
+    private Integer teamId;
 
     private String username;
 
@@ -18,8 +24,13 @@ public class AccountRequest {
 
     private String password_confirm;
 
+
     @Builder
-    public AccountRequest(String username, String password, String password_confirm){
+    public AccountRequest(String name, String Position, String Rank, Integer teamId, String username, String password, String password_confirm) {
+        this.name = name;
+        this.Position = Position;
+        this.Rank = Rank;
+        this.teamId = teamId;
         this.username = username;
         this.password = password;
         this.password_confirm = password_confirm;
