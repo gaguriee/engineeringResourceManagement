@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+ memp.getRole()));
 
         return new User(memp.getUsername(), memp.getPassword(), grantedAuthorities);
     }

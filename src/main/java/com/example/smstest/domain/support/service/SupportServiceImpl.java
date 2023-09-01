@@ -82,7 +82,7 @@ public class SupportServiceImpl implements SupportService {
 
         // Support 엔티티를 저장하고 반환
         Support newsupport = supportRepository.save(support);
-        log.info("===CREATE=== ("+ SupportResponse.entityToResponse(newsupport) +")");
+        log.info("===CREATE=== ("+ SupportResponse.entityToResponse(newsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
 
         return SupportResponse.entityToResponse(newsupport);
     }
@@ -114,7 +114,7 @@ public class SupportServiceImpl implements SupportService {
 
             // Support 엔티티를 저장하고 반환
             Support savedsupport = supportRepository.save(support);
-            log.info("===MODIFY=== (" + savedsupport.getTaskTitle() + " :: " + savedsupport.getEngineer().getName() + ")");
+            log.info("===MODIFY=== ("+ SupportResponse.entityToResponse(savedsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
 
             return SupportResponse.entityToResponse(savedsupport);
         }
@@ -130,7 +130,7 @@ public class SupportServiceImpl implements SupportService {
         if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())
                 || user.getId()==33)){
             supportRepository.delete(support);
-            log.info("===DELETE=== (" + support.getTaskTitle() + " :: " + support.getEngineer().getName() + ")");
+            log.info("===DELETE=== ("+ SupportResponse.entityToResponse(support) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
         }
     }
 

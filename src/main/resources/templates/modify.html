@@ -110,10 +110,8 @@
         <div class="separator" style="margin-top: 8px; width: 100%; height: 1px; background-color: lightgray"></div>
 
         <ul style="margin-top: 12px">
-            <!-- Java 코드로 받아온 issues 리스트를 이용하여 동적으로 리스트를 생성합니다. -->
-            <!-- 여기서는 Thymeleaf의 `th:each` 디렉티브를 사용합니다. -->
-            <li th:each="product : ${products}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
-                <!-- 각 이슈의 이름과 설명을 표시합니다. -->
+            <!--            제품명 중 하이픈(-) 제외-->
+            <li th:each="product : ${products}" th:unless="${product.id == 24}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
                 <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;" th:text="${product.name}"></span>
                 <span style="font-weight: normal; color: gray" th:text="${product.description}"></span>
             </li>
@@ -150,20 +148,23 @@
                 </div>
             </div>
 
-            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-8">
+            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-4">
                 <div>
                     <div style="display: flex; ">
                         <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분 *</label>
 
                         <div >
                             <button id="readStateButton" type="button" data-drawer-target="readStateDrawer" data-drawer-show="readStateDrawer" aria-controls="readStateDrawer">
-                                <svg  style="margin-left: 2px" class="w-3 h-3 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
                                 </svg>
+
+                                <!--                                <span style="font-size: xx-small; color: red; margin-top: 1px">도움말 click </span>-->
                             </button>
                         </div>
 
-                    </div>                    <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    </div>
+                    <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="" selected>업무 구분을 선택해주세요.</option>
                         <!-- Iterate over the issues list and add each issue's name as an option -->
                         <th:block th:each="state : ${states}">
@@ -183,8 +184,8 @@
 
                         <div >
                             <button id="readIssueButton"type="button" data-drawer-target="readIssueDrawer" data-drawer-show="readIssueDrawer" aria-controls="readIssueDrawer">
-                                <svg  style="margin-left: 2px" class="w-3 h-3 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
                                 </svg>
                             </button>
                         </div>
@@ -221,8 +222,8 @@
 
                             <div >
                                 <button id="readProductButton" type="button" data-drawer-target="readProductDrawer" data-drawer-show="readProductDrawer" aria-controls="readProductDrawer">
-                                    <svg  style="margin-left: 2px" class="w-3 h-3 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
                                     </svg>
                                 </button>
                             </div>
@@ -237,17 +238,17 @@
                         </select>
                     </div>
                     <div>
-                        <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">주 담당 엔지니어 *</label>
+                        <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 *</label>
                         <input type="text" id="engineer" name="engineerName" th:value="${user.name}" list="engineerList" th:attr="placeholder='필수 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <datalist id="engineerList">
                             <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
                         </datalist>
 
-                        <label for="subEngineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">부 담당 엔지니어</label>
-                        <input type="text" id="subEngineer" name="subEngineerName" list="subEngineerList" th:attr="placeholder='선택 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <datalist id="subEngineerList">
-                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
-                        </datalist>
+                        <!--                        <label for="subEngineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">부 담당 엔지니어</label>-->
+                        <!--                        <input type="text" id="subEngineer" name="subEngineerName" list="subEngineerList" th:attr="placeholder='선택 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">-->
+                        <!--                        <datalist id="subEngineerList">-->
+                        <!--                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>-->
+                        <!--                        </datalist>-->
                     </div>
 
                 </div>
@@ -270,21 +271,6 @@
                             </label>
                         </div>
                     </div>
-                    <div class="mt-2.5 ">
-                        <div class="flex p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                            <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                            </svg>
-                            <span class="sr-only">Info</span>
-                            <div>
-                                <span class="font-medium">[참고] 지원 업무시간 입력</span>
-                                <ul class=" mt-1.5 ml-1 list-disc list-inside">
-                                    <li>일일 : 8시간(09시~18시, 점심시간 1시간 제외)</li>
-                                    <li>외근 : 9시간(09시~20시까지 외근 시, 점심/저녁 총 2시간 제외한 업무시간 입력)</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
                 <div>
@@ -292,6 +278,27 @@
                     <input type="number" name="redmineIssue" id="item-weight" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="레드마인 일감 번호를 입력해주세요. (선택)"  min="0">
                 </div>
 
+            </div>
+            <div>
+                <div class="flex p-4 mb-8 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium" >[참고] 지원 업무시간 입력</span>
+                        <ul class=" mt-1.5 ml-1 list-disc list-inside mb-2">
+                            <li>일일 : 8시간(09시~18시, 점심시간 1시간 제외)</li>
+                            <li>외근 : 9시간(09시~20시까지 외근 시, 점심/저녁 총 2시간 제외한 업무시간 입력)</li>
+                        </ul>
+
+                        <span class="font-medium" style="color: red; ">[중요] 추가 및 수정/삭제 기간</span>
+                        <ul class=" mt-1.5 ml-1 list-disc list-inside">
+                            <li>금일을 기준으로 <b>7일 전</b> 까지만 수정 혹은 추가 가능</li>
+                            <li  style="color: red; ">초과되어 업로드 하지 못하는 내역이 있는 경우 본부장 결재 필요</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
 
@@ -507,11 +514,10 @@
         return `${year}-${month}-${day}`;
     }
 
-
     // 최대 날짜를 오늘 날짜로 설정
     const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
-    if (user.id !== 33){
+    if (user.role !== "ADMIN"){
         supportDateInput.min = getSevenDaysAgo();
     }
 

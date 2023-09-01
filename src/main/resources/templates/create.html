@@ -11,8 +11,6 @@
 </head>
 <body>
 <div th:replace="header :: header"></div>
-
-
 <!-- 고객사 등록 모달 -->
 <div id="defaultModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto" style="align-items: center; align-content: center; ">
@@ -294,7 +292,7 @@
 
                         <span class="font-medium" style="color: red; ">[중요] 추가 및 수정/삭제 기간</span>
                         <ul class=" mt-1.5 ml-1 list-disc list-inside">
-                            <li>금일을 기준으로 "7일 전" 까지만 수정 혹은 추가 가능</li>
+                            <li>금일을 기준으로 <b>7일 전</b> 까지만 수정 혹은 추가 가능</li>
                             <li  style="color: red; ">초과되어 업로드 하지 못하는 내역이 있는 경우 본부장 결재 필요</li>
                         </ul>
                     </div>
@@ -304,12 +302,13 @@
 
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskSummary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >작업 요약 *</label>
-                <textarea name = "taskSummary" id="taskSummary" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역을 요약해주세요."></textarea>
+                <textarea name = "taskSummary" id="taskSummary" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역을 요약해주세요."  onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
 
             </div>
             <div class="sm:col-span-2">
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세 *</label>
-                <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)"></textarea>
+                <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)"  onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
+
             </div>
             <div id="alert" class="h-36">
                 <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
@@ -477,7 +476,7 @@
     // 최대 날짜를 오늘 날짜로 설정
     const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
-    if (user.id !== 33){
+    if (user.role !== "ADMIN"){
         supportDateInput.min = getSevenDaysAgo();
     }
 

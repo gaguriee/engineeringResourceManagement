@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
@@ -30,5 +31,5 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
 
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team = :team")
     Long findTotalSupportTypeHourByStateAndTeam(@Param("state") State state, @Param("team") Team team);
-
+    
 }

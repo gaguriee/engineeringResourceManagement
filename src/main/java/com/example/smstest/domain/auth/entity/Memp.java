@@ -1,5 +1,6 @@
 package com.example.smstest.domain.auth.entity;
 
+import com.example.smstest.domain.auth.Enum.Role;
 import com.example.smstest.domain.auth.dto.AccountRequest;
 import com.example.smstest.domain.team.entity.Team;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,7 +38,7 @@ public class Memp {
     @Column(name = "직급", nullable = false)
     private String rank;
 
-    @Column(name = "캘린더색상", nullable = false)
+    @Column(name = "캘린더색상", nullable = true)
     private String calenderColor;
 
     @Column(unique =true)
@@ -45,6 +46,9 @@ public class Memp {
 
     @NotNull
     private String password;
+
+    @Enumerated(EnumType.STRING) // 데이터베이스에 저장할 때 enum을 USER 또는 ADMIN으로 저장한다.
+    private Role role;
 
     public Memp(AccountRequest accountRequest){
         this.username= accountRequest.getUsername();
