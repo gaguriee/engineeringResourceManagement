@@ -12,9 +12,11 @@ import com.example.smstest.domain.team.dto.MemberInfoDTO;
 import com.example.smstest.domain.team.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.team.dto.TeamInfoDTO;
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.team.entity.Schedule;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.DepartmentRepository;
 import com.example.smstest.domain.auth.repository.MempRepository;
+import com.example.smstest.domain.team.repository.ScheduleRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +43,7 @@ public class TeamServiceImpl implements TeamService {
     private final SupportRepository supportRepository;
     private final CustomerRepository customerRepository;
     private final DepartmentRepository departmentRepository;
+    private ScheduleRepository scheduleRepository;
 
     public TeamInfoDTO getTeamInfo(Integer teamId) {
         Optional<Team> teamOptional = teamRepository.findById(teamId);
@@ -114,4 +118,18 @@ public class TeamServiceImpl implements TeamService {
         return memberInfoDetailDTO;
     }
 
+    public List<Schedule> getTodayTeamSchedule(Team team, Date date) {
+        // 오늘의 특정 팀 일정을 조회하는 로직을 추가할 수 있음
+        return scheduleRepository.findByTeamAndDate(team, date);
+    }
+
+    public Schedule saveSchedule(Schedule schedule) {
+        // 스케줄 저장 로직을 추가할 수 있음
+        return scheduleRepository.save(schedule);
+    }
+
+    public void deleteSchedule(Long scheduleId) {
+        // 스케줄 삭제 로직을 추가할 수 있음
+        scheduleRepository.deleteById(scheduleId);
+    }
 }

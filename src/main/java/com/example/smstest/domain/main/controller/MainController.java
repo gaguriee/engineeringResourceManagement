@@ -85,18 +85,15 @@ public class MainController {
 
     @PostMapping("/dismissAnnouncement")
     public ResponseEntity<String> dismissAnnouncement(@RequestParam Integer announcementId) {
-        // Get the current user
+
         Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // Find the announcement by ID
         Optional<Announcement> announcementOptional = announcementRepository.findById(announcementId);
 
         if (announcementOptional.isPresent()) {
             Announcement announcement = announcementOptional.get();
 
-            // Check if the current user's ID is not already in dismissedUsers
             if (!announcement.getDismissedUsers().contains(currentUser.getId())) {
-                // Add the current user's ID to dismissedUsers
                 announcement.getDismissedUsers().add(currentUser.getId());
                 announcementRepository.save(announcement);
             }

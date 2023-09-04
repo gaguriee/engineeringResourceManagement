@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="favicon" href="/templates/favicon.ico">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
+
+</head>
+<body>
+<div th:replace="header :: header"></div>
+
+<section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
+    <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+    </nav>
+    <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+        <div class="mb-8">
+
+            <h1>오늘의 일정</h1>
+
+            <!-- 팀 일정 표시 -->
+            <h2>금일 팀 일정</h2>
+            <h3 th:text="'[기술 N본부'+${team.name}+'] - '+${#calendars.format(#dates.createNow(), 'yyyy.MM.dd(EEE)')}"></h3>
+            <h3>#업무계획</h3>
+
+
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <tbody>
+                    <tr th:each="schedule : ${teamSchedule}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="px-6 py-4" th:text="${schedule.content}">일정</td>
+                        <td class="px-6 py-4" th:text="${schedule.memp.name}">날짜</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+        <div class="mb-8">
+
+            <h2>내 일정</h2>
+
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <tbody>
+                    <tr th:each="schedule : ${thisWeekSchedule}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="px-6 py-4" th:text="${schedule.content}">일정 제목</td>
+                        <td class="px-6 py-4" th:text="${schedule.date}">일정 날짜</td>
+                        <!-- 스케줄 편집 페이지로 이동하는 링크 -->
+                        <td class="px-6 py-4"><a th:href="@{/schedule/edit/{scheduleId}(scheduleId=${schedule.id})}">편집</a></td>
+                        <!-- 스케줄 삭제를 위한 폼 제출 -->
+                        <td class="px-6 py-4">
+                            <form th:action="@{/schedule/delete/{scheduleId}(scheduleId=${schedule.id})}" method="post">
+                                <input type="hidden" name="teamId" th:value="${team.id}">
+                                <input type="submit" value="삭제">
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <form action="/schedule/add" method="post" th:object="${newSchedule}">
+
+            <label for="content" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+            <input type="text" id="content" name="content" th:field="*{content}">
+            <br>
+            <label for="date"></label>
+            <input type="date" id="date" name="date" th:field="*{date}">
+            <br>
+            <input type="hidden" id="teamId" name="teamId" th:value="${team.id}">
+
+            <div style="display: flex; align-items: end; justify-content: flex-end;">
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                    일정 추가
+                </button>
+            </div>
+        </form>
+    </div>
+
+</section>
+
+<div th:replace="footer :: footer"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+<script>
+</script>
+<style>
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+</style>
+</body>
+</html>

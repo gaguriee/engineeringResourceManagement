@@ -47,7 +47,8 @@
 <section class="bg-white dark:bg-gray-900" >
 
 <!--    팝업 모달-->
-    <th:block th:each="announcement : ${announcements}" th:unless="${#lists.contains(announcement.dismissedUsers, user.id)}">
+    <th:block th:each="announcement : ${announcements}"
+              th:if="${user == null or not #lists.contains(announcement.dismissedUsers, user.id)}">
         <!-- 각 모달에 announcement.id를 ID로 할당 -->
         <div th:id="'modal_' + ${announcement.id}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full" aria-modal="true">
             <div class="relative w-full max-w-2xl max-h-full">
@@ -62,8 +63,8 @@
                         </button>
                     </div>
                     <div class="p-6 space-y-6">
-                        <div class="mb-4">
-                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400" th:text="${announcement.content}"></p>
+                        <div class="mb-4 w-full">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400" style="white-space: pre-wrap; word-wrap: break-word;" th:text="${announcement.content}"></p>
                         </div>
                         <!-- Add a "다시 보지 않음" 체크박스 -->
                         <label class="inline-flex items-center">
@@ -107,7 +108,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
-    // 모달 닫기 함수
+    var user = /*[[${user}]]*/ ;
+
     function closeModal(modalId) {
         var modal = document.getElementById(modalId);
         modal.style.display = 'none';
@@ -119,7 +121,9 @@
         confirmButtons.forEach(function(button) {
             button.addEventListener('click', function() {
                 var modalId = 'modal_' + button.getAttribute('data-modal-hide');
-                dismissAnnouncement(button.getAttribute('data-modal-hide'));
+                if (user != null){
+                    dismissAnnouncement(button.getAttribute('data-modal-hide'));
+                }
                 closeModal(modalId);
             });
         });
@@ -132,8 +136,6 @@
             })
                 .then(response => response.text())
                 .then(data => {
-                    // Log the response or handle it as needed
-                    console.log(data);
                 });
         }
     }

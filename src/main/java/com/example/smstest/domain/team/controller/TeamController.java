@@ -116,4 +116,5 @@ public class TeamController {
         return "memberInfoDetail";
     }
 
+
 }

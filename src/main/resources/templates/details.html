@@ -84,13 +84,13 @@
         <dl style="padding-top: 24px; margin-bottom: 24px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업요약</dt>
             <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                <span class="w-full" th:inline="text" style="white-space: pre;">[[${support.taskSummary} ?: ' ']]</span>
+                <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskSummary} ?: ' ']]</span>
             </dd>
         </dl>
         <dl style="padding-top: 24px; padding-bottom: 96px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
             <dd class="w-full mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400 line-break" >
-                <span class="w-full" th:inline="text" style="white-space: pre;">[[${support.taskDetails} ?: ' ']]</span>
+                <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskDetails} ?: ' ']]</span>
             </dd>
         </dl>
         <div th:if="${user.id == support.engineerId || user.role.name()=='ADMIN' }" class="flex items-center space-x-4" style="padding-top: 48px">
