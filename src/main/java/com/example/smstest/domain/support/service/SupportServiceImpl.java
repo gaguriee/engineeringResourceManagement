@@ -93,7 +93,7 @@ public class SupportServiceImpl implements SupportService {
         Support support = supportRepository.findById(modifyRequest.getSupportId()).get();
         Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (support.getEngineer().getUsername().equals(user.getUsername())
-        || user.getId()==33){
+        || user.getRole().name().equals("ADMIN")){
             // SupportRequest를 Support 엔티티로 변환
             support.setSupportDate(modifyRequest.getSupportDate());
             support.setRedmineIssue(modifyRequest.getRedmineIssue());
@@ -128,7 +128,7 @@ public class SupportServiceImpl implements SupportService {
         Support support = supportRepository.findById(supportId).orElse(null);
 
         if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())
-                || user.getId()==33)){
+                || user.getRole().name().equals("ADMIN"))){
             supportRepository.delete(support);
             log.info("===DELETE=== ("+ SupportResponse.entityToResponse(support) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
         }

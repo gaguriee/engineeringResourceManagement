@@ -11,11 +11,9 @@
 </head>
 <body>
 <div th:replace="header :: header"></div>
-<!-- Start block -->
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
 
     <div class="mx-auto max-w-screen-md px-4 lg:px-12">
-        <!-- Start coding here -->
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden p-8">
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
                 <div id="list_header" style="justify-items: end; align-items: end">
@@ -40,14 +38,12 @@
                 </div>
             </div>
             <div style="display: flex; flex-wrap: wrap; flex-direction: row;" class="p-8 pl-2 pr-2">
-                <div th:each="customer : ${customers}" style="flex: 0 0 33.33%; box-sizing: border-box; padding: 0.5rem;">
+                <div th:each="customer : ${customers}" class="customer-card">
                     <a th:href="@{/customer/details(customerId=${customer.id})}" class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800" style="width: 100%;">
                         <span th:text="${customer.name}" class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 w-full"></span>
                     </a>
                 </div>
             </div>
-
-
 
             <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -80,8 +76,7 @@
                                 <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
                                     <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
                                     <a th:href="@{/customer/search(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
-                                       th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
-                                       th:text="${pageNo}">
+                                       th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white' "  th:text="${pageNo}">
                                     </a>
                                 </th:block>
                             </li>
@@ -107,67 +102,7 @@
 <!-- End block -->
 <div th:replace="footer :: footer"></div>
 
-<style>
-    /* 기본적으로 사이드바는 숨겨진 상태 */
-    #default-sidebar {
-        transform: translateX(-100%);
-    }
-
-    /* 열리는 애니메이션 효과 */
-    #default-sidebar.open {
-        transition: transform 0.3s ease;
-        transform: translateX(0);
-    }
-
-    /* Mobile responsive styles */
-    @media (max-width: 640px) {
-
-        #list_header{
-            display: block;
-            align-items: end;
-            align-content: end;
-            justify-items: end;
-        }
-        #search-container {
-            width: 100%;
-            margin-bottom: 4px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            display: block;
-            width: 100%;
-        }
-
-        th,
-        td {
-            display: block;
-            text-align: left;
-            padding: 1px;
-        }
-
-        th {
-            font-weight: bold;
-            display: none; /* Hide table header on mobile */
-
-        }
-
-        tbody tr {
-            margin-bottom: 5px;
-        }
-
-        tbody tr:last-child {
-            margin-bottom: 0;
-        }
-
-    }
-
-</style>
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
     const currentPage = /*[[${currentPage }]]*/;
@@ -226,7 +161,75 @@
     }
 </script>
 <style>
+
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+
+    .customer-card {
+        flex: 0 0 33.33%;
+        box-sizing: border-box;
+        padding: 0.5rem;
+        width: 100%;
+    }
+
+
+
+    /* 데스크탑에서는 한 줄에 세 개가 표시되도록 스타일 조정 */
+    @media screen and (min-width: 768px) {
+        .customer-card {
+            flex: 0 0 33.33%;
+        }
+    }
+
+    /* Mobile responsive styles */
+    @media (max-width: 640px) {
+
+        .customer-card {
+            flex: 0 0 100%;
+        }
+
+        #list_header{
+            display: block;
+            align-items: end;
+            align-content: end;
+            justify-items: end;
+        }
+        #search-container {
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            display: block;
+            width: 100%;
+        }
+
+        th,
+        td {
+            display: block;
+            text-align: left;
+            padding: 1px;
+        }
+
+        th {
+            font-weight: bold;
+            display: none; /* Hide table header on mobile */
+
+        }
+
+        tbody tr {
+            margin-bottom: 5px;
+        }
+
+        tbody tr:last-child {
+            margin-bottom: 0;
+        }
+
+    }
+
 </style>
 
 </body>

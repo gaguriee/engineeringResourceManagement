@@ -43,7 +43,45 @@
 <body>
 <div th:replace="header :: header"></div>
 
+
 <section class="bg-white dark:bg-gray-900" >
+
+<!--    팝업 모달-->
+    <th:block th:each="announcement : ${announcements}" th:unless="${#lists.contains(announcement.dismissedUsers, user.id)}">
+        <!-- 각 모달에 announcement.id를 ID로 할당 -->
+        <div th:id="'modal_' + ${announcement.id}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full" aria-modal="true">
+            <div class="relative w-full max-w-2xl max-h-full">
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white" th:text="${announcement.title}"></h3>
+                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" th:attr="data-modal-hide= ${announcement.id}">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div class="mb-4">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400" th:text="${announcement.content}"></p>
+                        </div>
+                        <!-- Add a "다시 보지 않음" 체크박스 -->
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" th:id="'dismissCheckbox_'+${announcement.id}"  class="form-checkbox h-4 w-4 text-blue-600" />
+                            <span class="ml-2 text-gray-700 dark:text-gray-400">다시 보지 않음</span>
+                        </label>
+                    </div>
+                    <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <button
+                                type="button"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                th:attr="data-modal-hide= ${announcement.id}"
+                        >확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
 
     <div>
 
@@ -51,7 +89,6 @@
         <iframe src="https://erm2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>
 
     </div>
-
     <div class="grid-container"   style="background-color: #F7F7F7; padding: 32px; width: 100%">
         <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
             <canvas id="overallRadarChart"></canvas>
@@ -60,7 +97,6 @@
             <canvas id="teamRadarChart"></canvas>
         </div>
     </div>
-
 </section>
 
 <div th:replace="footer :: footer"></div>
@@ -70,6 +106,38 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
+
+    // 모달 닫기 함수
+    function closeModal(modalId) {
+        var modal = document.getElementById(modalId);
+        modal.style.display = 'none';
+    }
+
+    // 각 확인 버튼에 클릭 이벤트 리스너 추가
+    document.addEventListener('DOMContentLoaded', function() {
+        var confirmButtons = document.querySelectorAll('[data-modal-hide]');
+        confirmButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var modalId = 'modal_' + button.getAttribute('data-modal-hide');
+                dismissAnnouncement(button.getAttribute('data-modal-hide'));
+                closeModal(modalId);
+            });
+        });
+    });
+
+    function dismissAnnouncement(announcementId) {
+        if (document.getElementById('dismissCheckbox_'+announcementId).checked) {
+            fetch(`/dismissAnnouncement?announcementId=${announcementId}`, {
+                method: 'POST'
+            })
+                .then(response => response.text())
+                .then(data => {
+                    // Log the response or handle it as needed
+                    console.log(data);
+                });
+        }
+    }
+
     var stateNames = /*[[${stateNames}]]*/ ;
     var overallSupportTypeHourSums = /*[[${overallSupportTypeHourSums}]]*/ ;
     var teamDataMap = /*[[${teamDataMap}]]*/ ;

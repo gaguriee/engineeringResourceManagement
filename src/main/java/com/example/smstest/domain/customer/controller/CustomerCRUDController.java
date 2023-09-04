@@ -10,6 +10,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,7 +39,7 @@ public class CustomerCRUDController {
     @GetMapping("/search")
     public String searchSupportByFilters(
             @RequestParam(required = false) String Keyword,
-            Pageable pageable,
+            @PageableDefault(size = 30) Pageable pageable,
             Model model) {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
