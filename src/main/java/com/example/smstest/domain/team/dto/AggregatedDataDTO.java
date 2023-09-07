@@ -13,10 +13,10 @@ public class AggregatedDataDTO {
     private Long productId;
     private String stateName;
     private Long stateId;
-    private Long count;
+    private Double count;
 
     @Builder
-    public AggregatedDataDTO(String customerName, Integer customerId, String productName, Long productId, String stateName, Long stateId, Long count) {
+    public AggregatedDataDTO(String customerName, Integer customerId, String productName, Long productId, String stateName, Long stateId, Double count) {
         this.customerName = customerName;
         this.customerId = customerId;
         this.productName = productName;

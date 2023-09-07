@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+import java.security.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -61,6 +62,7 @@ public class Support {
     private SupportType supportType;
 
     @Column(name = "지원형태_시간")
-    private Integer supportTypeHour;
+    private Float supportTypeHour;
+
 
 }

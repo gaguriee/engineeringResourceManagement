@@ -37,6 +37,6 @@ public class ModifyRequest {
 
     private Long supportTypeId;
 
-    private Integer supportTypeHour;
+    private Float supportTypeHour;
 
 }

@@ -81,7 +81,7 @@ public class TeamServiceImpl implements TeamService {
                 dto.setCustomerName(customerRepository.findById(dto.getCustomerId()).get().getName());
                 dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
                 dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
-                dto.setCount((Long) data[3]);
+                dto.setCount((Double) data[3]);
                 dtoList.add(dto);
             }
         }

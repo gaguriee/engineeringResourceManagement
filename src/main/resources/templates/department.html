@@ -17,6 +17,12 @@
     </nav>
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <div class="mb-8">
+            <a th:href="'/team?departmentId='+${user.getTeam().getDepartment().getId()}"
+               class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+            <span class="relative font-bold px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+                  th:text="${user.getTeam().getDepartment().getName()} + ' 바로 가기'">
+            </span>
+            </a>
             <a th:href="'/teamInfo?teamId='+${user.getTeam().id}"
                class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
             <span class="relative font-bold px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
@@ -50,9 +56,10 @@
         </form>
     </div>
 
-    <div class="mt-8 mb-6">
+    <div class="mt-8 mb-6" style="background-color: #F7F7F7;">
 
-        <iframe th:src="@{'https://erm2.somansa.com/superset/dashboard/3/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>
+        <iframe class="iframe-pc" th:src="@{'https://erm2.somansa.com/superset/dashboard/3/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>
+        <iframe class="iframe-mobile hidden" th:src="@{'https://erm2.somansa.com/superset/dashboard/10/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>
 <!--        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/6/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>-->
     </div>
 </section>
@@ -73,6 +80,18 @@
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
+    @media (max-width: 1064px) {
+
+        .iframe-pc {
+            display: none;
+        }
+
+        /* PC에서는 iframe-mobile을 숨김 */
+        .iframe-mobile {
+            display: block;
+        }
+    }
 </style>
 </body>
 </html>

@@ -52,7 +52,7 @@ public class SupportCRUDController {
 
     // 필터링
     @GetMapping("/search")
-    public String searchSupportByFilters(@RequestParam(required = false) List<Integer> customerId,
+    public String searchSupportByFilters(@RequestParam(required = false) String customerName,
                                          @RequestParam(required = false) List<Integer> teamId,
                                          @RequestParam(required = false) List<Long> productId,
                                          @RequestParam(required = false) List<Long> issueId,
@@ -65,7 +65,7 @@ public class SupportCRUDController {
                                          Pageable pageable,
                                          Model model) {
         SupportFilterCriteria criteria = new SupportFilterCriteria();
-        criteria.setCustomerId(customerId);
+        criteria.setCustomerName(customerName);
         criteria.setTeamId(teamId);
         criteria.setProductId(productId);
         criteria.setIssueId(issueId);
@@ -102,6 +102,9 @@ public class SupportCRUDController {
         // Member 엔티티
         List<Memp> allMemps = mempRepository.findAll();
 
+        // Customer 엔티티
+        List<Customer> allCustomers = customerRepository.findByOrderBySupportCountDesc();
+
         Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allStates, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -113,6 +116,7 @@ public class SupportCRUDController {
         model.addAttribute("allStates", allStates);
         model.addAttribute("allTeams", allTeams);
         model.addAttribute("allMemps", allMemps);
+        model.addAttribute("allCustomers", allCustomers);
 
 
         model.addAttribute("sortOrder", sortOrder);
@@ -122,6 +126,7 @@ public class SupportCRUDController {
         model.addAttribute("selectedStates", stateId != null ? stateRepository.findAllById(stateId) : new ArrayList<>());
         model.addAttribute("selectedTeams", teamId != null ? teamRepository.findAllById(teamId) : new ArrayList<>());
         model.addAttribute("selectedMemps", engineerId != null ? mempRepository.findAllById(engineerId) : new ArrayList<>());
+        model.addAttribute("selectedcustomerName", customerName);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (startDate != null) {
@@ -130,6 +135,9 @@ public class SupportCRUDController {
         if (endDate != null) {
             model.addAttribute("endDate", dateFormat.format(endDate));
         }
+
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("user", user);
 
         return "board";
     }
@@ -161,10 +169,12 @@ public class SupportCRUDController {
 
         List<Customer> customers = customerRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAll();
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
+        List<ProductCategory> productCategories = productCategoryRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -175,8 +185,10 @@ public class SupportCRUDController {
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
+        model.addAttribute("issueCategories", issueCategories);
         model.addAttribute("states", states);
         model.addAttribute("products", products);
+        model.addAttribute("productCategories", productCategories);
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
@@ -194,19 +206,26 @@ public class SupportCRUDController {
 
         List<Customer> customers = customerRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAll();
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
-        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         List<SupportType> supportTypes = supportTypeRepository.findAll();
+        List<ProductCategory> productCategories = productCategoryRepository.findAll();
+
+        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
+        model.addAttribute("issueCategories", issueCategories);
         model.addAttribute("states", states);
         model.addAttribute("products", products);
+        model.addAttribute("productCategories", productCategories);
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 

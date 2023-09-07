@@ -27,6 +27,20 @@
 
         /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
         @media (max-width: 1064px) {
+
+            .grid-container {
+                margin-top: -180px;
+            }
+
+            .iframe-pc {
+                display: none;
+            }
+
+            /* PC에서는 iframe-mobile을 숨김 */
+            .iframe-mobile {
+                display: block;
+            }
+
             .grid-container {
                 grid-template-columns: 1fr;
             }
@@ -36,6 +50,7 @@
                 padding-right: 0px;
             }
         }
+
     </style>
 
 </head>
@@ -84,13 +99,13 @@
         </div>
     </th:block>
 
-    <div>
-
+    <div class="skeleton" style="background-color: #F7F7F7;">
 <!--        <iframe src="https://err2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>-->
-        <iframe src="https://erm2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>
+        <iframe class="iframe-pc" src="https://erm2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>
+        <iframe class="iframe-mobile hidden" src="https://erm2.somansa.com/superset/dashboard/8/?standalone=2&slice_id=4" width="100%" height="2700" ></iframe>
 
     </div>
-    <div class="grid-container"   style="background-color: #F7F7F7; padding: 32px; width: 100%">
+    <div class="grid-container"   style="background-color: #F7F7F7; padding: 32px; padding-top: 0px; width: 100%">
         <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
             <canvas id="overallRadarChart"></canvas>
         </div>
@@ -263,6 +278,7 @@
     });
 
     teamRadarChart.canvas.style.width = "100%";
+
 
 </script>
 

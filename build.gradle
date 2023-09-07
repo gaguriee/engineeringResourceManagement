@@ -72,6 +72,11 @@ dependencies {
     // GEO
     implementation 'com.google.maps:google-maps-services:0.15.0' // 최신 버전 사용
 
+    // Flying Saucer 의존성
+    implementation 'org.xhtmlrenderer:flying-saucer-pdf:9.1.22'
+
+    // iText 의존성
+    implementation 'com.itextpdf:itextpdf:5.5.13'
 }
 
 tasks.named('test') {

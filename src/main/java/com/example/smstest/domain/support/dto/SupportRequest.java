@@ -38,6 +38,6 @@ public class SupportRequest {
 
     private Long supportTypeId;
 
-    private Integer supportTypeHour;
+    private Float supportTypeHour;
 
 }

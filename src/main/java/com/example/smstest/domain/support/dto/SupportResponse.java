@@ -20,6 +20,8 @@ public class SupportResponse {
 
     private String issueType;
 
+    private Long issueId;
+
     private String state;
 
     private String engineerName;
@@ -32,7 +34,7 @@ public class SupportResponse {
 
     private String supportType;
 
-    private Integer supportTypeHour;
+    private Float supportTypeHour;
 
     private String redmineIssue;
 
@@ -43,11 +45,12 @@ public class SupportResponse {
     private String taskDetails;
 
     @Builder
-    public SupportResponse(Long id, String productName, Customer customer, String issueType, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Integer supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
+    public SupportResponse(Long id, String productName, Customer customer, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
         this.id = id;
         this.productName = productName;
         this.customer = customer;
         this.issueType = issueType;
+        this.issueId = issueId;
         this.state = state;
         this.engineerName = engineerName;
         this.engineerId = engineerId;
@@ -68,6 +71,7 @@ public class SupportResponse {
                 .productName(Optional.ofNullable(support.getProduct()).map(Product::getName).orElse(null))
                 .customer(support.getCustomer())
                 .issueType(Optional.ofNullable(support.getIssue()).map(Issue::getName).orElse(null))
+                .issueId(Optional.ofNullable(support.getIssue()).map(Issue::getId).orElse(null))
                 .state(Optional.ofNullable(support.getState()).map(State::getName).orElse(null))
                 .engineerName(Optional.ofNullable(support.getEngineer()).map(Memp::getName).orElse(null))
                 .engineerId(Optional.ofNullable(support.getEngineer()).map(Memp::getId).orElse(null))

@@ -114,37 +114,16 @@
 <div th:replace="footer :: footer"></div>
 
 <style>
-    /* 기본적으로 사이드바는 숨겨진 상태 */
-    #default-sidebar {
-        transform: translateX(-100%);
-    }
-
-    /* 열리는 애니메이션 효과 */
-    #default-sidebar.open {
-        transition: transform 0.3s ease;
-        transform: translateX(0);
-    }
 
     /* Mobile responsive styles */
     @media (max-width: 640px) {
 
-        #list_header{
-            display: block;
-            align-items: end;
-            align-content: end;
-            justify-items: end;
-        }
-        #search-container {
-            width: 100%;
-            margin-bottom: 4px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
 
         table {
-            display: block;
+            width: 100%;
+        }
+
+        tbody {
             width: 100%;
         }
 
@@ -152,7 +131,6 @@
         td {
             display: block;
             text-align: left;
-            padding: 1px;
         }
 
         th {
@@ -169,13 +147,16 @@
             margin-bottom: 0;
         }
 
-        #filter_container{
-            display: flex;
-            align-items: end;
-            align-content: end;
-            justify-items: end;
-            justify-content: end;
+        th,
+        td {
+            padding: 0;
         }
+
+        tbody,
+        td{
+            padding: 0;
+        }
+
 
         #filterBtn{
             margin: 0px;
@@ -186,87 +167,8 @@
 
 </style>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
-
-function getToggledSortOrder() {
-        const currentSortOrder = sortButton.getAttribute('data-sortOrder');
-        console.log(sortButton.getAttribute('data-sortOrder'))
-    console.log(currentSortOrder === 'desc')
-    const newSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
-        sortButton.setAttribute('data-sortOrder', newSortOrder);
-        return newSortOrder;
-    }
-
-    sortButton.addEventListener('click', () => {
-        getToggledSortOrder(); // Update data-sortOrder attribute on button click
-        applyFilters(); // Apply filters and sort
-    });
-
-    // filterBtn을 클릭했을 때, aside를 열고 닫기 위한 함수를 정의합니다.
-    const filterBtn = document.getElementById('filterBtn');
-    const sidebar = document.getElementById('default-sidebar');
-
-
-    // filterBtn을 클릭했을 때 사이드바를 열고 닫는 함수
-    filterBtn.addEventListener('click', () => {
-        // 사이드바 상태를 확인하여 열린 상태면 닫고, 닫힌 상태면 열도록 토글링합니다.
-        if (sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-        } else {
-            sidebar.classList.add('open');
-        }
-    });
-
-    // document의 클릭 이벤트를 추가하여 사이드바 외부를 클릭했을 때 사이드바를 닫습니다.
-    document.addEventListener('click', (event) => {
-        // 클릭된 요소가 사이드바가 아닌 경우에만 사이드바를 닫도록 합니다.
-        if (event.target !== sidebar && !sidebar.contains(event.target) && event.target !== filterBtn) {
-            sidebar.classList.remove('open');
-        }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const dropdownButton = document.getElementById("productDropdownButton");
-        const dropdownMenu = document.getElementById("productDropdown");
-
-        const issueDropdownButton = document.getElementById("issueDropdownButton");
-        const issueDropdown = document.getElementById("issueDropdown");
-
-        const stateDropdownButton = document.getElementById("stateDropdownButton");
-        const stateDropdown = document.getElementById("stateDropdown");
-
-        dropdownButton.addEventListener("click", function () {
-            if (dropdownMenu.classList.contains("hidden")) {
-                dropdownMenu.classList.remove("hidden");
-                issueDropdown.classList.add("hidden");
-                stateDropdown.classList.add("hidden");
-
-            } else {
-                dropdownMenu.classList.add("hidden");
-            }
-        });
-
-        issueDropdownButton.addEventListener("click", function () {
-            if (issueDropdown.classList.contains("hidden")) {
-                issueDropdown.classList.remove("hidden");
-                dropdownMenu.classList.add("hidden");
-                stateDropdown.classList.add("hidden");
-            } else {
-                issueDropdown.classList.add("hidden");
-            }
-        });
-
-        stateDropdownButton.addEventListener("click", function () {
-            if (stateDropdown.classList.contains("hidden")) {
-                stateDropdown.classList.remove("hidden");
-                dropdownMenu.classList.add("hidden");
-                issueDropdown.classList.add("hidden");
-            } else {
-                stateDropdown.classList.add("hidden");
-            }
-        });
-    });
 
     const currentPage = /*[[${currentPage }]]*/;
     const totalPages = /*[[${totalPages }]]*/;

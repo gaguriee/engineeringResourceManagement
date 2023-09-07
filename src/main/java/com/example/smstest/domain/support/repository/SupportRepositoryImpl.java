@@ -32,7 +32,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         QSupport support = QSupport.support;
 
         BooleanBuilder whereClause = new BooleanBuilder();
-        whereClause.and(customerIdIn(criteria.getCustomerId()));
+        whereClause.and(customerNameIn(criteria.getCustomerName()));
         whereClause.and(teamIdIn(criteria.getTeamId()));
         whereClause.and(productIdIn(criteria.getProductId()));
         whereClause.and(issueIdIn(criteria.getIssueId()));
@@ -75,8 +75,8 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    private BooleanExpression customerIdIn(List<Integer> customerIds) {
-        return customerIds != null && !customerIds.isEmpty() ? QSupport.support.customer.id.in(customerIds) : null;
+    private BooleanExpression customerNameIn(String customerName) {
+        return customerName != null && !customerName.isEmpty() ? QSupport.support.customer.name.contains(customerName) : null;
     }
 
     private BooleanExpression teamIdIn(List<Integer> teamIds) {
