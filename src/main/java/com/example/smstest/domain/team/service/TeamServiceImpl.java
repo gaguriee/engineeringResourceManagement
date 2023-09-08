@@ -97,8 +97,14 @@ public class TeamServiceImpl implements TeamService {
         return memberInfoDTO;
     }
 
-    public MemberInfoDetailDTO getMemberInfoDetail(Long memberId, Integer customerId, Long productId, Long stateId, Pageable pageable) {
-        Page<Support> supports = supportRepository.findAllByEngineerIdAndCustomerIdAndProductIdAndStateId(memberId, customerId, productId, stateId, pageable);
+    public MemberInfoDetailDTO getMemberInfoDetail(Long memberId, Integer customerId, Long productId, Long stateId, Pageable pageable, String sortOrder) {
+        Page<Support> supports;
+
+        if (sortOrder.equals("asc")){
+            supports = supportRepository.findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateAsc(memberId, customerId, productId, stateId, pageable);
+        }else{
+            supports = supportRepository.findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateDesc(memberId, customerId, productId, stateId, pageable);
+        }
 
         Page<SupportResponse> responsePage = new PageImpl<>(
                 supports.getContent().stream()

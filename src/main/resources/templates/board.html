@@ -584,11 +584,9 @@ function showCategoryIssues(category) {
         // filterApplyBtn을 눌렀을 때 @GetMapping("/search")로 이동하며, URL 파라미터를 전달
         window.location.href = '/search?' + new URLSearchParams(queryParams).toString();
     }
-function getToggledSortOrder() {
+    function getToggledSortOrder() {
         const currentSortOrder = sortButton.getAttribute('data-sortOrder');
-        console.log(sortButton.getAttribute('data-sortOrder'))
-    console.log(currentSortOrder === 'desc')
-    const newSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
+        const newSortOrder = currentSortOrder === 'desc' ? 'asc' : 'desc';
         sortButton.setAttribute('data-sortOrder', newSortOrder);
         return newSortOrder;
     }

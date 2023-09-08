@@ -124,7 +124,7 @@
 
         <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목 *</label>
-                <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="30" placeholder="제목은 필수입니다. (30자 이내)"></textarea>
+                <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="60" placeholder="제목은 필수입니다. (60자 이내)"></textarea>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="customer" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사 검색 *</label>
@@ -201,7 +201,7 @@
                                     <div th:id="'dropdownIssue_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700" style="max-height: 400px; overflow-y: auto; width: 300px">
                                         <ul class="py-4 px-2 text-sm text-gray-700 dark:text-gray-200" >
                                             <li th:each="issue : ${category.issues}">
-                                                <button type="button" th:id="'issue_' + ${issue.id}" th:data-issue-id="${issue.id}" th:data-issue-name="${issue.name}" class="w-full flex px-1 py-1 text-sm text-gray-900 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-600" onclick="selectIssue(this)">
+                                                <button type="button" th:id="'issue_' + ${issue.id}" th:data-issue-id="${issue.id}" th:data-issue-name="${issue.name}" class="w-full flex px-1 py-1 text-sm text-gray-900 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-600 text-left" onclick="selectIssue(this)">
                                                     <span th:text="${issue.name}"></span>
                                                 </button>
                                             </li>

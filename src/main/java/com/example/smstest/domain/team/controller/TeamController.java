@@ -1,6 +1,8 @@
 package com.example.smstest.domain.team.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.team.Interface.TeamService;
 import com.example.smstest.domain.team.dto.MemberInfoDTO;
 import com.example.smstest.domain.team.dto.MemberInfoDetailDTO;
@@ -31,6 +33,8 @@ public class TeamController {
     private final DepartmentRepository departmentRepository;
     private final MempRepository mempRepository;
     private final TeamService teamService;
+    private final CustomerRepository customerRepository;
+    private final StateRepository stateRepository;
 
     // 날짜 형태 bind
     @InitBinder
@@ -104,11 +108,11 @@ public class TeamController {
             Pageable pageable,
             Model model) {
 
-        MemberInfoDetailDTO memberInfoDetailDTO = teamService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable);
+        MemberInfoDetailDTO memberInfoDetailDTO = teamService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable, sortOrder);
 
-        model.addAttribute("memberId", memberInfoDetailDTO.getMemberId());
-        model.addAttribute("customerId", memberInfoDetailDTO.getCustomerId());
-        model.addAttribute("stateId", memberInfoDetailDTO.getStateId());
+        model.addAttribute("member", mempRepository.findById(memberInfoDetailDTO.getMemberId()).get());
+        model.addAttribute("customer", customerRepository.findById(memberInfoDetailDTO.getCustomerId()).get());
+        model.addAttribute("state", stateRepository.findById(memberInfoDetailDTO.getStateId()).get());
         model.addAttribute("posts", memberInfoDetailDTO.getPosts());
         model.addAttribute("totalPages", memberInfoDetailDTO.getTotalPages());
         model.addAttribute("currentPage", memberInfoDetailDTO.getCurrentPage());

@@ -18,6 +18,11 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
     Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);
 
     Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateId(Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
+    Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateAsc(
+            Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
+    Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateDesc(
+            Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
+
     List<Support> findByEngineerTeamId(Integer teamId);
 
     @Query("SELECT s.customer.id, s.product.id, s.state.id, SUM(s.supportTypeHour) " +

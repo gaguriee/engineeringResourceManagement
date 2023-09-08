@@ -20,19 +20,21 @@
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
 
             <div class="max-h-64 overflow-hidden">
+                <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
+                    <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 8px">
+                        <span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${member.getName()}"></span>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${customer.getName()}"></span>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${state.getName()}"></span>
+                    </div>
+                </div>
+
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">고객사</th>
                         <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">제품명</th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자
-                            <button id="sortButton" th:attr="data-sortOrder=${sortOrder}">
-                                <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5m0 6 4 4 4-4"/>
-                                </svg>
-                            </button>
-                        </th>
+                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">담당엔지니어</th>
 
                     </tr>

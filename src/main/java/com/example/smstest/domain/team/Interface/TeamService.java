@@ -13,6 +13,6 @@ import java.util.List;
 public interface TeamService {
     TeamInfoDTO getTeamInfo(Integer teamId);
     MemberInfoDTO getMemberInfo(Long memberId);
-    MemberInfoDetailDTO getMemberInfoDetail(Long memberId, Integer customerId, Long productId, Long stateId, Pageable pageable);
+    MemberInfoDetailDTO getMemberInfoDetail(Long memberId, Integer customerId, Long productId, Long stateId, Pageable pageable, String sortOrder);
 
 }
