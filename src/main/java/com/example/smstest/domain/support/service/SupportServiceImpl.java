@@ -10,14 +10,15 @@ import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.domain.auth.repository.MempRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -53,10 +54,10 @@ public class SupportServiceImpl implements SupportService {
     }
     @Override
     public SupportResponse getDetails(Long supportId) {
-        Optional<Support> support = supportRepository.findById(supportId);
-        SupportResponse supportResponse = SupportResponse.entityToResponse(support.get());
+        Support support = supportRepository.findById(supportId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        return supportResponse;
+        return SupportResponse.entityToResponse(support);
     }
 
     public SupportResponse createSupport(SupportRequest supportRequest) {

@@ -24,4 +24,7 @@ public class Issue {
     @JoinColumn(name = "대분류_이슈_id")
     private IssueCategory 대분류;
 
+    @Column(name = "priority")
+    private Integer priority;
+
 }

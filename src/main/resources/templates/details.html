@@ -135,6 +135,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
+    const supportId = /*[[${support.id }]]*/;
     const taskTitle = /*[[${support.taskTitle }]]*/;
     const date = /*[[${support.supportDate }]]*/;
 
@@ -142,42 +143,30 @@
         pdfPrint();
     });
 
-    function pdfPrint(){
-
-        html2canvas(document.getElementById("contents"), {
-            scale: 16,
-            onrendered: function (canvas) {
-
-                var imgData = canvas.toDataURL('image/jpeg');
-
-                var imgWidth = 210; // 이미지 가로 길이(mm) A4 기준
-                var pageHeight = imgWidth * 1.414;  // 출력 페이지 세로 길이 계산 A4 기준
-                var imgHeight = canvas.height * imgWidth / canvas.width;
-                var heightLeft = imgHeight;
-
-                var doc = new jsPDF('p', 'mm');
-                var position = 0;
-
-                // 첫 페이지 출력
-                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                // 한 페이지 이상일 경우 루프 돌면서 출력
-                while (heightLeft >= 20) {
-                    position = heightLeft - imgHeight;
-                    doc.addPage();
-                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-
-                // 파일 저장
-                doc.save(taskTitle+'_'+date);
-
-            }
-
-        });
-
+    function pdfPrint() {
+        // PDF 생성 요청을 서버로 보냅니다.
+        fetch('/pdf/generate?supportId=' + supportId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf'
+            },
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                // 서버에서 받은 PDF 파일을 다운로드합니다.
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = taskTitle+'_'+date;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error generating PDF:', error);
+            });
     }
+
 
     var currentDate = new Date();
     var supportDate = new Date(date)
@@ -196,9 +185,6 @@
         deleteButton.style.display = "none";
         editButton.style.display = "none";
     }
-
-
-    const supportId = /*[[${support.id }]]*/;
 
     function hideModal(modalId) {
         const modal = document.getElementById(modalId);

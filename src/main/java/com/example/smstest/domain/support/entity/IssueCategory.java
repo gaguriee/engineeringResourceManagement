@@ -22,4 +22,7 @@ public class IssueCategory {
     @JsonIgnore
     @OneToMany(mappedBy = "대분류", fetch = FetchType.EAGER) // 즉시 로딩으로 변경
     private List<Issue> issues;
+
+    @Column(name = "priority")
+    private Integer priority;
 }

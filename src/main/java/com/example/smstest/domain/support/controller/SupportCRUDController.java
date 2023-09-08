@@ -90,7 +90,10 @@ public class SupportCRUDController {
 
         // Issue 엔티티
         List<Issue> allIssues = issueRepository.findAll();
-        List<IssueCategory> allIssueCategories = issueCategoryRepository.findAll();
+        List<IssueCategory> allIssueCategories = issueCategoryRepository.findAllOrderedByPriority();
+        for (IssueCategory category : allIssueCategories) {
+            Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
+        }
         model.addAttribute("allIssueCategories", allIssueCategories);
 
         // State 엔티티
@@ -169,7 +172,10 @@ public class SupportCRUDController {
 
         List<Customer> customers = customerRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
-        List<IssueCategory> issueCategories = issueCategoryRepository.findAll();
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+        for (IssueCategory category : issueCategories) {
+            Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
+        }
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
@@ -206,7 +212,10 @@ public class SupportCRUDController {
 
         List<Customer> customers = customerRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
-        List<IssueCategory> issueCategories = issueCategoryRepository.findAll();
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+        for (IssueCategory category : issueCategories) {
+            Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
+        }
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
