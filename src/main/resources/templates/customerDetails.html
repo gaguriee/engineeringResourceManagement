@@ -19,8 +19,8 @@
 
     <div class="mb-6" style="background-color: #F7F7F7;">
 
-        <iframe class="iframe-pc" th:src="@{'https://erm2.somansa.com/superset/dashboard/5/?standalone=2&slice_id=4&customer_id=' + ${customer.id}}" width="100%" height="900" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="@{'https://erm2.somansa.com/superset/dashboard/9/?standalone=2&slice_id=4&customer_id=' + ${customer.id}}" width="100%" height="900" ></iframe>
+        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer')} + ${customer.id}" width="100%" height="900" ></iframe>
+        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer-mobile')} + ${customer.id}" width="100%" height="900" ></iframe>
 
         <!--        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/2/?standalone=2&slice_id=4&customer_id=' + ${customer.id}}" width="100%" height="900" ></iframe>-->
 

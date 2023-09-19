@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
@@ -30,10 +31,11 @@ public class PdfController {
         SupportResponse supportResponse = SupportResponse.entityToResponse(supportRepository.findById(supportId).get());
 
         // PDF 생성 및 다운로드
-        String pdfFilePath = supportResponse.getTaskTitle()+"_"+supportResponse.getSupportDate();
+        String pdfFilePath = "support_history.pdf";
         pdfService.generatePdf(supportResponse, pdfFilePath);
 
         // HTTP 응답 설정
+
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=" + pdfFilePath);
         response.setHeader("Content-Length", String.valueOf(new File(pdfFilePath).length()));

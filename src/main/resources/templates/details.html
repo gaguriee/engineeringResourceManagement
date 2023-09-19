@@ -138,6 +138,7 @@
     const supportId = /*[[${support.id }]]*/;
     const taskTitle = /*[[${support.taskTitle }]]*/;
     const date = /*[[${support.supportDate }]]*/;
+    const userRole = /*[[${user.role}]]*/;
 
     document.getElementById("generatePdfButton").addEventListener("click", function() {
         pdfPrint();
@@ -178,7 +179,7 @@
     var deleteButton = document.getElementById("deleteButton");
     var editButton = document.getElementById("editButton");
 
-    if (daysDifference <= 7) {
+    if (daysDifference <= 7 || userRole.equals("ADMIN") ) {
         deleteButton.style.display = "flex";
         editButton.style.display = "flex";
     } else {

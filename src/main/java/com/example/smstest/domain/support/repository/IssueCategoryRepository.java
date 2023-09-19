@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IssueCategoryRepository extends JpaRepository<IssueCategory, Long> {
 
-    @Query("SELECT ic FROM IssueCategory ic ORDER BY ic.priority")
+    @Query("SELECT ic FROM IssueCategory ic WHERE ic.visibility = true ORDER BY ic.priority")
     List<IssueCategory> findAllOrderedByPriority();
 
 }

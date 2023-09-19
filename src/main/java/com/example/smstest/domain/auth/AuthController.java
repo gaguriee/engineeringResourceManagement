@@ -3,20 +3,19 @@ package com.example.smstest.domain.auth;
 import com.example.smstest.domain.auth.Enum.Position;
 import com.example.smstest.domain.auth.Enum.Rank;
 import com.example.smstest.domain.auth.dto.AccountRequest;
+import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
 import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.support.dto.SupportRequest;
-import com.example.smstest.domain.support.dto.SupportResponse;
+import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class AuthController {
     private final AuthService authService;
     private final AuthValidator authValidator;
     private final TeamRepository teamRepository;
+    private final MempRepository mempRepository;
 
     @GetMapping("/login")
     public String login(){
@@ -36,12 +36,10 @@ public class AuthController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        // 직책과 직급 Enum 값을 전달하여 폼에서 선택할 수 있도록 합니다.
         model.addAttribute("positions", Position.values());
         model.addAttribute("ranks", Rank.values());
         model.addAttribute("teams", teamRepository.findAll());
 
-        // Memp 객체를 생성하여 폼에 전달합니다.
         model.addAttribute("accountRequest",new AccountRequest());
 
         return "register";
@@ -73,7 +71,7 @@ public class AuthController {
     @PostMapping("/resetPassword")
     public String resetPassword(ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult, Model model) {
 
-        authValidator.validatPassword(resetPasswordRequest, bindingResult);
+        authValidator.validatePassword(resetPasswordRequest, bindingResult);
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
@@ -82,6 +80,41 @@ public class AuthController {
         else {
             // 성공
             authService.savePassword(resetPasswordRequest);
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/modifyUserinfo")
+    public String modifyUserinfo(Model model){
+        model.addAttribute("positions", Position.values());
+        model.addAttribute("ranks", Rank.values());
+        model.addAttribute("teams", teamRepository.findAll());
+
+        ModifyUserinfoRequest modifyUserinfoRequest = new ModifyUserinfoRequest();
+
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        modifyUserinfoRequest.setRank(memp.getRank());
+        modifyUserinfoRequest.setPosition(memp.getPosition());
+        modifyUserinfoRequest.setTeamId(memp.getTeam().getId());
+
+        model.addAttribute("modifyUserinfoRequest", modifyUserinfoRequest);
+        return "modifyUserinfo";
+    }
+    @PostMapping("/modifyUserinfo")
+    public String modifyUserinfo(ModifyUserinfoRequest modifyUserinfoRequest, BindingResult bindingResult, Model model) {
+
+        authValidator.validatePassword(modifyUserinfoRequest, bindingResult);
+
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("error", bindingResult.getAllErrors().get(0).getDefaultMessage());
+            model.addAttribute("positions", Position.values());
+            model.addAttribute("ranks", Rank.values());
+            model.addAttribute("teams", teamRepository.findAll());
+            return "modifyUserinfo"; // 실패
+        }
+        else {
+            authService.saveUserInfo(modifyUserinfoRequest);
             return "redirect:/";
         }
     }

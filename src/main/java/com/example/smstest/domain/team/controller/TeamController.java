@@ -8,9 +8,11 @@ import com.example.smstest.domain.team.dto.MemberInfoDTO;
 import com.example.smstest.domain.team.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.team.dto.TeamInfoDTO;
 import com.example.smstest.domain.team.entity.Department;
+import com.example.smstest.domain.team.entity.Division;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.DepartmentRepository;
 import com.example.smstest.domain.auth.repository.MempRepository;
+import com.example.smstest.domain.team.repository.DivisionRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class TeamController {
     private final TeamService teamService;
     private final CustomerRepository customerRepository;
     private final StateRepository stateRepository;
+    private final DivisionRepository divisionRepository;
 
     // 날짜 형태 bind
     @InitBinder
@@ -43,6 +46,25 @@ public class TeamController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
+//
+//    /**
+//     * 본부 (기술 N본부, E본부 등)
+//     */
+//    @GetMapping("/division")
+//    public String selectDivision(Model model) {
+//
+//        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        List<Division> divisions = divisionRepository.findAll();
+//
+//        model.addAttribute("divisions", divisions);
+//        model.addAttribute("user", user);
+//
+//        return "division";
+//    }
+
+    /**
+     * 소속 (2실, 4실 등)
+     */
     @GetMapping("/department")
     public String selectDepartment(Model model) {
 
@@ -55,6 +77,9 @@ public class TeamController {
         return "department";
     }
 
+    /**
+     * 팀 (N팀, B팀 등)
+     */
     @GetMapping("/team")
     public String selectTeam(@RequestParam(required = true) Integer departmentId,Model model) {
 

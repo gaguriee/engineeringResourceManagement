@@ -82,7 +82,7 @@
         </div>
         <div class="mt-8 mb-6" style="background-color: #F7F7F7;">
 
-            <iframe th:src="@{'https://erm2.somansa.com/superset/dashboard/7/?standalone=2&slice_id=4&member_id=' + ${member.id} }" width="100%" height="450" ></iframe>
+            <iframe th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.memberinfo')} + ${member.id} " width="100%" height="450" ></iframe>
 <!--            <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/3/?standalone=2&slice_id=4&member_id=' + ${member.id} }" width="100%" height="500" ></iframe>-->
 
         </div>

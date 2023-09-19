@@ -17,6 +17,12 @@
     </nav>
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <div class="mb-8">
+            <a th:href="'/department?divisionId='+${user.getTeam().getDepartment().getDivision().getId()}"
+               class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+            <span class="relative font-bold px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
+                  th:text="${user.getTeam().getDepartment().getDivision().getName()} + ' 바로 가기'">
+            </span>
+            </a>
             <a th:href="'/team?departmentId='+${user.getTeam().getDepartment().getId()}"
                class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
             <span class="relative font-bold px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
@@ -37,14 +43,14 @@
             </a>
         </div>
 
-        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">소속 선택</h2>
-        <form id="selectForm" action="/team" method="get">
-            <label for="department" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-            <select id="department" name="departmentId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                <option value="" selected>소속을 선택해주세요.</option>
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">본부 선택</h2>
+        <form id="selectForm" action="/department" method="get">
+            <label for="division" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+            <select id="division" name="divisionId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <option value="" selected>본부를 선택해주세요.</option>
                 <!-- Iterate over the issues list and add each issue's name as an option -->
-                <th:block th:each="department : ${departments}">
-                    <option th:value="${department.id}" th:text="${department.name}"></option>
+                <th:block th:each="division : ${divisions}">
+                    <option th:value="${division.id}" th:text="${division.name}"></option>
                 </th:block>
             </select>
 
@@ -58,8 +64,8 @@
 
     <div class="mt-8 mb-6" style="background-color: #F7F7F7;">
 
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.department')}" width="100%" height="1400" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.department-mobile')}" width="100%" height="1400" ></iframe>
+        <iframe class="iframe-pc" th:src="@{'https://erm2.somansa.com/superset/dashboard/13/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>
+        <iframe class="iframe-mobile hidden" th:src="@{'https://erm2.somansa.com/superset/dashboard/14/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>
 <!--        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/6/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>-->
     </div>
 </section>

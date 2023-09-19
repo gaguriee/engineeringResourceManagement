@@ -79,15 +79,15 @@ public class PdfService {
 
     private PdfPTable createTable(int numColumns) {
         PdfPTable table = new PdfPTable(numColumns);
-        table.setWidthPercentage(100); // Table width as a percentage of the page width
-        table.setHorizontalAlignment(Element.ALIGN_LEFT); // Left-align the table
+        table.setWidthPercentage(100);
+        table.setHorizontalAlignment(Element.ALIGN_LEFT);
         return table;
     }
 
     private void addCell(PdfPTable table, String text, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT); // Left-align cell content
-        cell.setPadding(5); // Set cell padding (adjust as needed)
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setPadding(8);
         table.addCell(cell);
     }
 

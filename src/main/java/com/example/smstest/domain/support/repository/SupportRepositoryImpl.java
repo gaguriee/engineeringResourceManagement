@@ -68,9 +68,10 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
                 .fetch();
 
         long totalCount = queryFactory
-                .selectFrom(support)
+                .select(support.count())
+                .from(support)
                 .where(whereClause)
-                .fetchCount();
+                .fetch().get(0);
 
         return new PageImpl<>(result, pageable, totalCount);
     }

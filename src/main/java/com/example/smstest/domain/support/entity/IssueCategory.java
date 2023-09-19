@@ -25,4 +25,7 @@ public class IssueCategory {
 
     @Column(name = "priority")
     private Integer priority;
+
+    @Column(name = "visibility")
+    private Boolean visibility;
 }

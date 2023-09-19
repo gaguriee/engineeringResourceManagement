@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
@@ -41,6 +42,7 @@ public class MainController {
 
         List<Long> overallSupportTypeHourSums = new ArrayList<>();
         Map<String, List<Long>> teamDataMap = new HashMap<>();
+        Map<String, String> teamColorMap = new HashMap<>();
 
         // 전체 데이터 합계 계산
         for (State state : states) {
@@ -56,6 +58,7 @@ public class MainController {
                 supportTypeHourSums.add(sum != null ? sum : 0);
             }
             teamDataMap.put(team.getName(), supportTypeHourSums);
+            teamColorMap.put(team.getName(), team.getColor());
         }
 
         List<Object[]> rankCounts = mempRepository.countByRank();
@@ -79,12 +82,13 @@ public class MainController {
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());
         model.addAttribute("overallSupportTypeHourSums", overallSupportTypeHourSums);
         model.addAttribute("teamDataMap", teamDataMap);
+        model.addAttribute("teamColorMap", teamColorMap);
 
         return "main";
     }
 
     @PostMapping("/dismissAnnouncement")
-    public ResponseEntity<String> dismissAnnouncement(@RequestParam Integer announcementId) {
+    public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
 
         Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 

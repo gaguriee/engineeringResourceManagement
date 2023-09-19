@@ -20,4 +20,7 @@ public class Team {
     @ManyToOne
     @JoinColumn(name = "소속_id")
     private Department department;
+
+    @Column(name = "color")
+    private String color;
 }
