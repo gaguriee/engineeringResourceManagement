@@ -1,9 +1,14 @@
 package com.example.smstest.domain.support.controller;
 
-import com.example.smstest.domain.support.dto.CreateCustomerRequest;
-import com.example.smstest.domain.customer.dto.CustomerCreateResponse;
-import com.example.smstest.domain.customer.entity.Customer;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.auth.repository.MempRepository;
+import com.example.smstest.domain.client.entity.Client;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.client.repository.ClientRepository;
+import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.support.dto.CreateProjectRequest;
+import com.example.smstest.domain.project.dto.CreateProjectResponse;
+import com.example.smstest.domain.support.repository.ProductRepository;
+import com.example.smstest.domain.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,22 +16,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
-    private final CustomerRepository customerRepository;
+    private final ClientRepository clientRepository;
+    private final ProjectRepository projectRepository;
+    private final ProductRepository productRepository;
+    private final TeamRepository teamRepository;
+    private final MempRepository mempRepository;
 
-    @PostMapping("/customer/create")
-    public CustomerCreateResponse createCustomer(@RequestBody CreateCustomerRequest request) {
-        boolean exist = customerRepository.existsByName(request.getCustomerName());
-        if (exist){
-            return new CustomerCreateResponse(true);
+    @PostMapping("/project/create")
+    public CreateProjectResponse createCustomer(@RequestBody CreateProjectRequest request) {
+
+        boolean clientExist = clientRepository.existsByName(request.getClientName());
+        if (!clientExist){
+            Client client = new Client();
+            client.setName(request.getClientName());
+            clientRepository.save(client);        }
+
+        Client client = clientRepository.findByName(request.getClientName());
+
+        boolean projectExist = projectRepository.existsByName(request.getProjectName());
+
+        if (!projectExist){
+            Project project = Project.builder()
+                    .name(request.getProjectName())
+                    .client(client)
+                    .product(productRepository.findById(request.getProductId()).get())
+                    .team(teamRepository.findById(request.getTeamId()).get())
+                    .startDate(request.getStartDate())
+                    .finishDate(request.getFinishDate())
+                    .engineer(mempRepository.findOneByName(request.getEngineerName()))
+                    .subEngineer(mempRepository.findOneByName(request.getSubEngineerName()))
+                    .build();
+            Project newProject = projectRepository.save(project);
+
+            return new CreateProjectResponse(newProject.getId(),false);
         }
         else {
-            Customer customer = new Customer();
-            customer.setName(request.getCustomerName());
-            customer.setProject(request.getProjectName());
-            customerRepository.save(customer);
+            return new CreateProjectResponse(0L, true);
         }
 
-        return new CustomerCreateResponse(false);
+
     }
 
 }

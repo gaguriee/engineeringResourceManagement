@@ -1,7 +1,7 @@
-package com.example.smstest.domain.customer.repository;
+package com.example.smstest.domain.client.repository;
 
 import com.example.smstest.domain.support.dto.SupportSummary;
-import com.example.smstest.domain.customer.entity.Customer;
+import com.example.smstest.domain.client.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

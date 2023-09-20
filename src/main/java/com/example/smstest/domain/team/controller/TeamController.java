@@ -1,14 +1,13 @@
 package com.example.smstest.domain.team.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.client.repository.CustomerRepository;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.team.Interface.TeamService;
 import com.example.smstest.domain.team.dto.MemberInfoDTO;
 import com.example.smstest.domain.team.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.team.dto.TeamInfoDTO;
 import com.example.smstest.domain.team.entity.Department;
-import com.example.smstest.domain.team.entity.Division;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.DepartmentRepository;
 import com.example.smstest.domain.auth.repository.MempRepository;

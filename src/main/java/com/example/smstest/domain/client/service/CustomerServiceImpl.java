@@ -1,8 +1,8 @@
-package com.example.smstest.domain.customer.service;
+package com.example.smstest.domain.client.service;
 
-import com.example.smstest.domain.customer.Interface.CustomerService;
-import com.example.smstest.domain.customer.entity.Customer;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.client.Interface.CustomerService;
+import com.example.smstest.domain.client.entity.Customer;
+import com.example.smstest.domain.client.repository.CustomerRepository;
 import com.example.smstest.domain.support.dto.SupportSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

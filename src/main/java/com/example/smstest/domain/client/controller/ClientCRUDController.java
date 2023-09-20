@@ -1,8 +1,8 @@
-package com.example.smstest.domain.customer.controller;
+package com.example.smstest.domain.client.controller;
 
 
-import com.example.smstest.domain.customer.entity.Customer;
-import com.example.smstest.domain.customer.service.CustomerServiceImpl;
+import com.example.smstest.domain.client.entity.Customer;
+import com.example.smstest.domain.client.service.CustomerServiceImpl;
 import com.example.smstest.domain.support.dto.SupportSummary;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import java.util.*;
 @Controller
 @Slf4j
 @RequestMapping("/customer")
-public class CustomerCRUDController {
+public class ClientCRUDController {
     private final CustomerServiceImpl customerServiceImpl;
 
     @Autowired
-    public CustomerCRUDController(CustomerServiceImpl customerServiceImpl) {
+    public ClientCRUDController(CustomerServiceImpl customerServiceImpl) {
         this.customerServiceImpl = customerServiceImpl;
     }
 

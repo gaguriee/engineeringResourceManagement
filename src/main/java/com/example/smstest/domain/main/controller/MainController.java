@@ -3,8 +3,8 @@ package com.example.smstest.domain.main.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.main.controller.entity.Announcement;
-import com.example.smstest.domain.main.controller.repository.AnnouncementRepository;
+import com.example.smstest.domain.main.entity.Announcement;
+import com.example.smstest.domain.main.repository.AnnouncementRepository;
 import com.example.smstest.domain.support.entity.State;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;

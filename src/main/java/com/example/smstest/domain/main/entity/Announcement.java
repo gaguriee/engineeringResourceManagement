@@ -1,4 +1,4 @@
-package com.example.smstest.domain.main.controller.entity;
+package com.example.smstest.domain.main.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

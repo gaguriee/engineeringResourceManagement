@@ -1,6 +1,6 @@
 package com.example.smstest.domain.team.service;
 
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.client.repository.CustomerRepository;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.ProductRepository;

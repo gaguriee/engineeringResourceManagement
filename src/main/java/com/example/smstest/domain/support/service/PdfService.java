@@ -47,7 +47,7 @@ public class PdfService {
         addCell(table1, "업무구분", font);
         addCell(table1, "이슈구분", font);
         addCell(table1, supportResponse.getProductName(), font);
-        addCell(table1, supportResponse.getCustomer().getName(), font);
+        addCell(table1, supportResponse.getProject().getClient().getName(), font);
         addCell(table1, supportResponse.getState(), font);
         addCell(table1, supportResponse.getIssueType(), font);
 

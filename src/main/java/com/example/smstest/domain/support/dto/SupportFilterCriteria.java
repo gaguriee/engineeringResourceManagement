@@ -13,6 +13,7 @@ public class SupportFilterCriteria {
     private List<Long> productId;
     private List<Long> issueId;
     private List<Long> stateId;
+    private List<Long> projectId;
     private List<Long> engineerId;
     private String taskKeyword;
     private Date startDate;

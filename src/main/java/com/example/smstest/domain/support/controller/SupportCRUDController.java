@@ -1,8 +1,10 @@
 package com.example.smstest.domain.support.controller;
 
 
-import com.example.smstest.domain.customer.entity.Customer;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.client.entity.Customer;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.client.repository.CustomerRepository;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.*;
 import com.example.smstest.domain.support.entity.*;
@@ -41,6 +43,7 @@ public class SupportCRUDController {
     private final TeamRepository teamRepository;
     private final SupportTypeRepository supportTypeRepository;
     private final SupportRepository supportRepository;
+    private final ProjectRepository projectRepository;
 
 
     // 날짜 형태 bind
@@ -181,6 +184,7 @@ public class SupportCRUDController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
+        List<Project> projects = projectRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -190,6 +194,7 @@ public class SupportCRUDController {
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
+        model.addAttribute("projects", projects);
         model.addAttribute("issues", issues);
         model.addAttribute("issueCategories", issueCategories);
         model.addAttribute("states", states);
@@ -221,6 +226,7 @@ public class SupportCRUDController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
+        List<Project> projects = projectRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -230,6 +236,7 @@ public class SupportCRUDController {
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
+        model.addAttribute("projects", projects);
         model.addAttribute("issues", issues);
         model.addAttribute("issueCategories", issueCategories);
         model.addAttribute("states", states);

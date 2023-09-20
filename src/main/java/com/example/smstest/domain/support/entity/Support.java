@@ -1,11 +1,11 @@
 package com.example.smstest.domain.support.entity;
-import com.example.smstest.domain.customer.entity.Customer;
+import com.example.smstest.domain.client.entity.Customer;
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.project.entity.Project;
 import lombok.Data;
 
 import javax.persistence.*;
 
-import java.security.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -37,6 +37,10 @@ public class Support {
     @ManyToOne
     @JoinColumn(name = "고객사_id")
     private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "프로젝트_id")
+    private Project project;
 
     @ManyToOne
     @JoinColumn(name = "제품_id")

@@ -1,6 +1,6 @@
 package com.example.smstest.domain.support.dto;
 
-import com.example.smstest.domain.customer.entity.Customer;
+import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.auth.entity.Memp;
 import lombok.Builder;
@@ -16,7 +16,7 @@ public class SupportResponse {
 
     private String productName;
 
-    private Customer customer;
+    private Project project;
 
     private String issueType;
 
@@ -45,10 +45,10 @@ public class SupportResponse {
     private String taskDetails;
 
     @Builder
-    public SupportResponse(Long id, String productName, Customer customer, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
+    public SupportResponse(Long id, String productName, Project project, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
         this.id = id;
         this.productName = productName;
-        this.customer = customer;
+        this.project = project;
         this.issueType = issueType;
         this.issueId = issueId;
         this.state = state;
@@ -69,7 +69,7 @@ public class SupportResponse {
         return SupportResponse.builder()
                 .id(support.getId())
                 .productName(Optional.ofNullable(support.getProduct()).map(Product::getName).orElse(null))
-                .customer(support.getCustomer())
+                .project(support.getProject())
                 .issueType(Optional.ofNullable(support.getIssue()).map(Issue::getName).orElse(null))
                 .issueId(Optional.ofNullable(support.getIssue()).map(Issue::getId).orElse(null))
                 .state(Optional.ofNullable(support.getState()).map(State::getName).orElse(null))

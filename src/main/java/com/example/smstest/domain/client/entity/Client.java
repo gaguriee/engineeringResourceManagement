@@ -1,4 +1,4 @@
-package com.example.smstest.domain.customer.entity;
+package com.example.smstest.domain.client.entity;
 
 import lombok.Data;
 
@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "customer")
-public class Customer {
+@Table(name = "client")
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +17,4 @@ public class Customer {
     @Column(name = "고객사", nullable = false)
     private String name;
 
-    @Column(name = "프로젝트명", nullable = true)
-    private String project;
 }
