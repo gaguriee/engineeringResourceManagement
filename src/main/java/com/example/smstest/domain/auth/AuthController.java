@@ -8,6 +8,8 @@ import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -92,7 +94,8 @@ public class AuthController {
 
         ModifyUserinfoRequest modifyUserinfoRequest = new ModifyUserinfoRequest();
 
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         modifyUserinfoRequest.setRank(memp.getRank());
         modifyUserinfoRequest.setPosition(memp.getPosition());

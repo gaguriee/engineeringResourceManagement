@@ -13,6 +13,8 @@ import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -142,7 +144,8 @@ public class SupportCRUDController {
             model.addAttribute("endDate", dateFormat.format(endDate));
         }
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
         return "board";
@@ -152,7 +155,8 @@ public class SupportCRUDController {
     // 상세보기
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Long supportId, Model model) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         SupportResponse supportResponse = supportService.getDetails(supportId);
         model.addAttribute("support", supportResponse);
@@ -190,7 +194,8 @@ public class SupportCRUDController {
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
@@ -232,7 +237,9 @@ public class SupportCRUDController {
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);

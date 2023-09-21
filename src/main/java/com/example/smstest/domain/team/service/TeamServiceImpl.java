@@ -18,6 +18,8 @@ import com.example.smstest.domain.team.repository.DepartmentRepository;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.ScheduleRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -90,6 +92,41 @@ public class TeamServiceImpl implements TeamService {
         memberInfoDTO.setMemps(memps);
         memberInfoDTO.setDepartment(team.get().getDepartment());
         memberInfoDTO.setMemp(memp.get());
+        memberInfoDTO.setTeam(team.get());
+        memberInfoDTO.setSupports(supports);
+        memberInfoDTO.setAggregatedData(dtoList);
+
+        return memberInfoDTO;
+    }
+
+    public MemberInfoDTO getMemberInfo(String name) {
+        Memp memp = mempRepository.findOneByName(name)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));;
+        List<Support> supports = supportRepository.findByEngineerId(memp.getId());
+        Optional<Team> team = teamRepository.findById(memp.getTeam().getId());
+        List<Memp> memps = mempRepository.findAllByTeamId(team.get().getId());
+
+        List<Object[]> aggregatedData = supportRepository.countAttributesByEngineer(memp.getId());
+        List<AggregatedDataDTO> dtoList = new ArrayList<>();
+        for (Object[] data : aggregatedData) {
+            AggregatedDataDTO dto = new AggregatedDataDTO();
+            dto.setCustomerId((Integer) data[0]);
+            dto.setProductId((Long) data[1]);
+            dto.setStateId((Long) data[2]);
+
+            if (dto.getCustomerId() != null && dto.getProductId() != null && dto.getStateId() != null) {
+                dto.setCustomerName(customerRepository.findById(dto.getCustomerId()).get().getName());
+                dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
+                dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
+                dto.setCount((Double) data[3]);
+                dtoList.add(dto);
+            }
+        }
+
+        MemberInfoDTO memberInfoDTO = new MemberInfoDTO();
+        memberInfoDTO.setMemps(memps);
+        memberInfoDTO.setDepartment(team.get().getDepartment());
+        memberInfoDTO.setMemp(memp);
         memberInfoDTO.setTeam(team.get());
         memberInfoDTO.setSupports(supports);
         memberInfoDTO.setAggregatedData(dtoList);

@@ -9,6 +9,8 @@ import com.example.smstest.domain.support.dto.CreateProjectRequest;
 import com.example.smstest.domain.project.dto.CreateProjectResponse;
 import com.example.smstest.domain.support.repository.ProductRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,8 +45,10 @@ public class RestController {
                     .team(teamRepository.findById(request.getTeamId()).get())
                     .startDate(request.getStartDate())
                     .finishDate(request.getFinishDate())
-                    .engineer(mempRepository.findOneByName(request.getEngineerName()))
-                    .subEngineer(mempRepository.findOneByName(request.getSubEngineerName()))
+                    .engineer(mempRepository.findOneByName(request.getEngineerName())
+                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
+                    .subEngineer(mempRepository.findOneByName(request.getSubEngineerName())
+                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
                     .build();
             Project newProject = projectRepository.save(project);
 

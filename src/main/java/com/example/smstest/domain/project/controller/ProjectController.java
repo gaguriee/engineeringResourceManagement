@@ -12,6 +12,8 @@ import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.support.repository.ProductRepository;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -57,22 +59,7 @@ public class ProjectController {
             @PageableDefault(size = 30) Pageable pageable,
             Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Project> projects = projectService.searchProjects(Keyword, pageable);
-        List<Client> clients = clientRepository.findAll();
-        List<Product> products = productRepository.findAll();
-        List<Memp> memps = mempRepository.findAll();
-        List<Team> teams = teamRepository.findAll();
-        model.addAttribute("memps", memps);
-        model.addAttribute("user", user);
-        model.addAttribute("clients", clients);
-        model.addAttribute("projects", projects);
-        model.addAttribute("products", products);
-        model.addAttribute("teams", teams);
-        model.addAttribute("totalPages", projects.getTotalPages());
-        model.addAttribute("currentPage", pageable.getPageNumber());
+        getProjectList(Keyword, pageable, model);
         return "projectBoard";
     }
 
@@ -82,7 +69,8 @@ public class ProjectController {
             @PageableDefault(size = 30) Pageable pageable,
             Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
         Project project = projectRepository.findById(projectId).get();
@@ -97,7 +85,13 @@ public class ProjectController {
             @PageableDefault(size = 30) Pageable pageable,
             Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        getProjectList(Keyword, pageable, model);
+        return "projectSearch";
+    }
+
+    private void getProjectList(@RequestParam(required = false) String Keyword, @PageableDefault(size = 30) Pageable pageable, Model model) {
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
         Page<Project> projects = projectService.searchProjects(Keyword, pageable);
@@ -113,7 +107,6 @@ public class ProjectController {
         model.addAttribute("teams", teams);
         model.addAttribute("totalPages", projects.getTotalPages());
         model.addAttribute("currentPage", pageable.getPageNumber());
-        return "projectSearch";
     }
 
 }

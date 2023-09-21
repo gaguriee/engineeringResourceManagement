@@ -8,11 +8,14 @@ import com.example.smstest.domain.team.dto.MemberInfoDTO;
 import com.example.smstest.domain.team.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.team.dto.TeamInfoDTO;
 import com.example.smstest.domain.team.entity.Department;
+import com.example.smstest.domain.team.entity.Division;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.DepartmentRepository;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.DivisionRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -45,6 +48,28 @@ public class TeamController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
+    /**
+     * 소속 빠른 검색
+     */
+    @GetMapping("/organizationFastSearch")
+    public String organizationFastSearch(Model model) {
+
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Division> divisions = divisionRepository.findAll();
+        List<Department> departments = departmentRepository.findAll();
+        List<Team> teams = teamRepository.findAll();
+        List<Memp> memps = mempRepository.findAll();
+
+        model.addAttribute("divisions", divisions);
+        model.addAttribute("departments", departments);
+        model.addAttribute("teams", teams);
+        model.addAttribute("memps", memps);
+        model.addAttribute("user", user);
+
+        return "organizationFastSearch";
+    }
+
 //
 //    /**
 //     * 본부 (기술 N본부, E본부 등)
@@ -65,11 +90,15 @@ public class TeamController {
      * 소속 (2실, 4실 등)
      */
     @GetMapping("/department")
-    public String selectDepartment(Model model) {
+    public String selectDepartment(@RequestParam(required = true) Integer divisionId, Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<Department> departments = departmentRepository.findAll();
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Department> departments = departmentRepository.findByDivisionId(divisionId);
+        Division division = divisionRepository.findById(divisionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
 
+        model.addAttribute("division", division);
         model.addAttribute("departments", departments);
         model.addAttribute("user", user);
 
@@ -80,7 +109,7 @@ public class TeamController {
      * 팀 (N팀, B팀 등)
      */
     @GetMapping("/team")
-    public String selectTeam(@RequestParam(required = true) Integer departmentId,Model model) {
+    public String selectTeam(@RequestParam(required = true) Integer departmentId, Model model) {
 
         List<Team> teams = teamRepository.findByDepartmentId(departmentId);
         Optional<Department> department = departmentRepository.findById(departmentId);
@@ -111,6 +140,22 @@ public class TeamController {
     @GetMapping("/memberInfo")
     public String getMemberInfo(@RequestParam(required = true) Long memberId, Model model) {
         MemberInfoDTO memberInfoDTO = teamService.getMemberInfo(memberId);
+
+        model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
+
+        model.addAttribute("department", memberInfoDTO.getDepartment());
+        model.addAttribute("member", memberInfoDTO.getMemp());
+        model.addAttribute("team", memberInfoDTO.getTeam());
+        model.addAttribute("supports", memberInfoDTO.getSupports());
+        model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
+
+        return "memberInfo";
+    }
+
+    @GetMapping("/memberInfo/name")
+    public String getMemberInfoByName(@RequestParam(required = true) String engineer, Model model) {
+
+        MemberInfoDTO memberInfoDTO = teamService.getMemberInfo(engineer);
 
         model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
 

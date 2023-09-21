@@ -6,6 +6,8 @@ import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import com.example.smstest.employee.entity.Employee;
 import com.example.smstest.employee.repository.EmployeeRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -43,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
 
-        Memp memp = mempRepository.findByUsername(username);
+        Optional<Memp> memp = mempRepository.findByUsername(username);
 
         /**
          * tb_mempdata에는 있지만 erm db에는 없는 경우 신규 등록
@@ -51,8 +54,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Random rand = new Random();
         String randomColor = String.format("#%02X%02X%02X", rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 
-        if (memp == null) {
-            memp = Memp.builder()
+        if (memp.isEmpty()) {
+            memp = Optional.ofNullable(Memp.builder()
                     .name(employee.getEmpname())
                     .rank("엔지니어")
                     .position("팀원")
@@ -61,11 +64,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .password(basicPassword)
                     .calenderColor(randomColor)
                     .role(Role.valueOf("USER"))
-                    .build();
+                    .build());
 //            memp.encodePassword(passwordEncoder);
 
             try{
-                mempRepository.save(memp);
+                mempRepository.save(memp.get());
             }
             catch (Exception e){
                 throw new UsernameNotFoundException("User not found with username: " + username);
@@ -73,8 +76,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+ memp.getRole()));
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+ memp.get().getRole()));
 
-        return new User(memp.getUsername(), memp.getPassword(), grantedAuthorities);
+        return new User(memp.get().getUsername(), memp.get().getPassword(), grantedAuthorities);
     }
 }

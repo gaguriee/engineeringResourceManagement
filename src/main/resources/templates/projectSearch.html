@@ -87,7 +87,7 @@
                 </div>
                 <div style="display: flex; justify-content:flex-end ">
                     <div class="flex items-center h-5">
-                        <input id="direct-select" aria-describedby="direct-select" name="direct-select" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
+                        <input id="direct-select" aria-describedby="direct-select" name="direct-select" type="checkbox" checked class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
                     </div>
                     <div class="ml-2 mr-3 text-sm">
                         <label for="direct-select" class="text-gray-500 dark:text-gray-300">이 프로젝트 바로 적용</label>
@@ -135,19 +135,22 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 60%">프로젝트명</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 40%">고객사</th>
-
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">고객사</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 40%">프로젝트명</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">시작일</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">만료일</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="project : ${projects}" class="border-b dark:border-gray-700">
-                            <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
+                            <td class="px-4 py-3" th:text="${project.client.name}">고객사</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
                                 <a href="#" th:onclick="setProject([[${project.id}]], [[${project.name}]])"
                                    th:text="${project.name}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 </a>
                             </td>
-                            <td class="px-4 py-3" th:text="${project.client.name}">고객사</td>
+                            <td class="px-4 py-3" th:text="${project.startDate}">시작일</td>
+                            <td class="px-4 py-3" th:text="${project.finishDate}">만료일</td>
                         </tr>
                         </tbody>
                     </table>
@@ -185,7 +188,7 @@
                                     <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                     <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
                                         <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                        <a th:href="@{/project/search(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
+                                        <a th:href="@{/project/select(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
                                            th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
                                            th:text="${pageNo}">
                                         </a>
@@ -211,6 +214,10 @@
 </section>
 <script th:inline="javascript">
 
+
+    const currentPage = /*[[${currentPage }]]*/;
+    const totalPages = /*[[${totalPages }]]*/;
+
     function setProject(id, name){
         window.opener.setProject(id, name);
         window.close();
@@ -226,7 +233,7 @@
                 const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = prevPage+1;
-                window.location.href = '/project/search?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/project/select?' + new URLSearchParams(currentParams).toString();
             }
         });
 
@@ -236,7 +243,7 @@
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
-                window.location.href = '/project/search?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/project/select?' + new URLSearchParams(currentParams).toString();
             }
         });
     });
@@ -257,7 +264,7 @@
         const searchQuery = searchInput.value.trim();
         currentParams["Keyword"] = searchQuery;
         currentParams["currentPage"] = 0;
-        const newUrl = "/project/search?" + new URLSearchParams(currentParams).toString();
+        const newUrl = "/project/select?" + new URLSearchParams(currentParams).toString();
         window.location.href = newUrl;
 
         return false;
@@ -289,6 +296,22 @@
             }
             if (projectName.value.length < 1) {
                 alert("정확한 프로젝트명과 입력해 주세요.");
+                return;
+            }
+            if (productId.value === '') {
+                alert("제품을 선택해주세요.");
+                return;
+            }
+            if (teamId.value === '') {
+                alert("담당 팀을 선택해주세요.");
+                return;
+            }
+            if (startDate.value === '' || finishDate.value === '') {
+                alert("기간을 선택해주세요.");
+                return;
+            }
+            if (engineerName.value === '' || subEngineerName.value === '') {
+                alert("담당 엔지니어를 선택해주세요.");
                 return;
             }
 

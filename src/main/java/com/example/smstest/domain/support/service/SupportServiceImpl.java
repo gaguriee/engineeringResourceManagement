@@ -49,7 +49,7 @@ public class SupportServiceImpl implements SupportService {
     @Override
     public SupportResponse getDetails(Long supportId) {
         Support support = supportRepository.findById(supportId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return SupportResponse.entityToResponse(support);
     }
@@ -68,7 +68,8 @@ public class SupportServiceImpl implements SupportService {
         support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
         support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-        support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName()));
+        support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
         support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 
@@ -83,7 +84,8 @@ public class SupportServiceImpl implements SupportService {
     public SupportResponse modifySupport(ModifyRequest supportRequest) {
 
         Support support = supportRepository.findById(supportRequest.getSupportId()).get();
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (support.getEngineer().getUsername().equals(user.getUsername())
         || user.getRole().name().equals("ADMIN")){
             support.setSupportDate(supportRequest.getSupportDate());
@@ -96,7 +98,8 @@ public class SupportServiceImpl implements SupportService {
             support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
             support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
             support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-            support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName()));
+            support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName())
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
             support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
             support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 
@@ -112,7 +115,8 @@ public class SupportServiceImpl implements SupportService {
 
     @Override
     public void deleteSupport(Long supportId) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Support support = supportRepository.findById(supportId).orElse(null);
 
         if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())

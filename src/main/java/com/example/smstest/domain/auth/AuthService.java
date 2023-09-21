@@ -7,6 +7,8 @@ import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +40,8 @@ public class AuthService {
 
     public Memp savePassword(ResetPasswordRequest resetPasswordRequest){
 
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         memp.setPassword(resetPasswordRequest.getPassword());
         memp.encodePassword(passwordEncoder);
@@ -48,7 +51,8 @@ public class AuthService {
 
     public Memp saveUserInfo(ModifyUserinfoRequest modifyUserinfoRequest){
 
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         memp.setTeam(teamRepository.findById(modifyUserinfoRequest.getTeamId()).get());
         memp.setRank(modifyUserinfoRequest.getRank());

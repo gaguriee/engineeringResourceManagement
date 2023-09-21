@@ -9,6 +9,8 @@ import com.example.smstest.domain.team.entity.Schedule;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.ScheduleRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +36,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<Schedule> getThisWeekMemp() {
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
@@ -48,7 +52,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .content(scheduleCreateRequest.getContent())
                 .date(scheduleCreateRequest.getDate())
                 .team(teamRepository.findById(scheduleCreateRequest.getTeamId()).get())
-                .memp(mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()))
+                .memp(mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
                 .build();
         // 스케줄 저장 로직을 추가할 수 있음
         return scheduleRepository.save(schedule);

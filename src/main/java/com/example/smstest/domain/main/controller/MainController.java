@@ -10,6 +10,8 @@ import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,8 @@ public class MainController {
 
     @GetMapping("/")
     public String main(Model model) {
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", memp);
 
         List<State> states = stateRepository.findAll();
@@ -90,7 +93,8 @@ public class MainController {
     @PostMapping("/dismissAnnouncement")
     public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
 
-        Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Announcement> announcementOptional = announcementRepository.findById(announcementId);
 
