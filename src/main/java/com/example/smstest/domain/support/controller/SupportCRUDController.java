@@ -1,9 +1,9 @@
 package com.example.smstest.domain.support.controller;
 
 
-import com.example.smstest.domain.client.entity.Customer;
+import com.example.smstest.domain.client.entity.Client;
+import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.project.entity.Project;
-import com.example.smstest.domain.client.repository.CustomerRepository;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.*;
@@ -39,7 +39,7 @@ public class SupportCRUDController {
     private final ProductCategoryRepository productCategoryRepository;
     private final IssueRepository issueRepository;
     private final IssueCategoryRepository issueCategoryRepository;
-    private final CustomerRepository customerRepository;
+    private final ClientRepository clientRepository;
     private final StateRepository stateRepository;
     private final MempRepository mempRepository;
     private final TeamRepository teamRepository;
@@ -111,7 +111,7 @@ public class SupportCRUDController {
         List<Memp> allMemps = mempRepository.findAll();
 
         // Customer 엔티티
-        List<Customer> allCustomers = customerRepository.findByOrderBySupportCountDesc();
+        List<Client> allCustomers = clientRepository.findByOrderBySupportCountDesc();
 
         Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -177,7 +177,7 @@ public class SupportCRUDController {
     @GetMapping("/create")
     public String createView(Model model) {
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
         List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority();
         for (IssueCategory category : issueCategories) {
@@ -220,7 +220,7 @@ public class SupportCRUDController {
         Support support = supportRepository.findById(supportId).get();
         model.addAttribute("support", support);
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
         List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority();
         for (IssueCategory category : issueCategories) {

@@ -1,7 +1,7 @@
 package com.example.smstest.domain.team.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.client.repository.CustomerRepository;
+import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.team.Interface.TeamService;
 import com.example.smstest.domain.team.dto.MemberInfoDTO;
@@ -37,9 +37,9 @@ public class TeamController {
     private final DepartmentRepository departmentRepository;
     private final MempRepository mempRepository;
     private final TeamService teamService;
-    private final CustomerRepository customerRepository;
     private final StateRepository stateRepository;
     private final DivisionRepository divisionRepository;
+    private final ClientRepository clientRepository;
 
     // 날짜 형태 bind
     @InitBinder
@@ -60,6 +60,11 @@ public class TeamController {
         List<Department> departments = departmentRepository.findAll();
         List<Team> teams = teamRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
+
+        Collections.sort(divisions, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(departments, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(teams, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         model.addAttribute("divisions", divisions);
         model.addAttribute("departments", departments);
@@ -149,6 +154,7 @@ public class TeamController {
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
 
+        System.out.println(memberInfoDTO.getAggregatedData());
         return "memberInfo";
     }
 
@@ -164,6 +170,7 @@ public class TeamController {
         model.addAttribute("team", memberInfoDTO.getTeam());
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
+        System.out.println(memberInfoDTO.getAggregatedData());
 
         return "memberInfo";
     }
@@ -180,7 +187,7 @@ public class TeamController {
         MemberInfoDetailDTO memberInfoDetailDTO = teamService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable, sortOrder);
 
         model.addAttribute("member", mempRepository.findById(memberInfoDetailDTO.getMemberId()).get());
-        model.addAttribute("customer", customerRepository.findById(memberInfoDetailDTO.getCustomerId()).get());
+        model.addAttribute("customer", clientRepository.findById(memberInfoDetailDTO.getCustomerId()).get());
         model.addAttribute("state", stateRepository.findById(memberInfoDetailDTO.getStateId()).get());
         model.addAttribute("posts", memberInfoDetailDTO.getPosts());
         model.addAttribute("totalPages", memberInfoDetailDTO.getTotalPages());

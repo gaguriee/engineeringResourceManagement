@@ -53,7 +53,7 @@
                         <option value="" selected>소속을 선택해주세요.</option>
                         <!-- Iterate over the issues list and add each issue's name as an option -->
                         <th:block th:each="department : ${departments}">
-                            <option th:value="${department.id}" th:text="${department.name}"></option>
+                            <option th:value="${department.id}" th:text="${department.name}" th:attr="data-departId=${department.id}"></option>
                         </th:block>
                     </select>
 
@@ -70,7 +70,7 @@
                         <option value="" selected>팀을 선택해주세요.</option>
                         <!-- Iterate over the issues list and add each issue's name as an option -->
                         <th:block th:each="team : ${teams}">
-                            <option th:value="${team.id}" th:text="${team.name}"></option>
+                            <option th:value="${team.id}" th:text="${team.name}" th:attr="data-teamDepartId=${team.getDepartment().getId()}, data-teamId=${team.id}"></option>
                         </th:block>
                     </select>
 
@@ -84,9 +84,9 @@
                 <form id="selectMemberForm" onsubmit="return validateForm()" action="/memberInfo/name" method="get" class="flex mt-2"> <!-- Specify the action and method for the form -->
 
                     <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                    <input type="text" id="engineer" name="engineer" list="engineerList" th:attr="placeholder='엔지니어를 검색해주세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    <datalist id="engineerList">
-                        <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
+                    <input type="text" id="engineer" name="engineer" autocomplete="off" list="engineerList" th:attr="placeholder='엔지니어를 검색해주세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <datalist id="engineerList" >
+                        <option th:each="memp : ${memps}" th:value="${memp.name}" th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
                     </datalist>
                     <div style="display: flex; align-items: end; justify-content: flex-end;">
                         <button type="submit" class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
@@ -115,6 +115,51 @@
 <script th:inline="javascript">
 
     var memps = /*[[${memps}]]*/ [];
+
+    const departmentSelect = document.getElementById('department');
+    const teamSelect = document.getElementById('team');
+    const memberSelect = document.getElementById('engineerList');
+
+    // 초기 멤버 리스트 저장
+    const initialMembers = [...document.querySelectorAll('#engineerList option')];
+    const initialTeams = [...document.querySelectorAll('#team option')];
+
+
+    // 소속 선택 변경 시 이벤트 핸들러
+    departmentSelect.addEventListener('change', function() {
+        const selectedDepartId = departmentSelect.options[departmentSelect.selectedIndex].getAttribute('data-departId');
+
+        // 멤버 선택 옵션 초기화
+        teamSelect.innerHTML = '<option value="all" th:attr="data-teamId=null" selected>전체</option>\n';
+
+        // 선택된 팀에 해당하는 멤버만 보여주기
+        for (const teamOption of initialTeams) {
+            const teamDepartId = teamOption.getAttribute('data-teamDepartId');
+
+            if (teamDepartId === selectedDepartId || selectedDepartId === '') {
+                teamSelect.appendChild(teamOption.cloneNode(true));
+            }
+        }
+    });
+
+    // 팀 선택 변경 시 이벤트 핸들러
+    teamSelect.addEventListener('change', function() {
+        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
+
+        // 멤버 선택 옵션 초기화
+        memberSelect.innerHTML = '';
+
+
+        // 선택된 팀에 해당하는 멤버만 보여주기
+        for (const memberOption of initialMembers) {
+            const memberTeamId = memberOption.getAttribute('data-memTeamId');
+
+            if (memberTeamId === selectedTeamId || selectedTeamId === '') {
+                memberSelect.appendChild(memberOption.cloneNode(true));
+            }
+        }
+    });
+
 
     document.addEventListener('DOMContentLoaded', function () {
         const form1 = document.getElementById('selectDepartmentForm');

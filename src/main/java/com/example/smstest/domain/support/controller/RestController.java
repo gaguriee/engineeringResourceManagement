@@ -33,7 +33,7 @@ public class RestController {
             client.setName(request.getClientName());
             clientRepository.save(client);        }
 
-        Client client = clientRepository.findByName(request.getClientName());
+        Client client = clientRepository.findOneByName(request.getClientName());
 
         boolean projectExist = projectRepository.existsByName(request.getProjectName());
 
@@ -48,7 +48,7 @@ public class RestController {
                     .engineer(mempRepository.findOneByName(request.getEngineerName())
                             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
                     .subEngineer(mempRepository.findOneByName(request.getSubEngineerName())
-                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
+                            .orElse(null))
                     .build();
             Project newProject = projectRepository.save(project);
 

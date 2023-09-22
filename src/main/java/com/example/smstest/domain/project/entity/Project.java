@@ -3,6 +3,7 @@ package com.example.smstest.domain.project.entity;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.support.entity.Product;
+import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.team.entity.Team;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,6 +61,7 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "부담당엔지니어_id")
     private Memp subEngineer;
+
     @Builder
     public Project(String name, Client client, Product product, Team team, Date startDate, Date finishDate, Memp engineer, Memp subEngineer) {
         this.name = name;

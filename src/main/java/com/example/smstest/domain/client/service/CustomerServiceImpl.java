@@ -1,10 +1,10 @@
 package com.example.smstest.domain.client.service;
 
 import com.example.smstest.domain.client.Interface.CustomerService;
-import com.example.smstest.domain.client.entity.Customer;
-import com.example.smstest.domain.client.repository.CustomerRepository;
+import com.example.smstest.domain.client.entity.Client;
+import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.support.dto.SupportSummary;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,29 +12,26 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
-    private final CustomerRepository customerRepository;
 
-    @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private final ClientRepository clientRepository;
 
     @Override
-    public Page<Customer> searchCustomers(String keyword, Pageable pageable) {
+    public Page<Client> searchCustomers(String keyword, Pageable pageable) {
         if (keyword != null) {
-            return customerRepository.findByNameContainingOrderBySupportCountDesc(keyword, pageable);
+            return clientRepository.findByNameContainingOrderBySupportCountDesc(keyword, pageable);
         }
-        return customerRepository.findAllBySupportCount(pageable);
+        return clientRepository.findAllBySupportCount(pageable);
     }
 
     @Override
-    public Customer getCustomerDetails(Integer customerId) {
-        return customerRepository.findById(customerId).orElse(null);
+    public Client getCustomerDetails(Integer customerId) {
+        return clientRepository.findById(customerId).orElse(null);
     }
 
     @Override
     public List<SupportSummary> getSupportSummaryByCustomerId(Integer customerId) {
-        return customerRepository.getSupportSummaryByCustomerId(customerId);
+        return clientRepository.getSupportSummaryByCustomerId(customerId);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.smstest.domain.client.controller;
 
 
-import com.example.smstest.domain.client.entity.Customer;
+import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.service.CustomerServiceImpl;
 import com.example.smstest.domain.support.dto.SupportSummary;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class ClientCRUDController {
             Model model) {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Customer> result = customerServiceImpl.searchCustomers(Keyword, pageable);
+        Page<Client> result = customerServiceImpl.searchCustomers(Keyword, pageable);
 
         model.addAttribute("customers", result);
         model.addAttribute("totalPages", result.getTotalPages());
@@ -53,8 +53,8 @@ public class ClientCRUDController {
 
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Integer customerId, Model model) {
-        Customer customer = customerServiceImpl.getCustomerDetails(customerId);
-        model.addAttribute("customer", customer);
+        Client client = customerServiceImpl.getCustomerDetails(customerId);
+        model.addAttribute("customer", client);
 
         List<SupportSummary> supportSummary = customerServiceImpl.getSupportSummaryByCustomerId(customerId);
         model.addAttribute("supportSummary", supportSummary);

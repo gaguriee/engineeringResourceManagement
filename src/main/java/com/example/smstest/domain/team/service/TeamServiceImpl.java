@@ -1,6 +1,6 @@
 package com.example.smstest.domain.team.service;
 
-import com.example.smstest.domain.client.repository.CustomerRepository;
+import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.ProductRepository;
@@ -43,7 +43,7 @@ public class TeamServiceImpl implements TeamService {
     private final MempRepository mempRepository;
     private final TeamRepository teamRepository;
     private final SupportRepository supportRepository;
-    private final CustomerRepository customerRepository;
+    private final ClientRepository clientRepository;
     private final DepartmentRepository departmentRepository;
     private ScheduleRepository scheduleRepository;
 
@@ -80,7 +80,7 @@ public class TeamServiceImpl implements TeamService {
             dto.setStateId((Long) data[2]);
 
             if (dto.getCustomerId() != null && dto.getProductId() != null && dto.getStateId() != null) {
-                dto.setCustomerName(customerRepository.findById(dto.getCustomerId()).get().getName());
+                dto.setCustomerName(clientRepository.findById(dto.getCustomerId()).get().getName());
                 dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
                 dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
                 dto.setCount((Double) data[3]);
@@ -115,7 +115,7 @@ public class TeamServiceImpl implements TeamService {
             dto.setStateId((Long) data[2]);
 
             if (dto.getCustomerId() != null && dto.getProductId() != null && dto.getStateId() != null) {
-                dto.setCustomerName(customerRepository.findById(dto.getCustomerId()).get().getName());
+                dto.setCustomerName(clientRepository.findById(dto.getCustomerId()).get().getName());
                 dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
                 dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
                 dto.setCount((Double) data[3]);
@@ -138,9 +138,9 @@ public class TeamServiceImpl implements TeamService {
         Page<Support> supports;
 
         if (sortOrder.equals("asc")){
-            supports = supportRepository.findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateAsc(memberId, customerId, productId, stateId, pageable);
+            supports = supportRepository.findAllByEngineerIdAndProjectClientIdAndProductIdAndStateIdOrderBySupportDateAsc(memberId, customerId, productId, stateId, pageable);
         }else{
-            supports = supportRepository.findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateDesc(memberId, customerId, productId, stateId, pageable);
+            supports = supportRepository.findAllByEngineerIdAndProjectClientIdAndProductIdAndStateIdOrderBySupportDateDesc(memberId, customerId, productId, stateId, pageable);
         }
 
         Page<SupportResponse> responsePage = new PageImpl<>(

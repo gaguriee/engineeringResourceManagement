@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
 import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
@@ -17,18 +16,17 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
     Long countByEngineerTeamIdAndStateId(Integer engineerId, Long issueId);
     Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);
 
-    Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateId(Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
-    Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateAsc(
+    Page<Support> findAllByEngineerIdAndProjectClientIdAndProductIdAndStateIdOrderBySupportDateAsc(
             Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
-    Page<Support> findAllByEngineerIdAndCustomerIdAndProductIdAndStateIdOrderBySupportDateDesc(
+    Page<Support> findAllByEngineerIdAndProjectClientIdAndProductIdAndStateIdOrderBySupportDateDesc(
             Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
 
     List<Support> findByEngineerTeamId(Integer teamId);
 
-    @Query("SELECT s.customer.id, s.product.id, s.state.id, SUM(s.supportTypeHour) " +
+    @Query("SELECT s.project.client.id, s.product.id, s.state.id, SUM(s.supportTypeHour) " +
             "FROM Support s " +
             "WHERE s.engineer.id = :engineerId " +
-            "GROUP BY s.customer.id, s.product.id, s.state.id")
+            "GROUP BY s.project.client.id, s.product.id, s.state.id")
     List<Object[]> countAttributesByEngineer(@Param("engineerId") Long engineerId);
 
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state")

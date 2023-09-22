@@ -487,7 +487,6 @@
     // 팀 선택 변경 시 이벤트 핸들러
     teamSelect.addEventListener('change', function() {
         const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
-        TeamId = selectedTeamId
 
         // 멤버 선택 옵션 초기화
         memberSelect.innerHTML = '<option value="all" th:attr="data-memId=null" selected>전체</option>\n';
@@ -671,7 +670,7 @@
         const searchInput = document.getElementById("simple-search");
         const searchQuery = searchInput.value.trim();
         currentParams["Keyword"] = searchQuery;
-        currentParams["currentPage"] = 0;
+        currentParams["page"] = 0;
         const newUrl = "/search?" + new URLSearchParams(currentParams).toString();
         window.location.href = newUrl;
 

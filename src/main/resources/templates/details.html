@@ -48,11 +48,15 @@
     <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16" id="contents" style="background-color: white">
 
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${(support.taskTitle != null && support.taskTitle.trim().length() > 0) ? support.taskTitle : '제목 없음'}">Apple iMac 25"</h1>
-        <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.project != null ? support.project.client.name : 'Unknown'}"></h3>
+        <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.project != null ? support.project?.name : 'Unknown'}"></h3>
         <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;">
             <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고객사</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.project != null ? support.project?.client?.name : 'Unknown'}"></dd>
+            </div>
+            <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">제품명</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.productName} ?: ' '">Electronics/PC</dd>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.productName} ?: ' '"></dd>
             </div>
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">업무 구분</dt>
@@ -62,12 +66,7 @@
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">이슈 구분</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.issueType} ?: ' '"> </dd>
             </div>
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">담당 엔지니어</dt>
-                <a th:href="'/memberInfo/name?engineer='+${support.engineerName}">
-                    <dd class="mb-4 font-light sm:mb-5 dark:text-gray-400" style="color: black; font-weight: bold;" th:text="${support.engineerName}"></dd>
-                </a>
-            </div>
+
         </dl>
         <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
             <div style="margin-right: 20px;">
@@ -82,6 +81,12 @@
             <div style="margin-right: 20px;" th:if="${not #strings.isEmpty(support.redmineIssue)}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">레드마인 일감</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.redmineIssue} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">담당 엔지니어</dt>
+                <a th:href="'/memberInfo/name?engineer='+${support.engineerName}">
+                    <dd class="mb-4 font-light sm:mb-5 dark:text-gray-400" style="color: black; font-weight: bold;" th:text="${support.engineerName}"></dd>
+                </a>
             </div>
         </dl>
 

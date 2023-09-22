@@ -1,8 +1,11 @@
 package com.example.smstest.domain.client.entity;
 
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.support.entity.Support;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,5 +19,6 @@ public class Client {
 
     @Column(name = "고객사", nullable = false)
     private String name;
+
 
 }

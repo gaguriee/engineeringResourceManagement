@@ -37,7 +37,7 @@ public class MainController {
     @GetMapping("/")
     public String main(Model model) {
         Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElse(null);
         model.addAttribute("user", memp);
 
         List<State> states = stateRepository.findAll();

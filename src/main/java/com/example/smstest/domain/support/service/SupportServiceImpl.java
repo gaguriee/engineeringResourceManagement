@@ -1,7 +1,6 @@
 package com.example.smstest.domain.support.service;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.client.repository.CustomerRepository;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
@@ -33,7 +32,6 @@ public class SupportServiceImpl implements SupportService {
     private final ProductRepository productRepository;
     private final MempRepository mempRepository;
     private final SupportTypeRepository supportTypeRepository;
-    private final CustomerRepository customerRepository;
     private final ProjectRepository projectRepository;
 
     public Page<SupportResponse> searchSupportByFilters(

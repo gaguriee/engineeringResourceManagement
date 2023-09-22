@@ -1,5 +1,4 @@
 package com.example.smstest.domain.support.entity;
-import com.example.smstest.domain.client.entity.Customer;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.project.entity.Project;
 import lombok.Data;
@@ -33,10 +32,6 @@ public class Support {
 
     @Column(name = "작업세부내역", columnDefinition = "text")
     private String taskDetails;
-
-    @ManyToOne
-    @JoinColumn(name = "고객사_id")
-    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "프로젝트_id")
