@@ -44,7 +44,7 @@
 
     </div>
 
-    <div class="mt-8 mb-6" style="background-color: #F7F7F7;">
+    <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
 
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team')} + ${department.id} " width="100%" height="1400" ></iframe>
         <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team-mobile')} + ${department.id} " width="100%" height="1400" ></iframe>
@@ -69,6 +69,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+
+    .skeleton * {
+        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
+        background-size: 200% 100%;
+        background-position: 100% 0;
+        animation: load 1s infinite;
+    }
+
+    @keyframes load {
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
     /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
     @media (max-width: 1064px) {
 

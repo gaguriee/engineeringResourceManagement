@@ -154,7 +154,6 @@ public class TeamController {
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
 
-        System.out.println(memberInfoDTO.getAggregatedData());
         return "memberInfo";
     }
 
@@ -170,7 +169,6 @@ public class TeamController {
         model.addAttribute("team", memberInfoDTO.getTeam());
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
-        System.out.println(memberInfoDTO.getAggregatedData());
 
         return "memberInfo";
     }
