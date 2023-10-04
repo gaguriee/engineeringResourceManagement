@@ -101,7 +101,7 @@ public class TeamServiceImpl implements TeamService {
 
     public MemberInfoDTO getMemberInfo(String name) {
         Memp memp = mempRepository.findOneByName(name)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));;
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         List<Support> supports = supportRepository.findByEngineerId(memp.getId());
         Optional<Team> team = teamRepository.findById(memp.getTeam().getId());
         List<Memp> memps = mempRepository.findAllByTeamId(team.get().getId());

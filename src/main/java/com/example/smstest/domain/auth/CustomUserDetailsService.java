@@ -42,9 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<Memp> memp = mempRepository.findByUsername(username);
 
-        /**
-         * tb_mempdata에는 있지만 erm db에는 없는 경우 신규 등록
-         */
+        // tb_mempdata에는 있지만 erm db에는 없는 경우 신규 등록
         Random rand = new Random();
         String randomColor = String.format("#%02X%02X%02X", rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 

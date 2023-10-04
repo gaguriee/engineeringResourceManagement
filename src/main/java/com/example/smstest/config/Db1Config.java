@@ -15,6 +15,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+
+/**
+ * 다중 DB 구성, DB별 Config 설정
+ * Db1 -> main database, Employee 관련 entity 제외 전체 적용
+ */
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.example.smstest.domain",
@@ -36,7 +41,7 @@ public class Db1Config {
                          @Qualifier("db1DataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.example.smstest.domain") // db1의 엔티티 패키지
+                .packages("com.example.smstest.domain")
                 .persistenceUnit("db1")
                 .build();
     }

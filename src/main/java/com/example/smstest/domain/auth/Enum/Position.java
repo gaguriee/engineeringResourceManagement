@@ -1,5 +1,8 @@
 package com.example.smstest.domain.auth.Enum;
 
+import lombok.Getter;
+
+@Getter
 public enum Position {
     TEAM_LEADER("팀장"),
     TEAM_MEMBER("팀원");
@@ -10,7 +13,4 @@ public enum Position {
         this.label = label;
     }
 
-    public String getLabel() {
-        return label;
-    }
 }

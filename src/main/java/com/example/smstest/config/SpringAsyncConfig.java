@@ -8,7 +8,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 @Configuration
-@EnableAsync // Application이 아닌, Async 설정 클래스에 붙여야 함.
+@EnableAsync
 public class SpringAsyncConfig {
 
     @Bean(name = "threadPoolTaskExecutor")

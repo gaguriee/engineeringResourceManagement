@@ -1,5 +1,8 @@
 package com.example.smstest.domain.auth.Enum;
 
+import lombok.Getter;
+
+@Getter
 public enum Rank {
     SENIOR("수석"),
     MANAGER("책임"),
@@ -14,7 +17,4 @@ public enum Rank {
         this.label = label;
     }
 
-    public String getLabel() {
-        return label;
-    }
 }

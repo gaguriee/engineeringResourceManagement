@@ -8,9 +8,11 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import java.util.Collections;
 
+/**
+ * Favicon 설정 파일
+ */
 @Configuration
 public class FaviconConfiguration {
-
     @Bean
     public SimpleUrlHandlerMapping customFaviconHandlerMapping() {
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();

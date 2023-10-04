@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+/**
+ * JPA Querydsl 설정 파일
+ */
 @Configuration
 public class QuerydslConfiguration {
 

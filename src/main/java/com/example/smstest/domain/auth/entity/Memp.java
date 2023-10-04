@@ -9,6 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import java.util.Set;
 
+
+/**
+ * 사용자를 저장하는 Memp 엔티티 클래스
+ */
 @Entity
 @Data
 @NoArgsConstructor
