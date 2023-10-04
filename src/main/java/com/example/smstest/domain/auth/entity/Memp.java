@@ -1,18 +1,13 @@
 package com.example.smstest.domain.auth.entity;
 
-import com.example.smstest.domain.auth.Enum.Role;
 import com.example.smstest.domain.auth.dto.AccountRequest;
 import com.example.smstest.domain.team.entity.Team;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -47,8 +42,20 @@ public class Memp {
     @NotNull
     private String password;
 
-    @Enumerated(EnumType.STRING) // 데이터베이스에 저장할 때 enum을 USER 또는 ADMIN으로 저장한다.
-    private Role role;
+    // TODO : EAGER 바꾸기
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = {
+                    @JoinColumn(name = "memp_id", referencedColumnName = "memp_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "authority_name", referencedColumnName = "authority_name")
+            }
+    )
+    @ToString.Exclude
+    private Set<Authority> authorities;
+
 
     public Memp(AccountRequest accountRequest){
         this.username= accountRequest.getUsername();
@@ -56,7 +63,7 @@ public class Memp {
     }
 
     @Builder
-    public Memp(String name, Team team, String position, String rank, String calenderColor, String username, @NotNull String password, Role role) {
+    public Memp(String name, Team team, String position, String rank, String calenderColor, String username, @NotNull String password, Set<Authority> authorities) {
         this.name = name;
         this.team = team;
         this.position = position;
@@ -64,7 +71,7 @@ public class Memp {
         this.calenderColor = calenderColor;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.authorities = authorities;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {

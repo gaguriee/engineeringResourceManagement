@@ -84,7 +84,7 @@
             </div>
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">담당 엔지니어</dt>
-                <a th:href="'/memberInfo/name?engineer='+${support.engineerName}">
+                <a th:href="'/memberInfo?memberId='+${support.engineerId}">
                     <dd class="mb-4 font-light sm:mb-5 dark:text-gray-400" style="color: black; font-weight: bold;" th:text="${support.engineerName}"></dd>
                 </a>
             </div>
@@ -106,7 +106,7 @@
     </div>
     <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16" style="background-color: white">
 
-        <div th:if="${user.id == support.engineerId || user.role.name()=='ADMIN' }" class="flex items-center space-x-4" style="padding-top: 48px">
+        <div th:if="${user.id == support.engineerId || #authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" class="flex items-center space-x-4" style="padding-top: 24px">
             <a th:href="'/modify?supportId='+${support.id}" id="editButton"   type="button" class="flex text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-500 dark:hover:bg-gray-600 dark:focus:ring-gray-900">
                 <svg aria-hidden="true" class="mr-1 -ml-1 w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10 v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                 수정
@@ -116,8 +116,6 @@
                 삭제
             </button>
         </div>
-
-
         <div class="mt-8 ml-auto">
             <a id="showBoard" href="/search?"  style="margin-right:24px; font-weight: bold;">목록보기</a>
             <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; font-weight: bold;">PDF로 저장</button>
@@ -144,7 +142,13 @@
     const supportId = /*[[${support.id }]]*/;
     const taskTitle = /*[[${support.taskTitle }]]*/;
     const date = /*[[${support.supportDate }]]*/;
-    const userRole = /*[[${user.role}]]*/;
+    /* 현재 사용자의 역할(Role)을 가져옵니다. */
+    var userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
+
+    /* "ROLE_SUPERADMIN" 역할이 있는지 확인합니다. */
+    var hasSuperAdminRole = userAuthorities.some(function(authority) {
+        return authority.authority === 'ROLE_SUPERADMIN';
+    });
 
     document.getElementById("generatePdfButton").addEventListener("click", function() {
         pdfPrint();
@@ -185,7 +189,7 @@
     var deleteButton = document.getElementById("deleteButton");
     var editButton = document.getElementById("editButton");
 
-    if (daysDifference <= 7 || userRole === "ADMIN" ) {
+    if (daysDifference <= 7 || hasSuperAdminRole ) {
         deleteButton.style.display = "flex";
         editButton.style.display = "flex";
     } else {

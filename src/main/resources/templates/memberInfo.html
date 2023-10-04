@@ -192,7 +192,7 @@
                     var backgroundColor = support.supportType.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
                     event = {
-                        title: support.customer.name + " (" + support.supportType.name + " " + support.supportTypeHour + "h)",
+                        title: support.project?.client?.name + " (" + support.supportType.name + " " + support.supportTypeHour + "h)",
                         start: support.supportDate,
                         backgroundColor: backgroundColor, // 색상 지정
                         url: '/details?supportId=' + support.id
@@ -200,7 +200,7 @@
                 }
                 else{
                     event = {
-                        title: support.customer.name + " (지원형태 없음)",
+                        title: support.project?.client?.name + " (지원형태 없음)",
                         start: support.supportDate,
                         backgroundColor: '#007bff', // 색상 지정
                         url: '/details?supportId=' + support.id

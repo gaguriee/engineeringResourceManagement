@@ -11,6 +11,7 @@ import com.example.smstest.domain.team.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/account")
 public class AuthController {
@@ -61,7 +63,8 @@ public class AuthController {
         }
         else {
             // 성공
-            authService.register(accountRequest);
+            Memp memp = authService.register(accountRequest);
+            log.info("NEW MEMBER : " + memp.getUsername());
             return "redirect:/";
         }
     }

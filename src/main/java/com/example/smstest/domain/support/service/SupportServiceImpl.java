@@ -1,6 +1,7 @@
 package com.example.smstest.domain.support.service;
 
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
@@ -85,7 +86,7 @@ public class SupportServiceImpl implements SupportService {
         Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (support.getEngineer().getUsername().equals(user.getUsername())
-        || user.getRole().name().equals("ADMIN")){
+        || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"))){
             support.setSupportDate(supportRequest.getSupportDate());
             support.setRedmineIssue(supportRequest.getRedmineIssue());
             support.setTaskTitle(supportRequest.getTaskTitle());
@@ -118,7 +119,7 @@ public class SupportServiceImpl implements SupportService {
         Support support = supportRepository.findById(supportId).orElse(null);
 
         if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())
-                || user.getRole().name().equals("ADMIN"))){
+                || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN")))){
             supportRepository.delete(support);
             log.info("===DELETE=== ("+ SupportResponse.entityToResponse(support) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
         }

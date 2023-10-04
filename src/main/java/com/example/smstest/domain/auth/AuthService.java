@@ -1,10 +1,10 @@
 package com.example.smstest.domain.auth;
 
-import com.example.smstest.domain.auth.Enum.Role;
 import com.example.smstest.domain.auth.dto.AccountRequest;
 import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
 import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,11 @@ public class AuthService {
     private final TeamRepository teamRepository;
 
     public Memp register(AccountRequest accountRequest) {
+
+        Set<Authority> authoritiesSet = new HashSet<>();
+        authoritiesSet.add(Authority.of("ROLE_USER"));
+
+
         Memp memp = Memp.builder()
                 .name(accountRequest.getName())
                 .rank(accountRequest.getRank())
@@ -30,7 +37,7 @@ public class AuthService {
                 .team(teamRepository.findById(accountRequest.getTeamId()).get())
                 .username(accountRequest.getUsername())
                 .password(accountRequest.getPassword())
-                .role(Role.valueOf("USER"))
+                .authorities(authoritiesSet)
                 .build();
 
         memp.encodePassword(passwordEncoder);
@@ -56,6 +63,14 @@ public class AuthService {
 
         memp.setTeam(teamRepository.findById(modifyUserinfoRequest.getTeamId()).get());
         memp.setRank(modifyUserinfoRequest.getRank());
+
+//        팀장일 경우 ADMIN 권한 부여
+        if (modifyUserinfoRequest.getPosition().equals("팀장")){
+            memp.getAuthorities().add(Authority.of("ROLE_ADMIN"));
+        }
+        else{
+            memp.getAuthorities().remove(Authority.of("ROLE_ADMIN"));
+        }
         memp.setPosition(modifyUserinfoRequest.getPosition());
 
         return mempRepository.save(memp);

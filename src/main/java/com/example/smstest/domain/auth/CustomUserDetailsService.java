@@ -1,17 +1,13 @@
 package com.example.smstest.domain.auth;
 
-import com.example.smstest.domain.auth.Enum.Role;
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import com.example.smstest.employee.entity.Employee;
 import com.example.smstest.employee.repository.EmployeeRepository;
-import com.example.smstest.exception.CustomException;
-import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +48,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         Random rand = new Random();
         String randomColor = String.format("#%02X%02X%02X", rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 
+        Set<Authority> authoritiesSet = new HashSet<>();
+        authoritiesSet.add(Authority.of("ROLE_USER"));
+
         if (memp.isEmpty()) {
             memp = Optional.ofNullable(Memp.builder()
                     .name(employee.getEmpname())
@@ -63,7 +60,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .username(employee.getUserid())
                     .password(basicPassword)
                     .calenderColor(randomColor)
-                    .role(Role.valueOf("USER"))
+                    .authorities(authoritiesSet)
                     .build());
 //            memp.encodePassword(passwordEncoder);
 
@@ -75,9 +72,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             }
         }
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+ memp.get().getRole()));
-
-        return new User(memp.get().getUsername(), memp.get().getPassword(), grantedAuthorities);
+        return new User(memp.get().getUsername(), memp.get().getPassword(),
+                memp.get().getAuthorities().stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+                .collect(Collectors.toSet()));
     }
 }

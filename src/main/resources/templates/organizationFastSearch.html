@@ -81,11 +81,11 @@
                     </div>
                 </form>
 
-                <form id="selectMemberForm" onsubmit="return validateForm()" action="/memberInfo/name" method="get" class="flex mt-2"> <!-- Specify the action and method for the form -->
-
+                <form id="selectMemberForm" onsubmit="return validateForm()" method="get" class="flex mt-2" action="/memberInfo">
+                    <input type="hidden" id="memberId" name="memberId" value="">
                     <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                    <input type="text" id="engineer" name="engineer" autocomplete="off" list="engineerList" th:attr="placeholder='엔지니어를 검색해주세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    <datalist id="engineerList" >
+                    <input type="text" id="engineer" autocomplete="off" list="engineerList" th:attr="placeholder='엔지니어를 검색해주세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <datalist id="engineerList">
                         <option th:each="memp : ${memps}" th:value="${memp.name}" th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
                     </datalist>
                     <div style="display: flex; align-items: end; justify-content: flex-end;">
@@ -93,7 +93,6 @@
                             팀원 조회
                         </button>
                     </div>
-
                 </form>
                 <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
                     <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -124,6 +123,15 @@
     const initialMembers = [...document.querySelectorAll('#engineerList option')];
     const initialTeams = [...document.querySelectorAll('#team option')];
 
+
+    document.getElementById('engineer').addEventListener('input', function() {
+        var selectedOption = document.querySelector('#engineerList option[value="' + this.value + '"]');
+        if (selectedOption) {
+            document.getElementById('memberId').value = selectedOption.getAttribute('data-memId');
+        } else {
+            document.getElementById('memberId').value = '';
+        }
+    });
 
     // 소속 선택 변경 시 이벤트 핸들러
     departmentSelect.addEventListener('change', function() {
@@ -183,6 +191,8 @@
     function validateForm() {
         // Get the form elements
         var memberName = document.getElementById('engineer').value;
+        // const selectedMemId = memberSelect.options[memberSelect.selectedIndex].getAttribute('data-memId');
+
 
         // 해당 engineer를 포함하는지 확인
         var containsEngineerName = memps.some(function(m) {

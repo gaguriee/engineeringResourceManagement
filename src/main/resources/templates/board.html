@@ -235,7 +235,7 @@
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">프로젝트명</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">제품명</th>
                         <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
-                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 25%" th:if="${user.getRole().name().equals('ADMIN')}" >이슈명</th>
+                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 25%" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" >이슈명</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자
                             <button id="sortButton" th:attr="data-sortOrder=${sortOrder}">
                                 <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
@@ -257,7 +257,7 @@
                                 <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
                             </a>
                         </td>
-                        <td class="px-4 py-3" th:if="${user.getRole().name().equals('ADMIN')}" th:text="${post.issueType}">이슈</td>
+                        <td class="px-4 py-3" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" th:text="${post.issueType}">이슈</td>
                         <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
                         <td class="px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
                     </tr>

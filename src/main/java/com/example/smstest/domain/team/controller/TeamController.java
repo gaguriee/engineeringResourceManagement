@@ -157,22 +157,6 @@ public class TeamController {
         return "memberInfo";
     }
 
-    @GetMapping("/memberInfo/name")
-    public String getMemberInfoByName(@RequestParam(required = true) String engineer, Model model) {
-
-        MemberInfoDTO memberInfoDTO = teamService.getMemberInfo(engineer);
-
-        model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
-
-        model.addAttribute("department", memberInfoDTO.getDepartment());
-        model.addAttribute("member", memberInfoDTO.getMemp());
-        model.addAttribute("team", memberInfoDTO.getTeam());
-        model.addAttribute("supports", memberInfoDTO.getSupports());
-        model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
-
-        return "memberInfo";
-    }
-
     // 팀원 정보 조회 - 지원내역 리스트
     @GetMapping("/memberInfoDetail")
     public String getMemberInfoDetail(

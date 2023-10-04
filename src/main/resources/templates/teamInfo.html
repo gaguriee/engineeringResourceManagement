@@ -44,11 +44,9 @@
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${team.name}"></h2>
         <form id="selectForm" action="/memberInfo" method="get"> <!-- Specify the action and method for the form -->
             <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-            <select id="member" name="memberId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                <option value="" selected>팀원을 선택해주세요.</option>
-                <!-- Iterate over the issues list and add each issue's name as an option -->
-                <th:block th:each="memp : ${memps}">
-                    <option th:value="${memp.id}" th:text="${memp.name}"></option>
+            <select id="member" size="3" name="memberId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <th:block th:each="memp, iterStat : ${memps}">
+                    <option th:value="${memp.id}" th:text="${memp.name}" th:selected="${iterStat.index == 0}"></option>
                 </th:block>
             </select>
 
@@ -135,7 +133,7 @@
                     var backgroundColor = support.engineer.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
                     event = {
-                        title: support.customer.name + " (" + support.engineer.name + ")",
+                        title: support.project?.client?.name + " (" + support.engineer.name + ")",
                         start: support.supportDate,
                         backgroundColor: backgroundColor, // 색상 지정
                         url: '/details?supportId=' + support.id
@@ -143,7 +141,7 @@
                 }
                 else{
                     event = {
-                        title: support.customer.name + " (지원형태 없음)",
+                        title: support.project?.client?.name + " (지원형태 없음)",
                         start: support.supportDate,
                         backgroundColor: '#007bff', // 색상 지정
                         url: '/details?supportId=' + support.id
