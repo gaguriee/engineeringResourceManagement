@@ -84,6 +84,10 @@
                         <label for="finishDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">종료일</label>
                         <input type="date" name="finishDate" id="finishDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     </div>
+                    <div class="sm:col-span-2" >
+                        <label for="uniqueCode" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고유코드</label>
+                        <input type="text" name="uniqueCode" id="uniqueCode" placeholder="라이센스 센터 기준 고유코드를 입력해주세요." required="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    </div>
                 </div>
                 <div style="display: flex; justify-content:flex-end ">
                     <div class="flex items-center h-5">
@@ -116,7 +120,7 @@
                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트 또는 고객사명으로 검색" required="">
+                            <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트명, 고객사명 또는 고유코드로 검색" required="">
                         </div>
                         <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Search
@@ -135,15 +139,17 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">고객사</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">고객사</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">고유코드</th>
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 40%">프로젝트명</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">시작일</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">만료일</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">시작일</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">만료일</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="project : ${projects}" class="border-b dark:border-gray-700">
                             <td class="px-4 py-3" th:text="${project.client.name}">고객사</td>
+                            <td class="px-4 py-3"  th:text="${project.uniqueCode}">2000-0000</td>
                             <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
                                 <a href="#" th:onclick="setProject([[${project.id}]], [[${project.name}]])"
                                    th:text="${project.name}" class="hover:text-primary-700 dark:hover:text-primary-500">
@@ -284,6 +290,7 @@
     var engineerName = document.getElementById("engineer");
     var subEngineerName = document.getElementById("subEngineer");
     var directSelect = document.getElementById("direct-select");
+    var uniqueCode = document.getElementById("uniqueCode");
 
     var projectCreateBtn = document.getElementById("projectCreateBtn");
     var closeButton = document.getElementById("closeButton");
@@ -314,7 +321,10 @@
                 alert("담당 엔지니어를 선택해주세요.");
                 return;
             }
-
+            if (uniqueCode.value === '' ) {
+                alert("프로젝트 고유 코드를 입력해주세요.");
+                return;
+            }
             fetch("/project/create", {
                 method: "POST",
                 headers: {
@@ -328,7 +338,8 @@
                     startDate : startDate.value,
                     finishDate : finishDate.value,
                     engineerName : engineerName.value,
-                    subEngineerName: subEngineerName.value
+                    subEngineerName: subEngineerName.value,
+                    uniqueCode : uniqueCode.value
 
                 }),
             })
@@ -336,13 +347,16 @@
                 .then(data => {
                     if (data.projectExist) {
                         alert("이미 존재하는 프로젝트입니다.");
-                    } else {
+                    } else if (!data.projectExist) {
                         alert("등록이 완료되었습니다.");
                         closeButton.click();
 
                         if (directSelect.checked){
                             setProject(data.projectId ,projectName.value);
                         }
+
+                    } else {
+                        alert("등록을 실패했습니다. 관리자에 문의해주시기 바랍니다.");
 
                     }
                 })

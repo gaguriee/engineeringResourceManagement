@@ -3,16 +3,13 @@ package com.example.smstest.domain.project.entity;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.support.entity.Product;
-import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.team.entity.Team;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +33,9 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "고객사_id")
     private Client client;
+
+    @Column(name = "고유코드")
+    private String uniqueCode;
 
     @ManyToOne
     @JoinColumn(name = "제품_id")
@@ -62,10 +62,12 @@ public class Project {
     @JoinColumn(name = "부담당엔지니어_id")
     private Memp subEngineer;
 
+
     @Builder
-    public Project(String name, Client client, Product product, Team team, Date startDate, Date finishDate, Memp engineer, Memp subEngineer) {
+    public Project(String name, Client client, String uniqueCode, Product product, Team team, Date startDate, Date finishDate, Memp engineer, Memp subEngineer) {
         this.name = name;
         this.client = client;
+        this.uniqueCode = uniqueCode;
         this.product = product;
         this.team = team;
         this.startDate = startDate;

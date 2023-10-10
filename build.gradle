@@ -18,7 +18,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -81,6 +80,9 @@ dependencies {
     implementation 'com.itextpdf:itext-pdfa:5.5.13'
     implementation 'com.itextpdf:itext-asian:5.2.0'
     implementation 'com.itextpdf.tool:xmlworker:5.5.13'
+
+    // mysql
+    implementation "mysql:mysql-connector-java:5.1.34"
 }
 
 tasks.named('test') {

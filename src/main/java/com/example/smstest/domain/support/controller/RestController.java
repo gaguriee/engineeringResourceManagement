@@ -49,10 +49,16 @@ public class RestController {
                             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
                     .subEngineer(mempRepository.findOneByName(request.getSubEngineerName())
                             .orElse(null))
+                    .uniqueCode(request.getUniqueCode())
                     .build();
+
             Project newProject = projectRepository.save(project);
 
-            return new CreateProjectResponse(newProject.getId(),false);
+            if (newProject.getId() != null) {
+                return new CreateProjectResponse(newProject.getId(), false);
+            } else {
+                throw new CustomException(ErrorCode.BAD_REQUEST);
+            }
         }
         else {
             return new CreateProjectResponse(0L, true);

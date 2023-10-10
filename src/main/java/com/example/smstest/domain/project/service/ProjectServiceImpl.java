@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -16,8 +18,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<Project> searchProjects(String keyword, Pageable pageable) {
+        Date currentDate = new Date();
+
         if (keyword != null) {
-            return projectRepository.findByNameContaining(keyword, pageable);
+            return projectRepository.findByNameContainingAndFinishDateAfter(keyword, currentDate, pageable);
         }
-        return projectRepository.findAll(pageable);    }
+        return projectRepository.findAllByFinishDateAfter(currentDate, pageable);    }
 }

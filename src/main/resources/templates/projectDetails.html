@@ -7,7 +7,8 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
+    <script src="frappe-gantt.min.js"></script>
+    <link rel="stylesheet" href="frappe-gantt.css">
 </head>
 <body style="background-color: white">
 <div th:replace="header :: header"></div>
@@ -76,25 +77,12 @@
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.product?.name} ?: ' '"></dd>
             </div>
         </dl>
+
+
     </div>
     <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16" style="background-color: white">
 
-        <div th:if="${user.id == project.engineer.id || user.role.name()=='ADMIN' }" class="flex items-center space-x-4" style="padding-top: 48px">
-            <a th:href="'/modify?supportId='+${support.id}" id="editButton"   type="button" class="flex text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-500 dark:hover:bg-gray-600 dark:focus:ring-gray-900">
-                <svg aria-hidden="true" class="mr-1 -ml-1 w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10 v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-                수정
-            </a>
-            <button id="deleteButton" data-modal-target="deleteModal" data-modal-toggle="deleteModal" type="button" class="flex text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
-                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                삭제
-            </button>
-        </div>
-
-
-        <div class="mt-8 ml-auto">
-            <a id="showBoard" href="/project/search?"  style="margin-right:24px; font-weight: bold;">목록보기</a>
-<!--            <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; font-weight: bold;">PDF로 저장</button>-->
-        </div>
+        <svg id="gantt"></svg>
 
     </div>
 
@@ -109,85 +97,36 @@
     }
 
 </style>
+<script src="frappe-gantt.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
-
-    const supportId = /*[[${support.id }]]*/;
-    const taskTitle = /*[[${support.taskTitle }]]*/;
-    const date = /*[[${support.supportDate }]]*/;
-    const userRole = /*[[${user.role}]]*/;
-
-    // document.getElementById("generatePdfButton").addEventListener("click", function() {
-    //     pdfPrint();
-    // });
-
-    function pdfPrint() {
-        // PDF 생성 요청을 서버로 보냅니다.
-        fetch('/pdf/generate?supportId=' + supportId, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/pdf'
-            },
-        })
-            .then(response => response.blob())
-            .then(blob => {
-                // 서버에서 받은 PDF 파일을 다운로드합니다.
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = taskTitle+'_'+date;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error('Error generating PDF:', error);
-            });
-    }
-
-
-    var currentDate = new Date();
-    var supportDate = new Date(date)
-
-    var timeDifference = currentDate - supportDate;
-
-    var daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-    var deleteButton = document.getElementById("deleteButton");
-    var editButton = document.getElementById("editButton");
-
-    if (userRole === "ADMIN" ) {
-        deleteButton.style.display = "flex";
-        editButton.style.display = "flex";
-    } else {
-        deleteButton.style.display = "none";
-        editButton.style.display = "none";
-    }
-
-    function hideModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.setAttribute('aria-hidden', 'true');
+    var tasks = [
+        {
+            id: 'Task 1',
+            name: 'Redesign website',
+            start: '2016-12-28',
+            end: '2016-12-31',
+            progress: 20,
+            dependencies: 'Task 2, Task 3'
         }
-    }
-
-    var deleteNo = document.getElementById("deleteNo");
-    if (deleteNo) {
-        deleteNo.addEventListener('click', function () {
-            hideModal('deleteModal');
-        });
-    }
-
-    const deleteCloseButton = document.querySelector('[data-modal-toggle="deleteModal"]');
-    if (deleteCloseButton) {
-        deleteCloseButton.addEventListener('click', function () {
-            hideModal('deleteModal');
-        });
-    }
+        ]
+    var gantt = new Gantt('#gantt', tasks, {
+        on_click: function (task) {
+            console.log(task);
+        },
+        on_date_change: function(task, start, end) {
+            console.log(task, start, end);
+        },
+        on_progress_change: function(task, progress) {
+            console.log(task, progress);
+        },
+        on_view_change: function(mode) {
+            console.log(mode);
+        }
+    });
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }

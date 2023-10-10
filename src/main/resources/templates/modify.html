@@ -192,8 +192,8 @@
                             <div>
                                 <span class="font-medium">정기점검이라면?</span>
                                 <ul class=" mt-1.5 ml-1 list-disc list-inside">
-                                    <li>작업 요약에 제품명을 전부 기입해주세요.</li>
-                                    <li>제품마다 다른 지원내역을 등록하지 않아도 됩니다.</li>
+                                    <li>작업 요약에 제품명을 전부 기입</li>
+                                    <li>제품별 지원내역 등록 불필요</li>
                                 </ul>
                             </div>
                         </div>
@@ -385,7 +385,7 @@
 
     window.onload = function(){
         document.getElementById("projectSearchBtn").onclick = function(){
-            window.open("/project/select","","width=700px,height=600px,top=200px,left=200px;");
+            window.open("/project/select","","width=1000px,height=600px,top=200px,left=200px;");
         }
     };
 
@@ -503,10 +503,15 @@
         return `${year}-${month}-${day}`;
     }
 
+    var userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
+    var hasSuperAdminRole = userAuthorities.some(function(authority) {
+        return authority.authority === 'ROLE_SUPERADMIN';
+    });
+
     // 최대 날짜를 오늘 날짜로 설정
     const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
-    if (user.role !== "ADMIN"){
+    if (!hasSuperAdminRole){
         supportDateInput.min = getSevenDaysAgo();
     }
 
