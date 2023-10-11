@@ -7,8 +7,6 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-    <script src="frappe-gantt.min.js"></script>
-    <link rel="stylesheet" href="frappe-gantt.css">
 </head>
 <body style="background-color: white">
 <div th:replace="header :: header"></div>
@@ -78,12 +76,12 @@
             </div>
         </dl>
 
-
-    </div>
-    <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16" style="background-color: white">
-
-        <svg id="gantt"></svg>
-
+        <div th:each="category : ${taskCategories}">
+            <div th:with="categoryId=${category.id}">
+                <div style="background-color: yellow; padding: 4px" th:text="${category.name} ?: ' '"></div>
+                <div th:id="'timeline'+${categoryId}"></div>
+            </div>
+        </div>
     </div>
 
 
@@ -97,36 +95,78 @@
     }
 
 </style>
-<script src="frappe-gantt.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
-    var tasks = [
-        {
-            id: 'Task 1',
-            name: 'Redesign website',
-            start: '2016-12-28',
-            end: '2016-12-31',
-            progress: 20,
-            dependencies: 'Task 2, Task 3'
-        }
-        ]
-    var gantt = new Gantt('#gantt', tasks, {
-        on_click: function (task) {
-            console.log(task);
-        },
-        on_date_change: function(task, start, end) {
-            console.log(task, start, end);
-        },
-        on_progress_change: function(task, progress) {
-            console.log(task, progress);
-        },
-        on_view_change: function(mode) {
-            console.log(mode);
-        }
-    });
+
+
+    const tasks = /*[[${tasks}]]*/;
+    const project = /*[[${project}]]*/;
+
+
+    google.charts.load("current", {packages: ["timeline"]});
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+        const tasks = /*[[${tasks}]]*/;
+
+        tasks.forEach(function (task) {
+            var categoryId = task.category.id;
+            var containerId = 'timeline' + categoryId;
+            var container = document.getElementById(containerId);
+
+            var chart = new google.visualization.Timeline(container);
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn({ type: 'string', id: 'Position' });
+            dataTable.addColumn({ type: 'string', id: 'Name' });
+            dataTable.addColumn({ type: 'date', id: 'Start' });
+            dataTable.addColumn({ type: 'date', id: 'End' });
+
+            var taskData = [];
+
+            // Filter tasks by category
+            var categoryTasks = tasks.filter(function (t) {
+                return t.category.id === categoryId;
+            });
+
+            categoryTasks.forEach(function (task) {
+                var estimatedStartDate = task.estimatedStartDate ? new Date(task.estimatedStartDate) : null;
+                var estimatedEndDate = task.estimatedEndDate ? new Date(task.estimatedEndDate) : null;
+                var actualStartDate = task.actualStartDate ? new Date(task.actualStartDate) : null;
+                var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
+
+                if (estimatedStartDate !== null || estimatedEndDate !== null) {
+                    taskData.push([task.taskName, 'expected', estimatedStartDate, estimatedEndDate]);
+                }
+
+                if (actualStartDate !== null || actualEndDate !== null) {
+                    taskData.push([task.taskName, 'actual', actualStartDate, actualEndDate]);
+                }
+            });
+
+            dataTable.addRows(taskData);
+
+            var options = {
+                timeline: {
+                    groupByRowLabel: true,
+                    alternatingRowStyle: true,
+                    colorByRowLabel: false
+                },
+                hAxis: {
+                    format: 'yy.MM.dd',
+                    min: new Date(2023, 0, 1), // 시작 날짜 (년, 월, 일)
+                    max: new Date(2023, 11, 31) // 끝 날짜 (년, 월, 일)
+                }
+            };
+
+            chart.draw(dataTable, options);
+        });
+    }
+
+
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }

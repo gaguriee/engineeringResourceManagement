@@ -5,11 +5,15 @@ import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
-import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.Interface.ProjectService;
+import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.support.repository.ProductRepository;
+import com.example.smstest.domain.task.Task;
+import com.example.smstest.domain.task.TaskCategory;
+import com.example.smstest.domain.task.TaskCategoryRepository;
+import com.example.smstest.domain.task.TaskRepository;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
@@ -46,6 +50,8 @@ public class ProjectController {
     private final TeamRepository teamRepository;
     private final MempRepository mempRepository;
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
+    private final TaskCategoryRepository taskCategoryRepository;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -75,6 +81,12 @@ public class ProjectController {
 
         Project project = projectRepository.findById(projectId).get();
         model.addAttribute("project", project);
+
+        List<Task> tasks = taskRepository.findAllByProjectIdOrderByEstimatedStartDateAsc(projectId);
+        model.addAttribute("tasks", tasks);
+
+        List<TaskCategory> taskCategories = taskCategoryRepository.findAll();
+        model.addAttribute("taskCategories", taskCategories);
 
         return "projectDetails";
     }
