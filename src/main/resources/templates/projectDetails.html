@@ -78,12 +78,53 @@
 
         <div th:each="category : ${taskCategories}">
             <div th:with="categoryId=${category.id}">
-                <div style="background-color: yellow; padding: 4px" th:text="${category.name} ?: ' '"></div>
+                <div style="background-color: yellow; padding: 4px; padding-left: 8px; font-weight: bold" th:text="${category.name} ?: ' '"></div>
                 <div th:id="'timeline'+${categoryId}"></div>
             </div>
         </div>
-    </div>
 
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-4 py-3 w-2/12" style="width: 10%">대분류</th>
+                <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
+                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상시작일</th>
+                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상마감일</th>
+                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제시작일</th>
+                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제마감일</th>
+                <th scope="col" class="px-4 py-3 w-1/12" style="width: 10%">진척률</th>
+                <th scope="col" class="px-4 py-3 w-1/12" style="width: 8%">상태</th>
+                <th scope="col" class="px-4 py-3 w-1/12" style="width: 12%">산출물</th>
+                <th scope="col" class="px-4 py-3 w-1/12" style="width: 12%">수정</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}" class="border-b dark:border-gray-700">
+                <td class="px-4 py-3" th:text="${task.category.name}"></td>
+                <td class="px-4 py-3" th:text="${task.taskName}" style="font-weight: bold"></td>
+                <td class="px-4 py-3" th:text="${task.estimatedStartDate}"></td>
+                <td class="px-4 py-3" th:text="${task.estimatedEndDate}"></td>
+                <td class="px-4 py-3" th:text="${task.actualStartDate}"></td>
+                <td class="px-4 py-3" th:text="${task.actualEndDate}"></td>
+                <td class="px-4 py-3" th:if="${task.actualStartDate != null}" th:text="${task.getProgress()} + '%'"></td>
+                <td class="px-4 py-3" th:if="${task.actualStartDate == null}" >-</td>
+                <td class="px-4 py-3" th:text="${task.actualEndDate} == null ? '진행중' : '완료'"
+                    th:classappend="${task.actualEndDate} == null ? 'text-blue-500' : 'text-red-500'"></td>
+                <td class="px-4 py-3" th:text="${task.actualOutput}"></td>
+                <td class="px-4 py-3">
+                    <button class="edit-button" th:data-task-id="${task.id}">Edit</button>
+                    <form class="edit-form" th:data-task-id="${task.id}" style="display: none;">
+                        <input type="text" name="category" th:value="${task.category.name}" />
+                        <input type="text" name="taskName" th:value="${task.taskName}" />
+                        <input type="text" name="estimatedStartDate" th:value="${task.estimatedStartDate}" />
+                        <button class="save-button">Save</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 </section>
 <div th:replace="footer :: footer"></div>
@@ -157,8 +198,8 @@
                 },
                 hAxis: {
                     format: 'yy.MM.dd',
-                    min: new Date(2023, 0, 1), // 시작 날짜 (년, 월, 일)
-                    max: new Date(2023, 11, 31) // 끝 날짜 (년, 월, 일)
+                    minValue: new Date(project.startDate),
+                    maxValue: new Date(project.finishDate)
                 }
             };
 
@@ -166,7 +207,46 @@
         });
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButtons = document.querySelectorAll('.edit-button');
 
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                const taskId = button.getAttribute('data-task-id');
+                const form = document.querySelector(`.edit-form[data-task-id="${taskId}"]`);
+                console.log(form)
+
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+
+        const saveButtons = document.querySelectorAll('.save-button');
+
+        saveButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                const form = button.parentElement;
+                const taskId = form.getAttribute('data-task-id');
+
+                const category = form.querySelector('input[name="category"]').value;
+                const taskName = form.querySelector('input[name="taskName"]').value;
+                const estimatedStartDate = form.querySelector('input[name="estimatedStartDate"]').value;
+
+                fetch(`/task/updateTask/${taskId}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ category, taskName, estimatedStartDate, /* other fields */ }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update the table row with the new data (data returned by the server)
+                        // Hide the form
+                        form.style.display = 'none';
+                    });
+            });
+        });
+    });
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
