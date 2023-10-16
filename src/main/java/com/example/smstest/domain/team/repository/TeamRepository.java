@@ -9,5 +9,6 @@ public interface TeamRepository extends JpaRepository<Team, Integer> {
 
     List<Team> findByDepartmentId(Integer departmentId);
     Team findByName(String teamName);
+    List<Team> findByDepartment_DivisionId(Integer divisionId);
 
 }

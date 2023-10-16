@@ -125,10 +125,16 @@
 
     <div class="grid-container"   style="background-color: #F7F7F7; padding: 32px; padding-top: 0px; width: 100%">
         <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
-            <canvas id="overallRadarChart"></canvas>
+            <canvas id="overallRadarChart_N"></canvas>
         </div>
         <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
-            <canvas id="teamRadarChart"></canvas>
+            <canvas id="teamRadarChart_N"></canvas>
+        </div>
+        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <canvas id="overallRadarChart_E"></canvas>
+        </div>
+        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <canvas id="teamRadarChart_E"></canvas>
         </div>
     </div>
 </section>
@@ -172,48 +178,80 @@
     }
 
     var stateNames = /*[[${stateNames}]]*/ ;
-    var overallSupportTypeHourSums = /*[[${overallSupportTypeHourSums}]]*/ ;
-    var teamDataMap = /*[[${teamDataMap}]]*/ ;
+
+    var overallSupportTypeHourSums_N = /*[[${overallSupportTypeHourSums_N}]]*/ ;
+    var teamDataMap_N = /*[[${teamDataMap_N}]]*/ ;
+
+    var overallSupportTypeHourSums_E = /*[[${overallSupportTypeHourSums_E}]]*/ ;
+    var teamDataMap_E = /*[[${teamDataMap_E}]]*/ ;
+
     var teamColorMap = /*[[${teamColorMap}]]*/ ;
 
-    var overallCtx = document.getElementById('overallRadarChart').getContext('2d');
-    var teamCtx = document.getElementById('teamRadarChart').getContext('2d');
+    var teamDatasets_N = [];
+    var teamDatasets_E = [];
 
-    // 전체 데이터셋 추가
-    var overallDataset = [{
-        label: "기술N본부",
-        data: overallSupportTypeHourSums,
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 2
-    }];
-
-    // 팀별 데이터셋 추가
-    // 미리 정의된 팀 색상 배열
-
-    var teamDatasets = [];
     var colorIndex = 0;
 
-    for (var teamName in teamDataMap) {
+    for (var teamName in teamDataMap_N) {
         var color = teamColorMap[teamName]; // 색상을 반복해서 할당
         var transparentColor =  addAlphaChannel(color, 0.3); // 투명도 추가
         colorIndex++;
 
-        teamDatasets.push({
+        teamDatasets_N.push({
             label: teamName,
-            data: teamDataMap[teamName],
+            data: teamDataMap_N[teamName],
             backgroundColor: transparentColor, // 투명도 추가된 색상
             borderColor: color,
             borderWidth: 2
         });
     }
 
+    for (var teamName in teamDataMap_E) {
+        var color = teamColorMap[teamName]; // 색상을 반복해서 할당
+        var transparentColor =  addAlphaChannel(color, 0.3); // 투명도 추가
+        colorIndex++;
+
+        teamDatasets_E.push({
+            label: teamName,
+            data: teamDataMap_E[teamName],
+            backgroundColor: transparentColor, // 투명도 추가된 색상
+            borderColor: color,
+            borderWidth: 2
+        });
+    }
+
+    var overallCtx_N = document.getElementById('overallRadarChart_N').getContext('2d');
+    var teamCtx_N = document.getElementById('teamRadarChart_N').getContext('2d');
+
+    var overallCtx_E = document.getElementById('overallRadarChart_E').getContext('2d');
+    var teamCtx_E = document.getElementById('teamRadarChart_E').getContext('2d');
+
+    // 기술N본부 데이터셋 추가
+    var overallDataset_N = [{
+        label: "기술N본부",
+        data: overallSupportTypeHourSums_N,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 2
+    }];
+
+    // 기술E본부 데이터셋 추가
+    var overallDataset_E = [{
+        label: "기술E본부",
+        data: overallSupportTypeHourSums_E,
+        backgroundColor: 'rgba(99,148,255, 0.2)',
+        borderColor: 'rgb(99,148,255,1)',
+        borderWidth: 2
+    }];
+
+
+
     // Radar Chart 생성
-    var overallRadarChart = new Chart(overallCtx, {
+    var overallRadarChart_N = new Chart(overallCtx_N, {
         type: 'radar',
         data: {
             labels: stateNames,
-            datasets: overallDataset
+            datasets: overallDataset_N
         },
         options: {
             scales: {
@@ -245,13 +283,11 @@
         }
     });
 
-    overallCtx.canvas.style.width = "100%";
-
-    var teamRadarChart = new Chart(teamCtx, {
+    var teamRadarChart_N = new Chart(teamCtx_N, {
         type: 'radar',
         data: {
             labels: stateNames,
-            datasets: teamDatasets
+            datasets: teamDatasets_N
         },
         options: {
             scales: {
@@ -283,7 +319,79 @@
         }
     });
 
-    teamRadarChart.canvas.style.width = "100%";
+    // Radar Chart 생성
+    var overallRadarChart_E = new Chart(overallCtx_E, {
+        type: 'radar',
+        data: {
+            labels: stateNames,
+            datasets: overallDataset_E
+        },
+        options: {
+            scales: {
+                r: {
+                    pointLabels: {
+                        font: {
+                            size: 18 // 글꼴 크기 설정
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: "기술 E본부 업무 집중도 분석",
+                    font: {
+                        size: 18 // 제목 글꼴 크기 설정
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        font: {
+                            size: 12 // 레전드 글꼴 크기 설정
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    var teamRadarChart_E = new Chart(teamCtx_E, {
+        type: 'radar',
+        data: {
+            labels: stateNames,
+            datasets: teamDatasets_E
+        },
+        options: {
+            scales: {
+                r: {
+                    pointLabels: {
+                        font: {
+                            size: 18 // 글꼴 크기 설정
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: "기술 E본부 팀별 업무 집중도 분석",
+                    font: {
+                        size: 18 // 제목 글꼴 크기 설정
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        font: {
+                            size: 12 // 레전드 글꼴 크기 설정
+                        }
+                    }
+                }
+            }
+        }
+    });
+
 
     function addAlphaChannel(hexColor, alpha) {
         // 주어진 16진수 색상 코드를 RGBA 형식으로 변환

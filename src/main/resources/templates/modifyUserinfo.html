@@ -22,7 +22,7 @@
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     사용자 정보 변경
                 </h1>
-                <form class="form-signin space-y-4 md:space-y-6" th:action="@{/account/modifyUserinfo}" method="post" th:object="${modifyUserinfoRequest}"> <!-- 요청 보내기-->
+                <form class="form-signin space-y-4 md:space-y-6" onsubmit="return submitSearch(event)" th:action="@{/account/modifyUserinfo}" method="post" th:object="${modifyUserinfoRequest}"> <!-- 요청 보내기-->
                     <label for="position" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">직책</label>
                     <select th:field="*{position}" id="position" name="position" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option th:each="pos : ${positions}" th:value="${pos.label}" th:text="${pos.label}"></option>

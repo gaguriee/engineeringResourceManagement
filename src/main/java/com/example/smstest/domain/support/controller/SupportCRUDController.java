@@ -69,6 +69,10 @@ public class SupportCRUDController {
                                          @RequestParam(required = false, defaultValue = "desc")  String sortOrder, // 추가된 파라미터
                                          Pageable pageable,
                                          Model model) {
+
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         SupportFilterCriteria criteria = new SupportFilterCriteria();
         criteria.setCustomerName(customerName);
         criteria.setTeamId(teamId);
@@ -95,7 +99,7 @@ public class SupportCRUDController {
 
         // Issue 엔티티
         List<Issue> allIssues = issueRepository.findAll();
-        List<IssueCategory> allIssueCategories = issueCategoryRepository.findAllOrderedByPriority();
+        List<IssueCategory> allIssueCategories = issueCategoryRepository.findAllOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
         for (IssueCategory category : allIssueCategories) {
             Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
         }
@@ -144,8 +148,6 @@ public class SupportCRUDController {
             model.addAttribute("endDate", dateFormat.format(endDate));
         }
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
         return "board";
@@ -176,10 +178,12 @@ public class SupportCRUDController {
 
     @GetMapping("/create")
     public String createView(Model model) {
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
-        List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
         for (IssueCategory category : issueCategories) {
             Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
         }
@@ -194,8 +198,6 @@ public class SupportCRUDController {
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
@@ -216,13 +218,17 @@ public class SupportCRUDController {
 
     @GetMapping("/modify")
     public String modifyView(@RequestParam(required = false) Long supportId, Model model) {
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Support support = supportRepository.findById(supportId).get();
+        Support support = supportRepository.findById(supportId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
         model.addAttribute("support", support);
 
         List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
-        List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAllOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
         for (IssueCategory category : issueCategories) {
             Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
         }
@@ -236,9 +242,6 @@ public class SupportCRUDController {
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         model.addAttribute("user", user);
 

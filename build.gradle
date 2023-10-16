@@ -83,6 +83,11 @@ dependencies {
 
     // mysql
     implementation "mysql:mysql-connector-java:5.1.34"
+
+    // excel
+    implementation "org.apache.poi:poi:5.2.2"
+    implementation "org.apache.poi:poi-ooxml:5.2.2"
+
 }
 
 tasks.named('test') {

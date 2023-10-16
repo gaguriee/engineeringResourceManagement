@@ -2,18 +2,20 @@ package com.example.smstest.domain.support.service;
 
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Service
 public class PdfService {
 
-    public void generatePdf(SupportResponse supportResponse, String filePath) throws IOException, DocumentException {
+    public void generateSupportPdf(SupportResponse supportResponse, String filePath) throws IOException, DocumentException {
+
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream(filePath));
         document.open();
@@ -90,5 +92,6 @@ public class PdfService {
         cell.setPadding(8);
         table.addCell(cell);
     }
+
 
 }

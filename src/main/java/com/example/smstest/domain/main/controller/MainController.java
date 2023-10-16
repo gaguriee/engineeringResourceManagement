@@ -44,26 +44,48 @@ public class MainController {
         model.addAttribute("user", memp);
 
         List<State> states = stateRepository.findAll();
-        List<Team> teams = teamRepository.findAll();
+        List<Team> teams_N = teamRepository.findByDepartment_DivisionId(1);
+        List<Team> teams_E = teamRepository.findByDepartment_DivisionId(2);
 
-        List<Long> overallSupportTypeHourSums = new ArrayList<>();
-        Map<String, List<Long>> teamDataMap = new HashMap<>();
+        List<Long> overallSupportTypeHourSums_N = new ArrayList<>();
+        Map<String, List<Long>> teamDataMap_N = new HashMap<>();
+
+        List<Long> overallSupportTypeHourSums_E = new ArrayList<>();
+        Map<String, List<Long>> teamDataMap_E = new HashMap<>();
+
         Map<String, String> teamColorMap = new HashMap<>();
 
         // 전체 데이터 합계 계산
         for (State state : states) {
-            Long overallSum = supportRepository.findTotalSupportTypeHourByState(state);
-            overallSupportTypeHourSums.add(overallSum != null ? overallSum : 0);
+            Long overallSum_N = supportRepository.findTotalSupportTypeHourByState_N(state);
+            overallSupportTypeHourSums_N.add(overallSum_N != null ? overallSum_N : 0);
+
+            Long overallSum_E = supportRepository.findTotalSupportTypeHourByState_E(state);
+            overallSupportTypeHourSums_E.add(overallSum_E != null ? overallSum_E : 0);
         }
 
         // 팀별 데이터 계산
-        for (Team team : teams) {
-            List<Long> supportTypeHourSums = new ArrayList<>();
+        for (Team team : teams_N) {
+            List<Long> supportTypeHourSums_N = new ArrayList<>();
+
             for (State state : states) {
-                Long sum = supportRepository.findTotalSupportTypeHourByStateAndTeam( state, team );
-                supportTypeHourSums.add(sum != null ? sum : 0);
+                Long sum_N = supportRepository.findTotalSupportTypeHourByStateAndTeam_N( state, team );
+                supportTypeHourSums_N.add(sum_N != null ? sum_N : 0);
             }
-            teamDataMap.put(team.getName(), supportTypeHourSums);
+            teamDataMap_N.put(team.getName(), supportTypeHourSums_N);
+
+            teamColorMap.put(team.getName(), team.getColor());
+        }
+
+        for (Team team : teams_E) {
+            List<Long> supportTypeHourSums_E = new ArrayList<>();
+
+            for (State state : states) {
+                Long sum_E = supportRepository.findTotalSupportTypeHourByStateAndTeam_E( state, team );
+                supportTypeHourSums_E.add(sum_E != null ? sum_E : 0);
+            }
+            teamDataMap_E.put(team.getName(), supportTypeHourSums_E);
+
             teamColorMap.put(team.getName(), team.getColor());
         }
 
@@ -84,8 +106,19 @@ public class MainController {
         model.addAttribute("announcements", announcements);
         model.addAttribute("chartData", chartData);
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());
-        model.addAttribute("overallSupportTypeHourSums", overallSupportTypeHourSums);
-        model.addAttribute("teamDataMap", teamDataMap);
+
+        model.addAttribute("overallSupportTypeHourSums_N", overallSupportTypeHourSums_N);
+        model.addAttribute("teamDataMap_N", teamDataMap_N);
+
+        System.out.println(overallSupportTypeHourSums_N);
+        System.out.println(teamDataMap_N);
+
+        model.addAttribute("overallSupportTypeHourSums_E", overallSupportTypeHourSums_E);
+        model.addAttribute("teamDataMap_E", teamDataMap_E);
+
+        System.out.println(overallSupportTypeHourSums_E);
+        System.out.println(teamDataMap_E);
+
         model.addAttribute("teamColorMap", teamColorMap);
 
         return "main";

@@ -7,12 +7,14 @@ import com.example.smstest.domain.team.entity.Team;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Getter
+@Setter
 @RequiredArgsConstructor
 @Table(name = "project")
 public class Project {
@@ -74,5 +76,35 @@ public class Project {
         this.finishDate = finishDate;
         this.engineer = engineer;
         this.subEngineer = subEngineer;
+    }
+
+    public void updateProject(String name, Client client, String uniqueCode, Product product, Team team, Date startDate, Date finishDate, Memp engineer, Memp subEngineer) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (client != null) {
+            this.client = client;
+        }
+        if (uniqueCode != null) {
+            this.uniqueCode = uniqueCode;
+        }
+        if (product != null) {
+            this.product = product;
+        }
+        if (team != null) {
+            this.team = team;
+        }
+        if (startDate != null) {
+            this.startDate = startDate;
+        }
+        if (finishDate != null) {
+            this.finishDate = finishDate;
+        }
+        if (engineer != null) {
+            this.engineer = engineer;
+        }
+        if (subEngineer != null) {
+            this.subEngineer = subEngineer;
+        }
     }
 }
