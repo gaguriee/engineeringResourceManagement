@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,5 +22,13 @@ public class ProductCategory {
     @JsonIgnore
     @OneToMany(mappedBy = "대분류", fetch = FetchType.EAGER) // 즉시 로딩으로 변경
     private List<Product> products;
+
+    @Override
+    public String toString() {
+        return "ProductCategory{" +
+                "Id=" + id +
+                ", Name='" + name + '\'' +
+                '}';
+    }
 
 }

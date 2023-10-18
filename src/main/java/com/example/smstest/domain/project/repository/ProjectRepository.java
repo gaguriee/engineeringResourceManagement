@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
-
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
 //    @Query("SELECT NEW com.example.smstest.domain.support.dto.SupportSummary( " +
@@ -29,12 +27,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 //
 //    @Query("SELECT c FROM Customer c JOIN Support s ON c.id = s.customer.id GROUP BY c.id ORDER BY COUNT(s.id) DESC")
 //    Page<Customer> findAllBySupportCount(Pageable pageable);
-//
-    @Query("SELECT p FROM Project p WHERE (p.name LIKE %:keyword% OR p.client.name LIKE %:keyword% OR p.uniqueCode LIKE %:keyword%) AND p.finishDate >= :currentDate ORDER BY p.uniqueCode DESC ")
-    Page<Project> findByNameContainingAndFinishDateAfter(@Param("keyword") String keyword, @Param("currentDate") Date currentDate, Pageable pageable);
+//AND p.finishDate >= :currentDate
+    @Query("SELECT p FROM Project p WHERE p.name LIKE %:keyword% OR p.client.name LIKE %:keyword% OR p.uniqueCode LIKE %:keyword% ORDER BY p.uniqueCode DESC ")
+    Page<Project> findByNameContainingAndFinishDateAfter(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("SELECT p FROM Project p WHERE p.finishDate >= :currentDate ORDER BY p.uniqueCode DESC ")
-    Page<Project> findAllByFinishDateAfter(@Param("currentDate") Date currentDate, Pageable pageable);
+    @Query("SELECT p FROM Project p ORDER BY p.uniqueCode DESC ")
+    Page<Project> findAllByFinishDateAfter( Pageable pageable);
 //
 //    @Query("SELECT c FROM Customer c JOIN Support s ON c.id = s.customer.id WHERE c.name LIKE %:keyword% GROUP BY c.id ORDER BY COUNT(s.id) DESC")
 //    List<Customer> findByNameContainingOrderBySupportCountDesc(@Param("keyword") String keyword);
@@ -46,6 +44,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 //
 //    boolean existsByName(String name);
 
+    Project findByName(String name);
+    Project findByUniqueCode(String uniqueCode);
     boolean existsByName(String name);
     boolean existsByUniqueCode(String uniqueCode);
 

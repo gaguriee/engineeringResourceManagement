@@ -27,4 +27,12 @@ public class Issue {
     @Column(name = "priority")
     private Integer priority;
 
+    @Override
+    public String toString() {
+        return "Issue{" +
+                "Id=" + id +
+                ", Name='" + name + '\'' +
+                '}';
+    }
+
 }

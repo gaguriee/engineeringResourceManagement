@@ -111,7 +111,7 @@ public class PdfController {
          * header data
          */
         int rowCount = 0; // 데이터가 저장될 행
-        String headerNames[] = new String[]{"진척률", "대분류", "업무명", "예상시작일", "예상마감일", "실제시작일", "실제마감일", "산출물"};
+        String headerNames[] = new String[]{"대분류", "업무명", "예상시작일", "예상마감일", "실제시작일", "실제마감일", "진척율", "산출물"};
 
         Row headerRow = null;
         Cell headerCell = null;
@@ -131,13 +131,13 @@ public class PdfController {
         for (int i = 0; i < tasks.size(); i++){
             Task task = tasks.get(i);
             String[] data = new String[]{
-                    String.valueOf(task.getProgress()),
                     task.getCategory().getName(),
                     task.getTaskName(),
                     String.valueOf(task.getEstimatedStartDate()),
                     String.valueOf(task.getEstimatedEndDate()),
                     String.valueOf(task.getActualStartDate()),
                     String.valueOf(task.getActualEndDate()),
+                    String.valueOf(task.getProgress()),
                     task.getActualOutput()
             };
             bodyDatass.add(data);

@@ -35,7 +35,7 @@ public class RestController {
 
         Client client = clientRepository.findOneByName(request.getClientName());
 
-        boolean projectExist = projectRepository.existsByName(request.getProjectName());
+        boolean projectExist = projectRepository.existsByUniqueCode(request.getUniqueCode());
 
         if (!projectExist){
             Project project = Project.builder()
@@ -77,7 +77,7 @@ public class RestController {
 
         Client client = clientRepository.findOneByName(request.getClientName());
 
-        boolean projectExist = projectRepository.existsByName(request.getProjectName());
+        boolean projectExist = projectRepository.existsByUniqueCode(request.getUniqueCode());
 
         if (!projectExist){
             Project project = Project.builder()

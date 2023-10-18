@@ -25,34 +25,51 @@ public class ProjectScheduler {
     private final ProjectRepository projectRepository;
     private final ClientRepository clientRepository;
 
-//    @Scheduled(fixedDelay = 1000000)
     @Scheduled(cron = "0 0 0,6,12,18 * * ?") // 매일 06시, 12시, 18시, 24시 실행
     public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
 
-        List<LicenseProject> licenseProjects = licenseProjectRepository.findAll();
+        try {
+            List<LicenseProject> licenseProjects = licenseProjectRepository.findAll();
 
-        for (LicenseProject projects : licenseProjects) {
-            if (!clientRepository.existsByName(projects.getCompanyName())) {
-                Client newClient = new Client();
-                newClient.setName(projects.getCompanyName());
-                clientRepository.save(newClient);
-                System.out.println("====Save Client :: "+ newClient.getName()+" ====");
 
+            for (LicenseProject licenseProject : licenseProjects) {
+
+                if (!clientRepository.existsByName(licenseProject.getCompanyName())) {
+                    Client newClient = new Client();
+                    newClient.setName(licenseProject.getCompanyName());
+                    clientRepository.save(newClient);
+                    log.info("Saved Client :: " + newClient.getName());
+                }
+
+                Client client = clientRepository.findOneByName(licenseProject.getCompanyName());
+
+                // 라이센스 DB에서 가져온 project 중 기존의 로컬 DB에 존재하지 않는 project일 경우 새로 저장
+                if (!projectRepository.existsByUniqueCode(licenseProject.getProjectCode())) {
+                    Project project = Project.builder()
+                            .client(client)
+                            .name(licenseProject.getProjectName())
+                            .uniqueCode(licenseProject.getProjectCode())
+                            .startDate(licenseProject.getLicenseStartDate())
+                            .finishDate(licenseProject.getLicenseEndDate())
+                            .build();
+                    projectRepository.save(project);
+                    log.info("Saved Project :: " + project.getName() + " (" + project.getUniqueCode() + ")");
+                }
+                // 기존의 로컬 DB에 존재하는 project일 경우 업데이트
+                else {
+                    Project project = projectRepository.findByUniqueCode(licenseProject.getProjectCode());
+                    project.updateProject(
+                            licenseProject.getProjectName(),
+                            client,
+                            licenseProject.getLicenseStartDate(),
+                            licenseProject.getLicenseEndDate()
+                    );
+                    projectRepository.save(project);
+
+                }
             }
-
-            if (!projectRepository.existsByUniqueCode(projects.getProjectCode())){
-                Client client = clientRepository.findOneByName(projects.getCompanyName());
-                Project project = Project.builder()
-                        .client(client)
-                        .name(projects.getProjectName())
-                        .uniqueCode(projects.getProjectCode())
-                        .startDate(projects.getLicenseStartDate())
-                        .finishDate(projects.getLicenseEndDate())
-                        .build();
-                projectRepository.save(project);
-                System.out.println("====Save Project :: "+ project.getName()+" ("+project.getUniqueCode()+")====");
-            }
+        } catch (Exception e) {
+            log.error("Error occurred in scheduleGetInitialFiles: " + e.getMessage());
         }
-
     }
 }

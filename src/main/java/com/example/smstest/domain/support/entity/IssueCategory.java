@@ -31,4 +31,12 @@ public class IssueCategory {
 
     @Column(name = "division_id", nullable = false)
     private Integer divisionId;
+
+    @Override
+    public String toString() {
+        return "IssueCategory{" +
+                "Id=" + id +
+                ", Name='" + name + '\'' +
+                '}';
+    }
 }

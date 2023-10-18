@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 /**
  * 다중 DB 구성, DB별 Config 설정
- * Db2 -> Employee 관련 entity 적용
+ * Db3 -> License Project 관련 entity 적용
  */
 @Configuration
 @EnableJpaRepositories(

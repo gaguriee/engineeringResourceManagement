@@ -48,9 +48,12 @@
                 </div>
             </li>
             <li class="ml-auto">
-                <button id="dropdownDefault" data-dropdown-toggle="dropdown" class="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"><svg class="w-3 h-3 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm9-10v.4A3.6 3.6 0 0 1 8.4 9H6.61A3.6 3.6 0 0 0 3 12.605M14.458 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
-                </svg><span th:text="${member.name}"></span><svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <button id="dropdownDefault" data-dropdown-toggle="dropdown" class="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700">
+                    <svg class="w-3 h-3  mx-1 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 18">
+                        <path d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+                    </svg>
+                    <span th:text="${member.name}">
+                    </span><svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                 </svg></button>
                 <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
@@ -117,7 +120,8 @@
 <div th:replace="footer :: footer"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
-
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 <script th:inline="javascript">
 
     function redirectToMemberInfoDetail(element) {
@@ -185,6 +189,13 @@
             // supports 리스트 가져오기
             var events = [];
 
+            var eventDidMount = function(info) {
+                console.log(info.event)
+                tippy(info.el, {
+                    content:  '[작업요약] \n' + info.event.extendedProps.description,//이벤트 디스크립션을 툴팁으로 가져옵니다.
+                });
+            }
+
             // supports 리스트 순회하여 events 배열에 데이터 추가
             supports.forEach(function (support) {
                 var event = null;
@@ -192,16 +203,18 @@
                     var backgroundColor = support.supportType.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
                     event = {
-                        title: support.project?.client?.name + " (" + support.supportType.name + " " + support.supportTypeHour + "h)",
+                        title: "[" + support.project?.client?.name  + "] " + support.taskTitle  + " (" +  support.supportType.name + " " + support.supportTypeHour + "h) ",
                         start: support.supportDate,
+                        description: support.taskSummary,
                         backgroundColor: backgroundColor, // 색상 지정
                         url: '/details?supportId=' + support.id
                     };
                 }
                 else{
                     event = {
-                        title: support.project?.client?.name + " (지원형태 없음)",
+                        title: support.taskTitle  + " (지원형태 없음) ",
                         start: support.supportDate,
+                        description: support.taskSummary,
                         backgroundColor: '#007bff', // 색상 지정
                         url: '/details?supportId=' + support.id
                     };
@@ -210,7 +223,7 @@
 
             });
 
-            // 캘린더 랜더링 시 'events' 배열 사용
+            calendar.setOption('eventDidMount', eventDidMount);
             calendar.setOption('events', events);
 
             // 캘린더 랜더링

@@ -21,7 +21,7 @@ public class ProjectServiceImpl implements ProjectService {
         Date currentDate = new Date();
 
         if (keyword != null) {
-            return projectRepository.findByNameContainingAndFinishDateAfter(keyword, currentDate, pageable);
+            return projectRepository.findByNameContainingAndFinishDateAfter(keyword, pageable);
         }
-        return projectRepository.findAllByFinishDateAfter(currentDate, pageable);    }
+        return projectRepository.findAllByFinishDateAfter(pageable);    }
 }

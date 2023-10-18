@@ -84,6 +84,8 @@
 
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 <script th:inline="javascript">
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -120,20 +122,27 @@
                 selectable: true,
                 nowIndicator: true,
                 dayMaxEvents: true,
-                locale: 'ko'
+                locale: 'ko',
             });
 
             // supports 리스트 가져오기
             var events = [];
 
-            // supports 리스트 순회하여 events 배열에 데이터 추가
+            var eventDidMount = function(info) {
+                console.log(info.event)
+                tippy(info.el, {
+                    content:  '[작업요약] \n' + info.event.extendedProps.description,//이벤트 디스크립션을 툴팁으로 가져옵니다.
+                });
+            }
+                    // supports 리스트 순회하여 events 배열에 데이터 추가
             supports.forEach(function (support) {
                 var event = null;
                 if (support.supportType != null){
                     var backgroundColor = support.engineer.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
                     event = {
-                        title: support.project?.client?.name + " (" + support.engineer.name + ")",
+                        title: support.engineer.name +  ", [" + support.project?.client?.name  + "] "   + support.taskTitle  + " (" +  support.supportType.name + " " + support.supportTypeHour + "h) ",
+                        description: support.taskSummary,
                         start: support.supportDate,
                         backgroundColor: backgroundColor, // 색상 지정
                         url: '/details?supportId=' + support.id
@@ -141,8 +150,9 @@
                 }
                 else{
                     event = {
-                        title: support.project?.client?.name + " (지원형태 없음)",
+                        title: support.taskTitle  + " (지원형태 없음) "  +support.engineer.name,
                         start: support.supportDate,
+                        description: support.taskSummary,
                         backgroundColor: '#007bff', // 색상 지정
                         url: '/details?supportId=' + support.id
                     };
@@ -151,7 +161,7 @@
 
             });
 
-            // 캘린더 랜더링 시 'events' 배열 사용
+            calendar.setOption('eventDidMount', eventDidMount);
             calendar.setOption('events', events);
 
             // 캘린더 랜더링
@@ -186,6 +196,8 @@
             display: block;
         }
     }
+
+
 </style>
 </body>
 </html>

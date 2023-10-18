@@ -125,9 +125,9 @@
                         <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Search
                         </button>
-                        <button id="defaultModalButton" data-modal-toggle="defaultModal" class="ml-3 text-white bg-gray-400 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button">
-                            프로젝트 신규 등록
-                        </button>
+<!--                        <button id="defaultModalButton" data-modal-toggle="defaultModal" class="ml-3 text-white bg-gray-400 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button">-->
+<!--                            프로젝트 신규 등록-->
+<!--                        </button>-->
                     </form>
 
 
@@ -142,8 +142,8 @@
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">고객사</th>
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">고유코드</th>
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 40%">프로젝트명</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">시작일</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">만료일</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">라이센스 시작일</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">라이센스 만료일</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -295,8 +295,21 @@
     var projectCreateBtn = document.getElementById("projectCreateBtn");
     var closeButton = document.getElementById("closeButton");
 
+    var memps = /*[[${memps}]]*/ [];
+
+
     if (projectCreateBtn) {
         projectCreateBtn.addEventListener('click', function () {
+
+            // 해당 engineer를 포함하는지 확인
+            var containsEngineerName = memps.some(function(m) {
+                return m.name === engineerName.value;
+            });
+
+            var containsSubEngineerName = memps.some(function(m) {
+                return m.name === subEngineerName.value;
+            });
+
             if (clientName.value.length < 1) {
                 alert("정확한 고객사명을 입력해 주세요.");
                 return;
@@ -318,7 +331,11 @@
                 return;
             }
             if (engineerName.value === '' ) {
-                alert("담당 엔지니어를 선택해주세요.");
+                alert("담당 엔지니어를 입력해주세요.");
+                return;
+            }
+            if ( !containsEngineerName || !containsSubEngineerName ) {
+                alert("엔지니어를 정확히 입력해주세요.");
                 return;
             }
             if (uniqueCode.value === '' ) {

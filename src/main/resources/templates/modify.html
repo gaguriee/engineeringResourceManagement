@@ -192,6 +192,7 @@
                             <div>
                                 <span class="font-medium">정기점검이라면?</span>
                                 <ul class=" mt-1.5 ml-1 list-disc list-inside">
+                                    <li>프로젝트 중복 시 1개 선택 후 등록</li>
                                     <li>작업 요약에 제품명을 전부 기입</li>
                                     <li>제품별 지원내역 등록 불필요</li>
                                 </ul>
@@ -511,9 +512,9 @@
     // 최대 날짜를 오늘 날짜로 설정
     const supportDateInput = document.getElementById('supportDate');
     supportDateInput.max = getTodayDate();
-    if (!hasSuperAdminRole){
-        supportDateInput.min = getSevenDaysAgo();
-    }
+    // if (!hasSuperAdminRole){
+    //     supportDateInput.min = getSevenDaysAgo();
+    // }
 
     function validateForm() {
         // Get the form elements

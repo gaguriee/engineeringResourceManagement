@@ -107,6 +107,7 @@ public class AuthController {
         model.addAttribute("modifyUserinfoRequest", modifyUserinfoRequest);
         return "modifyUserinfo";
     }
+
     @PostMapping("/modifyUserinfo")
     public String modifyUserinfo(ModifyUserinfoRequest modifyUserinfoRequest, BindingResult bindingResult, Model model) {
 

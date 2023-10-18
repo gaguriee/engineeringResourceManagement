@@ -107,17 +107,13 @@ public class MainController {
         model.addAttribute("chartData", chartData);
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());
 
+        // N본부
         model.addAttribute("overallSupportTypeHourSums_N", overallSupportTypeHourSums_N);
         model.addAttribute("teamDataMap_N", teamDataMap_N);
 
-        System.out.println(overallSupportTypeHourSums_N);
-        System.out.println(teamDataMap_N);
-
+        // E본부
         model.addAttribute("overallSupportTypeHourSums_E", overallSupportTypeHourSums_E);
         model.addAttribute("teamDataMap_E", teamDataMap_E);
-
-        System.out.println(overallSupportTypeHourSums_E);
-        System.out.println(teamDataMap_E);
 
         model.addAttribute("teamColorMap", teamColorMap);
 

@@ -1,6 +1,7 @@
 package com.example.smstest.scheduler.entity;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,10 +11,11 @@ import java.util.Date;
 
 @Entity
 @Getter
+@ToString
 @Table(name = "license_company_info")
 public class LicenseProject {
 
-    @Id
+
     @Column(name = "company_guid")
     private String companyGuid;
 
@@ -23,6 +25,7 @@ public class LicenseProject {
     @Column(name = "project_guid")
     private String projectGuid;
 
+    @Id
     @Column(name = "project_code")
     private String projectCode;
 

@@ -4,10 +4,7 @@ import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.team.entity.Team;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +12,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@ToString
 @RequiredArgsConstructor
 @Table(name = "project")
 public class Project {
@@ -105,6 +103,21 @@ public class Project {
         }
         if (subEngineer != null) {
             this.subEngineer = subEngineer;
+        }
+    }
+
+    public void updateProject(String name, Client client,  Date startDate, Date finishDate) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (client != null) {
+            this.client = client;
+        }
+        if (startDate != null) {
+            this.startDate = startDate;
+        }
+        if (finishDate != null) {
+            this.finishDate = finishDate;
         }
     }
 }
