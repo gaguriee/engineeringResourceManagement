@@ -3,7 +3,10 @@ plugins {
     id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
-
+javadoc {
+    source = sourceSets.main.java.srcDirs
+    options.encoding = 'UTF-8'
+}
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
@@ -17,7 +20,6 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -81,6 +83,14 @@ dependencies {
     implementation 'com.itextpdf:itext-pdfa:5.5.13'
     implementation 'com.itextpdf:itext-asian:5.2.0'
     implementation 'com.itextpdf.tool:xmlworker:5.5.13'
+
+    // mysql
+    implementation "mysql:mysql-connector-java:5.1.34"
+
+    // excel
+    implementation "org.apache.poi:poi:5.2.2"
+    implementation "org.apache.poi:poi-ooxml:5.2.2"
+
 }
 
 tasks.named('test') {

@@ -3,20 +3,24 @@ package com.example.smstest.domain.main.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.main.controller.entity.Announcement;
-import com.example.smstest.domain.main.controller.repository.AnnouncementRepository;
+import com.example.smstest.domain.main.entity.Announcement;
+import com.example.smstest.domain.main.repository.AnnouncementRepository;
 import com.example.smstest.domain.support.entity.State;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
 import com.example.smstest.domain.team.entity.Team;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -34,30 +38,54 @@ public class MainController {
 
     @GetMapping("/")
     public String main(Model model) {
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElse(null);
         model.addAttribute("user", memp);
 
         List<State> states = stateRepository.findAll();
-        List<Team> teams = teamRepository.findAll();
+        List<Team> teams_N = teamRepository.findByDepartment_DivisionId(1);
+        List<Team> teams_E = teamRepository.findByDepartment_DivisionId(2);
 
-        List<Long> overallSupportTypeHourSums = new ArrayList<>();
-        Map<String, List<Long>> teamDataMap = new HashMap<>();
+        List<Long> overallSupportTypeHourSums_N = new ArrayList<>();
+        Map<String, List<Long>> teamDataMap_N = new HashMap<>();
+
+        List<Long> overallSupportTypeHourSums_E = new ArrayList<>();
+        Map<String, List<Long>> teamDataMap_E = new HashMap<>();
+
         Map<String, String> teamColorMap = new HashMap<>();
 
         // 전체 데이터 합계 계산
         for (State state : states) {
-            Long overallSum = supportRepository.findTotalSupportTypeHourByState(state);
-            overallSupportTypeHourSums.add(overallSum != null ? overallSum : 0);
+            Long overallSum_N = supportRepository.findTotalSupportTypeHourByState_N(state);
+            overallSupportTypeHourSums_N.add(overallSum_N != null ? overallSum_N : 0);
+
+            Long overallSum_E = supportRepository.findTotalSupportTypeHourByState_E(state);
+            overallSupportTypeHourSums_E.add(overallSum_E != null ? overallSum_E : 0);
         }
 
         // 팀별 데이터 계산
-        for (Team team : teams) {
-            List<Long> supportTypeHourSums = new ArrayList<>();
+        for (Team team : teams_N) {
+            List<Long> supportTypeHourSums_N = new ArrayList<>();
+
             for (State state : states) {
-                Long sum = supportRepository.findTotalSupportTypeHourByStateAndTeam( state, team );
-                supportTypeHourSums.add(sum != null ? sum : 0);
+                Long sum_N = supportRepository.findTotalSupportTypeHourByStateAndTeam_N( state, team );
+                supportTypeHourSums_N.add(sum_N != null ? sum_N : 0);
             }
-            teamDataMap.put(team.getName(), supportTypeHourSums);
+            teamDataMap_N.put(team.getName(), supportTypeHourSums_N);
+
+            teamColorMap.put(team.getName(), team.getColor());
+        }
+
+        for (Team team : teams_E) {
+            List<Long> supportTypeHourSums_E = new ArrayList<>();
+
+            for (State state : states) {
+                Long sum_E = supportRepository.findTotalSupportTypeHourByStateAndTeam_E( state, team );
+                supportTypeHourSums_E.add(sum_E != null ? sum_E : 0);
+            }
+            teamDataMap_E.put(team.getName(), supportTypeHourSums_E);
+
             teamColorMap.put(team.getName(), team.getColor());
         }
 
@@ -71,17 +99,22 @@ public class MainController {
             chartData.add(dataPoint);
         }
 
-        /**
-         * 팝업
-         */
+        // 팝업
 
         List<Announcement> announcements = announcementRepository.findByDisplayTrueOrderByPriorityDesc();
 
         model.addAttribute("announcements", announcements);
         model.addAttribute("chartData", chartData);
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());
-        model.addAttribute("overallSupportTypeHourSums", overallSupportTypeHourSums);
-        model.addAttribute("teamDataMap", teamDataMap);
+
+        // N본부
+        model.addAttribute("overallSupportTypeHourSums_N", overallSupportTypeHourSums_N);
+        model.addAttribute("teamDataMap_N", teamDataMap_N);
+
+        // E본부
+        model.addAttribute("overallSupportTypeHourSums_E", overallSupportTypeHourSums_E);
+        model.addAttribute("teamDataMap_E", teamDataMap_E);
+
         model.addAttribute("teamColorMap", teamColorMap);
 
         return "main";
@@ -90,7 +123,8 @@ public class MainController {
     @PostMapping("/dismissAnnouncement")
     public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
 
-        Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Announcement> announcementOptional = announcementRepository.findById(announcementId);
 

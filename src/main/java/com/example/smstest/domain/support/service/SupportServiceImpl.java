@@ -1,7 +1,8 @@
 package com.example.smstest.domain.support.service;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.auth.entity.Authority;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
@@ -12,6 +13,7 @@ import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SupportServiceImpl implements SupportService {
     private final SupportRepository supportRepository;
     private final IssueRepository issueRepository;
@@ -30,17 +33,7 @@ public class SupportServiceImpl implements SupportService {
     private final ProductRepository productRepository;
     private final MempRepository mempRepository;
     private final SupportTypeRepository supportTypeRepository;
-    private final CustomerRepository customerRepository;
-
-    public SupportServiceImpl(SupportRepository supportRepository, IssueRepository issueRepository, StateRepository stateRepository, ProductRepository productRepository, MempRepository mempRepository, SupportTypeRepository supportTypeRepository, CustomerRepository customerRepository1) {
-        this.supportRepository = supportRepository;
-        this.issueRepository = issueRepository;
-        this.stateRepository = stateRepository;
-        this.productRepository = productRepository;
-        this.mempRepository = mempRepository;
-        this.supportTypeRepository = supportTypeRepository;
-        this.customerRepository = customerRepository1;
-    }
+    private final ProjectRepository projectRepository;
 
     public Page<SupportResponse> searchSupportByFilters(
             SupportFilterCriteria criteria, Pageable pageable, String sortOrder) {
@@ -55,7 +48,7 @@ public class SupportServiceImpl implements SupportService {
     @Override
     public SupportResponse getDetails(Long supportId) {
         Support support = supportRepository.findById(supportId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return SupportResponse.entityToResponse(support);
     }
@@ -63,22 +56,20 @@ public class SupportServiceImpl implements SupportService {
     public SupportResponse createSupport(SupportRequest supportRequest) {
 
         Support support = new Support();
-        // SupportRequest를 Support 엔티티로 변환
+
         support.setSupportDate(supportRequest.getSupportDate());
         support.setRedmineIssue(supportRequest.getRedmineIssue());
         support.setTaskTitle(supportRequest.getTaskTitle());
         support.setTaskSummary(supportRequest.getTaskSummary());
         support.setTaskDetails(supportRequest.getTaskDetails());
         support.setSupportTypeHour(supportRequest.getSupportTypeHour());
-        support.setSubEngineerName(supportRequest.getSubEngineerName());
 
-        // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
         support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
         support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-        support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName()));
-        support.setCustomer(customerRepository.findOneByName(supportRequest.getCustomerName()));
-
+        support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+        support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 
         // Support 엔티티를 저장하고 반환
@@ -89,29 +80,27 @@ public class SupportServiceImpl implements SupportService {
     }
 
     @Override
-    public SupportResponse modifySupport(ModifyRequest modifyRequest) {
+    public SupportResponse modifySupport(ModifyRequest supportRequest) {
 
-        Support support = supportRepository.findById(modifyRequest.getSupportId()).get();
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Support support = supportRepository.findById(supportRequest.getSupportId()).get();
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (support.getEngineer().getUsername().equals(user.getUsername())
-        || user.getRole().name().equals("ADMIN")){
-            // SupportRequest를 Support 엔티티로 변환
-            support.setSupportDate(modifyRequest.getSupportDate());
-            support.setRedmineIssue(modifyRequest.getRedmineIssue());
-            support.setTaskTitle(modifyRequest.getTaskTitle());
-            support.setTaskSummary(modifyRequest.getTaskSummary());
-            support.setTaskDetails(modifyRequest.getTaskDetails());
-            support.setSupportTypeHour(modifyRequest.getSupportTypeHour());
-            support.setSubEngineerName(modifyRequest.getSubEngineerName());
+        || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"))){
+            support.setSupportDate(supportRequest.getSupportDate());
+            support.setRedmineIssue(supportRequest.getRedmineIssue());
+            support.setTaskTitle(supportRequest.getTaskTitle());
+            support.setTaskSummary(supportRequest.getTaskSummary());
+            support.setTaskDetails(supportRequest.getTaskDetails());
+            support.setSupportTypeHour(supportRequest.getSupportTypeHour());
 
-            // ID로 Customer, Team, Product, Issue, State, Memp 엔티티들을 찾아와서 설정
-            support.setProduct(productRepository.findById(modifyRequest.getProductId()).orElse(null));
-            support.setIssue(issueRepository.findById(modifyRequest.getIssueId()).orElse(null));
-            support.setState(stateRepository.findById(modifyRequest.getStateId()).orElse(null));
-            support.setEngineer(mempRepository.findOneByName(modifyRequest.getEngineerName()));
-            support.setCustomer(customerRepository.findOneByName(modifyRequest.getCustomerName()));
-
-            support.setSupportType(supportTypeRepository.findById(modifyRequest.getSupportTypeId()).orElse(null));
+            support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
+            support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
+            support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
+            support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName())
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+            support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
+            support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
 
             // Support 엔티티를 저장하고 반환
             Support savedsupport = supportRepository.save(support);
@@ -125,11 +114,12 @@ public class SupportServiceImpl implements SupportService {
 
     @Override
     public void deleteSupport(Long supportId) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Support support = supportRepository.findById(supportId).orElse(null);
 
         if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())
-                || user.getRole().name().equals("ADMIN"))){
+                || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN")))){
             supportRepository.delete(support);
             log.info("===DELETE=== ("+ SupportResponse.entityToResponse(support) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
         }

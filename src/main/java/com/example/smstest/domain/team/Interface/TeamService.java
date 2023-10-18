@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface TeamService {
     TeamInfoDTO getTeamInfo(Integer teamId);
+    MemberInfoDTO getMemberInfo(String name);
     MemberInfoDTO getMemberInfo(Long memberId);
     MemberInfoDetailDTO getMemberInfoDetail(Long memberId, Integer customerId, Long productId, Long stateId, Pageable pageable, String sortOrder);
 

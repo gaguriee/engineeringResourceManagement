@@ -11,6 +11,8 @@ public class ModifyRequest {
 
     private Long supportId;
 
+    private String taskType;
+
     private Date supportDate;
 
     private String redmineIssue;
@@ -31,9 +33,9 @@ public class ModifyRequest {
 
     private String customerName;
 
-    private String engineerName;
+    private Long projectId;
 
-    private String subEngineerName;
+    private String engineerName;
 
     private Long supportTypeId;
 

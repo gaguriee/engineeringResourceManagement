@@ -24,4 +24,12 @@ public class Product {
     @JoinColumn(name = "대분류_제품_id")
     private ProductCategory 대분류;
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "Id=" + id +
+                ", Name='" + name + '\'' +
+                '}';
+    }
+
 }

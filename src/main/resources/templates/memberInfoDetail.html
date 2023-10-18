@@ -41,7 +41,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="post : ${posts}" class="border-b dark:border-gray-700">
-                        <td class="px-4 py-3" th:text="${post.getCustomer().getName()}">PC</td>
+                        <td class="px-4 py-3" th:text="${post.getProject().getClient().getName()}"></td>
                         <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
                             <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 <!-- 글자수를 최대 10자로 제한, NULL값 처리 -->

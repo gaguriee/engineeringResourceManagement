@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link rel="favicon" href="/templates/favicon.ico">
+    <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
+</head>
+<body style="background-color: white">
+<div th:replace="header :: header"></div>
+
+<!--로딩바-->
+<div id="loadingBar" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+    <svg aria-hidden="true" class="w-12 h-12 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+    <span class="sr-only">Loading...</span>
+</div>
+<!--삭제창-->
+<div id="deleteModal" style="align-items: center; align-content: center" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="fixed inset-0 bg-black opacity-70"></div>
+
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+            <button type="button" class="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="deleteModal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <svg class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            <p class="mb-4 text-gray-500 dark:text-gray-300">정말 삭제하시겠습니까?</p>
+
+            <form th:action="@{project/delete}" method="post">
+            <div class="flex justify-center items-center space-x-4">
+                <label for="supportId"></label>
+                <input type="text" class="hidden"  name="supportId" id="supportId" th:value="${project.id}">
+
+                <button id="deleteNo" data-modal-toggle="deleteModal" type="button" class="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
+                    취소
+                </button>
+                <button id="deleteYes" type="submit" class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900">
+                    확인
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--프로젝트 수정창-->
+<div id="projectModifyModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto" style="align-items: center; align-content: center; ">
+        <!-- Modal content -->
+        <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5" style="align-self: center;">
+            <!-- Modal header -->
+            <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    프로젝트 수정하기
+                </h3>
+                <button type="button"  id="closeButton" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="projectModifyModal">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div>
+                <form onsubmit="return validateForm()" class="grid gap-4 mb-4 sm:grid-cols-2" th:action="@{/project/modify}" method="post" th:object="${projectRequest}"> <!-- 요청 보내기-->
+                    <label for="projectId" class="hidden"></label>
+                    <input type="text" name="projectId" id="projectId" class="hidden" th:field="*{projectId}">
+                    <div>
+                        <label for="projectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트명</label>
+                        <input type="text"  th:field="*{projectName}" name="projectName" id="projectName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="라이센스 센터 기준 프로젝트명을 입력해주세요." required="">
+                    </div>
+                    <div>
+                        <label for="clientName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사명</label>
+                        <input type="text" name="clientName" th:field="*{clientName}" id="clientName" list="customerList" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="라이센스 센터 기준 고객사명을 입력해주세요." required="">
+                        <datalist id="customerList"  >
+                            <option th:each="client : ${clients}" th:value="${client.name}" ></option>
+                        </datalist>
+                    </div>
+                    <div>
+                        <select id="productId" th:field="*{productId}" name="productId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="" selected>제품명을 선택해주세요.</option>
+                            <option th:each="product : ${products}" th:unless="${product.id == 24}" th:value="${product.id}" th:text="${product.name}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="teamId" name="teamId" th:field="*{teamId}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="" selected>담당 팀을 선택해주세요.</option>
+                            <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 (정) *</label>
+                        <input type="text" id="engineer" name="engineerName" th:field="*{engineerName}" list="engineerList" th:attr="placeholder='필수 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <datalist id="engineerList">
+                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
+                        </datalist>
+                    </div>
+                    <div>
+                        <label for="subEngineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 (부)</label>
+                        <input type="text" id="subEngineer" th:field="*{subEngineerName}" name="subEngineerName" list="engineerList" th:attr="placeholder='선택 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <datalist id="subEngineerList">
+                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
+                        </datalist>
+                    </div>
+                    <div class="sm:col-span-2" >
+                        <label for="startDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시작일</label>
+                        <input type="date" name="startDate" id="startDate" th:field="*{startDate}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    </div>
+                    <div class="sm:col-span-2" >
+                        <label for="finishDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">종료일</label>
+                        <input type="date" name="finishDate" id="finishDate" th:field="*{finishDate}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    </div>
+                    <div class="sm:col-span-2" >
+                        <label for="uniqueCode" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고유코드</label>
+                        <input type="text" name="uniqueCode" id="uniqueCode" th:field="*{uniqueCode}" placeholder="라이센스 센터 기준 고유코드를 입력해주세요." required="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    </div>
+                    <div style="display: flex; justify-content:flex-end ">
+                        <button type="submit" id="projectModifyBtn" class="text-white inline-flex items-center bg-gray-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
+                            완료
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="dark:bg-gray-900 p-3 sm:p-5 antialiased" style="margin-top: 48px; margin-bottom: 84px; ">
+
+    <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16" id="contents" style="background-color: white">
+
+        <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${project.name}"></h1>
+        <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${project.client?.name} ?: ' '"></h3>
+        <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;" th:if="${project.engineer != null}">
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >담당 엔지니어</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"  th:text="${project.engineer?.name} ?: ' '"></dd>
+            </div>
+        </dl>
+        <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;" th:if="${project.subEngineer != null}">
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >부 담당 엔지니어</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.subEngineer?.name} ?: ' '"></dd>
+            </div>
+        </dl>
+        <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">시작일</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.startDate} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">종료일</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.finishDate} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;" th:if="${project.uniqueCode != null}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고유코드</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.uniqueCode} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;" th:if="${project.product != null}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >제품명</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.product?.name} ?: ' '"></dd>
+            </div>
+        </dl>
+
+        <!-- 작업 모달 -->
+        <div id="taskCreateModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative w-1/2 max-h-full">
+                <!-- Modal content -->
+                <div class="block bg-white rounded-lg shadow dark:bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-start justify-between p-6 border-t rounded-t dark:border-gray-600" style="padding-bottom: 0px; margin-top: 12px;">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            작업 추가
+                        </h3>
+
+                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="taskCreateModal">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="p-6 relative">
+
+                        <table id="createTaskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
+                                <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
+                                <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">예상시작일</th>
+                                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상마감일</th>
+                                <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">실제시작일</th>
+                                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제마감일</th>
+                                <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 12%">산출물</th>
+
+                            </tr>
+                            </thead>
+                            <tbody id="taskList">
+                            <tr class="border-t border-gray-200 dark:border-gray-700 task-row">
+                                <td>
+                                    <label for="category_create"></label>
+                                    <select id="category_create" name="category_create" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                        <option value="" disabled selected>작업구분</option>
+                                        <th:block th:each="category : ${taskCategories}">
+                                            <option th:value="${category.id}" th:text="${category.name}"></option>
+                                        </th:block>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" placeholder="업무명을 입력해주세요.">
+                                </td>
+                                <td>
+                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" >
+                                </td>
+                                <td>
+                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" >
+                                </td>
+                                <td>
+                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" >
+                                </td>
+                                <td>
+                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" >
+                                </td>
+
+                                <td>
+                                    <input type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualOutput" placeholder="산출물">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="block">
+                            <div style="display: inline-block; margin: 0 5px;  float: right;">
+                                <button id="addTaskButton" style="margin-bottom: 2px" type="button">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 19H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2v4M6 1v4a1 1 0 0 1-1 1H1m11 8h4m-2 2v-4m5 2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600" style="padding-left: 0px">
+                                <button id="saveButton" data-modal-hide="taskCreateModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
+                                <button data-modal-hide="taskCreateModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">취소</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="flex mb-2.5 " style="float: right">
+            <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal" th:if="${#authorization.expression('hasAnyRole(''ROLE_SUPERADMIN'')')}" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                프로젝트 수정
+            </button>
+            <button data-modal-target="taskCreateModal" data-modal-toggle="taskCreateModal" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                작업 추가
+            </button>
+            <button type="button" id="csvDownloadBtn" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                    <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Excel download</span>
+            </button>
+        </div>
+
+
+        <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 mb-4">
+            <li class="mr-2">
+                <button type="button" id="chartViewBtn" class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">차트 조회</button>
+            </li>
+            <li class="mr-2">
+                <button type="button" id="listViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">수정/삭제</button>
+            </li>
+        </ul>
+
+
+
+        <div id="chartView">
+            <div th:if="${tasks.size()!=0}" th:each="category : ${taskCategories}">
+                <div th:with="categoryId=${category.id}">
+                    <div th:id="'timelineTitle'+${categoryId}" class="hidden" style="background-color: yellow; padding: 4px 4px 4px 8px; font-weight: bold" th:text="${category.name} ?: ' '"></div>
+                    <div th:id="'timeline'+${categoryId}"></div>
+                </div>
+            </div>
+            <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
+                작업이 존재하지 않습니다.
+            </div>
+        </div>
+
+        <div id="listView">
+            <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-4 py-3 w-1/12" style="width: 8%">상태</th>
+                    <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">진척률</th>
+                    <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
+                    <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
+                    <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">예상시작일</th>
+                    <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상마감일</th>
+                    <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">실제시작일</th>
+                    <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제마감일</th>
+                    <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 12%">산출물</th>
+                    <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%"></th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}" th:id="'taskRow_'+${task.id}" class="border-t border-gray-200 dark:border-gray-700">
+
+                    <td name="state" class="px-4 py-3" th:text="${task.actualEndDate} == null ? '진행중' : '완료'"
+                        th:classappend="${task.actualEndDate} == null ? 'text-blue-600' : 'text-red-600'"></td>
+
+                    <td name="progress" class="px-4 py-3" th:text="${task.getProgress() != null ? task.getProgress() + '%' : ''}"></td>
+
+                    <td>
+                        <span th:text="${task.category.name}" name="category" class="read-only"></span>
+                        <label for="category"></label>
+                        <select id="category" name="category" style="display: none" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <th:block th:each="category : ${taskCategories}">
+                                <option th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == task.category.id}"></option>
+                            </th:block>
+                        </select>
+                    </td>
+                    <td>
+                        <span th:text="${task.taskName}" name="taskName" style="color: black" class="read-only"></span>
+                        <input th:value="${task.taskName}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" style="display: none">
+                    </td>
+                    <td>
+                        <span th:text="${task.estimatedStartDate}" name="estimatedStartDate" class="read-only"></span>
+
+                        <input th:value="${task.estimatedStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" style="display: none">
+                    </td>
+                    <td>
+                        <span th:text="${task.estimatedEndDate}" name="estimatedEndDate" class="read-only"></span>
+                        <input th:value="${task.estimatedEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" style="display: none">
+                    </td>
+                    <td>
+                        <span th:text="${task.actualStartDate}" name="actualStartDate" class="read-only"></span>
+                        <input th:value="${task.actualStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" style="display: none">
+                    </td>
+                    <td>
+                        <span th:text="${task.actualEndDate}" name="actualEndDate" class="read-only"></span>
+                        <input th:value="${task.actualEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" style="display: none">
+                    </td>
+
+                    <td>
+                        <span th:text="${task.actualOutput}" name="actualOutput" class="read-only"></span>
+                        <input th:value="${task.actualOutput}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualOutput" style="display: none" placeholder="산출물">
+                    </td>
+                    <td>
+                        <div class="edit-delete-button">
+                            <button class="edit-button" th:data-task-id="${task.id}" th:onclick="'editTask('+${task.id}+')'" style="align-items:center; align-content: center; color: red">
+                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="gray" viewBox="0 0 20 20">
+                                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                                </svg>
+                            </button>
+                            <button class="delete-button ml-2.5" th:data-task-id="${task.id}" th:onclick="'deleteTask('+this+','+${task.id}+')'" style="align-items:center; align-content: center; color: red">
+                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                    <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <button class="save-button" th:data-task-id="${task.id}" style="display: none" th:onclick="'saveTask('+${task.id}+')'">
+                            <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                <path stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+            <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
+                작업이 존재하지 않습니다.
+            </div>
+        </div>
+
+    </div>
+
+</section>
+<div th:replace="footer :: footer"></div>
+<style>
+    pre{
+        padding:10px;
+        overflow: auto;
+        white-space: pre-wrap;
+    }
+
+    th, td {
+        padding: 8px 4px;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script th:inline="javascript">
+
+    const tasks = /*[[${tasks}]]*/;
+    const project = /*[[${project}]]*/;
+
+    const loadingBar = document.getElementById('loadingBar');
+    loadingBar.style.display = 'flex';
+
+    const chartViewBtn = document.getElementById("chartViewBtn");
+    const listViewBtn = document.getElementById("listViewBtn");
+    const chartView = document.getElementById("chartView");
+    const listView = document.getElementById("listView");
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        chartView.style.display = "block";
+        listView.style.display = "none";
+
+        // chartViewBtn의 스타일을 임시로 저장
+        const tempClass = chartViewBtn.className;
+
+        chartViewBtn.addEventListener("click", function () {
+            location.reload();
+            chartView.style.display = "block";
+            listView.style.display = "none";
+            chartViewBtn.className = listViewBtn.className;
+            listViewBtn.className = tempClass;
+        });
+
+        listViewBtn.addEventListener("click", function () {
+            chartView.style.display = "none";
+            listView.style.display = "block";
+            chartViewBtn.className = listViewBtn.className;
+            listViewBtn.className = tempClass;
+        });
+    });
+
+
+
+    $(document).ready(function() {
+        $("#addTaskButton").click(function() {
+            // 기존 행을 복제하여 새로운 작업 행을 생성
+            var originalRow = document.querySelector('#createTaskTable tbody tr');
+            var newRow = originalRow.cloneNode(true);
+
+            // 입력 필드 초기화 (선택 필드를 초기 선택으로 설정하려면 선택 옵션의 value를 고려)
+            newRow.querySelector('select[name="category_create"]').value = "";
+            newRow.querySelector('input[name="taskName"]').value = "";
+            newRow.querySelector('input[name="estimatedStartDate"]').value = "";
+            newRow.querySelector('input[name="estimatedEndDate"]').value = "";
+            newRow.querySelector('input[name="actualStartDate"]').value = "";
+            newRow.querySelector('input[name="actualEndDate"]').value = "";
+            newRow.querySelector('input[name="actualOutput"]').value = "";
+
+            // 새로운 작업 행을 테이블에 추가
+            document.querySelector('#createTaskTable tbody').appendChild(newRow);
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Add a click event listener to the "추가" (Add) button
+        const addTaskButton = document.getElementById("saveButton");
+        addTaskButton.addEventListener("click", function () {
+            // Collect data from the table rows and create a list of tasks
+            const taskList = [];
+            const taskRows = document.querySelectorAll(".task-row");
+
+            taskRows.forEach(function (row) {
+                const task = {
+                    categoryId: row.querySelector("[name=category_create]").value,
+                    taskName: row.querySelector("[name=taskName]").value,
+                    estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
+                    estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
+                    actualStartDate: row.querySelector("[name=actualStartDate]").value,
+                    actualEndDate: row.querySelector("[name=actualEndDate]").value,
+                    actualOutput: row.querySelector("[name=actualOutput]").value,
+                };
+                taskList.push(task);
+            });
+
+            console.log(taskList)
+
+            // Send the taskList to the server using an AJAX request (Assuming you are using jQuery)
+            $.ajax({
+                url: "/task/save/"+project.id, // Replace with your actual server endpoint
+                method: "POST", // Use the appropriate HTTP method
+                contentType: "application/json",
+                data: JSON.stringify(taskList),
+                success: function (response) {
+                    // Handle the response from the server if needed
+                    location.reload();
+                },
+                error: function (error) {
+                    // Handle errors from the server
+                    console.error("Error saving tasks:", error);
+                },
+            });
+        });
+    });
+
+    function editTask(taskId) {
+        var taskRow = document.getElementById('taskRow_' + taskId);
+        var readOnlyFields = taskRow.getElementsByClassName('read-only');
+        var editFields = taskRow.getElementsByClassName('edit-mode');
+        var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
+        var saveButton = taskRow.getElementsByClassName('save-button')[0];
+
+        for (var i = 0; i < readOnlyFields.length; i++) {
+            readOnlyFields[i].style.display = 'none';
+        }
+
+        for (var i = 0; i < editFields.length; i++) {
+            editFields[i].style.display = 'block';
+        }
+
+        editDeleteButton.style.display = 'none';
+        saveButton.style.display = 'block';
+    }
+
+    function deleteTask(button, taskId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/task/delete/' + taskId);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send();
+
+        // 서버 응답 처리
+        xhr.onreadystatechange = function() {
+            if (xhr.status === 200) {
+                var row = button.closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+        };
+
+    }
+    function saveTask(taskId) {
+        var taskRow = document.getElementById('taskRow_' + taskId);
+        var readOnlyFields = taskRow.getElementsByClassName('read-only');
+        var editFields = taskRow.getElementsByClassName('edit-mode');
+        var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
+        var saveButton = taskRow.getElementsByClassName('save-button')[0];
+
+        for (var i = 0; i < readOnlyFields.length; i++) {
+            readOnlyFields[i].style.display = 'block';
+        }
+
+        for (var i = 0; i < editFields.length; i++) {
+            editFields[i].style.display = 'none';
+        }
+
+        editDeleteButton.style.display = 'flex';
+        saveButton.style.display = 'none';
+
+        // 클라이언트에서 수정된 데이터를 가져오는 부분
+        var category = taskRow.querySelector('select[name="category"]').value;
+        var taskName = taskRow.querySelector('input[name="taskName"]').value;
+        var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
+        var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
+        var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
+        var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
+        var actualOutput = taskRow.querySelector('input[name="actualOutput"]').value;
+
+        var spanCategory = taskRow.querySelector('span[name="category"]');
+        var spanTaskName = taskRow.querySelector('span[name="taskName"]');
+        var spanEstimatedStartDate = taskRow.querySelector('span[name="estimatedStartDate"]');
+        var spanEstimatedEndDate = taskRow.querySelector('span[name="estimatedEndDate"]');
+        var spanActualStartDate = taskRow.querySelector('span[name="actualStartDate"]');
+        var spanActualEndDate = taskRow.querySelector('span[name="actualEndDate"]');
+        var spanActualOutput = taskRow.querySelector('span[name="actualOutput"]');
+        var tdProgress = taskRow.querySelector('td[name="progress"]');
+        var tdState = taskRow.querySelector('td[name="state"]');
+
+
+        // 수정된 데이터를 객체로 만들기
+        var updatedTask = {
+            categoryId: category,
+            taskName: taskName,
+            estimatedStartDate: estimatedStartDate,
+            estimatedEndDate: estimatedEndDate,
+            actualStartDate: actualStartDate,
+            actualEndDate: actualEndDate,
+            actualOutput: actualOutput
+        };
+
+        // 서버로 데이터를 전송
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/task/update/' + taskId);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send(JSON.stringify(updatedTask));
+
+        // 서버 응답 처리
+        xhr.onreadystatechange = function() {
+            if (xhr.status === 200) {
+
+                var selectElement = document.getElementById("category");
+                selectElement.addEventListener("change", function() {
+                    // 선택한 옵션의 텍스트 값을 가져와서 span 요소에 설정
+                    var selectedOption = selectElement.options[selectElement.selectedIndex];
+                    spanCategory.innerHTML = selectedOption.text;
+                });
+                spanTaskName.innerHTML  = taskName;
+                spanTaskName.innerHTML  = taskName;
+                spanEstimatedStartDate.innerHTML  = estimatedStartDate;
+                spanEstimatedEndDate.innerHTML  = estimatedEndDate;
+                spanActualStartDate.innerHTML  = actualStartDate;
+                spanActualEndDate.innerHTML  = actualEndDate;
+                spanActualOutput.innerHTML  = actualOutput;
+
+                if (xhr.responseText.length > 0){
+                    tdProgress.innerHTML  = JSON.parse(xhr.responseText)+'%';
+                }
+                else{
+                    tdProgress.innerHTML = '';
+                }
+                if (actualStartDate != '' && actualEndDate != ''){
+                    tdState.innerHTML  = '완료';
+                    tdState.style.color = 'red';
+                }
+                else {
+                    tdState.innerHTML  = '진행중';
+                    tdState.style.color = 'blue';
+                }
+
+
+
+            }
+        };
+    }
+
+
+
+    google.charts.load("current", {packages: ["timeline"]});
+    google.charts.setOnLoadCallback(drawCharts);
+
+
+
+    function drawCharts() {
+        const tasks = /*[[${tasks}]]*/;
+
+        tasks.forEach(function (task) {
+            var categoryId = task.category.id;
+            var containerId = 'timeline' + categoryId;
+            var container = document.getElementById(containerId);
+
+            var containerTitleId = 'timelineTitle' + categoryId;
+            var containerTitle = document.getElementById(containerTitleId);
+            containerTitle.style.display = 'flex';
+
+            var chart = new google.visualization.Timeline(container);
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn({ type: 'string', id: 'Position' });
+            dataTable.addColumn({ type: 'string', id: 'Name' });
+            dataTable.addColumn({ type: 'date', id: 'Start' });
+            dataTable.addColumn({ type: 'date', id: 'End' });
+
+            var taskData = [];
+
+            // Filter tasks by category
+            var categoryTasks = tasks.filter(function (t) {
+                return t.category.id === categoryId;
+            });
+
+
+            categoryTasks.forEach(function (task) {
+                var estimatedStartDate = task.estimatedStartDate ? new Date(task.estimatedStartDate) : null;
+                var estimatedEndDate = task.estimatedEndDate ? new Date(task.estimatedEndDate) : null;
+                var actualStartDate = task.actualStartDate ? new Date(task.actualStartDate) : null;
+                var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
+
+                if (estimatedStartDate !== null || estimatedEndDate !== null) {
+                    taskData.push([task.taskName, 'expected', estimatedStartDate, estimatedEndDate]);
+                }
+
+                if (actualStartDate !== null || actualEndDate !== null) {
+                    taskData.push([task.taskName, 'actual', actualStartDate, actualEndDate]);
+                }
+            });
+
+            dataTable.addRows(taskData);
+
+            var options = {
+                timeline: {
+                    groupByRowLabel: true,
+                    alternatingRowStyle: true,
+                    colorByRowLabel: false
+                },
+                hAxis: {
+                    format: 'yy.MM.dd',
+                    ticks: dataTable.getDistinctValues(0),
+                    minValue: new Date(project.startDate),
+                    maxValue: new Date(project.finishDate)
+                }
+            };
+
+            chart.draw(dataTable, options);
+
+        });
+
+        loadingBar.style.display = 'none';
+
+    }
+
+    document.getElementById("csvDownloadBtn").addEventListener("click", function() {
+        excelPrint();
+    });
+
+    function excelPrint() {
+        // PDF 생성 요청을 서버로 보냅니다.
+        fetch('/pdf/generateExcel?projectId=' + project.id, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            },
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                // 서버에서 받은 PDF 파일을 다운로드합니다.
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = project.name+'_'+project.uniqueCode;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error generating EXCEL:', error);
+            });
+    }
+
+
+
+    /**
+     *     프로젝트 수정
+     */
+
+    function validateForm() {
+        var clientName = document.getElementById("clientName");
+        var projectName = document.getElementById("projectName");
+        var productId = document.getElementById("productId");
+        var teamId = document.getElementById("teamId");
+        var startDate = document.getElementById("startDate");
+        var finishDate = document.getElementById("finishDate");
+        var engineerName = document.getElementById("engineer");
+        var subEngineerName = document.getElementById("subEngineer");
+        var directSelect = document.getElementById("direct-select");
+        var uniqueCode = document.getElementById("uniqueCode");
+
+        var projectModifyBtn = document.getElementById("projectModifyBtn");
+        var closeButton = document.getElementById("closeButton");
+
+        if (clientName.value.length < 1) {
+            alert("정확한 고객사명을 입력해 주세요.");
+            return false;
+        }
+        if (projectName.value.length < 1) {
+            alert("정확한 프로젝트명과 입력해 주세요.");
+            return false;
+        }
+        if (productId.value === '') {
+            alert("제품을 선택해주세요.");
+            return false;
+        }
+        if (teamId.value === '') {
+            alert("담당 팀을 선택해주세요.");
+            return false;
+        }
+        if (startDate.value === '' || finishDate.value === '') {
+            alert("기간을 선택해주세요.");
+            return false;
+        }
+        if (engineerName.value === '' ) {
+            alert("담당 엔지니어를 선택해주세요.");
+            return false;
+        }
+        if (uniqueCode.value === '' ) {
+            alert("프로젝트 고유 코드를 입력해주세요.");
+            return false;
+        }
+
+    }
+</script>
+<style>
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+</style>
+</body>
+</html>

@@ -57,7 +57,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
 
         List<Support> result = queryFactory
                 .selectFrom(support)
-                .leftJoin(support.customer).fetchJoin()
+                .leftJoin(support.project).fetchJoin()
                 .leftJoin(support.product).fetchJoin()
                 .leftJoin(support.issue).fetchJoin()
                 .leftJoin(support.state).fetchJoin()
@@ -77,7 +77,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
     }
 
     private BooleanExpression customerNameIn(String customerName) {
-        return customerName != null && !customerName.isEmpty() ? QSupport.support.customer.name.contains(customerName) : null;
+        return customerName != null && !customerName.isEmpty() ? QSupport.support.project.client.name.contains(customerName) : null;
     }
 
     private BooleanExpression teamIdIn(List<Integer> teamIds) {

@@ -32,9 +32,9 @@ public class SupportRequest {
 
     private String customerName;
 
-    private String engineerName;
+    private Long projectId;
 
-    private String subEngineerName;
+    private String engineerName;
 
     private Long supportTypeId;
 

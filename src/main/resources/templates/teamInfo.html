@@ -44,11 +44,9 @@
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${team.name}"></h2>
         <form id="selectForm" action="/memberInfo" method="get"> <!-- Specify the action and method for the form -->
             <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-            <select id="member" name="memberId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                <option value="" selected>팀원을 선택해주세요.</option>
-                <!-- Iterate over the issues list and add each issue's name as an option -->
-                <th:block th:each="memp : ${memps}">
-                    <option th:value="${memp.id}" th:text="${memp.name}"></option>
+            <select id="member" size="3" name="memberId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <th:block th:each="memp, iterStat : ${memps}">
+                    <option th:value="${memp.id}" th:text="${memp.name}" th:selected="${iterStat.index == 0}"></option>
                 </th:block>
             </select>
 
@@ -75,7 +73,7 @@
         </div>
     </div>
 
-    <div class="mt-8 mb-6" style="background-color: #F7F7F7;">
+    <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
 
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.teaminfo')} + ${team.id}" width="100%" height="450" ></iframe>
         <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.teaminfo-mobile')} + ${team.id}" width="100%" height="450" ></iframe>
@@ -86,6 +84,8 @@
 
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 <script th:inline="javascript">
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -122,20 +122,27 @@
                 selectable: true,
                 nowIndicator: true,
                 dayMaxEvents: true,
-                locale: 'ko'
+                locale: 'ko',
             });
 
             // supports 리스트 가져오기
             var events = [];
 
-            // supports 리스트 순회하여 events 배열에 데이터 추가
+            var eventDidMount = function(info) {
+                console.log(info.event)
+                tippy(info.el, {
+                    content:  '[작업요약] \n' + info.event.extendedProps.description,//이벤트 디스크립션을 툴팁으로 가져옵니다.
+                });
+            }
+                    // supports 리스트 순회하여 events 배열에 데이터 추가
             supports.forEach(function (support) {
                 var event = null;
                 if (support.supportType != null){
                     var backgroundColor = support.engineer.calenderColor || '#007bff'; // 기본 색상 (null인 경우 기본 색상 사용)
 
                     event = {
-                        title: support.customer.name + " (" + support.engineer.name + ")",
+                        title: support.engineer.name +  ", [" + support.project?.client?.name  + "] "   + support.taskTitle  + " (" +  support.supportType.name + " " + support.supportTypeHour + "h) ",
+                        description: support.taskSummary,
                         start: support.supportDate,
                         backgroundColor: backgroundColor, // 색상 지정
                         url: '/details?supportId=' + support.id
@@ -143,8 +150,9 @@
                 }
                 else{
                     event = {
-                        title: support.customer.name + " (지원형태 없음)",
+                        title: support.taskTitle  + " (지원형태 없음) "  +support.engineer.name,
                         start: support.supportDate,
+                        description: support.taskSummary,
                         backgroundColor: '#007bff', // 색상 지정
                         url: '/details?supportId=' + support.id
                     };
@@ -153,7 +161,7 @@
 
             });
 
-            // 캘린더 랜더링 시 'events' 배열 사용
+            calendar.setOption('eventDidMount', eventDidMount);
             calendar.setOption('events', events);
 
             // 캘린더 랜더링
@@ -163,6 +171,20 @@
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+
+    .skeleton * {
+        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
+        background-size: 200% 100%;
+        background-position: 100% 0;
+        animation: load 1s infinite;
+    }
+
+    @keyframes load {
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
     @media (max-width: 1064px) {
 
         .iframe-pc {
@@ -174,6 +196,8 @@
             display: block;
         }
     }
+
+
 </style>
 </body>
 </html>

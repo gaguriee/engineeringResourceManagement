@@ -1,7 +1,7 @@
 package com.example.smstest.domain.team.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.customer.repository.CustomerRepository;
+import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.team.Interface.TeamService;
 import com.example.smstest.domain.team.dto.MemberInfoDTO;
@@ -14,6 +14,8 @@ import com.example.smstest.domain.team.repository.DepartmentRepository;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.DivisionRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -35,15 +37,42 @@ public class TeamController {
     private final DepartmentRepository departmentRepository;
     private final MempRepository mempRepository;
     private final TeamService teamService;
-    private final CustomerRepository customerRepository;
     private final StateRepository stateRepository;
     private final DivisionRepository divisionRepository;
+    private final ClientRepository clientRepository;
 
     // 날짜 형태 bind
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+    }
+
+    /**
+     * 소속 빠른 검색
+     */
+    @GetMapping("/organizationFastSearch")
+    public String organizationFastSearch(Model model) {
+
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Division> divisions = divisionRepository.findAll();
+        List<Department> departments = departmentRepository.findAll();
+        List<Team> teams = teamRepository.findAll();
+        List<Memp> memps = mempRepository.findAll();
+
+        Collections.sort(divisions, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(departments, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(teams, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+
+        model.addAttribute("divisions", divisions);
+        model.addAttribute("departments", departments);
+        model.addAttribute("teams", teams);
+        model.addAttribute("memps", memps);
+        model.addAttribute("user", user);
+
+        return "organizationFastSearch";
     }
 
 //
@@ -66,11 +95,15 @@ public class TeamController {
      * 소속 (2실, 4실 등)
      */
     @GetMapping("/department")
-    public String selectDepartment(Model model) {
+    public String selectDepartment(@RequestParam(required = true) Integer divisionId, Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<Department> departments = departmentRepository.findAll();
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Department> departments = departmentRepository.findByDivisionId(divisionId);
+        Division division = divisionRepository.findById(divisionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
 
+        model.addAttribute("division", division);
         model.addAttribute("departments", departments);
         model.addAttribute("user", user);
 
@@ -81,7 +114,7 @@ public class TeamController {
      * 팀 (N팀, B팀 등)
      */
     @GetMapping("/team")
-    public String selectTeam(@RequestParam(required = true) Integer departmentId,Model model) {
+    public String selectTeam(@RequestParam(required = true) Integer departmentId, Model model) {
 
         List<Team> teams = teamRepository.findByDepartmentId(departmentId);
         Optional<Department> department = departmentRepository.findById(departmentId);
@@ -136,7 +169,7 @@ public class TeamController {
         MemberInfoDetailDTO memberInfoDetailDTO = teamService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable, sortOrder);
 
         model.addAttribute("member", mempRepository.findById(memberInfoDetailDTO.getMemberId()).get());
-        model.addAttribute("customer", customerRepository.findById(memberInfoDetailDTO.getCustomerId()).get());
+        model.addAttribute("customer", clientRepository.findById(memberInfoDetailDTO.getCustomerId()).get());
         model.addAttribute("state", stateRepository.findById(memberInfoDetailDTO.getStateId()).get());
         model.addAttribute("posts", memberInfoDetailDTO.getPosts());
         model.addAttribute("totalPages", memberInfoDetailDTO.getTotalPages());

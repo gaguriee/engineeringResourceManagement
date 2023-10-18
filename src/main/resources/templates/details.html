@@ -48,11 +48,15 @@
     <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16" id="contents" style="background-color: white">
 
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${(support.taskTitle != null && support.taskTitle.trim().length() > 0) ? support.taskTitle : '제목 없음'}">Apple iMac 25"</h1>
-        <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.getCustomer().getName()} ?: ' '">$2999</h3>
+        <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.project != null ? support.project?.name : 'Unknown'}"></h3>
         <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;">
             <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고객사</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.project != null ? support.project?.client?.name : 'Unknown'}"></dd>
+            </div>
+            <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">제품명</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.productName} ?: ' '">Electronics/PC</dd>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.productName} ?: ' '"></dd>
             </div>
             <div style="margin-right: 20px;">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">업무 구분</dt>
@@ -62,10 +66,7 @@
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">이슈 구분</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.issueType} ?: ' '"> </dd>
             </div>
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">담당 엔지니어</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.subEngineerName != null and support.subEngineerName != '' ? support.engineerName +', '+ support.subEngineerName : support.engineerName}"></dd>
-            </div>
+
         </dl>
         <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
             <div style="margin-right: 20px;">
@@ -80,6 +81,12 @@
             <div style="margin-right: 20px;" th:if="${not #strings.isEmpty(support.redmineIssue)}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">레드마인 일감</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${support.redmineIssue} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">담당 엔지니어</dt>
+                <a th:href="'/memberInfo?memberId='+${support.engineerId}">
+                    <dd class="mb-4 font-light sm:mb-5 dark:text-gray-400" style="color: black; font-weight: bold;" th:text="${support.engineerName}"></dd>
+                </a>
             </div>
         </dl>
 
@@ -99,7 +106,7 @@
     </div>
     <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16" style="background-color: white">
 
-        <div th:if="${user.id == support.engineerId || user.role.name()=='ADMIN' }" class="flex items-center space-x-4" style="padding-top: 48px">
+        <div th:if="${user.id == support.engineerId || #authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" class="flex items-center space-x-4" style="padding-top: 24px">
             <a th:href="'/modify?supportId='+${support.id}" id="editButton"   type="button" class="flex text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-500 dark:hover:bg-gray-600 dark:focus:ring-gray-900">
                 <svg aria-hidden="true" class="mr-1 -ml-1 w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10 v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                 수정
@@ -109,15 +116,12 @@
                 삭제
             </button>
         </div>
-
-
         <div class="mt-8 ml-auto">
             <a id="showBoard" href="/search?"  style="margin-right:24px; font-weight: bold;">목록보기</a>
             <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; font-weight: bold;">PDF로 저장</button>
         </div>
 
     </div>
-
 
 </section>
 <div th:replace="footer :: footer"></div>
@@ -138,7 +142,11 @@
     const supportId = /*[[${support.id }]]*/;
     const taskTitle = /*[[${support.taskTitle }]]*/;
     const date = /*[[${support.supportDate }]]*/;
-    const userRole = /*[[${user.role}]]*/;
+
+    var userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
+    var hasSuperAdminRole = userAuthorities.some(function(authority) {
+        return authority.authority === 'ROLE_SUPERADMIN';
+    });
 
     document.getElementById("generatePdfButton").addEventListener("click", function() {
         pdfPrint();
@@ -179,12 +187,12 @@
     var deleteButton = document.getElementById("deleteButton");
     var editButton = document.getElementById("editButton");
 
-    if (daysDifference <= 7 || userRole.equals("ADMIN") ) {
+    if (daysDifference <= 7 || hasSuperAdminRole ) {
         deleteButton.style.display = "flex";
-        editButton.style.display = "flex";
+        // editButton.style.display = "flex";
     } else {
         deleteButton.style.display = "none";
-        editButton.style.display = "none";
+        // editButton.style.display = "none";
     }
 
     function hideModal(modalId) {

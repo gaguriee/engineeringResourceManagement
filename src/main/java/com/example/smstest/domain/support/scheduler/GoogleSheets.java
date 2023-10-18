@@ -153,7 +153,7 @@ public class GoogleSheets {
                     return;
                 }
                 else if (error.getCode() == 500 || error.getCode() == 503) {
-                    System.out.printf("Internel Server Error... Wait a mement...");
+                    System.out.print("Internel Server Error... Wait a mement...");
                     Thread.sleep(1000);
                     result =  service.spreadsheets().values()
                             .batchGet(spreadsheetId)
@@ -197,7 +197,6 @@ public class GoogleSheets {
             // 작업 요약과 작업 세부내역 모두 공백이면 데이터 입력 안함
             if (data.get("작업요약").equals("") && data.get("작업세부내역").equals("")){
                 System.out.println(fileName+"  (" +fileLink + ") is invalid format");
-                return;
             }
             else {
                 // 지원일자 date 포맷팅

@@ -5,6 +5,8 @@ import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
 import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +48,8 @@ public class AuthValidator implements Validator {
 
     public void validatePassword(ModifyUserinfoRequest modifyUserinfoRequest, Errors errors) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(modifyUserinfoRequest.getPassword_confirm(), user.getPassword())){
             errors.rejectValue("password_confirm", "key","비밀번호가 일치하지 않습니다.");

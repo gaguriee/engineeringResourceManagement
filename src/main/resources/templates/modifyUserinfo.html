@@ -18,11 +18,11 @@
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
 
         <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700" style="padding-left: 24px; padding-right: 24px">
-            <div class="p-6 space-y-4 md:space-y-6 sm:p-8" >
+            <div class="p-8 space-y-4 md:space-y-6 sm:p-8" style="padding: 48px" >
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     사용자 정보 변경
                 </h1>
-                <form class="form-signin space-y-4 md:space-y-6" th:action="@{/account/modifyUserinfo}" method="post" th:object="${modifyUserinfoRequest}"> <!-- 요청 보내기-->
+                <form class="form-signin space-y-4 md:space-y-6" onsubmit="return submitSearch(event)" th:action="@{/account/modifyUserinfo}" method="post" th:object="${modifyUserinfoRequest}"> <!-- 요청 보내기-->
                     <label for="position" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">직책</label>
                     <select th:field="*{position}" id="position" name="position" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option th:each="pos : ${positions}" th:value="${pos.label}" th:text="${pos.label}"></option>
@@ -38,7 +38,7 @@
                         <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
                     </select>
                     <div>
-                        <label for="password_confirm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+                        <label for="password_confirm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">비밀번호 확인</label>
                         <input type="password" name="password_confirm" id="password_confirm" placeholder="비밀번호 확인" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                     </div>
 

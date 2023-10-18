@@ -8,7 +8,10 @@ import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/account")
 public class AuthController {
@@ -59,7 +63,8 @@ public class AuthController {
         }
         else {
             // 성공
-            authService.register(accountRequest);
+            Memp memp = authService.register(accountRequest);
+            log.info("NEW MEMBER : " + memp.getUsername());
             return "redirect:/";
         }
     }
@@ -92,7 +97,8 @@ public class AuthController {
 
         ModifyUserinfoRequest modifyUserinfoRequest = new ModifyUserinfoRequest();
 
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         modifyUserinfoRequest.setRank(memp.getRank());
         modifyUserinfoRequest.setPosition(memp.getPosition());
@@ -101,6 +107,7 @@ public class AuthController {
         model.addAttribute("modifyUserinfoRequest", modifyUserinfoRequest);
         return "modifyUserinfo";
     }
+
     @PostMapping("/modifyUserinfo")
     public String modifyUserinfo(ModifyUserinfoRequest modifyUserinfoRequest, BindingResult bindingResult, Model model) {
 
