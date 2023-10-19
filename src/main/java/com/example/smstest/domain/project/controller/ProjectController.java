@@ -97,8 +97,6 @@ public class ProjectController {
                 .teamId(Optional.ofNullable(project.getTeam()).map(Team::getId).orElse(null))
                 .productId(Optional.ofNullable(project.getProduct()).map(Product::getId).orElse(null))
                 .subEngineerName(Optional.ofNullable(project.getSubEngineer()).map(Memp::getName).orElse(null))
-                .finishDate(project.getFinishDate())
-                .startDate(project.getStartDate())
                 .build();
 
         projectRequest.setProjectId(project.getId());
@@ -139,8 +137,6 @@ public class ProjectController {
                 projectRequest.getUniqueCode(),
                 productRepository.findById(projectRequest.getProductId()).get(),
                 teamRepository.findById(projectRequest.getTeamId()).get(),
-                projectRequest.getStartDate(),
-                projectRequest.getFinishDate(),
                 mempRepository.findOneByName(projectRequest.getEngineerName())
                         .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)),
                 mempRepository.findOneByName(projectRequest.getSubEngineerName())

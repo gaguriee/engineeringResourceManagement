@@ -103,14 +103,6 @@
                         </datalist>
                     </div>
                     <div class="sm:col-span-2" >
-                        <label for="startDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시작일</label>
-                        <input type="date" name="startDate" id="startDate" th:field="*{startDate}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
-                        <label for="finishDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">종료일</label>
-                        <input type="date" name="finishDate" id="finishDate" th:field="*{finishDate}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
                         <label for="uniqueCode" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고유코드</label>
                         <input type="text" name="uniqueCode" id="uniqueCode" th:field="*{uniqueCode}" placeholder="라이센스 센터 기준 고유코드를 입력해주세요." required="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     </div>
@@ -143,14 +135,6 @@
             </div>
         </dl>
         <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">시작일</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.startDate} ?: ' '"></dd>
-            </div>
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">종료일</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.finishDate} ?: ' '"></dd>
-            </div>
             <div style="margin-right: 20px;" th:if="${project.uniqueCode != null}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고유코드</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.uniqueCode} ?: ' '"></dd>
@@ -739,8 +723,6 @@
         var projectName = document.getElementById("projectName");
         var productId = document.getElementById("productId");
         var teamId = document.getElementById("teamId");
-        var startDate = document.getElementById("startDate");
-        var finishDate = document.getElementById("finishDate");
         var engineerName = document.getElementById("engineer");
         var subEngineerName = document.getElementById("subEngineer");
         var directSelect = document.getElementById("direct-select");
@@ -763,10 +745,6 @@
         }
         if (teamId.value === '') {
             alert("담당 팀을 선택해주세요.");
-            return false;
-        }
-        if (startDate.value === '' || finishDate.value === '') {
-            alert("기간을 선택해주세요.");
             return false;
         }
         if (engineerName.value === '' ) {

@@ -33,6 +33,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
 
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(customerNameIn(criteria.getCustomerName()));
+        whereClause.and(projectNameIn(criteria.getProjectName()));
         whereClause.and(teamIdIn(criteria.getTeamId()));
         whereClause.and(productIdIn(criteria.getProductId()));
         whereClause.and(issueIdIn(criteria.getIssueId()));
@@ -79,6 +80,11 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
     private BooleanExpression customerNameIn(String customerName) {
         return customerName != null && !customerName.isEmpty() ? QSupport.support.project.client.name.contains(customerName) : null;
     }
+
+    private BooleanExpression projectNameIn(String projectName) {
+        return projectName != null && !projectName.isEmpty() ? QSupport.support.project.name.contains(projectName) : null;
+    }
+
 
     private BooleanExpression teamIdIn(List<Integer> teamIds) {
         return teamIds != null && !teamIds.isEmpty() ? QSupport.support.engineer.team.id.in(teamIds) : null;

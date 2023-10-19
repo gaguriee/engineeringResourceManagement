@@ -2,13 +2,13 @@ package com.example.smstest.domain.support.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Data
 public class SupportFilterCriteria {
     private String customerName;
+    private String projectName;
     private List<Integer> teamId;
     private List<Long> productId;
     private List<Long> issueId;

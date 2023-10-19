@@ -58,6 +58,7 @@ public class SupportCRUDController {
     // 필터링
     @GetMapping("/search")
     public String searchSupportByFilters(@RequestParam(required = false) String customerName,
+                                         @RequestParam(required = false) String projectName,
                                          @RequestParam(required = false) List<Integer> teamId,
                                          @RequestParam(required = false) List<Long> productId,
                                          @RequestParam(required = false) List<Long> issueId,
@@ -75,6 +76,7 @@ public class SupportCRUDController {
 
         SupportFilterCriteria criteria = new SupportFilterCriteria();
         criteria.setCustomerName(customerName);
+        criteria.setProjectName(projectName);
         criteria.setTeamId(teamId);
         criteria.setProductId(productId);
         criteria.setIssueId(issueId);
@@ -114,8 +116,11 @@ public class SupportCRUDController {
         // Member 엔티티
         List<Memp> allMemps = mempRepository.findAll();
 
-        // Customer 엔티티
+        // Client 엔티티
         List<Client> allCustomers = clientRepository.findByOrderBySupportCountDesc();
+
+        // Project 엔티티
+        List<Project> allProjects = projectRepository.findByOrderBySupportCountDesc();
 
         Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -129,8 +134,7 @@ public class SupportCRUDController {
         model.addAttribute("allTeams", allTeams);
         model.addAttribute("allMemps", allMemps);
         model.addAttribute("allCustomers", allCustomers);
-
-
+        model.addAttribute("allProjects", allProjects);
         model.addAttribute("sortOrder", sortOrder);
 
         model.addAttribute("selectedProducts", productId != null ? productRepository.findAllById(productId) : new ArrayList<>());
@@ -139,6 +143,7 @@ public class SupportCRUDController {
         model.addAttribute("selectedTeams", teamId != null ? teamRepository.findAllById(teamId) : new ArrayList<>());
         model.addAttribute("selectedMemps", engineerId != null ? mempRepository.findAllById(engineerId) : new ArrayList<>());
         model.addAttribute("selectedcustomerName", customerName);
+        model.addAttribute("selectedprojectName", projectName);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (startDate != null) {

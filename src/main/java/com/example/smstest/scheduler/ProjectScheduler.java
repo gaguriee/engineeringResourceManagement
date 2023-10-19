@@ -25,6 +25,7 @@ public class ProjectScheduler {
     private final ProjectRepository projectRepository;
     private final ClientRepository clientRepository;
 
+//    @Scheduled(fixedDelay = 1000000000)
     @Scheduled(cron = "0 0 0,6,12,18 * * ?") // 매일 06시, 12시, 18시, 24시 실행
     public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
 
@@ -34,14 +35,24 @@ public class ProjectScheduler {
 
             for (LicenseProject licenseProject : licenseProjects) {
 
-                if (!clientRepository.existsByName(licenseProject.getCompanyName())) {
+                if (!clientRepository.existsByCompanyGuid(licenseProject.getCompany().getCompanyGuid())) {
                     Client newClient = new Client();
-                    newClient.setName(licenseProject.getCompanyName());
+                    newClient.setName(licenseProject.getCompany().getCompanyName());
+                    newClient.setCompanyGuid(licenseProject.getCompany().getCompanyGuid());
+                    newClient.setCompanyRegDate(licenseProject.getCompany().getCompanyRegDate());
+
                     clientRepository.save(newClient);
                     log.info("Saved Client :: " + newClient.getName());
                 }
+                else{
+                    Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
+                    newClient.setName(licenseProject.getCompany().getCompanyName());
+                    newClient.setCompanyRegDate(licenseProject.getCompany().getCompanyRegDate());
 
-                Client client = clientRepository.findOneByName(licenseProject.getCompanyName());
+                    clientRepository.save(newClient);
+                }
+
+                Client client = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
 
                 // 라이센스 DB에서 가져온 project 중 기존의 로컬 DB에 존재하지 않는 project일 경우 새로 저장
                 if (!projectRepository.existsByUniqueCode(licenseProject.getProjectCode())) {
@@ -49,20 +60,18 @@ public class ProjectScheduler {
                             .client(client)
                             .name(licenseProject.getProjectName())
                             .uniqueCode(licenseProject.getProjectCode())
-                            .startDate(licenseProject.getLicenseStartDate())
-                            .finishDate(licenseProject.getLicenseEndDate())
+                            .projectRegDate(licenseProject.getProjectRegDate())
+                            .projectGuid(licenseProject.getProjectGuid())
                             .build();
                     projectRepository.save(project);
                     log.info("Saved Project :: " + project.getName() + " (" + project.getUniqueCode() + ")");
                 }
                 // 기존의 로컬 DB에 존재하는 project일 경우 업데이트
                 else {
-                    Project project = projectRepository.findByUniqueCode(licenseProject.getProjectCode());
+                    Project project = projectRepository.findFirstByUniqueCode(licenseProject.getProjectCode());
                     project.updateProject(
                             licenseProject.getProjectName(),
-                            client,
-                            licenseProject.getLicenseStartDate(),
-                            licenseProject.getLicenseEndDate()
+                            client
                     );
                     projectRepository.save(project);
 

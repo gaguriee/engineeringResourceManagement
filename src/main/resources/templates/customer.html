@@ -132,7 +132,7 @@
 
         nextBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            if (currentPage < totalPages - 1) {
+            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
                 console.log(nextPage);
 

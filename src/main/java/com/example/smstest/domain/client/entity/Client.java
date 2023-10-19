@@ -3,6 +3,7 @@ package com.example.smstest.domain.client.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
@@ -16,6 +17,12 @@ public class Client {
 
     @Column(name = "고객사", nullable = false)
     private String name;
+
+    @Column(name = "company_regdate")
+    private Date companyRegDate;
+
+    @Column(name = "company_guid", length = 50)
+    private String companyGuid;
 
 
 }

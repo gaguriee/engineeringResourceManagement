@@ -79,14 +79,6 @@
                             <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
                         </datalist>
                     </div>
-                    <div class="sm:col-span-2" >
-                        <label for="startDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시작일</label>
-                        <input type="date" name="startDate" id="startDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
-                        <label for="finishDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">종료일</label>
-                        <input type="date" name="finishDate" id="finishDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
                 </div>
                 <div style="display: flex; justify-content:flex-end ">
                     <button type="button" id="projectCreateBtn" class="text-white inline-flex items-center bg-gray-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
@@ -155,7 +147,7 @@
         Showing
         <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > 0} ? ${projects.pageable.offset + 1} : 0">1</span>
         -
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > 0} ? ${projects.pageable.offset + projects.size} : 0">10</span>
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > (projects.pageable.offset + projects.size)} ? ${projects.pageable.offset + projects.size} : ${projects.totalElements}">10</span>
         of
         <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements}">0</span>
     </span>
@@ -229,7 +221,7 @@
 
         nextBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            if (currentPage < totalPages - 1) {
+            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
@@ -269,8 +261,6 @@
     var projectName = document.getElementById("projectName");
     var productId = document.getElementById("productId");
     var teamId = document.getElementById("teamId");
-    var startDate = document.getElementById("startDate");
-    var finishDate = document.getElementById("finishDate");
     var engineerName = document.getElementById("engineer");
     var subEngineerName = document.getElementById("subEngineer");
     var directSelect = document.getElementById("direct-select");
@@ -299,8 +289,6 @@
                     projectName: projectName.value,
                     productId : productId.value,
                     teamId : teamId.value,
-                    startDate : startDate.value,
-                    finishDate : finishDate.value,
                     engineerName : engineerName.value,
                     subEngineerName: subEngineerName.value
 

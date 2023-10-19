@@ -42,6 +42,8 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     Client findOneByName(String customerName);
     boolean existsByName(String name);
+    boolean existsByCompanyGuid(String companyGuid);
+    Client findFirstByCompanyGuid(String companyGuid);
 
 
 }

@@ -77,14 +77,6 @@
                         </datalist>
                     </div>
                     <div class="sm:col-span-2" >
-                        <label for="startDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시작일</label>
-                        <input type="date" name="startDate" id="startDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
-                        <label for="finishDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">종료일</label>
-                        <input type="date" name="finishDate" id="finishDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
                         <label for="uniqueCode" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고유코드</label>
                         <input type="text" name="uniqueCode" id="uniqueCode" placeholder="라이센스 센터 기준 고유코드를 입력해주세요." required="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     </div>
@@ -128,6 +120,14 @@
 <!--                        <button id="defaultModalButton" data-modal-toggle="defaultModal" class="ml-3 text-white bg-gray-400 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button">-->
 <!--                            프로젝트 신규 등록-->
 <!--                        </button>-->
+                        <div id="reset_container" class="ml-2.5 h-full">
+                            <button id="resetBtn" onclick="applyResetBtn()" class=" flex h-full items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+                                <svg class="w-3 h-3 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                    <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
+                                </svg>
+                                Reset
+                            </button>
+                        </div>
                     </form>
 
 
@@ -141,9 +141,7 @@
                         <tr>
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">고객사</th>
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">고유코드</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 40%">프로젝트명</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">라이센스 시작일</th>
-                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">라이센스 만료일</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 60%">프로젝트명</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -155,8 +153,6 @@
                                    th:text="${project.name}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 </a>
                             </td>
-                            <td class="px-4 py-3" th:text="${project.startDate}">시작일</td>
-                            <td class="px-4 py-3" th:text="${project.finishDate}">만료일</td>
                         </tr>
                         </tbody>
                     </table>
@@ -169,7 +165,7 @@
         Showing
         <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > 0} ? ${projects.pageable.offset + 1} : 0">1</span>
         -
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > 0} ? ${projects.pageable.offset + projects.size} : 0">10</span>
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > (projects.pageable.offset + projects.size)} ? ${projects.pageable.offset + projects.size} : ${projects.totalElements}">10</span>
         of
         <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements}">0</span>
     </span>
@@ -245,7 +241,7 @@
 
         nextBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            if (currentPage < totalPages - 1) {
+            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
@@ -269,12 +265,18 @@
         const searchInput = document.getElementById("simple-search");
         const searchQuery = searchInput.value.trim();
         currentParams["Keyword"] = searchQuery;
-        currentParams["currentPage"] = 0;
+        currentParams["page"] = 0;
         const newUrl = "/project/select?" + new URLSearchParams(currentParams).toString();
         window.location.href = newUrl;
 
         return false;
     }
+
+    function applyResetBtn() {
+
+        window.location.href = '/project/select?';
+    }
+
 
     /**
      *     프로젝트 등록
@@ -285,8 +287,6 @@
     var projectName = document.getElementById("projectName");
     var productId = document.getElementById("productId");
     var teamId = document.getElementById("teamId");
-    var startDate = document.getElementById("startDate");
-    var finishDate = document.getElementById("finishDate");
     var engineerName = document.getElementById("engineer");
     var subEngineerName = document.getElementById("subEngineer");
     var directSelect = document.getElementById("direct-select");
@@ -326,10 +326,6 @@
                 alert("담당 팀을 선택해주세요.");
                 return;
             }
-            if (startDate.value === '' || finishDate.value === '') {
-                alert("기간을 선택해주세요.");
-                return;
-            }
             if (engineerName.value === '' ) {
                 alert("담당 엔지니어를 입력해주세요.");
                 return;
@@ -352,8 +348,6 @@
                     projectName: projectName.value,
                     productId : productId.value,
                     teamId : teamId.value,
-                    startDate : startDate.value,
-                    finishDate : finishDate.value,
                     engineerName : engineerName.value,
                     subEngineerName: subEngineerName.value,
                     uniqueCode : uniqueCode.value

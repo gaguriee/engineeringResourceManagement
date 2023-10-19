@@ -3,54 +3,32 @@ package com.example.smstest.scheduler.entity;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Getter
 @ToString
-@Table(name = "license_company_info")
+@Table(name = "license_project_code")
 public class LicenseProject {
-
-
-    @Column(name = "company_guid")
-    private String companyGuid;
-
-    @Column(name = "company_name")
-    private String companyName;
-
-    @Column(name = "project_guid")
+    @Id
+    @Column(name = "PROJECT_GUID", length = 50)
     private String projectGuid;
 
-    @Id
-    @Column(name = "project_code")
-    private String projectCode;
+    @ManyToOne
+    @JoinColumn(name = "COMPANY_GUID", referencedColumnName = "COMPANY_GUID", insertable = false, updatable = false)
+    private LicenseCompany company;
 
-    @Column(name = "project_name")
+    @Column(name = "AUTOCOMMAND_GUID", length = 50)
+    private String autoCommandGuid;
+
+    @Column(name = "PROJECT_NAME", length = 255)
     private String projectName;
 
-    @Column(name = "license_sdate")
-    private Date licenseStartDate;
+    @Column(name = "PROJECT_CODE", length = 20)
+    private String projectCode;
 
-    @Column(name = "license_edate")
-    private Date licenseEndDate;
+    @Column(name = "PROJECT_REGDATE")
+    private Date projectRegDate;
 
-    // 생성자, getter 및 setter 메서드 생략 (필요한 경우 추가)
-
-    @Override
-    public String toString() {
-        return "LicenseCompanyInfo{" +
-                "companyGuid='" + companyGuid + '\'' +
-                ", companyName='" + companyName + '\'' +
-                ", projectGuid='" + projectGuid + '\'' +
-                ", projectCode='" + projectCode + '\'' +
-                ", projectName='" + projectName + '\'' +
-                ", licenseStartDate=" + licenseStartDate +
-                ", licenseEndDate=" + licenseEndDate +
-                '}';
-    }
 }
-
