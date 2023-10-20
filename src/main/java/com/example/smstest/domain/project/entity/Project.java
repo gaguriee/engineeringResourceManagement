@@ -3,7 +3,7 @@ package com.example.smstest.domain.project.entity;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.support.entity.Product;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import lombok.*;
 
 import javax.persistence.*;

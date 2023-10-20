@@ -7,7 +7,7 @@ import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
 import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class AuthController {
      */
     @GetMapping("/login")
     public String login(){
-        return "login";
+        return "authLogin";
     }
 
 
@@ -58,7 +58,7 @@ public class AuthController {
 
         model.addAttribute("accountRequest",new AccountRequest());
 
-        return "register";
+        return "authRegister";
     }
 
     /**
@@ -78,7 +78,7 @@ public class AuthController {
             model.addAttribute("positions", Position.values());
             model.addAttribute("ranks", Rank.values());
             model.addAttribute("teams", teamRepository.findAll());
-            return "register"; // 실패
+            return "authRegister"; // 실패
         }
         else {
             // 성공
@@ -96,7 +96,7 @@ public class AuthController {
     @GetMapping("/resetPassword")
     public String resetPassword(Model model){
         model.addAttribute("ResetPasswordRequest",new ResetPasswordRequest());
-        return "resetPassword";
+        return "authResetPassword";
     }
 
     /**
@@ -113,7 +113,7 @@ public class AuthController {
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "resetPassword"; // 실패
+            return "authResetPassword"; // 실패
         }
         else {
             // 성공
@@ -143,7 +143,7 @@ public class AuthController {
         modifyUserinfoRequest.setTeamId(memp.getTeam().getId());
 
         model.addAttribute("modifyUserinfoRequest", modifyUserinfoRequest);
-        return "modifyUserinfo";
+        return "authModifyUserinfo";
     }
 
     /**
@@ -163,7 +163,7 @@ public class AuthController {
             model.addAttribute("positions", Position.values());
             model.addAttribute("ranks", Rank.values());
             model.addAttribute("teams", teamRepository.findAll());
-            return "modifyUserinfo"; // 실패
+            return "authModifyUserinfo"; // 실패
         }
         else {
             authService.saveUserInfo(modifyUserinfoRequest);

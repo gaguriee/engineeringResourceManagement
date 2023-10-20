@@ -8,7 +8,7 @@ import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.dto.ProjectRequest;
 import com.example.smstest.domain.project.dto.CreateProjectResponse;
 import com.example.smstest.domain.support.repository.ProductRepository;
-import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

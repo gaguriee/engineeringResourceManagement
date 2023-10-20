@@ -6,7 +6,7 @@ import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

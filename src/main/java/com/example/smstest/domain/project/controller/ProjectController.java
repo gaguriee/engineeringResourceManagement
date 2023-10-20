@@ -15,8 +15,8 @@ import com.example.smstest.domain.task.Task;
 import com.example.smstest.domain.task.TaskCategory;
 import com.example.smstest.domain.task.TaskCategoryRepository;
 import com.example.smstest.domain.task.TaskRepository;
-import com.example.smstest.domain.team.entity.Team;
-import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.domain.organization.entity.Team;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,6 @@ public class ProjectController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
-
     @GetMapping("/search")
     public String searchProject(
             @RequestParam(required = false) String Keyword,
@@ -176,7 +175,7 @@ public class ProjectController {
             Model model) {
 
         getProjectList(Keyword, pageable, model);
-        return "projectSearch";
+        return "projectSelect";
     }
 
     private void getProjectList(@RequestParam(required = false) String Keyword, @PageableDefault(size = 30) Pageable pageable, Model model) {

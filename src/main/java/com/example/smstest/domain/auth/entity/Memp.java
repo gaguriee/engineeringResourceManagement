@@ -1,7 +1,7 @@
 package com.example.smstest.domain.auth.entity;
 
 import com.example.smstest.domain.auth.dto.AccountRequest;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
