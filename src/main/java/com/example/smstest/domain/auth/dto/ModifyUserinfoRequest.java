@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 사용자 정보 수정 시 사용하는 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

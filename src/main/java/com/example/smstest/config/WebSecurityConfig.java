@@ -30,6 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+
+                // 로그인, 로그아웃 설정
                 .formLogin()
                 .loginPage("/account/login")
                 .usernameParameter("username")
@@ -39,6 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/account/login")
                 .and()
+
+                // 앤드포인트 별 접근 권한 제어
                 .authorizeRequests()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/templates/**").permitAll()
@@ -51,11 +55,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().logout().permitAll()
                 .and()
+
+                // 아이디를 쿠키에 저장 (자동 로그인)
                 .rememberMe()
                 .key("somansa!")
                 .rememberMeParameter("remember-me")
                 .tokenValiditySeconds(604800) // 쿠키의 만료시간 설정(초), default: 14일
                 .alwaysRemember(false) // 사용자가 체크박스를 활성화하지 않아도 항상 실행, default: false
+
+                // 사용자 인증 인가에 관여하는 Service
                 .userDetailsService(customUserDetailsService);
     }
 

@@ -16,8 +16,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 /**
- * 다중 DB 구성, DB별 Config 설정
- * Db2 -> Employee 관련 entity 적용
+ * DB2 설정 파일 (인사정보 DB)
+ * Employee 패키지 내 entity 적용
  */
 @Configuration
 @EnableJpaRepositories(

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Memp Table과 상호작용
+ */
 public interface MempRepository  extends JpaRepository<Memp, Long> {
 
     List<Memp> findAllByTeamId(Integer teamId);

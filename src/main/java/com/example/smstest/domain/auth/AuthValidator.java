@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+/**
+ * 사용자 정보 유효성 검증 클래스
+ */
 @Component
 @RequiredArgsConstructor
 public class AuthValidator implements Validator {
@@ -21,11 +24,22 @@ public class AuthValidator implements Validator {
     private final MempRepository mempRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Validator가 AccountRequest를 지원하는지 확인
+     * @param clazz the {@link Class} that this {@link Validator} is
+     * being asked if it can {@link #validate(Object, Errors) validate}
+     * @return
+     */
     @Override
     public boolean supports(Class<?> clazz) {
         return AccountRequest.class.equals(clazz);
     }
 
+    /**
+     * 실제 유효성 검사 로직 구현
+     * @param obj the object that is to be validated
+     * @param errors contextual state about the validation process
+     */
     @Override
     public void validate(Object obj, Errors errors) {
         AccountRequest accountRequest = (AccountRequest) obj;
@@ -39,6 +53,11 @@ public class AuthValidator implements Validator {
         }
     }
 
+    /**
+     * 비밀번호 재설정 시 검증
+     * @param resetPasswordRequest
+     * @param errors
+     */
     public void validatePassword(ResetPasswordRequest resetPasswordRequest, Errors errors) {
         if(!(resetPasswordRequest.getPassword().equals(resetPasswordRequest.getPassword_confirm()))){
             //비밀번호와 비밀번호 확인이 다르다면
@@ -46,6 +65,11 @@ public class AuthValidator implements Validator {
         }
     }
 
+    /**
+     * 사용자 정보 수정 시 검증
+     * @param modifyUserinfoRequest
+     * @param errors
+     */
     public void validatePassword(ModifyUserinfoRequest modifyUserinfoRequest, Errors errors) {
 
         Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())

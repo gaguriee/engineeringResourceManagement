@@ -16,8 +16,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 /**
- * 다중 DB 구성, DB별 Config 설정
- * Db3 -> License Project 관련 entity 적용
+ * DB3 설정 파일 (License DB)
+ * Scheduler 패키지 entity 적용
  */
 @Configuration
 @EnableJpaRepositories(

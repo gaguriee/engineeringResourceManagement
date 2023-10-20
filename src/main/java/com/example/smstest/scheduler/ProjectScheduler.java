@@ -25,9 +25,11 @@ public class ProjectScheduler {
     private final ProjectRepository projectRepository;
     private final ClientRepository clientRepository;
 
-//    @Scheduled(fixedDelay = 1000000000)
-    @Scheduled(cron = "0 0 0,6,12,18 * * ?") // 매일 06시, 12시, 18시, 24시 실행
+    @Scheduled(fixedDelay = 1000000000)
+//    @Scheduled(cron = "0 0 0/1 * * ?") // 매일 1시간 간격으로 실행
     public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
+
+        log.info("=====START SCHEDULER=====");
 
         try {
             List<LicenseProject> licenseProjects = licenseProjectRepository.findAll();

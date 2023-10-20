@@ -46,7 +46,6 @@ public class Memp {
     @NotNull
     private String password;
 
-    // TODO : EAGER 바꾸기
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_authority",
@@ -59,7 +58,6 @@ public class Memp {
     )
     @ToString.Exclude
     private Set<Authority> authorities;
-
 
     public Memp(AccountRequest accountRequest){
         this.username= accountRequest.getUsername();
@@ -78,6 +76,10 @@ public class Memp {
         this.authorities = authorities;
     }
 
+    /**
+     * 패스워드 인코딩
+     * @param passwordEncoder
+     */
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }

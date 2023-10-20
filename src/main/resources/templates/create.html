@@ -222,10 +222,12 @@
                     </div>
                     <div>
                         <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 *</label>
-                        <input type="text" id="engineer" name="engineerName" th:value="${user.name}" list="engineerList" th:attr="placeholder='필수 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <datalist id="engineerList">
-                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
-                        </datalist>
+                        <select id="engineer" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="" selected>엔지니어를 선택해주세요.</option>
+                            <th:block th:each="memp : ${memps}">
+                                <option th:value="${memp.id}" th:text="${memp.name} + ' ('+${memp.team.name}+')'"></option>
+                            </th:block>
+                        </select>
                     </div>
 
                 </div>
@@ -333,6 +335,9 @@
 
     var memps = /*[[${memps}]]*/ [];
     var user = /*[[${user}]]*/ ;
+
+    var engineer_select = document.getElementById("engineer");
+    engineer_select.value = user?.id;
 
     function setProject(id, name){
         document.getElementById('projectId').value = id;
@@ -487,22 +492,7 @@
         var taskDetails = document.getElementById('taskDetails').value;
         var projectId = document.getElementById('projectId').value;
 
-        // 해당 engineer를 포함하는지 확인
-        var containsEngineerName = memps.some(function(m) {
-            return m.name === engineer;
-        });
-
-        var alertEngineerNotExist = document.getElementById('alertEngineerNotExist');
         var alertForm = document.getElementById('alertForm');
-
-        if (! containsEngineerName){ // 기존에 등록되지 않은 엔지니어
-            alertEngineerNotExist.style.display = 'flex';
-            alertForm.style.display = 'none';
-            return false;
-        }else{
-            alertEngineerNotExist.style.display = 'none';
-        }
-
 
         if (
             taskTitle.trim() === '' ||
