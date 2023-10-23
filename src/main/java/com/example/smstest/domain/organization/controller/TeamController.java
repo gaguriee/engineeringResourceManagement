@@ -103,8 +103,9 @@ public class TeamController {
         Division division = divisionRepository.findById(divisionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
 
-        model.addAttribute("division", division);
         model.addAttribute("departments", departments);
+        model.addAttribute("division", division);
+
         model.addAttribute("user", user);
 
         return "organDivision";
@@ -117,10 +118,12 @@ public class TeamController {
     public String selectTeam(@RequestParam(required = true) Integer departmentId, Model model) {
 
         List<Team> teams = teamRepository.findByDepartmentId(departmentId);
-        Optional<Department> department = departmentRepository.findById(departmentId);
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
 
         model.addAttribute("teams", teams);
-        model.addAttribute("department", department.get());
+        model.addAttribute("department", department);
+        model.addAttribute("division", department.getDivision());
 
         return "organDepartment";
     }
@@ -133,6 +136,8 @@ public class TeamController {
             model.addAttribute("memps", teamInfoDTO.getMemps());
             model.addAttribute("team", teamInfoDTO.getTeam());
             model.addAttribute("department", teamInfoDTO.getDepartment());
+            model.addAttribute("division", teamInfoDTO.getDepartment().getDivision());
+
             model.addAttribute("supports", teamInfoDTO.getSupports());
         } else {
             model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");
@@ -148,9 +153,11 @@ public class TeamController {
 
         model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
 
-        model.addAttribute("department", memberInfoDTO.getDepartment());
         model.addAttribute("member", memberInfoDTO.getMemp());
         model.addAttribute("team", memberInfoDTO.getTeam());
+        model.addAttribute("department", memberInfoDTO.getDepartment());
+        model.addAttribute("division", memberInfoDTO.getDepartment().getDivision());
+
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
 
