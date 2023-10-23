@@ -1,7 +1,7 @@
 package com.example.smstest.domain.support.repository;
 
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
     List<Support> findByEngineerId(Long engineerId);
+
+    Page<Support> findAllByProjectIdOrderBySupportDateDesc(Long projectId, Pageable pageable);
     Long countByEngineerId(Long engineerId);
     Long countByEngineerTeamIdAndStateId(Integer engineerId, Long issueId);
     Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);

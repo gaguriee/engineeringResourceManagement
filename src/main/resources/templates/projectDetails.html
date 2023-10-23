@@ -65,55 +65,36 @@
                 <form onsubmit="return validateForm()" class="grid gap-4 mb-4 sm:grid-cols-2" th:action="@{/project/modify}" method="post" th:object="${projectRequest}"> <!-- 요청 보내기-->
                     <label for="projectId" class="hidden"></label>
                     <input type="text" name="projectId" id="projectId" class="hidden" th:field="*{projectId}">
+
                     <div>
-                        <label for="projectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트명</label>
-                        <input type="text"  th:field="*{projectName}" name="projectName" id="projectName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="라이센스 센터 기준 프로젝트명을 입력해주세요." required="">
-                    </div>
-                    <div>
-                        <label for="clientName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고객사명</label>
-                        <input type="text" name="clientName" th:field="*{clientName}" id="clientName" list="customerList" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="라이센스 센터 기준 고객사명을 입력해주세요." required="">
-                        <datalist id="customerList"  >
-                            <option th:each="client : ${clients}" th:value="${client.name}" ></option>
-                        </datalist>
-                    </div>
-                    <div>
+                        <label for="productId" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">제품명 *</label>
                         <select id="productId" th:field="*{productId}" name="productId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option value="" selected>제품명을 선택해주세요.</option>
                             <option th:each="product : ${products}" th:unless="${product.id == 24}" th:value="${product.id}" th:text="${product.name}"></option>
                         </select>
                     </div>
                     <div>
+                        <label for="teamId" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 팀 *</label>
                         <select id="teamId" name="teamId" th:field="*{teamId}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option value="" selected>담당 팀을 선택해주세요.</option>
-                            <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+                            <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}" th:attr="data-teamDepartId=${team.getDepartment().getId()}, data-teamId=${team.id}"></option>
                         </select>
                     </div>
                     <div>
                         <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 (정) *</label>
                         <input type="text" id="engineer" name="engineerName" th:field="*{engineerName}" list="engineerList" th:attr="placeholder='필수 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <datalist id="engineerList">
-                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
+                            <option th:each="memp : ${memps}" th:value="${memp.name}" th:attr="data-memTeamId=${memp.getTeam.getId()}" ></option>
                         </datalist>
                     </div>
                     <div>
                         <label for="subEngineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 (부)</label>
                         <input type="text" id="subEngineer" th:field="*{subEngineerName}" name="subEngineerName" list="engineerList" th:attr="placeholder='선택 작성'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <datalist id="subEngineerList">
-                            <option th:each="memp : ${memps}" th:value="${memp.name}" ></option>
+                            <option th:each="memp : ${memps}" th:value="${memp.name}" th:attr="data-submemTeamId=${memp.getTeam.getId()}"></option>
                         </datalist>
                     </div>
-                    <div class="sm:col-span-2" >
-                        <label for="startDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">시작일</label>
-                        <input type="date" name="startDate" id="startDate" th:field="*{startDate}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
-                        <label for="finishDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">종료일</label>
-                        <input type="date" name="finishDate" id="finishDate" th:field="*{finishDate}" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
-                    <div class="sm:col-span-2" >
-                        <label for="uniqueCode" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">고유코드</label>
-                        <input type="text" name="uniqueCode" id="uniqueCode" th:field="*{uniqueCode}" placeholder="라이센스 센터 기준 고유코드를 입력해주세요." required="" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                    </div>
+
                     <div style="display: flex; justify-content:flex-end ">
                         <button type="submit" id="projectModifyBtn" class="text-white inline-flex items-center bg-gray-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
                             완료
@@ -130,27 +111,7 @@
 
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${project.name}"></h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${project.client?.name} ?: ' '"></h3>
-        <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;" th:if="${project.engineer != null}">
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >담당 엔지니어</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"  th:text="${project.engineer?.name} ?: ' '"></dd>
-            </div>
-        </dl>
-        <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;" th:if="${project.subEngineer != null}">
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >부 담당 엔지니어</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.subEngineer?.name} ?: ' '"></dd>
-            </div>
-        </dl>
         <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">시작일</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.startDate} ?: ' '"></dd>
-            </div>
-            <div style="margin-right: 20px;">
-                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">종료일</dt>
-                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.finishDate} ?: ' '"></dd>
-            </div>
             <div style="margin-right: 20px;" th:if="${project.uniqueCode != null}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고유코드</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.uniqueCode} ?: ' '"></dd>
@@ -160,6 +121,21 @@
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.product?.name} ?: ' '"></dd>
             </div>
         </dl>
+        <dl class="flex text-sm items-start flex-wrap" style="padding-bottom: 24px;">
+            <div style="margin-right: 20px;"  th:if="${project.team != null}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >담당 팀</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"  th:text="${project.team?.name} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;"  th:if="${project.engineer != null}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >담당 엔지니어</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"  th:text="${project.engineer?.name} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;" th:if="${project.subEngineer != null}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >부 담당 엔지니어</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.subEngineer?.name} ?: ' '"></dd>
+            </div>
+        </dl>
+
 
         <!-- 작업 모달 -->
         <div id="taskCreateModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -372,6 +348,93 @@
             </table>
             <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
                 작업이 존재하지 않습니다.
+            </div>
+        </div>
+
+        <hr />
+        <div class="mx-auto max-w-screen-xl mt-2.5" style="padding-top: 48px">
+            <h3 class="mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="text-align: center">지원내역</h3>
+
+
+            <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                <div class="max-h-64 overflow-hidden">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자</th>
+                            <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">제품</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">이슈</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">담당엔지니어</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="post : ${supports}" class="border-b dark:border-gray-700">
+                            <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                            <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
+                                <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
+                                    <!-- 글자수를 최대 30자로 제한, NULL값 처리 -->
+                                    <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
+                                </a>
+                            </td>
+                            <td class="px-4 py-3" th:text="${post.product.name}"></td>
+                            <td class="px-4 py-3" th:text="${post.issue.name}"></td>
+                            <td class="px-4 py-3" th:text="${post.engineer.name}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
+    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+        Showing
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${supports.totalElements > 0} ? ${supports.pageable.offset + 1} : 0">1</span>
+        -
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${supports.totalElements > 0} ? ${supports.pageable.offset + supports.size} : 0">10</span>
+        of
+        <span class="font-semibold text-gray-900 dark:text-white" th:text="${supports.totalElements}">0</span>
+    </span>
+                    <ul class="inline-flex items-stretch -space-x-px">
+                        <li>
+                            <a href="#" id="prevBtn" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                <span class="sr-only">Previous</span>
+                                <svg class="w-5 h-5 " aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </li>
+                        <!-- 페이지 번호를 반복하여 링크 생성 -->
+                        <!-- Determine the current group number (e.g., 0 for 1-10, 1 for 11-20, etc.) -->
+                        <th:block th:with="currentGroupNo=${currentPage/5}">
+
+                            <!-- Calculate the start and end page numbers for the current group -->
+                            <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
+
+                                <!-- Iterate over the page numbers in the current group -->
+                                <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
+                                    <!-- 현재 URL에서 쿼리 매개변수 추출 -->
+                                    <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
+                                        <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
+                                        <a th:href="@{detail(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
+                                           th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                           th:text="${pageNo}">
+                                        </a>
+                                    </th:block>
+                                </li>
+
+                            </th:block>
+
+                        </th:block>
+                        <li>
+                            <a href="#" id="nextBtn" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                <span class="sr-only">Next</span>
+                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
 
@@ -638,6 +701,30 @@
         const tasks = /*[[${tasks}]]*/;
 
         tasks.forEach(function (task) {
+
+            var earliestStartDate = new Date(tasks[0].estimatedStartDate);
+            var latestEndDate = new Date(tasks[0].estimatedEndDate);
+
+            for (var i = 0; i < tasks.length; i++) {
+                var estimatedStartDate = new Date(tasks[i].estimatedStartDate);
+                var actualStartDate = new Date(tasks[i].actualStartDate);
+                if (estimatedStartDate < earliestStartDate) {
+                    earliestStartDate = estimatedStartDate;
+                }
+                if (actualStartDate < earliestStartDate) {
+                    earliestStartDate = actualStartDate;
+                }
+
+                var estimatedEndDate = new Date(tasks[i].estimatedEndDate);
+                var actualEndDate = new Date(tasks[i].actualEndDate);
+                if (estimatedEndDate > latestEndDate) {
+                    latestEndDate = estimatedEndDate;
+                }
+                if (actualEndDate > latestEndDate) {
+                    latestEndDate = actualEndDate;
+                }
+            }
+
             var categoryId = task.category.id;
             var containerId = 'timeline' + categoryId;
             var container = document.getElementById(containerId);
@@ -687,8 +774,8 @@
                 hAxis: {
                     format: 'yy.MM.dd',
                     ticks: dataTable.getDistinctValues(0),
-                    minValue: new Date(project.startDate),
-                    maxValue: new Date(project.finishDate)
+                    minValue: earliestStartDate,
+                    maxValue: latestEndDate
                 }
             };
 
@@ -735,28 +822,10 @@
      */
 
     function validateForm() {
-        var clientName = document.getElementById("clientName");
-        var projectName = document.getElementById("projectName");
         var productId = document.getElementById("productId");
         var teamId = document.getElementById("teamId");
-        var startDate = document.getElementById("startDate");
-        var finishDate = document.getElementById("finishDate");
         var engineerName = document.getElementById("engineer");
-        var subEngineerName = document.getElementById("subEngineer");
-        var directSelect = document.getElementById("direct-select");
-        var uniqueCode = document.getElementById("uniqueCode");
 
-        var projectModifyBtn = document.getElementById("projectModifyBtn");
-        var closeButton = document.getElementById("closeButton");
-
-        if (clientName.value.length < 1) {
-            alert("정확한 고객사명을 입력해 주세요.");
-            return false;
-        }
-        if (projectName.value.length < 1) {
-            alert("정확한 프로젝트명과 입력해 주세요.");
-            return false;
-        }
         if (productId.value === '') {
             alert("제품을 선택해주세요.");
             return false;
@@ -765,20 +834,80 @@
             alert("담당 팀을 선택해주세요.");
             return false;
         }
-        if (startDate.value === '' || finishDate.value === '') {
-            alert("기간을 선택해주세요.");
-            return false;
-        }
         if (engineerName.value === '' ) {
             alert("담당 엔지니어를 선택해주세요.");
             return false;
         }
-        if (uniqueCode.value === '' ) {
-            alert("프로젝트 고유 코드를 입력해주세요.");
-            return false;
-        }
 
     }
+
+
+    const currentPage = /*[[${currentPage }]]*/;
+    const totalPages = /*[[${totalPages }]]*/;
+
+    function getCurrentURLParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryParams = {};
+        urlParams.forEach((value, key) => (queryParams[key] = value));
+        return queryParams;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            console.log(currentPage);
+            if (currentPage >= 5) {
+                const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
+                const currentParams = getCurrentURLParams();
+                currentParams['page'] = prevPage+1;
+                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString();
+            }
+        });
+
+        nextBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (currentPage < totalPages - 1) {
+                const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
+                console.log(nextPage);
+
+                const currentParams = getCurrentURLParams();
+                currentParams['page'] = nextPage+1;
+                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString();
+            }
+        });
+    });
+
+    const teamSelect = document.getElementById('teamId');
+    const engineerSelect = document.getElementById('engineerList');
+    const subengineerSelect = document.getElementById('subEngineerList');
+    const engineer = document.getElementById('engineer');
+    const subEngineer = document.getElementById('subEngineer');
+
+    const initialMembers = [...document.querySelectorAll('#engineerList option')];
+
+    // 팀 선택 변경 시 이벤트 핸들러
+    teamSelect.addEventListener('change', function() {
+        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
+
+        engineerSelect.innerHTML = '';
+        subengineerSelect.innerHTML = '';
+
+        engineer.value = null;
+        subEngineer.value = null;
+
+        for (const memberOption of initialMembers) {
+            const memberTeamId = memberOption.getAttribute('data-memTeamId');
+
+            if (memberTeamId === selectedTeamId || selectedTeamId === '') {
+                engineerSelect.appendChild(memberOption.cloneNode(true));
+                subengineerSelect.appendChild(memberOption.cloneNode(true));
+            }
+        }
+    });
+
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }

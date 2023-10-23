@@ -67,7 +67,7 @@ public class SupportServiceImpl implements SupportService {
         support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
         support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
         support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-        support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName())
+        support.setEngineer(mempRepository.findById(supportRequest.getEngineerId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
         support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
@@ -97,7 +97,7 @@ public class SupportServiceImpl implements SupportService {
             support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
             support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
             support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-            support.setEngineer(mempRepository.findOneByName(supportRequest.getEngineerName())
+            support.setEngineer(mempRepository.findById(supportRequest.getEngineerId())
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
             support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
             support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));

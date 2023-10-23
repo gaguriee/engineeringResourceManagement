@@ -2,7 +2,6 @@ package com.example.smstest.domain.support.dto;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 
@@ -34,7 +33,7 @@ public class SupportRequest {
 
     private Long projectId;
 
-    private String engineerName;
+    private Long engineerId;
 
     private Long supportTypeId;
 

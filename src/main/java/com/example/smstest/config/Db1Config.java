@@ -17,9 +17,10 @@ import javax.sql.DataSource;
 
 
 /**
- * 다중 DB 구성, DB별 Config 설정
- * Db1 -> main database, Employee 관련 entity 제외 전체 적용
+ * DB1 설정 파일 (ERM 로컬 Postgresql)
+ * Employee, Scheduler 패키지 내 entity 제외 전체 적용
  */
+
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.example.smstest.domain",

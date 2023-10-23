@@ -10,9 +10,9 @@ import com.example.smstest.domain.support.dto.*;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +58,7 @@ public class SupportCRUDController {
     // 필터링
     @GetMapping("/search")
     public String searchSupportByFilters(@RequestParam(required = false) String customerName,
+                                         @RequestParam(required = false) String projectName,
                                          @RequestParam(required = false) List<Integer> teamId,
                                          @RequestParam(required = false) List<Long> productId,
                                          @RequestParam(required = false) List<Long> issueId,
@@ -75,6 +76,7 @@ public class SupportCRUDController {
 
         SupportFilterCriteria criteria = new SupportFilterCriteria();
         criteria.setCustomerName(customerName);
+        criteria.setProjectName(projectName);
         criteria.setTeamId(teamId);
         criteria.setProductId(productId);
         criteria.setIssueId(issueId);
@@ -114,8 +116,11 @@ public class SupportCRUDController {
         // Member 엔티티
         List<Memp> allMemps = mempRepository.findAll();
 
-        // Customer 엔티티
+        // Client 엔티티
         List<Client> allCustomers = clientRepository.findByOrderBySupportCountDesc();
+
+        // Project 엔티티
+        List<Project> allProjects = projectRepository.findByOrderBySupportCountDesc();
 
         Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -129,8 +134,7 @@ public class SupportCRUDController {
         model.addAttribute("allTeams", allTeams);
         model.addAttribute("allMemps", allMemps);
         model.addAttribute("allCustomers", allCustomers);
-
-
+        model.addAttribute("allProjects", allProjects);
         model.addAttribute("sortOrder", sortOrder);
 
         model.addAttribute("selectedProducts", productId != null ? productRepository.findAllById(productId) : new ArrayList<>());
@@ -139,6 +143,7 @@ public class SupportCRUDController {
         model.addAttribute("selectedTeams", teamId != null ? teamRepository.findAllById(teamId) : new ArrayList<>());
         model.addAttribute("selectedMemps", engineerId != null ? mempRepository.findAllById(engineerId) : new ArrayList<>());
         model.addAttribute("selectedcustomerName", customerName);
+        model.addAttribute("selectedprojectName", projectName);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (startDate != null) {
@@ -150,7 +155,7 @@ public class SupportCRUDController {
 
         model.addAttribute("user", user);
 
-        return "board";
+        return "supportBoard";
     }
 
 
@@ -164,7 +169,7 @@ public class SupportCRUDController {
         model.addAttribute("support", supportResponse);
         model.addAttribute("user", user);
 
-        return "details";
+        return "supportDetail";
     }
 
     // 등록하기
@@ -210,7 +215,7 @@ public class SupportCRUDController {
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
-        return "create";
+        return "supportCreate";
     }
 
 
@@ -255,7 +260,7 @@ public class SupportCRUDController {
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
-        return "modify";
+        return "supportModify";
     }
     @PostMapping("/modify")
     public String modifySupport(@ModelAttribute ModifyRequest modifyRequest, RedirectAttributes redirectAttributes) {

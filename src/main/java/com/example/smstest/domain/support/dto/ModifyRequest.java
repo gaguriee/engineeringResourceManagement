@@ -35,7 +35,7 @@ public class ModifyRequest {
 
     private Long projectId;
 
-    private String engineerName;
+    private Long engineerId;
 
     private Long supportTypeId;
 
