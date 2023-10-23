@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
     List<Support> findByEngineerId(Long engineerId);
+
+    Page<Support> findAllByProjectIdOrderBySupportDateDesc(Long projectId, Pageable pageable);
     Long countByEngineerId(Long engineerId);
     Long countByEngineerTeamIdAndStateId(Integer engineerId, Long issueId);
     Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);

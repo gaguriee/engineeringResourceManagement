@@ -49,8 +49,6 @@ public class ProjectScheduler {
                 else{
                     Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
                     newClient.setName(licenseProject.getCompany().getCompanyName());
-                    newClient.setCompanyRegDate(licenseProject.getCompany().getCompanyRegDate());
-
                     clientRepository.save(newClient);
                 }
 

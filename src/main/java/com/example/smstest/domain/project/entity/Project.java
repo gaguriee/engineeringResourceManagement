@@ -73,16 +73,8 @@ public class Project {
     }
 
 
-    public void updateProject(String name, Client client, String uniqueCode, Product product, Team team, Memp engineer, Memp subEngineer) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (client != null) {
-            this.client = client;
-        }
-        if (uniqueCode != null) {
-            this.uniqueCode = uniqueCode;
-        }
+    public void updateProject(Product product, Team team, Memp engineer, Memp subEngineer) {
+
         if (product != null) {
             this.product = product;
         }
