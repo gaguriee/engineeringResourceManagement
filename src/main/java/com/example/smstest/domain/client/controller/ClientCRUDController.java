@@ -2,8 +2,7 @@ package com.example.smstest.domain.client.controller;
 
 
 import com.example.smstest.domain.client.entity.Client;
-import com.example.smstest.domain.client.service.CustomerServiceImpl;
-import com.example.smstest.domain.support.dto.SupportSummary;
+import com.example.smstest.domain.client.service.ClientServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -14,19 +13,25 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
+/**
+ * 고객사 상호작용 관련 Controller
+ */
 @Controller
 @Slf4j
 @RequestMapping("/customer")
 public class ClientCRUDController {
-    private final CustomerServiceImpl customerServiceImpl;
+    private final ClientServiceImpl customerServiceImpl;
 
     @Autowired
-    public ClientCRUDController(CustomerServiceImpl customerServiceImpl) {
+    public ClientCRUDController(ClientServiceImpl customerServiceImpl) {
         this.customerServiceImpl = customerServiceImpl;
     }
 
@@ -36,6 +41,13 @@ public class ClientCRUDController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
+    /**
+     * 고객사 검색
+     * @param Keyword 검색 키워드
+     * @param pageable
+     * @param model 고객사 리스트
+     * @return 고객사 리스트 페이지
+     */
     @GetMapping("/search")
     public String searchSupportByFilters(
             @RequestParam(required = false) String Keyword,
@@ -43,22 +55,25 @@ public class ClientCRUDController {
             Model model) {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Client> result = customerServiceImpl.searchCustomers(Keyword, pageable);
+        Page<Client> result = customerServiceImpl.searchClients(Keyword, pageable);
 
         model.addAttribute("customers", result);
         model.addAttribute("totalPages", result.getTotalPages());
         model.addAttribute("currentPage", pageable.getPageNumber());
-        return "customer";
+        return "clientBoard";
     }
 
+    /**
+     * 고객사 디테일
+     * @param customerId 해당 고객사 id로 검색
+     * @param model 검색 결과 SupportSummary 리스트에 저장 후 전달
+     * @return 고객사 디테일 페이지
+     */
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Integer customerId, Model model) {
-        Client client = customerServiceImpl.getCustomerDetails(customerId);
+        Client client = customerServiceImpl.getClientDetails(customerId);
         model.addAttribute("customer", client);
 
-        List<SupportSummary> supportSummary = customerServiceImpl.getSupportSummaryByCustomerId(customerId);
-        model.addAttribute("supportSummary", supportSummary);
-
-        return "customerDetails";
+        return "clientDetails";
     }
 }

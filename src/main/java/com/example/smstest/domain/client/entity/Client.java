@@ -5,6 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * 고객사 Entity
+ */
 @Entity
 @Data
 @Table(name = "client")

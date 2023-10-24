@@ -10,9 +10,9 @@ import com.example.smstest.domain.support.dto.*;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.team.repository.TeamRepository;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -90,6 +90,7 @@ public class SupportCRUDController {
 
         Page<SupportResponse> responsePage = supportService.searchSupportByFilters(criteria, pageable, sortOrder);
 
+
         model.addAttribute("posts", responsePage);
         model.addAttribute("totalPages", responsePage.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
@@ -155,7 +156,7 @@ public class SupportCRUDController {
 
         model.addAttribute("user", user);
 
-        return "board";
+        return "supportBoard";
     }
 
 
@@ -169,7 +170,7 @@ public class SupportCRUDController {
         model.addAttribute("support", supportResponse);
         model.addAttribute("user", user);
 
-        return "details";
+        return "supportDetail";
     }
 
     // 등록하기
@@ -215,7 +216,7 @@ public class SupportCRUDController {
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
-        return "create";
+        return "supportCreate";
     }
 
 
@@ -260,7 +261,7 @@ public class SupportCRUDController {
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
 
-        return "modify";
+        return "supportModify";
     }
     @PostMapping("/modify")
     public String modifySupport(@ModelAttribute ModifyRequest modifyRequest, RedirectAttributes redirectAttributes) {

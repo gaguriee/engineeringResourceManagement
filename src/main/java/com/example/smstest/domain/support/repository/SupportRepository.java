@@ -1,7 +1,7 @@
 package com.example.smstest.domain.support.repository;
 
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom  {
     List<Support> findByEngineerId(Long engineerId);
+
+    Page<Support> findAllByProjectIdOrderBySupportDateDesc(Long projectId, Pageable pageable);
     Long countByEngineerId(Long engineerId);
     Long countByEngineerTeamIdAndStateId(Integer engineerId, Long issueId);
     Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);
@@ -29,12 +31,14 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
             "GROUP BY s.project.client.id, s.product.id, s.state.id")
     List<Object[]> countAttributesByEngineer(@Param("engineerId") Long engineerId);
 
+    // N본부
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team.department.division.id = 1")
     Long findTotalSupportTypeHourByState_N(@Param("state") State state);
 
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team = :team AND s.engineer.team.department.division.id = 1")
     Long findTotalSupportTypeHourByStateAndTeam_N(@Param("state") State state, @Param("team") Team team);
 
+    // E본부
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team.department.division.id = 2")
     Long findTotalSupportTypeHourByState_E(@Param("state") State state);
 

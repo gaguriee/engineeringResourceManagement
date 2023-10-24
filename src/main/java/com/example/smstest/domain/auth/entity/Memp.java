@@ -1,7 +1,7 @@
 package com.example.smstest.domain.auth.entity;
 
 import com.example.smstest.domain.auth.dto.AccountRequest;
-import com.example.smstest.domain.team.entity.Team;
+import com.example.smstest.domain.organization.entity.Team;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +27,7 @@ public class Memp {
     @Column(name = "이름", nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "team_id")
     private Team team;
 
@@ -43,6 +43,7 @@ public class Memp {
     @Column(unique =true)
     private String username;
 
+    @ToString.Exclude
     @NotNull
     private String password;
 

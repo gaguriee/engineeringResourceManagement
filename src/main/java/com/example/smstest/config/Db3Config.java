@@ -17,11 +17,11 @@ import javax.sql.DataSource;
 
 /**
  * DB3 설정 파일 (License DB)
- * Scheduler 패키지 entity 적용
+ * License 패키지 LicenseProject, LicenseCompany entity 적용
  */
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.example.smstest.scheduler",
+        basePackages = "com.example.smstest.license",
         entityManagerFactoryRef = "db3EntityManagerFactory",
         transactionManagerRef = "db3TransactionManager"
 )
@@ -38,7 +38,7 @@ public class Db3Config {
                          @Qualifier("db3DataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.example.smstest.scheduler")
+                .packages("com.example.smstest.license")
                 .persistenceUnit("db3")
                 .build();
     }
