@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 메인페이지 팝업 Entity
+ */
 @Entity
 @Data
 @NoArgsConstructor

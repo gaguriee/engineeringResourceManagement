@@ -154,7 +154,7 @@
 
     function pdfPrint() {
         // PDF 생성 요청을 서버로 보냅니다.
-        fetch('/pdf/generate?supportId=' + supportId, {
+        fetch('/generatePdf?supportId=' + supportId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/pdf'

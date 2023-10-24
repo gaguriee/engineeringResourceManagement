@@ -29,10 +29,13 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * 소속별 조회 관련 Controller
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class TeamController {
+public class OrganizationController {
     private final TeamRepository teamRepository;
     private final DepartmentRepository departmentRepository;
     private final MempRepository mempRepository;
@@ -50,6 +53,8 @@ public class TeamController {
 
     /**
      * 소속 빠른 검색
+     * @param model
+     * @return 본부, 실, 팀, 멤버 전체 데이터 전달
      */
     @GetMapping("/organizationFastSearch")
     public String organizationFastSearch(Model model) {
@@ -75,27 +80,15 @@ public class TeamController {
         return "organFastSearch";
     }
 
-//
-//    /**
-//     * 본부 (기술 N본부, E본부 등)
-//     */
-//    @GetMapping("/division")
-//    public String selectDivision(Model model) {
-//
-//        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//        List<Division> divisions = divisionRepository.findAll();
-//
-//        model.addAttribute("divisions", divisions);
-//        model.addAttribute("user", user);
-//
-//        return "division";
-//    }
 
     /**
-     * 소속 (2실, 4실 등)
+     * 본부별 조회 페이지 (E본부, N본부 등) -> 실 선택 (2실, 4실 등)
+     * @param divisionId 본부 Id
+     * @param model
+     * @return 현재 선택된 본부, 해당 본부에 포함되는 실 데이터 전달
      */
     @GetMapping("/department")
-    public String selectDepartment(@RequestParam(required = true) Integer divisionId, Model model) {
+    public String viewDivision(@RequestParam(required = true) Integer divisionId, Model model) {
 
         Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -103,36 +96,50 @@ public class TeamController {
         Division division = divisionRepository.findById(divisionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
 
-        model.addAttribute("division", division);
         model.addAttribute("departments", departments);
+        model.addAttribute("division", division);
+
         model.addAttribute("user", user);
 
         return "organDivision";
     }
 
     /**
-     * 팀 (N팀, B팀 등)
+     * 실별 조회 페이지 (2실, 4실 등) -> 팀 선택 (N팀, B팀 등)
+     * @param departmentId
+     * @param model
+     * @return 현재 선택된 실, 해당 실에 포함되는 팀 데이터 전달
      */
     @GetMapping("/team")
-    public String selectTeam(@RequestParam(required = true) Integer departmentId, Model model) {
+    public String viewDepartment(@RequestParam(required = true) Integer departmentId, Model model) {
 
         List<Team> teams = teamRepository.findByDepartmentId(departmentId);
-        Optional<Department> department = departmentRepository.findById(departmentId);
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
 
         model.addAttribute("teams", teams);
-        model.addAttribute("department", department.get());
+        model.addAttribute("department", department);
+        model.addAttribute("division", department.getDivision());
 
         return "organDepartment";
     }
 
+    /**
+     * 팀별 조회 페이지 (N팀, B팀 등) -> 엔지니어 선택
+     * @param teamId
+     * @param model
+     * @return 현재 선택된 팀, 해당 팀에 포함되는 엔지니어 데이터 전달
+     */
     @GetMapping("/teamInfo")
-    public String getTeamInfo(@RequestParam(required = true) Integer teamId, Model model) {
+    public String viewTeam(@RequestParam(required = true) Integer teamId, Model model) {
         TeamInfoDTO teamInfoDTO = teamService.getTeamInfo(teamId);
 
         if (teamInfoDTO != null) {
             model.addAttribute("memps", teamInfoDTO.getMemps());
             model.addAttribute("team", teamInfoDTO.getTeam());
             model.addAttribute("department", teamInfoDTO.getDepartment());
+            model.addAttribute("division", teamInfoDTO.getDepartment().getDivision());
+
             model.addAttribute("supports", teamInfoDTO.getSupports());
         } else {
             model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");
@@ -141,23 +148,40 @@ public class TeamController {
         return "organTeam";
     }
 
-    // 팀원 정보 조회
+    /**
+     * 엔지니어 디테일 페이지 (N팀, B팀 등) -> 엔지니어 선택
+     * @param memberId
+     * @param model
+     * @return 현재 선택된 팀, 엔지니어 정보 전달
+     */
     @GetMapping("/memberInfo")
     public String getMemberInfo(@RequestParam(required = true) Long memberId, Model model) {
         MemberInfoDTO memberInfoDTO = teamService.getMemberInfo(memberId);
 
         model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
 
-        model.addAttribute("department", memberInfoDTO.getDepartment());
         model.addAttribute("member", memberInfoDTO.getMemp());
         model.addAttribute("team", memberInfoDTO.getTeam());
+        model.addAttribute("department", memberInfoDTO.getDepartment());
+        model.addAttribute("division", memberInfoDTO.getDepartment().getDivision());
+
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
 
         return "organMember";
     }
 
-    // 팀원 정보 조회 - 지원내역 리스트
+    /**
+     * 엔지니어별 지원내역 조회
+     * @param sortOrder 정렬순서
+     * @param memberId 엔지니어 id
+     * @param customerId 고객사 id
+     * @param productId 제품 id
+     * @param stateId 상태 id
+     * @param pageable 페이지네이션
+     * @param model
+     * @return
+     */
     @GetMapping("/memberInfoDetail")
     public String getMemberInfoDetail(
             @RequestParam(required = false, defaultValue = "desc") String sortOrder,

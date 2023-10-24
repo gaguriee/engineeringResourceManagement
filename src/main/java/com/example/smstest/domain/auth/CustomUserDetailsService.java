@@ -53,6 +53,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         Memp => ERM DB에서 가져오는 사용자 data
          */
 
+        Optional<Memp> memp = mempRepository.findByUsername(username);
+        if (memp.isPresent()){
+            return new User(memp.get().getUsername(), memp.get().getPassword(),
+                    memp.get().getAuthorities().stream()
+                            .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+                            .collect(Collectors.toSet()));
+        }
+
+
         // 인증 시도한 사용자 객체 반환, 없을 경우 에러 반환 ( 인사 DB 내 미존재 username일 경우 로그인 안됨 )
         Employee employee = employeeRepository.findByUserid(username);
 
@@ -69,7 +78,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         authoritiesSet.add(Authority.of("ROLE_USER"));
 
         // 로그인 한 username의 정보가 인사정보 DB에는 있지만 ERM DB에는 없는 경우 신규 등록
-        Optional<Memp> memp = mempRepository.findByUsername(username);
+        memp = mempRepository.findByUsername(username);
         if (memp.isEmpty()) {
 
             // 인사정보 DB에서 팀 정보 가져옴, 없을 경우 에러 반환

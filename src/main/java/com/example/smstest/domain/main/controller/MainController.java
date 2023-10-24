@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+/**
+ * 메인 페이지 관련 Controller
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -36,6 +39,11 @@ public class MainController {
     private final TeamRepository teamRepository;
     private final AnnouncementRepository announcementRepository;
 
+    /**
+     * 메인 페이지
+     * @param model
+     * @return 레더 차트를 위한 전체/팀별 데이터, 팝업 데이터 전달
+     */
     @GetMapping("/")
     public String main(Model model) {
 
@@ -120,6 +128,12 @@ public class MainController {
         return "main";
     }
 
+    /**
+     * 메인 팝업창 그만보기 옵션
+     * @param request
+     * @param announcementId 팝업 Id
+     * @return 실행 결과 전달
+     */
     @PostMapping("/dismissAnnouncement")
     public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
 

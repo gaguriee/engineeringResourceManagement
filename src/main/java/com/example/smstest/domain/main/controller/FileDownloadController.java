@@ -1,6 +1,5 @@
 package com.example.smstest.domain.main.controller;
 
-import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.repository.SupportRepository;
 import com.example.smstest.domain.support.service.PdfService;
@@ -16,7 +15,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletOutputStream;
@@ -27,17 +25,26 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * 파일 Download 관련 PDF
+ */
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/pdf")
-public class PdfController {
+public class FileDownloadController {
 
     private final PdfService pdfService;
     private final SupportRepository supportRepository;
-    private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
 
-    @GetMapping("/generate")
+    /**
+     * 디테일 페이지 지원 내역 PDF 변환
+     * @param supportId
+     * @param response
+     * @throws IOException
+     * @throws DocumentException
+     */
+    @GetMapping("/generatePdf")
     public void generateSupportPdf(@RequestParam(required = false) Long supportId, HttpServletResponse response) throws IOException, DocumentException {
 
         SupportResponse supportResponse = SupportResponse.entityToResponse(supportRepository.findById(supportId).get());
@@ -62,27 +69,28 @@ public class PdfController {
         Files.deleteIfExists(Paths.get(pdfFilePath));
     }
 
+    /**
+     * WBS 작업 히스토리 다운로드
+     * @param projectId
+     * @param response
+     * @throws IOException
+     * @throws DocumentException
+     */
     @GetMapping("/generateExcel")
     public void generateProjectExcel(@RequestParam(required = false) Long projectId, HttpServletResponse response) throws IOException, DocumentException {
 
         List<Task> tasks = taskRepository.findAllByProjectIdOrderByEstimatedStartDateAsc(projectId);
 
-        /**
-         * excel sheet 생성
-         */
+        // excel sheet 생성
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet1"); // 엑셀 sheet 이름
         sheet.setDefaultColumnWidth(28); // 디폴트 너비 설정
 
-        /**
-         * header font style
-         */
+        // header font style
         XSSFFont headerXSSFFont = (XSSFFont) workbook.createFont();
         headerXSSFFont.setColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 255}));
 
-        /**
-         * header cell style
-         */
+        // header cell style
         XSSFCellStyle headerXssfCellStyle = (XSSFCellStyle) workbook.createCellStyle();
 
         // 테두리 설정
@@ -107,9 +115,7 @@ public class PdfController {
         bodyXssfCellStyle.setBorderTop(BorderStyle.THIN);
         bodyXssfCellStyle.setBorderBottom(BorderStyle.THIN);
 
-        /**
-         * header data
-         */
+        // header data
         int rowCount = 0; // 데이터가 저장될 행
         String headerNames[] = new String[]{"대분류", "업무명", "예상시작일", "예상마감일", "실제시작일", "실제마감일", "진척율", "산출물"};
 

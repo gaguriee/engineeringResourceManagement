@@ -65,7 +65,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
                 .where(whereClause)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(orderSpecifier) // 정렬 조건 추가
+                .orderBy(orderSpecifier, support.id.desc()) // 정렬 조건 추가
                 .fetch();
 
         long totalCount = queryFactory

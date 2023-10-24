@@ -31,12 +31,14 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
             "GROUP BY s.project.client.id, s.product.id, s.state.id")
     List<Object[]> countAttributesByEngineer(@Param("engineerId") Long engineerId);
 
+    // N본부
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team.department.division.id = 1")
     Long findTotalSupportTypeHourByState_N(@Param("state") State state);
 
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team = :team AND s.engineer.team.department.division.id = 1")
     Long findTotalSupportTypeHourByStateAndTeam_N(@Param("state") State state, @Param("team") Team team);
 
+    // E본부
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team.department.division.id = 2")
     Long findTotalSupportTypeHourByState_E(@Param("state") State state);
 

@@ -14,6 +14,13 @@
 
 <section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
     <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-3 sm:mb-0">
+            <li>
+                <div class="flex items-center">
+                    <a th:href="'/department?divisionId='+${division.id}" class="font-bold ml-1 text-sm text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white" th:text="${division.name}"></a>
+                </div>
+            </li>
+        </ol>
     </nav>
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">소속 선택</h2>
