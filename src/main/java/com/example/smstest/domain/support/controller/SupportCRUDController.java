@@ -90,6 +90,7 @@ public class SupportCRUDController {
 
         Page<SupportResponse> responsePage = supportService.searchSupportByFilters(criteria, pageable, sortOrder);
 
+
         model.addAttribute("posts", responsePage);
         model.addAttribute("totalPages", responsePage.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지

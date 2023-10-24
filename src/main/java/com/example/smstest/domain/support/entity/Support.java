@@ -1,10 +1,11 @@
 package com.example.smstest.domain.support.entity;
+
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.project.entity.Project;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
-
 import java.util.Date;
 
 @Entity
@@ -27,9 +28,11 @@ public class Support {
     @Column(name = "작업제목")
     private String taskTitle;
 
+    @ToString.Exclude
     @Column(name = "작업요약", columnDefinition = "text")
     private String taskSummary;
 
+    @ToString.Exclude
     @Column(name = "작업세부내역", columnDefinition = "text")
     private String taskDetails;
 

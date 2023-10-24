@@ -711,7 +711,7 @@
                 if (estimatedStartDate < earliestStartDate) {
                     earliestStartDate = estimatedStartDate;
                 }
-                if (actualStartDate < earliestStartDate) {
+                if ( (tasks[i].actualStartDate != null) && (actualStartDate < earliestStartDate)) {
                     earliestStartDate = actualStartDate;
                 }
 
@@ -742,7 +742,6 @@
 
             var taskData = [];
 
-            // Filter tasks by category
             var categoryTasks = tasks.filter(function (t) {
                 return t.category.id === categoryId;
             });
@@ -758,8 +757,13 @@
                     taskData.push([task.taskName, 'expected', estimatedStartDate, estimatedEndDate]);
                 }
 
-                if (actualStartDate !== null || actualEndDate !== null) {
-                    taskData.push([task.taskName, 'actual', actualStartDate, actualEndDate]);
+                if (actualStartDate !== null ) {
+                    if (task.actualEndDate == null){
+                        taskData.push([task.taskName, 'actual', actualStartDate, latestEndDate]);
+                    }
+                    else{
+                        taskData.push([task.taskName, 'actual', actualStartDate, actualEndDate]);
+                    }
                 }
             });
 
@@ -793,7 +797,7 @@
 
     function excelPrint() {
         // PDF 생성 요청을 서버로 보냅니다.
-        fetch('/pdf/generateExcel?projectId=' + project.id, {
+        fetch('/generateExcel?projectId=' + project.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

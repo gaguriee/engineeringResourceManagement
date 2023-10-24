@@ -17,7 +17,7 @@ public class Team {
     @Column(name = "팀명", nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "소속_id")
     private Department department;
 
