@@ -754,20 +754,25 @@
                 var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
 
                 if (estimatedStartDate !== null || estimatedEndDate !== null) {
-                    taskData.push([task.taskName, 'expected', estimatedStartDate, estimatedEndDate]);
+                    taskData.push([task.taskName, '예정일', estimatedStartDate, estimatedEndDate]);
                 }
 
                 if (actualStartDate !== null ) {
                     if (task.actualEndDate == null){
-                        taskData.push([task.taskName, 'actual', actualStartDate, latestEndDate]);
+                        taskData.push([task.taskName, '실제일', actualStartDate, latestEndDate]);
                     }
                     else{
-                        taskData.push([task.taskName, 'actual', actualStartDate, actualEndDate]);
+                        taskData.push([task.taskName, '실제일', actualStartDate, actualEndDate]);
                     }
                 }
             });
 
             dataTable.addRows(taskData);
+
+            var paddingHeight = 40;
+            var rowHeight = taskData.length * 55;
+            var chartHeight = rowHeight + paddingHeight;
+
 
             var options = {
                 timeline: {
@@ -780,6 +785,10 @@
                     ticks: dataTable.getDistinctValues(0),
                     minValue: earliestStartDate,
                     maxValue: latestEndDate
+                },
+                height: chartHeight,
+                chartArea: {
+                    height: rowHeight,
                 }
             };
 
