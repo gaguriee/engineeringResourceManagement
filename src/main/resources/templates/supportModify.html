@@ -86,7 +86,7 @@
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 등록</h2>
 
-        <form th:action="@{/modify}" method="post" onsubmit="return validateForm()">
+        <form th:action="@{/modify}" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
 
             <label for="supportId" class="hidden"></label>
             <input type="text"  name="supportId" id="supportId" class="hidden">
@@ -289,6 +289,25 @@
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세 *</label>
                 <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)" ></textarea>
             </div>
+            <div class="form-group row mt-2.5">
+                <div class="col-sm-10">
+                    <div class="custom-file" id="inputFile">
+                        <label class="custom-file-label block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Upload files</label>
+                        <input name="files" class="custom-file-input block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="multiple_files" type="file" multiple>
+                    </div>
+                </div>
+                <input id="deletedFileId" name="deletedFileId" type="hidden">
+
+
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">업로드 가능한 최대 파일 크기는 50MB 입니다.</p>
+
+                <div class="mt-1" id="attachedList" style="font-size: small; color: gray" th:each="file : ${support.getFiles()}">
+                    <div class="flex" th:id="${file.id}">
+                        <p th:text="${file.origFilename}" ></p>
+                        <button type="button" th:onclick="'deleteOldFile('+${file.id}+')'" style="color: red">X</button>
+                    </div>
+                </div>
+            </div>
             <div id="alert" class="h-36">
                 <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
                     <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -334,6 +353,69 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script  th:inline="javascript">
 
+    const support = /*[[${support }]]*/;
+    var oldFilesId = [];
+
+    var dataTransfer = new DataTransfer();
+
+    const preview = document.querySelector('#attachedList');
+
+    const handler = {
+        init() {
+            const fileInput = document.querySelector('.custom-file-input');
+
+            fileInput.addEventListener('change', () => {
+                const files = Array.from(fileInput.files);
+
+                files.forEach(file => {
+
+                    dataTransfer.items.add(file)
+
+                    preview.innerHTML += `
+                        <p id="${file.lastModified}">
+                            ${file.name}
+                            <button style="color: red" data-index='${file.lastModified}' class='file-remove'>X</button>
+                        </p>`;
+                });
+
+                document.querySelector('.custom-file-input').files = dataTransfer.files;
+            });
+        },
+
+        removeFile: () => {
+            document.addEventListener('click', (e) => {
+                if(e.target.className !== 'file-remove') return;
+                const removeTargetId = e.target.dataset.index;
+                const removeTarget = document.getElementById(removeTargetId);
+                const files = document.querySelector('.custom-file-input').files;
+                const dataTranster = new DataTransfer();
+
+                Array.from(files)
+                    .filter(file => file.lastModified != removeTargetId)
+                    .forEach(file => {
+                        dataTranster.items.add(file);
+                    });
+
+                document.querySelector('.custom-file-input').files = dataTranster.files;
+
+                removeTarget.remove();
+            })
+        }
+    }
+
+    function deleteOldFile(id){
+        const file = document.getElementById(id)
+        file.remove();
+        oldFilesId.push(id);
+
+        document.getElementById("deletedFileId").value = oldFilesId;
+    }
+
+
+    handler.init()
+    handler.removeFile()
+
+
     // 기존 정보 입력
 
     var taskTitle = document.getElementById('taskTitle');
@@ -350,13 +432,12 @@
     var supportId = document.getElementById('supportId');
     var projectId = document.getElementById('projectId');
     var project = document.getElementById('project');
+
     function assignValue(inputElement, value) {
         if (inputElement !== null && value != null) {
             inputElement.value = value;
         }
     }
-
-    const support = /*[[${support }]]*/;
 
     assignValue(taskTitle, support.taskTitle);
     assignValue(product, support.product?.id);

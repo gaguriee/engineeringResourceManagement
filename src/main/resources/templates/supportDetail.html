@@ -103,6 +103,17 @@
                 <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskDetails} ?: ' ']]</span>
             </dd>
         </dl>
+        <div th:if="${support.files != null}">
+            <strong>첨부파일 </strong>
+            <div th:each="file : ${support.files}">
+                <a
+                        class="card-text"
+                        style="font-size: small"
+                        th:href="@{'/download/' + ${file.id}}"
+                        th:text="${file.origFilename}"
+                ></a>
+            </div>
+        </div>
     </div>
     <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16" style="background-color: white">
 

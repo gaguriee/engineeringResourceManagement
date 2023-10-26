@@ -1,13 +1,15 @@
 package com.example.smstest.domain.support.dto;
 
+import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.support.file.File;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
 
 @Data
 public class SupportResponse {
@@ -44,8 +46,10 @@ public class SupportResponse {
 
     private String taskDetails;
 
+    private Set<File> files;
+
     @Builder
-    public SupportResponse(Long id, String productName, Project project, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails) {
+    public SupportResponse(Long id, String productName, Project project, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails,Set<File> files) {
         this.id = id;
         this.productName = productName;
         this.project = project;
@@ -62,6 +66,7 @@ public class SupportResponse {
         this.taskTitle = taskTitle;
         this.taskSummary = taskSummary;
         this.taskDetails = taskDetails;
+        this.files = files;
     }
 
 
@@ -83,6 +88,7 @@ public class SupportResponse {
                 .taskTitle(support.getTaskTitle())
                 .taskSummary(support.getTaskSummary())
                 .taskDetails(support.getTaskDetails())
+                .files(support.getFiles())
                 .build();
     }
 

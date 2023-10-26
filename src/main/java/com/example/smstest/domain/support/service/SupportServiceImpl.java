@@ -71,7 +71,6 @@ public class SupportServiceImpl implements SupportService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
         support.setProject(projectRepository.findById(supportRequest.getProjectId()).get());
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
-
         // Support 엔티티를 저장하고 반환
         Support newsupport = supportRepository.save(support);
         log.info("===CREATE=== ("+ SupportResponse.entityToResponse(newsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());

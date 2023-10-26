@@ -1,32 +1,50 @@
 package com.example.smstest.domain.support.controller;
 
 
+import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
+import com.example.smstest.domain.organization.entity.Team;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
-import com.example.smstest.domain.support.dto.*;
+import com.example.smstest.domain.support.dto.ModifyRequest;
+import com.example.smstest.domain.support.dto.SupportFilterCriteria;
+import com.example.smstest.domain.support.dto.SupportRequest;
+import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
+import com.example.smstest.domain.support.file.*;
 import com.example.smstest.domain.support.repository.*;
-import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.organization.entity.Team;
-import com.example.smstest.domain.auth.repository.MempRepository;
-import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
+import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.data.domain.*;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -46,6 +64,8 @@ public class SupportCRUDController {
     private final SupportTypeRepository supportTypeRepository;
     private final SupportRepository supportRepository;
     private final ProjectRepository projectRepository;
+    private final FileService fileService;
+    private final FileRepository fileRepository;
 
 
     // 날짜 형태 bind
@@ -167,6 +187,7 @@ public class SupportCRUDController {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         SupportResponse supportResponse = supportService.getDetails(supportId);
+
         model.addAttribute("support", supportResponse);
         model.addAttribute("user", user);
 
@@ -175,11 +196,52 @@ public class SupportCRUDController {
 
     // 등록하기
     @PostMapping("/post")
-    public String createSupport(@ModelAttribute SupportRequest supportRequest, RedirectAttributes redirectAttributes) {
+    public String createSupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute SupportRequest supportRequest, RedirectAttributes redirectAttributes) {
 
-        SupportResponse supportResponse = supportService.createSupport(supportRequest);
+        try {
+            List<File> savedFiles = new ArrayList<>();
+            for(MultipartFile file : files) {
+                String origFilename = file.getOriginalFilename();
+                String filename = new MD5Generator(origFilename).toString();
+                /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
+                String savePath = System.getProperty("user.dir") + "\\files";
+                /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
+                if (!new java.io.File(savePath).exists()) {
+                    try{
+                        new java.io.File(savePath).mkdir();
+                    }
+                    catch(Exception e){
+                        e.getStackTrace();
+                    }
+                }
+                String filePath = savePath + "\\" + filename;
+                file.transferTo(new java.io.File(filePath));
 
-        return "redirect:/details?supportId="+supportResponse.getId();
+                FileDto fileDto = new FileDto();
+                fileDto.setOrigFilename(origFilename);
+                fileDto.setFilename(filename);
+                fileDto.setFilePath(filePath);
+
+                savedFiles.add(fileService.saveFile(fileDto));
+            }
+
+
+            SupportResponse supportResponse = supportService.createSupport(supportRequest);
+
+            for (File savedFile : savedFiles){
+                savedFile.setSupportId(supportResponse.getId());
+                fileRepository.save(savedFile);
+            }
+
+            return "redirect:/details?supportId="+supportResponse.getId();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        }
+
+
     }
 
     @GetMapping("/create")
@@ -264,11 +326,58 @@ public class SupportCRUDController {
         return "supportModify";
     }
     @PostMapping("/modify")
-    public String modifySupport(@ModelAttribute ModifyRequest modifyRequest, RedirectAttributes redirectAttributes) {
+    public String modifySupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute ModifyRequest modifyRequest, RedirectAttributes redirectAttributes) {
 
-        SupportResponse supportResponse = supportService.modifySupport(modifyRequest);
+        try {
 
-        return "redirect:/details?supportId="+supportResponse.getId();
+            if (modifyRequest.getDeletedFileId() != null){
+                fileRepository.deleteAllById(modifyRequest.getDeletedFileId());
+            }
+            List<File> savedFiles = new ArrayList<>();
+
+            for(MultipartFile file : files) {
+                if (file.getOriginalFilename().isEmpty())
+                    continue;
+                String origFilename = file.getOriginalFilename();
+                String filename = new MD5Generator(origFilename).toString();
+                /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
+                System.out.println(System.getProperty("user.dir"));
+                String savePath = System.getProperty("user.dir") + "\\files";
+                /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
+                if (!new java.io.File(savePath).exists()) {
+                    try{
+                        new java.io.File(savePath).mkdir();
+                    }
+                    catch(Exception e){
+                        e.getStackTrace();
+                    }
+                }
+                String filePath = savePath + "\\" + filename;
+                file.transferTo(new java.io.File(filePath));
+
+                FileDto fileDto = new FileDto();
+                fileDto.setOrigFilename(origFilename);
+                fileDto.setFilename(filename);
+                fileDto.setFilePath(filePath);
+
+//                새 첨부 파일 저장
+                savedFiles.add(fileService.saveFile(fileDto));
+            }
+
+            SupportResponse supportResponse = supportService.modifySupport(modifyRequest);
+
+            for (File savedFile : savedFiles){
+                savedFile.setSupportId(supportResponse.getId());
+                fileRepository.save(savedFile);
+            }
+
+            return "redirect:/details?supportId="+supportResponse.getId();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        }
     }
 
     // 삭제
@@ -278,6 +387,23 @@ public class SupportCRUDController {
         supportService.deleteSupport(supportId);
 
         return "redirect:/search?";
+    }
+
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
+        FileDto fileDto = fileService.getFile(fileId);
+        Path path = Paths.get(fileDto.getFilePath());
+        Resource resource = new InputStreamResource(Files.newInputStream(path));
+        // 파일 이름을 UTF-8로 인코딩
+        String encodedFileName = new String(fileDto.getOrigFilename().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/octet-stream"));
+
+        // Content-Disposition 헤더에 올바른 파일 이름 설정
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"");
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
 }
