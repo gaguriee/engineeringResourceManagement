@@ -104,7 +104,7 @@
             </dd>
         </dl>
         <div th:if="${support.files != null}">
-            <strong>첨부파일 </strong>
+            <strong th:if="${support.files.size() > 0 }">첨부파일 </strong>
             <div th:each="file : ${support.files}">
                 <a
                         class="card-text"

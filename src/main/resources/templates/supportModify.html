@@ -301,10 +301,12 @@
 
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">업로드 가능한 최대 파일 크기는 50MB 입니다.</p>
 
-                <div class="mt-1" id="attachedList" style="font-size: small; color: gray" th:each="file : ${support.getFiles()}">
-                    <div class="flex" th:id="${file.id}">
-                        <p th:text="${file.origFilename}" ></p>
-                        <button type="button" th:onclick="'deleteOldFile('+${file.id}+')'" style="color: red">X</button>
+                <div class="mt-1" id="attachedList" style="font-size: small; color: gray">
+                    <div th:each="file : ${support.getFiles()}">
+                        <div class="flex" th:id="${file.id}">
+                            <p th:text="${file.origFilename}" ></p>
+                            <button type="button" th:onclick="'deleteOldFile('+${file.id}+')'" style="color: red">X</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -358,11 +360,11 @@
 
     var dataTransfer = new DataTransfer();
 
-    const preview = document.querySelector('#attachedList');
 
     const handler = {
         init() {
             const fileInput = document.querySelector('.custom-file-input');
+            const preview = document.querySelector('#attachedList');
 
             fileInput.addEventListener('change', () => {
                 const files = Array.from(fileInput.files);
