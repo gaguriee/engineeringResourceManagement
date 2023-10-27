@@ -201,10 +201,26 @@ public class SupportCRUDController {
         try {
             List<File> savedFiles = new ArrayList<>();
             for(MultipartFile file : files) {
+                if (file.getOriginalFilename().isEmpty())
+                    continue;
                 String origFilename = file.getOriginalFilename();
                 String filename = new MD5Generator(origFilename).toString();
                 /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
-                String savePath = System.getProperty("user.dir") + "\\files";
+                String savePath;
+                String filePath;
+
+                // OS 따라 구분자 분리
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("win")){
+                    savePath = System.getProperty("user.dir") + "\\files";
+                    filePath = savePath + "\\" + filename;
+                }
+                else{
+                    savePath = System.getProperty("user.dir") + "/files";
+                    filePath = savePath + "/" + filename;
+                }
+
+
                 /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
                 if (!new java.io.File(savePath).exists()) {
                     try{
@@ -214,14 +230,16 @@ public class SupportCRUDController {
                         e.getStackTrace();
                     }
                 }
-                String filePath = savePath + "\\" + filename;
+
                 file.transferTo(new java.io.File(filePath));
 
                 FileDto fileDto = new FileDto();
                 fileDto.setOrigFilename(origFilename);
+                fileDto.setSize(file.getSize());
                 fileDto.setFilename(filename);
                 fileDto.setFilePath(filePath);
 
+//                새 첨부 파일 저장
                 savedFiles.add(fileService.saveFile(fileDto));
             }
 
@@ -370,6 +388,7 @@ public class SupportCRUDController {
 
                 FileDto fileDto = new FileDto();
                 fileDto.setOrigFilename(origFilename);
+                fileDto.setSize(file.getSize());
                 fileDto.setFilename(filename);
                 fileDto.setFilePath(filePath);
 

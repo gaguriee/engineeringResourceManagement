@@ -29,12 +29,16 @@ public class File {
     @Column(nullable = false)
     private String filePath;
 
+    @Column(nullable = false)
+    private Long size;
+
     @Builder
-    public File(Long id, Long supportId, String origFilename, String filename, String filePath) {
+    public File(Long id, Long supportId, String origFilename, String filename, String filePath, Long size) {
         this.id = id;
         this.supportId = supportId;
         this.origFilename = origFilename;
         this.filename = filename;
         this.filePath = filePath;
+        this.size = size;
     }
 }
