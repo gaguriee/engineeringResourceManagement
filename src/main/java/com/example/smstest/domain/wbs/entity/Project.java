@@ -1,4 +1,4 @@
-package com.example.smstest.domain.project.entity;
+package com.example.smstest.domain.wbs.entity;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.entity.Client;

@@ -6,6 +6,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.sql.Date;
 
+/**
+ * 라이센스 DB 내 프로젝트 Entity
+ */
 @Entity
 @Getter
 @ToString

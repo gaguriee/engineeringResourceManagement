@@ -1,6 +1,6 @@
-package com.example.smstest.domain.task;
+package com.example.smstest.domain.task.entity;
 
-import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.wbs.entity.Project;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +9,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Date;
 
+
+/**
+ * WBS 작업 일정 Entity
+ */
 @Entity
 @Getter
 @Setter

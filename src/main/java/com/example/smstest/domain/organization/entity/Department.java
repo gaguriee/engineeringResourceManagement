@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+/**
+ * 2. 소속 Entity (기술 2실, 4실 등)
+ */
 @Entity
 @Data
 @Table(name = "department")

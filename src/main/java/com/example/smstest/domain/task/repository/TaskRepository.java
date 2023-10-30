@@ -1,5 +1,6 @@
-package com.example.smstest.domain.task;
+package com.example.smstest.domain.task.repository;
 
+import com.example.smstest.domain.task.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

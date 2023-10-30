@@ -4,6 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Member 별 지원내역 DTO
+ */
 @Data
 @NoArgsConstructor
 public class AggregatedDataDTO {

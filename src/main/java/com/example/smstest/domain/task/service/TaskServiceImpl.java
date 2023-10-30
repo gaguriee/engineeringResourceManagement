@@ -1,26 +1,30 @@
-package com.example.smstest.domain.task;
+package com.example.smstest.domain.task.service;
 
-import com.example.smstest.domain.project.repository.ProjectRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import com.example.smstest.domain.wbs.repository.ProjectRepository;
+import com.example.smstest.domain.task.Interface.TaskService;
+import com.example.smstest.domain.task.dto.TaskRequestDTO;
+import com.example.smstest.domain.task.entity.Task;
+import com.example.smstest.domain.task.repository.TaskCategoryRepository;
+import com.example.smstest.domain.task.repository.TaskRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RestController
-@RequiredArgsConstructor
-@Slf4j
-@RequestMapping("/task")
-public class TaskController {
-
+@Service
+public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskCategoryRepository taskCategoryRepository;
     private final ProjectRepository projectRepository;
 
-    @PostMapping("/delete/{taskId}")
-    @ResponseBody
-    public String deleteTask(@PathVariable Long taskId) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskCategoryRepository taskCategoryRepository, ProjectRepository projectRepository) {
+        this.taskRepository = taskRepository;
+        this.taskCategoryRepository = taskCategoryRepository;
+        this.projectRepository = projectRepository;
+    }
+
+    @Override
+    public String deleteTask(Long taskId) {
         Task task = taskRepository.findById(taskId).orElse(null);
         if (task != null) {
             taskRepository.delete(task);
@@ -29,9 +33,8 @@ public class TaskController {
         return "Task not found!";
     }
 
-    @PostMapping("/update/{taskId}")
-    @ResponseBody
-    public String updateTask(@PathVariable Long taskId, @RequestBody TaskRequestDto updatedTask) {
+    @Override
+    public String updateTask(Long taskId, TaskRequestDTO updatedTask) {
         Task task = taskRepository.findById(taskId).orElse(null);
         if (task != null) {
             return setTaskRequestDto(updatedTask, task);
@@ -39,15 +42,10 @@ public class TaskController {
         return "Task not found!";
     }
 
-
-    @PostMapping("/save/{projectId}")
-    @ResponseBody
-    public String saveTasks(@PathVariable Long projectId, @RequestBody List<TaskRequestDto> taskList) {
-        // 클라이언트에서 전송한 작업 목록을 저장할 비즈니스 로직을 작성
-        for (TaskRequestDto taskRequest : taskList) {
+    @Override
+    public String saveTasks(Long projectId, List<TaskRequestDTO> taskList) {
+        for (TaskRequestDTO taskRequest : taskList) {
             Task task = new Task();
-
-            // TaskRequestDto에서 Task로 데이터 복사
             task.setProject(projectRepository.findById(projectId).get());
             task.setCategory(taskCategoryRepository.findById(taskRequest.getCategoryId()).get());
             task.setTaskName(taskRequest.getTaskName());
@@ -56,15 +54,12 @@ public class TaskController {
             task.setActualStartDate(taskRequest.getActualStartDate());
             task.setActualEndDate(taskRequest.getActualEndDate());
             task.setActualOutput(taskRequest.getActualOutput());
-
-            // 데이터베이스에 저장
             taskRepository.save(task);
         }
-
         return "작업 목록이 성공적으로 저장되었습니다.";
     }
 
-    private String setTaskRequestDto(@RequestBody TaskRequestDto updatedTask, Task task) {
+    private String setTaskRequestDto(TaskRequestDTO updatedTask, Task task) {
         task.setCategory(taskCategoryRepository.findById(updatedTask.getCategoryId()).get());
         task.setTaskName(updatedTask.getTaskName());
         task.setEstimatedStartDate(updatedTask.getEstimatedStartDate());

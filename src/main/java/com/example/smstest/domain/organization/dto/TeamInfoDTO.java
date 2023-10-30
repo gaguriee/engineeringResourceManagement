@@ -8,6 +8,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Team 페이지 DTO
+ */
 @Data
 public class TeamInfoDTO {
     private List<Memp> memps;

@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+/**
+ * 3. 팀 Entity (N팀, B팀 등)
+ */
 @Entity
 @Data
 @Table(name = "team")

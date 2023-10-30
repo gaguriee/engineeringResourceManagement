@@ -7,8 +7,8 @@ import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.domain.project.entity.Project;
-import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.wbs.entity.Project;
+import com.example.smstest.domain.wbs.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
@@ -141,7 +141,7 @@ public class SupportCRUDController {
         List<Client> allCustomers = clientRepository.findByOrderBySupportCountDesc();
 
         // Project 엔티티
-        List<Project> allProjects = projectRepository.findByOrderBySupportCountDesc();
+        List<Project> allProjects = projectRepository.findAllByOrderBySupportCountDesc();
 
         Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));

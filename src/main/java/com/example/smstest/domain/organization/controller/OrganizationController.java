@@ -3,7 +3,7 @@ package com.example.smstest.domain.organization.controller;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.support.repository.StateRepository;
-import com.example.smstest.domain.organization.Interface.TeamService;
+import com.example.smstest.domain.organization.Interface.OraganizationService;
 import com.example.smstest.domain.organization.dto.MemberInfoDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.organization.dto.TeamInfoDTO;
@@ -39,7 +39,7 @@ public class OrganizationController {
     private final TeamRepository teamRepository;
     private final DepartmentRepository departmentRepository;
     private final MempRepository mempRepository;
-    private final TeamService teamService;
+    private final OraganizationService oraganizationService;
     private final StateRepository stateRepository;
     private final DivisionRepository divisionRepository;
     private final ClientRepository clientRepository;
@@ -132,7 +132,7 @@ public class OrganizationController {
      */
     @GetMapping("/teamInfo")
     public String viewTeam(@RequestParam(required = true) Integer teamId, Model model) {
-        TeamInfoDTO teamInfoDTO = teamService.getTeamInfo(teamId);
+        TeamInfoDTO teamInfoDTO = oraganizationService.getTeamInfo(teamId);
 
         if (teamInfoDTO != null) {
             model.addAttribute("memps", teamInfoDTO.getMemps());
@@ -156,7 +156,7 @@ public class OrganizationController {
      */
     @GetMapping("/memberInfo")
     public String getMemberInfo(@RequestParam(required = true) Long memberId, Model model) {
-        MemberInfoDTO memberInfoDTO = teamService.getMemberInfo(memberId);
+        MemberInfoDTO memberInfoDTO = oraganizationService.getMemberInfo(memberId);
 
         model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
 
@@ -190,7 +190,7 @@ public class OrganizationController {
             Pageable pageable,
             Model model) {
 
-        MemberInfoDetailDTO memberInfoDetailDTO = teamService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable, sortOrder);
+        MemberInfoDetailDTO memberInfoDetailDTO = oraganizationService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable, sortOrder);
 
         model.addAttribute("member", mempRepository.findById(memberInfoDetailDTO.getMemberId()).get());
         model.addAttribute("customer", clientRepository.findById(memberInfoDetailDTO.getCustomerId()).get());

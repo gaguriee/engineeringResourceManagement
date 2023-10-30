@@ -1,4 +1,4 @@
-package com.example.smstest.domain.task;
+package com.example.smstest.domain.task.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class TaskRequestDto {
+public class TaskRequestDTO {
 
     private Integer categoryId;
 
