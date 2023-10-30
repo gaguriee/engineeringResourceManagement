@@ -182,7 +182,7 @@
 
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${project.name}"></h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${project.client?.name} ?: ' '"></h3>
-        <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
+        <dl class="flex text-sm items-start space-x-3" th:if="${(project.uniqueCode != null) || (project.product != null)}" style="padding-top: 24px; padding-bottom: 12px">
             <div style="margin-right: 20px;" th:if="${project.uniqueCode != null}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고유코드</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.uniqueCode} ?: ' '"></dd>
@@ -192,7 +192,7 @@
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.product?.name} ?: ' '"></dd>
             </div>
         </dl>
-        <dl class="flex text-sm items-start flex-wrap" style="padding-bottom: 24px;">
+        <dl class="flex text-sm items-start flex-wrap" th:if="${(project.team != null) || (project.engineer != null)}" style="padding-bottom: 24px;">
             <div style="margin-right: 20px;"  th:if="${project.team != null}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >담당 팀</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"  th:text="${project.team?.name} ?: ' '"></dd>
@@ -207,15 +207,17 @@
             </div>
         </dl>
 
-        <div class="border-b" style="margin-bottom: 24px;">
-            <div class="flex" style="float: right;">
-                <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal" th:if="${#authorization.expression('hasAnyRole(''ROLE_SUPERADMIN'')')}" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+
+
+        <div style="margin-bottom: 24px;">
+            <div class="flex mt-2.5" >
+                <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal" th:if="${#authorization.expression('hasAnyRole(''ROLE_SUPERADMIN'')')}" class="m-2 ml-0 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                     프로젝트 수정
                 </button>
                 <button data-modal-target="addTaskModal" data-modal-toggle="addTaskModal" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                     작업 일정 추가
                 </button>
-                <button type="button" id="csvDownloadBtn" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                <button type="button" id="csvDownloadBtn" class="m-2 flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
                         <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
@@ -224,7 +226,7 @@
                 </button>
             </div>
 
-            <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-gray-200 dark:border-gray-700 dark:text-gray-400">
+            <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li class="mr-2">
                     <button type="button" id="chartViewBtn" class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">차트 조회</button>
                 </li>
@@ -346,7 +348,7 @@
             </div>
 
         </div>
-        <div id="supportListView" class="mx-auto max-w-screen-xl mt-2.5" style="padding-top: 48px; background-color: white">
+        <div id="supportListView" class="bg-gray-100 mx-auto max-w-screen-xl mt-8 rounded-lg text-center items-center justify-center" style="padding-top: 18px;">
             <h3 class="mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="text-align: center">지원내역</h3>
 
 
@@ -365,16 +367,16 @@
                         </thead>
                         <tbody>
                         <tr th:each="post : ${supports}" class="border-b dark:border-gray-700">
-                            <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                            <td class="px-4 py-3 th-pt projectName" th:text="${post.supportDate}">2020-01-01</td>
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
                                 <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                     <!-- 글자수를 최대 30자로 제한, NULL값 처리 -->
                                     <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
                                 </a>
                             </td>
-                            <td class="px-4 py-3" th:text="${post.product.name}"></td>
-                            <td class="px-4 py-3" th:text="${post.issue.name}"></td>
-                            <td class="px-4 py-3" th:text="${post.engineer.name}"></td>
+                            <td class="px-4 py-3 th-p0 productName" th:text="${post.product.name}"></td>
+                            <td class="px-4 py-3 th-p0" th:text="${post.issue.name}"></td>
+                            <td class="px-4 py-3 th-pb" th:text="${post.engineer.name}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -446,6 +448,74 @@
     th, td {
         padding: 8px 4px;
     }
+
+    /* Mobile responsive styles */
+    @media (max-width: 640px) {
+
+        .th-p0 {
+            padding-top: 0;
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .th-pb {
+            padding-top: 0;
+            font-size: 12px;
+        }
+
+        .th-pt {
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .productName{
+            display: none;
+        }
+
+        .projectName{
+            display: none;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        tbody {
+            width: 100%;
+        }
+
+        th,
+        td {
+            display: block;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+            display: none; /* Hide table header on mobile */
+
+        }
+
+        tbody tr {
+            margin-bottom: 5px;
+        }
+
+        tbody tr:last-child {
+            margin-bottom: 0;
+        }
+
+        th,
+        td {
+            padding: 0;
+        }
+
+        tbody,
+        td{
+            padding: 0;
+        }
+
+    }
+
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -456,7 +526,6 @@
 
 <script th:inline="javascript">
 
-    const tasks = /*[[${tasks}]]*/;
     const project = /*[[${project}]]*/;
 
     const loadingBar = document.getElementById('loadingBar');
@@ -473,11 +542,22 @@
     const selectedClass = chartViewBtn.className;
     const unselectedClass = listViewBtn.className;
 
+    const supportHistory = /*[[${supportHistory}]]*/;
+
     document.addEventListener("DOMContentLoaded", function () {
 
         chartView.style.display = "block";
         listView.style.display = "none";
         supportListView.style.display = "none";
+
+        if (supportHistory){
+            chartView.style.display = "none";
+            listView.style.display = "none";
+            supportListView.style.display = "block";
+            chartViewBtn.className = unselectedClass;
+            listViewBtn.className = unselectedClass;
+            supportListViewBtn.className = selectedClass;
+        }
 
         refreshChartBtn.addEventListener("click", function () {
             location.reload();
@@ -924,18 +1004,20 @@
                 const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = prevPage+1;
-                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/project/detail?supportHistory=true&' + new URLSearchParams(currentParams).toString();
+                supportListViewBtn.click();
             }
         });
 
         nextBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            if (currentPage < totalPages - 1) {
+            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
 
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
-                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/project/detail?supportHistory=true&' + new URLSearchParams(currentParams).toString();
+                supportListViewBtn.click();
             }
         });
     });

@@ -1,6 +1,6 @@
-package com.example.smstest.domain.wbs.Interface;
+package com.example.smstest.domain.project.Interface;
 
-import com.example.smstest.domain.wbs.entity.Project;
+import com.example.smstest.domain.project.entity.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

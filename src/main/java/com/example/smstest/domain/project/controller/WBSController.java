@@ -1,4 +1,4 @@
-package com.example.smstest.domain.wbs.controller;
+package com.example.smstest.domain.project.controller;
 
 
 import com.example.smstest.domain.auth.entity.Memp;
@@ -7,9 +7,9 @@ import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.domain.wbs.Interface.WBSService;
-import com.example.smstest.domain.wbs.entity.Project;
-import com.example.smstest.domain.wbs.repository.ProjectRepository;
+import com.example.smstest.domain.project.Interface.WBSService;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.dto.ProjectRequest;
 import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.support.entity.Support;
@@ -76,6 +76,7 @@ public class WBSController {
 
     @GetMapping("/detail")
     public String viewProjectDetail(
+            @RequestParam(required = false, defaultValue = "false") Boolean supportHistory,
             @RequestParam(required = false) Long projectId,
             @PageableDefault(size = 15) Pageable pageable,
             Model model) {
@@ -122,6 +123,7 @@ public class WBSController {
         model.addAttribute("clients", clients);
         model.addAttribute("products", products);
         model.addAttribute("teams", teams);
+        model.addAttribute("supportHistory", supportHistory);
 
         return "projectDetails";
     }

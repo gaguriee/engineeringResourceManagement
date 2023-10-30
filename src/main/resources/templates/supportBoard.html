@@ -276,17 +276,17 @@
                     </thead>
                     <tbody>
                     <tr th:each="post : ${posts}" class="border-b dark:border-gray-700">
-                        <td class="px-4 py-3" th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">고객사</td>
-                        <td class="px-4 py-3" th:text="${post.productName}">제품명</td>
+                        <td class="th-pt px-4 py-3 projectName" th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">고객사</td>
+                        <td class="th-p0 px-4 py-3 productName" th:text="${post.productName}">제품명</td>
                         <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
                             <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 <!-- 글자수를 최대 10자로 제한, NULL값 처리 -->
                                 <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
                             </a>
                         </td>
-                        <td class="px-4 py-3" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" th:text="${post.issueType}">이슈</td>
-                        <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
-                        <td class="px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
+                        <td class="th-p0 px-4 py-3" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" th:text="${post.issueType}">이슈</td>
+                        <td class="th-p0 px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                        <td class="th-pb px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
                     </tr>
                     </tbody>
                 </table>
@@ -367,6 +367,30 @@
     /* Mobile responsive styles */
     @media (max-width: 640px) {
 
+        .th-p0 {
+            padding-top: 0;
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .th-pb {
+            padding-top: 0;
+            font-size: 12px;
+        }
+
+        .th-pt {
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .productName{
+            display: none;
+        }
+
+        .projectName{
+            display: none;
+        }
+
         #space-container {
             display: none;
         }
@@ -414,13 +438,6 @@
             padding: 0;
         }
 
-        #filter_container{
-            display: flex;
-            align-items: end;
-            align-content: end;
-            justify-items: end;
-            justify-content: end;
-        }
 
         #filterBtn{
             margin: 0px;

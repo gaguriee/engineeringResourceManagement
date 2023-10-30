@@ -1,8 +1,8 @@
-package com.example.smstest.domain.wbs.service;
+package com.example.smstest.domain.project.service;
 
-import com.example.smstest.domain.wbs.Interface.WBSService;
-import com.example.smstest.domain.wbs.entity.Project;
-import com.example.smstest.domain.wbs.repository.ProjectRepository;
+import com.example.smstest.domain.project.Interface.WBSService;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

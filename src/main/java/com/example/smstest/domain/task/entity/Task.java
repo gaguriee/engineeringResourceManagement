@@ -1,6 +1,6 @@
 package com.example.smstest.domain.task.entity;
 
-import com.example.smstest.domain.wbs.entity.Project;
+import com.example.smstest.domain.project.entity.Project;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

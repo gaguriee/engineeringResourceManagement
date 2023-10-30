@@ -1,6 +1,6 @@
 package com.example.smstest.domain.task.service;
 
-import com.example.smstest.domain.wbs.repository.ProjectRepository;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.task.Interface.TaskService;
 import com.example.smstest.domain.task.dto.TaskRequestDTO;
 import com.example.smstest.domain.task.entity.Task;

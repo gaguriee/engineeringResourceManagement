@@ -2,8 +2,8 @@ package com.example.smstest.license;
 
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
-import com.example.smstest.domain.wbs.entity.Project;
-import com.example.smstest.domain.wbs.repository.ProjectRepository;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.license.entity.LicenseProject;
 import com.example.smstest.license.repository.LicenseProjectRepository;
 import lombok.RequiredArgsConstructor;

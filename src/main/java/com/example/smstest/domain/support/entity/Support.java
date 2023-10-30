@@ -1,7 +1,7 @@
 package com.example.smstest.domain.support.entity;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.wbs.entity.Project;
+import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.support.file.File;
 import lombok.Data;
 import lombok.ToString;
