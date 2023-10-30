@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+/**
+ * 1. 본부 Entity (기술 N본부, E본부 등)
+ */
 @Entity
 @Data
 @Table(name = "division")

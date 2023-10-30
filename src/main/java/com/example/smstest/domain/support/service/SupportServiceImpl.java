@@ -2,7 +2,7 @@ package com.example.smstest.domain.support.service;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.entity.Authority;
-import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.wbs.repository.ProjectRepository;
 import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;

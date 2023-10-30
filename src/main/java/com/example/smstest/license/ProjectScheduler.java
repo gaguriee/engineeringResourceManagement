@@ -2,8 +2,8 @@ package com.example.smstest.license;
 
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
-import com.example.smstest.domain.project.entity.Project;
-import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.wbs.entity.Project;
+import com.example.smstest.domain.wbs.repository.ProjectRepository;
 import com.example.smstest.license.entity.LicenseProject;
 import com.example.smstest.license.repository.LicenseProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-
+/**
+ * 라이센스 DB에서 프로젝트를 주기적으로 가져오는 스케줄러
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

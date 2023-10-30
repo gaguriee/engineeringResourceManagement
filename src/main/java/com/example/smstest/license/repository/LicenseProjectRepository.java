@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * 라이센스 DB 내 프로젝트 Repository
+ */
 @Repository
 public interface LicenseProjectRepository extends JpaRepository<LicenseProject, UUID> {
 

@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.service;
+package com.example.smstest.domain.main.service;
 
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.itextpdf.text.*;
@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Service
-public class PdfService {
+public class FileDownloadService {
 
     public void generateSupportPdf(SupportResponse supportResponse, String filePath) throws IOException, DocumentException {
 

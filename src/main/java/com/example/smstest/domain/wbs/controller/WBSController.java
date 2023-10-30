@@ -1,4 +1,4 @@
-package com.example.smstest.domain.project.controller;
+package com.example.smstest.domain.wbs.controller;
 
 
 import com.example.smstest.domain.auth.entity.Memp;
@@ -7,18 +7,18 @@ import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.domain.project.Interface.ProjectService;
-import com.example.smstest.domain.project.entity.Project;
-import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.wbs.Interface.WBSService;
+import com.example.smstest.domain.wbs.entity.Project;
+import com.example.smstest.domain.wbs.repository.ProjectRepository;
 import com.example.smstest.domain.support.dto.ProjectRequest;
 import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.ProductRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
-import com.example.smstest.domain.task.Task;
-import com.example.smstest.domain.task.TaskCategory;
-import com.example.smstest.domain.task.TaskCategoryRepository;
-import com.example.smstest.domain.task.TaskRepository;
+import com.example.smstest.domain.task.entity.Task;
+import com.example.smstest.domain.task.entity.TaskCategory;
+import com.example.smstest.domain.task.repository.TaskCategoryRepository;
+import com.example.smstest.domain.task.repository.TaskRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +40,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * WBS (Project 별 지원 내역 및 일정 조회) 페이지 매핑 Controller
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/project")
-public class ProjectController {
+public class WBSController {
 
-    private final ProjectService projectService;
+    private final WBSService WBSService;
     private final SupportRepository supportRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
@@ -186,7 +189,7 @@ public class ProjectController {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Project> projects = projectService.searchProjects(Keyword, pageable);
+        Page<Project> projects = WBSService.searchProjects(Keyword, pageable);
         List<Client> clients = clientRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();

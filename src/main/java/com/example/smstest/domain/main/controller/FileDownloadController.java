@@ -2,9 +2,9 @@ package com.example.smstest.domain.main.controller;
 
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.repository.SupportRepository;
-import com.example.smstest.domain.support.service.PdfService;
-import com.example.smstest.domain.task.Task;
-import com.example.smstest.domain.task.TaskRepository;
+import com.example.smstest.domain.main.service.FileDownloadService;
+import com.example.smstest.domain.task.entity.Task;
+import com.example.smstest.domain.task.repository.TaskRepository;
 import com.google.api.client.util.IOUtils;
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileDownloadController {
 
-    private final PdfService pdfService;
+    private final FileDownloadService fileDownloadService;
     private final SupportRepository supportRepository;
     private final TaskRepository taskRepository;
 
@@ -51,7 +51,7 @@ public class FileDownloadController {
 
         // PDF 생성 및 다운로드
         String pdfFilePath = "support_history.pdf";
-        pdfService.generateSupportPdf(supportResponse, pdfFilePath);
+        fileDownloadService.generateSupportPdf(supportResponse, pdfFilePath);
 
         // HTTP 응답 설정
 

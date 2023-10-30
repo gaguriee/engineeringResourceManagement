@@ -1,12 +1,16 @@
 package com.example.smstest.employee.entity;
+
 import lombok.Data;
 
-import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Column;
 import javax.persistence.Table;
+import java.util.UUID;
 
+/**
+ * 인사 연동 DB 내 소속 데이터 Entity
+ */
 @Entity
 @Data
 @Table(name = "tb_mdeptdata", schema = "ta_db")

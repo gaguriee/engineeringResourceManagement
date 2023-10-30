@@ -8,6 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * 실적 조회 페이지 매핑 Controller
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
