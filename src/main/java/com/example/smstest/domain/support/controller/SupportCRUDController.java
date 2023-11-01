@@ -425,17 +425,23 @@ public class SupportCRUDController {
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());
-        Resource resource = new InputStreamResource(Files.newInputStream(path));
-        // 파일 이름을 UTF-8로 인코딩
-        String encodedFileName = new String(fileDto.getOrigFilename().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+        try{
+            Resource resource = new InputStreamResource(Files.newInputStream(path));
+            // 파일 이름을 UTF-8로 인코딩
+            String encodedFileName = new String(fileDto.getOrigFilename().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
 
-        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/octet-stream"));
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/octet-stream"));
 
-        // Content-Disposition 헤더에 올바른 파일 이름 설정
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"");
+            // Content-Disposition 헤더에 올바른 파일 이름 설정
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"");
 
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+        catch (Exception e){
+            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
+        }
+
     }
 
 }

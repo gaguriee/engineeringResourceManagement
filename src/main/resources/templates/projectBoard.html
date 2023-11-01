@@ -36,9 +36,6 @@
                         <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Search
                         </button>
-<!--                        <button id="defaultModalButton" data-modal-toggle="defaultModal" class="ml-3 text-white bg-gray-400 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="button">-->
-<!--                            프로젝트 신규 등록-->
-<!--                        </button>-->
                     </form>
 
 
@@ -89,13 +86,10 @@
                             </a>
                         </li>
                         <!-- 페이지 번호를 반복하여 링크 생성 -->
-                        <!-- Determine the current group number (e.g., 0 for 1-10, 1 for 11-20, etc.) -->
                         <th:block th:with="currentGroupNo=${currentPage/5}">
 
-                            <!-- Calculate the start and end page numbers for the current group -->
                             <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
 
-                                <!-- Iterate over the page numbers in the current group -->
                                 <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
                                     <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                     <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
@@ -193,55 +187,16 @@
     var subEngineerName = document.getElementById("subEngineer");
     var directSelect = document.getElementById("direct-select");
 
-    var projectCreateBtn = document.getElementById("projectCreateBtn");
-    var closeButton = document.getElementById("closeButton");
-
-    if (projectCreateBtn) {
-        projectCreateBtn.addEventListener('click', function () {
-            if (clientName.value.length < 1) {
-                alert("정확한 고객사명을 입력해 주세요.");
-                return;
-            }
-            if (projectName.value.length < 1) {
-                alert("정확한 프로젝트명과 입력해 주세요.");
-                return;
-            }
-
-            fetch("/project/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    clientName: clientName.value,
-                    projectName: projectName.value,
-                    productId : productId.value,
-                    teamId : teamId.value,
-                    engineerName : engineerName.value,
-                    subEngineerName: subEngineerName.value
-
-                }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.projectExist) {
-                        alert("이미 존재하는 프로젝트입니다.");
-                    } else {
-                        alert("등록이 완료되었습니다.");
-                        closeButton.click();
-
-                        if (directSelect.checked){
-                            setProject(data.projectId ,projectName.value);
-                        }
-
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
-        });
-    }
 
 </script>
+<style>
+    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    .task-title-column a {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
 </body>
 </html>

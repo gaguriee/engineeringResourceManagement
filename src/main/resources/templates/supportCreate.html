@@ -398,15 +398,15 @@
                 const removeTargetId = e.target.dataset.index;
                 const removeTarget = document.getElementById(removeTargetId);
                 const files = document.querySelector('.custom-file-input').files;
-                const dataTranster = new DataTransfer();
+                dataTransfer = new DataTransfer();
 
                 Array.from(files)
                     .filter(file => file.lastModified != removeTargetId)
                     .forEach(file => {
-                        dataTranster.items.add(file);
+                        dataTransfer.items.add(file);
                     });
 
-                document.querySelector('.custom-file-input').files = dataTranster.files;
+                document.querySelector('.custom-file-input').files = dataTransfer.files;
 
                 removeTarget.remove();
             })
