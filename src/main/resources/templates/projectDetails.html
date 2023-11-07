@@ -94,6 +94,7 @@
                             <option th:each="memp : ${memps}" th:value="${memp.name}" th:attr="data-submemTeamId=${memp.getTeam.getId()}"></option>
                         </datalist>
                     </div>
+                    <div></div>
 
                     <div style="display: flex; justify-content:flex-end ">
                         <button type="submit" id="projectModifyBtn" class="text-white inline-flex items-center bg-gray-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
@@ -153,7 +154,7 @@
                                 <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" >
                             </td>
                             <td style="width: 20%" class="overflow-hidden p-1.5">
-                                <input  id="actualOutput" class="edit-mode block w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
+                                <input id="actualOutput" class="upload_file edit-mode block w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
                             </td>
                             <td style="width: 3%">
                                 <div>
@@ -251,7 +252,7 @@
 
 
 
-        <div id="chartView" class="block" >
+        <div id="chartView" class="hidden block" >
             <div class="w-full h-10">
                 <button id="refreshChartBtn" class="mb-2.5" style="float: right;">
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
@@ -260,18 +261,23 @@
                 </button>
             </div>
 
-            <div th:if="${tasks.size()!=0}" th:each="category : ${taskCategories}">
-                <div th:with="categoryId=${category.id}">
-                    <div th:id="'timelineTitle'+${categoryId}" class="hidden" style="background-color: yellow; padding: 4px 4px 4px 8px; font-weight: bold" th:text="${category.name} ?: ' '"></div>
-                    <div th:id="'timeline'+${categoryId}"></div>
+            <div th:if="${tasks.size()!=0}" class="w-full flex">
+                <div class="block">
+                    <div th:each="category : ${taskCategories}" th:id="'chartCategory'+${category.id}" class="flex w-32 hidden items-center bg-gray-600"
+                    style="box-shadow: 0 0 0 0.5px rgba(255,255,255,0.29) inset; "
+                    >
+                        <span class="w-full text-center text-white text-sm" th:text="${category.name}"></span>
+                    </div>
                 </div>
+
+                <div id="timeline" class="w-full h-full"></div>
             </div>
             <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
                 작업이 존재하지 않습니다.
             </div>
         </div>
 
-        <div id="listView">
+        <div id="listView" class="hidden">
             <div class="pc-window">
                 <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full items-center text-center text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -352,7 +358,7 @@
                                     th:text="${task.files.isEmpty() ? '파일을 선택해주세요.' : task.files?.stream().findFirst()?.get().origFilename}"
                                     class="hidden edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             </button>
-                            <input th:id="'fileInput'+${task.id}" tabindex="-1" class="hidden w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
+                            <input th:id="'fileInput'+${task.id}" tabindex="-1" class="upload_file hidden w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
                         </td>
                         <td>
                             <div class="edit-delete-button">
@@ -375,9 +381,8 @@
 
         </div>
 
-        <div id="supportListView" class="bg-gray-100 mx-auto max-w-screen-xl mt-8 rounded-lg text-center items-center justify-center" >
+        <div id="supportListView" class="hidden bg-gray-100 mx-auto w-full rounded-lg text-center items-center justify-center" >
             <h3 class="mobile-window mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="padding-top: 18px; text-align: center">지원내역</h3>
-
 
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                 <div class="max-h-64 overflow-hidden">
@@ -438,7 +443,7 @@
                                     <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                     <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
                                         <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                        <a th:href="@{detail(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
+                                        <a th:href="@{detail(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} + '#supportListView' : '#supportListView'}"
                                            th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
                                            th:text="${pageNo}">
                                         </a>
@@ -577,24 +582,42 @@
 
 <script th:inline="javascript">
 
+    const currentPage = /*[[${currentPage }]]*/;
+    const totalPages = /*[[${totalPages }]]*/;
+
+    const project = /*[[${project}]]*/;
+    const tasks = /*[[${tasks}]]*/;
+
+    let maxSize = 50 * 1024 * 1024; //* 한 파일 당 50MB 사이즈 용량 제한
+
     $(document).ready(function () {
         if (window.location.hash === '#listView') {
             const listViewBtn = document.getElementById("listViewBtn");
             listViewBtn.click();
             removeLocationHash();
         }
-        else {
-            const chartViewBtn = document.getElementById("chartViewBtn");
-            chartViewBtn.click();
+        else if (window.location.hash === '#supportListView') {
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
         }
+
+        $('.upload_file').change(function() {
+            var file = this.files[0];
+
+            if (file.size > maxSize) {
+                alert("파일 크기는 50MB 이하여야 합니다.");
+                $(this).val(''); // 선택한 파일 초기화
+                return;
+            }
+
+        });
     });
 
     function removeLocationHash(){
         var noHashURL = window.location.href.replace(/#.*$/, '');
         window.history.replaceState('', document.title, noHashURL)
     }
-
-    const project = /*[[${project}]]*/;
 
     const loadingBar = document.getElementById('loadingBar');
     loadingBar.style.display = 'flex';
@@ -616,18 +639,12 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        chartView.style.display = "none";
+        chartViewBtn.className = selectedClass;
+        chartView.style.display = "block";
         listView.style.display = "none";
         supportListView.style.display = "none";
 
-        if (supportHistory){
-            chartView.style.display = "none";
-            listView.style.display = "none";
-            supportListView.style.display = "block";
-            chartViewBtn.className = unselectedClass;
-            listViewBtn.className = unselectedClass;
-            supportListViewBtn.className = selectedClass;
-        }
+        drawChartView()
 
         refreshChartBtn.addEventListener("click", function () {
             location.reload();
@@ -640,6 +657,9 @@
             chartViewBtn.className = selectedClass;
             listViewBtn.className = unselectedClass;
             supportListViewBtn.className = unselectedClass;
+
+            drawChartView()
+
         });
 
         listViewBtn.addEventListener("click", function () {
@@ -732,6 +752,11 @@
         });
     });
 
+    var MaxSize = 100;
+
+
+
+
     function fileInsert(taskId){
 
         // 파일 입력 필드
@@ -740,10 +765,7 @@
         // 파일 버튼
         const fileButton = document.getElementById("fileButton"+taskId);
 
-        // 파일 버튼 클릭 시 파일 입력 필드 열기
-        fileButton.addEventListener("click", function () {
-            fileInput.click();
-        });
+        fileInput.click();
 
         // 파일 입력 필드의 변경 이벤트 처리
         fileInput.addEventListener("change", function () {
@@ -891,115 +913,121 @@
 
     }
 
+    const initialChartView = document.getElementById("chartView").innerHTML;
 
+    function drawChartView() {
+        if (tasks.length<1){
+            loadingBar.style.display = 'none';
+        }
+        else {
+            document.getElementById("chartView").innerHTML = initialChartView;
+            google.charts.load("current", {packages: ["timeline"]});
+            google.charts.setOnLoadCallback(drawChart);
+        }
+    }
 
-    google.charts.load("current", {packages: ["timeline"]});
-    google.charts.setOnLoadCallback(drawCharts);
+    function drawChart() {
 
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
 
+        dataTable.addColumn({ type: 'string', id: 'Position' });
+        dataTable.addColumn({ type: 'string', id: 'Name' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
 
-    function drawCharts() {
-        const tasks = /*[[${tasks}]]*/;
+        var earliestStartDate = new Date(tasks[0].estimatedStartDate);
+        var latestEndDate = new Date(tasks[0].estimatedEndDate);
+
+        for (var i = 0; i < tasks.length; i++) {
+            var estimatedStartDate = new Date(tasks[i].estimatedStartDate);
+            var actualStartDate = new Date(tasks[i].actualStartDate);
+            if (estimatedStartDate < earliestStartDate) {
+                earliestStartDate = estimatedStartDate;
+            }
+            if ( (tasks[i].actualStartDate != null) && (actualStartDate < earliestStartDate)) {
+                earliestStartDate = actualStartDate;
+            }
+
+            var estimatedEndDate = new Date(tasks[i].estimatedEndDate);
+            var actualEndDate = new Date(tasks[i].actualEndDate);
+            if (estimatedEndDate > latestEndDate) {
+                latestEndDate = estimatedEndDate;
+            }
+            if (actualEndDate > latestEndDate) {
+                latestEndDate = actualEndDate;
+            }
+        }
+
+        var taskData = [];
 
         tasks.forEach(function (task) {
+            var estimatedStartDate = task.estimatedStartDate ? new Date(task.estimatedStartDate) : null;
+            var estimatedEndDate = task.estimatedEndDate ? new Date(task.estimatedEndDate) : null;
+            var actualStartDate = task.actualStartDate ? new Date(task.actualStartDate) : null;
+            var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
 
-            var earliestStartDate = new Date(tasks[0].estimatedStartDate);
-            var latestEndDate = new Date(tasks[0].estimatedEndDate);
+            const chartCategory = document.getElementById("chartCategory"+task.category.id);
 
-            for (var i = 0; i < tasks.length; i++) {
-                var estimatedStartDate = new Date(tasks[i].estimatedStartDate);
-                var actualStartDate = new Date(tasks[i].actualStartDate);
-                if (estimatedStartDate < earliestStartDate) {
-                    earliestStartDate = estimatedStartDate;
+            if (chartCategory.classList.contains('hidden')){
+                chartCategory.classList.remove('hidden');
+                chartCategory.style.height = '0px';
+            }
+
+            if (estimatedStartDate !== null || estimatedEndDate !== null) {
+                taskData.push([task.taskName, '예정', estimatedStartDate, estimatedEndDate]);
+                $('#chartCategory'+task.category.id).css( "height", "+=40.99px" );
+            }
+
+            if (actualStartDate !== null ) {
+                if (task.actualEndDate == null){
+                    taskData.push([task.taskName, '실제', actualStartDate, latestEndDate]);
                 }
-                if ( (tasks[i].actualStartDate != null) && (actualStartDate < earliestStartDate)) {
-                    earliestStartDate = actualStartDate;
+                else{
+                    taskData.push([task.taskName, '실제', actualStartDate, actualEndDate]);
                 }
 
-                var estimatedEndDate = new Date(tasks[i].estimatedEndDate);
-                var actualEndDate = new Date(tasks[i].actualEndDate);
-                if (estimatedEndDate > latestEndDate) {
-                    latestEndDate = estimatedEndDate;
-                }
-                if (actualEndDate > latestEndDate) {
-                    latestEndDate = actualEndDate;
+                console.log()
+                if (estimatedEndDate > actualStartDate){
+                    $('#chartCategory'+task.category.id).css( "height", "+=30px" );
                 }
             }
 
-            var categoryId = task.category.id;
-            var containerId = 'timeline' + categoryId;
-            var container = document.getElementById(containerId);
-
-            var containerTitleId = 'timelineTitle' + categoryId;
-            var containerTitle = document.getElementById(containerTitleId);
-            containerTitle.style.display = 'flex';
-
-            var chart = new google.visualization.Timeline(container);
-            var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn({ type: 'string', id: 'Position' });
-            dataTable.addColumn({ type: 'string', id: 'Name' });
-            dataTable.addColumn({ type: 'date', id: 'Start' });
-            dataTable.addColumn({ type: 'date', id: 'End' });
-
-            var taskData = [];
-
-            var categoryTasks = tasks.filter(function (t) {
-                return t.category.id === categoryId;
-            });
-
-
-            categoryTasks.forEach(function (task) {
-                var estimatedStartDate = task.estimatedStartDate ? new Date(task.estimatedStartDate) : null;
-                var estimatedEndDate = task.estimatedEndDate ? new Date(task.estimatedEndDate) : null;
-                var actualStartDate = task.actualStartDate ? new Date(task.actualStartDate) : null;
-                var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
-
-                if (estimatedStartDate !== null || estimatedEndDate !== null) {
-                    taskData.push([task.taskName, '예정', estimatedStartDate, estimatedEndDate]);
-                }
-
-                if (actualStartDate !== null ) {
-                    if (task.actualEndDate == null){
-                        taskData.push([task.taskName, '실제', actualStartDate, latestEndDate]);
-                    }
-                    else{
-                        taskData.push([task.taskName, '실제', actualStartDate, actualEndDate]);
-                    }
-                }
-            });
-
-            dataTable.addRows(taskData);
-
-            var paddingHeight = 40;
-            var rowHeight = taskData.length * 55;
-            var chartHeight = rowHeight + paddingHeight;
-
-
-            var options = {
-                timeline: {
-                    groupByRowLabel: true,
-                    alternatingRowStyle: true,
-                    colorByRowLabel: false
-                },
-                hAxis: {
-                    format: 'MM/dd',
-                    ticks: dataTable.getDistinctValues(0),
-                    minValue: earliestStartDate,
-                    maxValue: latestEndDate
-                },
-                height: chartHeight,
-                chartArea: {
-                    height: rowHeight,
-                }
-            };
-
-            chart.draw(dataTable, options);
-
         });
 
-        loadingBar.style.display = 'none';
+        dataTable.addRows(taskData);
 
+        var paddingHeight = 40;
+        var rowHeight = taskData.length * 55;
+        var chartHeight = rowHeight + paddingHeight;
+
+        var options = {
+            timeline: {
+                groupByRowLabel: true,
+                alternatingRowStyle: true,
+                colorByRowLabel: false
+            },
+            hAxis: {
+                format: 'MM/dd',
+                ticks: dataTable.getDistinctValues(0),
+                // minValue: earliestStartDate,
+                // maxValue: latestEndDate
+            },
+            width : '100%',
+            height: chartHeight,
+            chartArea: {
+                height: rowHeight,
+            }
+        };
+
+        chart.draw(dataTable, options);
+
+
+
+        loadingBar.style.display = 'none';
     }
+
 
     document.getElementById("csvDownloadBtn").addEventListener("click", function() {
         excelPrint();
@@ -1055,10 +1083,6 @@
 
     }
 
-
-    const currentPage = /*[[${currentPage }]]*/;
-    const totalPages = /*[[${totalPages }]]*/;
-
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const queryParams = {};
@@ -1076,8 +1100,7 @@
                 const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = prevPage+1;
-                window.location.href = '/project/detail?supportHistory=true&' + new URLSearchParams(currentParams).toString();
-                supportListViewBtn.click();
+                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
             }
         });
 
@@ -1085,11 +1108,9 @@
             event.preventDefault();
             if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
-
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
-                window.location.href = '/project/detail?supportHistory=true&' + new URLSearchParams(currentParams).toString();
-                supportListViewBtn.click();
+                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
             }
         });
     });

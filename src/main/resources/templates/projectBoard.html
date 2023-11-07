@@ -122,6 +122,9 @@
 <div th:replace="footer :: footer"></div>
 <script th:inline="javascript">
 
+    const currentPage = /*[[${currentPage }]]*/;
+    const totalPages = /*[[${totalPages }]]*/;
+
     function setProject(id, name){
         window.opener.setProject(id, name);
         window.close();
