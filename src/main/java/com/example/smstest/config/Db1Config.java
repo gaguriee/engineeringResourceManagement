@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 
 /**
- * DB1 설정 파일 (ERM 로컬 Postgresql)
+ * DB1 설정 파일 (ERM Postgresql)
  * Employee, Scheduler 패키지 내 entity 제외 전체 적용
  */
 

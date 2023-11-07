@@ -74,9 +74,8 @@ public class SupportServiceImpl implements SupportService {
             project.get().updateProject(
                     licenseProject.getProjectName()
             );
-            projectRepository.save(project.get());
 
-            support.setProject(project.get());
+            support.setProject(projectRepository.save(project.get()));
         }
         else {
 
@@ -104,7 +103,10 @@ public class SupportServiceImpl implements SupportService {
                     .projectRegDate(licenseProject.getProjectRegDate())
                     .projectGuid(licenseProject.getProjectGuid())
                     .build();
-            projectRepository.save(newProject);
+           ;
+
+            support.setProject(projectRepository.save(newProject));
+
             log.info("Saved Project :: " + newProject.getName() + " (" + newProject.getUniqueCode() + ")");
 
         }

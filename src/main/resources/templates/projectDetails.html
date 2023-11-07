@@ -125,7 +125,7 @@
                         </svg>
                     </button>
                 </div>
-                <div style="max-height: 400px; overflow-y: scroll;">
+                <div style="max-height: 400px; overflow-y: auto;">
                     <table id="createTaskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;" >
                         <tbody id="taskList">
                         <tr class="border-gray-200 dark:border-gray-700 task-row">
@@ -236,7 +236,7 @@
 
             <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li class="mr-2">
-                    <button type="button" id="visibleBtn" style="display: none" class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
+                    <button type="button" id="visibleBtn" style="display: none" class="inline-block p-4 text-blue-700 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
                 </li>
                 <li class="mr-2">
                     <button type="button" id="chartViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">차트 조회</button>
@@ -975,17 +975,19 @@
                 chartCategory.style.height = '0px';
             }
 
+            var rowLabel = task.id + ' & ' + task.taskName;
+
             if (estimatedStartDate !== null || estimatedEndDate !== null) {
-                taskData.push([task.taskName, '예정', estimatedStartDate, estimatedEndDate]);
+                taskData.push([rowLabel, '예정', estimatedStartDate, estimatedEndDate]);
                 $('#chartCategory'+task.category.id).css( "height", "+=40.99px" );
             }
 
             if (actualStartDate !== null ) {
                 if (task.actualEndDate == null){
-                    taskData.push([task.taskName, '실제', actualStartDate, latestEndDate]);
+                    taskData.push([rowLabel, '실제', actualStartDate, latestEndDate]);
                 }
                 else{
-                    taskData.push([task.taskName, '실제', actualStartDate, actualEndDate]);
+                    taskData.push([rowLabel, '실제', actualStartDate, actualEndDate]);
                 }
 
                 console.log()
@@ -1003,6 +1005,7 @@
         var chartHeight = rowHeight + paddingHeight;
 
         var options = {
+            colors: ['rgb(107, 114, 128)', 'rgb(29, 78, 216)'],
             timeline: {
                 groupByRowLabel: true,
                 alternatingRowStyle: true,
@@ -1010,9 +1013,7 @@
             },
             hAxis: {
                 format: 'MM/dd',
-                ticks: dataTable.getDistinctValues(0),
-                // minValue: earliestStartDate,
-                // maxValue: latestEndDate
+                ticks: dataTable.getDistinctValues(0)
             },
             width : '100%',
             height: chartHeight,
@@ -1023,18 +1024,28 @@
 
         chart.draw(dataTable, options);
 
+        // 같은 row label을 가질 경우를 대비한 후처리
 
+        // google timeline chart의 row label을 찾기
+        var elements = document.querySelectorAll('[text-anchor="end"]');
+
+        // 각 요소에서 id를 삭제한 뒤 taskName 만 포함하게 row label 수정
+        elements.forEach(function(element) {
+            var textContent = element.textContent;
+            if (textContent.includes('&')){
+                var taskName = textContent.split('&')[1].trim();
+                element.textContent = taskName;
+            }
+        });
 
         loadingBar.style.display = 'none';
     }
-
 
     document.getElementById("csvDownloadBtn").addEventListener("click", function() {
         excelPrint();
     });
 
     function excelPrint() {
-        // PDF 생성 요청을 서버로 보냅니다.
         fetch('/generateExcel?projectId=' + project.id, {
             method: 'GET',
             headers: {
@@ -1043,7 +1054,6 @@
         })
             .then(response => response.blob())
             .then(blob => {
-                // 서버에서 받은 PDF 파일을 다운로드합니다.
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -1056,8 +1066,6 @@
                 console.error('Error generating EXCEL:', error);
             });
     }
-
-
 
     /**
      *     프로젝트 수정

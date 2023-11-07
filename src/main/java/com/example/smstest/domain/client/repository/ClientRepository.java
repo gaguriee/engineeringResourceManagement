@@ -28,8 +28,9 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
      * @param pageable
      * @return 고객사 리스트 (Page)
      */
-    @Query("SELECT c FROM Project p JOIN Support s ON p.id = s.project.id JOIN p.client c WHERE c.name LIKE %:keyword% GROUP BY c.id ORDER BY COUNT(s.id) DESC")
+    @Query("SELECT c FROM Project p JOIN Support s ON p.id = s.project.id JOIN p.client c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) GROUP BY c.id ORDER BY COUNT(s.id) DESC")
     Page<Client> findByNameContainingOrderBySupportCountDesc(@Param("keyword") String keyword, Pageable pageable);
+
 
     /**
      * 지원내역 수 내림차 순으로 고객사 리스트 가져오기

@@ -480,7 +480,7 @@
     assignValue(taskDetails, support.taskDetails);
     assignValue(redmineIssue, support.redmineIssue);
     assignValue(supportId, support.id);
-    assignValue(projectId, support.project?.id);
+    assignValue(projectId, support.project?.projectGuid);
     assignValue(project, support.project?.name);
 
     document.getElementById('selectedIssueText').innerHTML =support.issue.name;

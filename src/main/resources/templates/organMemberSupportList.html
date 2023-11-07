@@ -29,7 +29,7 @@
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">고객사</th>
+                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">프로젝트명</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">제품명</th>
                         <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자</th>
@@ -40,7 +40,10 @@
                     <tbody>
                     <tr th:each="post : ${posts}" class="border-b dark:border-gray-700">
                         <td class="th-pt px-4 py-3 projectName" th:text="${post.getProject().getName()}"></td>
-                        <td class="th-p0 px-4 py-3 productName" th:text="${post.productName}">제품명</td>
+                        <td class="th-p0 px-4 py-3 productName" >
+                            <span th:unless="${post.productName.equals('-')}" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
+                                  th:text="${post.productName}">제품명</span>
+                        </td>
                         <td class=" px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
                             <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 <!-- 글자수를 최대 10자로 제한, NULL값 처리 -->
