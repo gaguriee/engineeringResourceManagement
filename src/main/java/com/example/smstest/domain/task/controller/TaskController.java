@@ -1,10 +1,10 @@
 package com.example.smstest.domain.task.controller;
 
 import com.example.smstest.domain.task.Interface.TaskService;
-import com.example.smstest.domain.task.dto.TaskRequestDTO;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * WBS 작업 일정에 관련된 Controller
@@ -28,13 +28,15 @@ public class TaskController {
 
     @PostMapping("/update/{taskId}")
     @ResponseBody
-    public String updateTask(@PathVariable Long taskId, @RequestBody TaskRequestDTO updatedTask) {
-        return taskService.updateTask(taskId, updatedTask);
+    public String updateTask(@PathVariable Long taskId,@RequestPart Map<String, Object> json,
+                             @RequestPart(required = false) MultipartFile file) {
+        return taskService.updateTask(taskId, json, file);
     }
 
     @PostMapping("/save/{projectId}")
     @ResponseBody
-    public String saveTasks(@PathVariable Long projectId, @RequestBody List<TaskRequestDTO> taskList) {
-        return taskService.saveTasks(projectId, taskList);
+    public String saveTasks(@PathVariable Long projectId, @RequestPart Map<String, Object> json,
+                            @RequestPart(required = false) MultipartFile file) {
+        return taskService.saveTask(projectId, json, file);
     }
 }

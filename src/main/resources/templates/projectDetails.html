@@ -108,77 +108,84 @@
 
 <!-- Main modal -->
 <div id="addTaskModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-    <div class="relative p-4 h-full md:h-auto" style="width: 50%">
+    <div class="relative p-4 h-full md:h-auto" style="width: 70%;">
         <!-- Modal content -->
-        <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-8 mt-8" >
-            <div class="mt-8 mb-2.5 flex" style="align-items: center; text-align: center">
-                <h3 style="font-weight: bold">작업 일정 추가</h3>
-                <div id="tooltip-light" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
-                    일정 등록 추가
-                    <div class="tooltip-arrow" data-popper-arrow></div>
+        <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-8 mt-8" style=" min-height: 600px" >
+            <div class="pc-window">
+                <div class="mt-8 mb-2.5 flex" style="align-items: center; text-align: center">
+                    <h3 style="font-weight: bold">작업 일정 추가</h3>
+                    <div id="tooltip-light" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
+                        일정 등록 추가
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <button id="addTaskButton" class="ml-2.5" style="margin-bottom: 2px" type="button" data-tooltip-target="tooltip-light" data-tooltip-style="light">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
+                            <path d="M9.546.5a9.5 9.5 0 1 0 9.5 9.5 9.51 9.51 0 0 0-9.5-9.5ZM13.788 11h-3.242v3.242a1 1 0 1 1-2 0V11H5.304a1 1 0 0 1 0-2h3.242V5.758a1 1 0 0 1 2 0V9h3.242a1 1 0 1 1 0 2Z"/>
+                        </svg>
+                    </button>
                 </div>
-                <button id="addTaskButton" class="ml-2.5" style="margin-bottom: 2px" type="button" data-tooltip-target="tooltip-light" data-tooltip-style="light">
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
-                        <path d="M9.546.5a9.5 9.5 0 1 0 9.5 9.5 9.51 9.51 0 0 0-9.5-9.5ZM13.788 11h-3.242v3.242a1 1 0 1 1-2 0V11H5.304a1 1 0 0 1 0-2h3.242V5.758a1 1 0 0 1 2 0V9h3.242a1 1 0 1 1 0 2Z"/>
-                    </svg>
-                </button>
+                <div style="max-height: 400px; overflow-y: scroll;">
+                    <table id="createTaskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;" >
+                        <tbody id="taskList">
+                        <tr class="border-gray-200 dark:border-gray-700 task-row">
+                            <td style="width: 14%">
+                                <label for="category_create"></label>
+                                <select id="category_create" name="category_create" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                    <option value="" disabled selected>작업구분</option>
+                                    <th:block th:each="category : ${taskCategories}">
+                                        <option th:value="${category.id}" th:text="${category.name}"></option>
+                                    </th:block>
+                                </select>
+                            </td>
+                            <td style="width: 17%">
+                                <input type="text"  class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" placeholder="업무명">
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" >
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" >
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" >
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" >
+                            </td>
+                            <td style="width: 20%" class="overflow-hidden p-1.5">
+                                <input  id="actualOutput" class="edit-mode block w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
+                            </td>
+                            <td style="width: 3%">
+                                <div>
+                                    <button class="delete-new-button ml-2.5" onclick="deleteNewTask(this)" style="align-items:center; align-content: center; color: red">
+                                        <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                            <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="block" style="position: absolute; bottom: 10px; right: 10px;">
+                    <div class="flex items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600" style="padding-left: 0px">
+                        <button id="saveButton" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
+                        <button data-modal-toggle="addTaskModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">취소</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-window hidden">
+                <h3>일정 등록 및 변경은 PC 환경을 이용해주세요.</h3>
             </div>
 
-            <table id="createTaskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;" >
-                <tbody id="taskList">
-                <tr class="border-gray-200 dark:border-gray-700 task-row">
-                    <td style="width: 14%">
-                        <label for="category_create"></label>
-                        <select id="category_create" name="category_create" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option value="" disabled selected>작업구분</option>
-                            <th:block th:each="category : ${taskCategories}">
-                                <option th:value="${category.id}" th:text="${category.name}"></option>
-                            </th:block>
-                        </select>
-                    </td>
-                    <td style="width: 17%">
-                        <input type="text"  class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" placeholder="업무명">
-                    </td>
-                    <td style="width: 14%">
-                        <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" >
-                    </td>
-                    <td style="width: 14%">
-                        <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" >
-                    </td>
-                    <td style="width: 14%">
-                        <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" >
-                    </td>
-                    <td style="width: 14%">
-                        <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" >
-                    </td>
-                    <td style="width: 10%">
-                        <input type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualOutput" placeholder="산출물">
-                    </td>
-                    <td style="width: 3%">
-                        <div>
-                            <button class="delete-new-button ml-2.5" onclick="deleteNewTask(this)" style="align-items:center; align-content: center; color: red">
-                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                    <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="block">
-                <div class="flex items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600" style="padding-left: 0px">
-                    <button id="saveButton" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
-                    <button data-modal-toggle="addTaskModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">취소</button>
-                </div>
-            </div>
         </div>
 
     </div>
 </div>
-<section class="dark:bg-gray-900 p-3 sm:p-5 antialiased" style="margin-top: 48px; margin-bottom: 84px; ">
+<section class="body dark:bg-gray-900 p-3 sm:p-5 antialiased" style="margin-top: 48px; margin-bottom: 84px; ">
 
-    <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16" id="contents" style="background-color: white; align-items: center">
+    <div class="py-8 px-4 mx-auto lg:py-16" id="contents" style="background-color: white; align-items: center">
 
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${project.name}"></h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${project.client?.name} ?: ' '"></h3>
@@ -228,7 +235,10 @@
 
             <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li class="mr-2">
-                    <button type="button" id="chartViewBtn" class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">차트 조회</button>
+                    <button type="button" id="visibleBtn" style="display: none" class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
+                </li>
+                <li class="mr-2">
+                    <button type="button" id="chartViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">차트 조회</button>
                 </li>
                 <li class="mr-2">
                     <button type="button" id="listViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">일정 변경</button>
@@ -262,94 +272,111 @@
         </div>
 
         <div id="listView">
-            <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-4 py-3 w-1/12" style="width: 8%">상태</th>
-                    <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">진척률</th>
-                    <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
-                    <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
-                    <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">예상시작일</th>
-                    <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상마감일</th>
-                    <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">실제시작일</th>
-                    <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제마감일</th>
-                    <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 12%">산출물</th>
-                    <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%">
-                        <button class="edit-button" onclick="editTask()" style="align-items:center; align-content: center; color: red">
-                            <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
-                                <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
-                            </svg>
-                        </button>
-                        <button class="save-button" style="display: none" onclick="saveTask()">
-                            <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                <path stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                            </svg>
-                        </button>
-                    </th>
-
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="task : ${tasks}" th:id="${task.id}" class="taskRow border-t border-gray-200 dark:border-gray-700">
-
-                    <td name="state" class="px-4 py-3" th:text="${task.actualEndDate} == null ? '진행중' : '완료'"
-                        th:classappend="${task.actualEndDate} == null ? 'text-blue-600' : 'text-red-600'"></td>
-
-                    <td name="progress" class="px-4 py-3" th:text="${task.getProgress() != null ? task.getProgress() + '%' : ''}"></td>
-
-                    <td>
-                        <span th:text="${task.category.name}" name="category" class="read-only"></span>
-                        <label for="category"></label>
-                        <select id="category" name="category" style="display: none" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <th:block th:each="category : ${taskCategories}">
-                                <option th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == task.category.id}"></option>
-                            </th:block>
-                        </select>
-                    </td>
-                    <td>
-                        <span th:text="${task.taskName}" name="taskName" style="color: black" class="read-only"></span>
-                        <input th:value="${task.taskName}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.estimatedStartDate}" name="estimatedStartDate" class="read-only"></span>
-
-                        <input th:value="${task.estimatedStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.estimatedEndDate}" name="estimatedEndDate" class="read-only"></span>
-                        <input th:value="${task.estimatedEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.actualStartDate}" name="actualStartDate" class="read-only"></span>
-                        <input th:value="${task.actualStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.actualEndDate}" name="actualEndDate" class="read-only"></span>
-                        <input th:value="${task.actualEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" style="display: none">
-                    </td>
-
-                    <td>
-                        <span th:text="${task.actualOutput}" name="actualOutput" class="read-only"></span>
-                        <input th:value="${task.actualOutput}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualOutput" style="display: none" placeholder="산출물">
-                    </td>
-                    <td>
-                        <div class="edit-delete-button">
-                            <button class="delete-button ml-2.5" th:data-task-id="${task.id}" th:onclick="'deleteTask('+this+','+${task.id}+')'" style="align-items:center; align-content: center; color: red">
-                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                    <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+            <div class="pc-window">
+                <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full items-center text-center text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%">상태</th>
+                        <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 8%">진척률</th>
+                        <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
+                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
+                        <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 8%">예상시작일</th>
+                        <th scope="col" class="px-4 py-6 w-4/12" style="width: 8%">예상마감일</th>
+                        <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 8%">실제시작일</th>
+                        <th scope="col" class="px-4 py-6 w-4/12" style="width: 8%">실제마감일</th>
+                        <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 20%">산출물</th>
+                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%">
+                            <button class="edit-button" onclick="editTask()" style="align-items:center; align-content: center; color: red">
+                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
+                                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
                                 </svg>
                             </button>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+                            <button class="save-button" style="display: none" onclick="saveTask()">
+                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                    <path stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                </svg>
+                            </button>
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="task : ${tasks}" th:id="${task.id}" class="taskRow border-t border-gray-200 dark:border-gray-700">
+
+                        <td name="state" class="px-4 py-3" th:text="${task.actualEndDate} == null ? '진행중' : '완료'"
+                            th:classappend="${task.actualEndDate} == null ? 'text-blue-600' : 'text-red-600'"></td>
+
+                        <td name="progress" class="px-4 py-3" th:text="${task.getProgress() != null ? task.getProgress() + '%' : ''}"></td>
+
+                        <td>
+                            <span th:text="${task.category.name}" name="category" class="read-only"></span>
+                            <label for="category"></label>
+                            <select id="category" name="category" style="display: none" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <th:block th:each="category : ${taskCategories}">
+                                    <option th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == task.category.id}"></option>
+                                </th:block>
+                            </select>
+                        </td>
+                        <td>
+                            <span th:text="${task.taskName}" name="taskName" style="color: black" class="read-only"></span>
+                            <input th:value="${task.taskName}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.estimatedStartDate}" name="estimatedStartDate" class="read-only"></span>
+
+                            <input th:value="${task.estimatedStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.estimatedEndDate}" name="estimatedEndDate" class="read-only"></span>
+                            <input th:value="${task.estimatedEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.actualStartDate}" name="actualStartDate" class="read-only"></span>
+                            <input th:value="${task.actualStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.actualEndDate}" name="actualEndDate" class="read-only"></span>
+                            <input th:value="${task.actualEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" style="display: none">
+                        </td>
+
+                        <td>
+                            <div th:each="file : ${task.files}">
+                                <a
+                                        class="read-only"
+                                        style="font-size: small"
+                                        th:href="@{'/download/' + ${file.id}}"
+                                        th:text="${file.origFilename}"
+                                ></a>
+                            </div>
+                            <button th:id="'fileButton'+${task.id}" th:onclick="'fileInsert('+${task.id}+')'"
+                                    th:text="${task.files.isEmpty() ? '파일을 선택해주세요.' : task.files?.stream().findFirst()?.get().origFilename}"
+                                    class="hidden edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            </button>
+                            <input th:id="'fileInput'+${task.id}" tabindex="-1" class="hidden w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
+                        </td>
+                        <td>
+                            <div class="edit-delete-button">
+                                <button class="delete-button ml-2.5" th:data-task-id="${task.id}" th:onclick="'deleteTask('+this+','+${task.id}+')'" style="align-items:center; align-content: center; color: red">
+                                    <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                        <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="mobile-window hidden">
+                <h3>일정 등록 및 변경은 PC 환경을 이용해주세요.</h3>
+            </div>
             <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
                 작업이 존재하지 않습니다.
             </div>
 
         </div>
-        <div id="supportListView" class="bg-gray-100 mx-auto max-w-screen-xl mt-8 rounded-lg text-center items-center justify-center" style="padding-top: 18px;">
-            <h3 class="mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="text-align: center">지원내역</h3>
+
+        <div id="supportListView" class="bg-gray-100 mx-auto max-w-screen-xl mt-8 rounded-lg text-center items-center justify-center" >
+            <h3 class="mobile-window mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="padding-top: 18px; text-align: center">지원내역</h3>
 
 
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -439,6 +466,14 @@
 </section>
 <div th:replace="footer :: footer"></div>
 <style>
+
+    .pc-window {
+        display: block;
+    }
+    .mobile-window {
+        display: none;
+    }
+
     pre{
         padding:10px;
         overflow: auto;
@@ -449,8 +484,24 @@
         padding: 8px 4px;
     }
 
+    .body {
+        padding: 0 120px 0 120px;
+    }
+
     /* Mobile responsive styles */
     @media (max-width: 640px) {
+
+        .body {
+            padding: 0px;
+        }
+
+
+        .mobile-window {
+            display: block;
+        }
+        .pc-window {
+            display: none;
+        }
 
         .th-p0 {
             padding-top: 0;
@@ -526,10 +577,29 @@
 
 <script th:inline="javascript">
 
+    $(document).ready(function () {
+        if (window.location.hash === '#listView') {
+            const listViewBtn = document.getElementById("listViewBtn");
+            listViewBtn.click();
+            removeLocationHash();
+        }
+        else {
+            const chartViewBtn = document.getElementById("chartViewBtn");
+            chartViewBtn.click();
+        }
+    });
+
+    function removeLocationHash(){
+        var noHashURL = window.location.href.replace(/#.*$/, '');
+        window.history.replaceState('', document.title, noHashURL)
+    }
+
     const project = /*[[${project}]]*/;
 
     const loadingBar = document.getElementById('loadingBar');
     loadingBar.style.display = 'flex';
+
+    const visibleBtn = document.getElementById("visibleBtn");
 
     const chartViewBtn = document.getElementById("chartViewBtn");
     const listViewBtn = document.getElementById("listViewBtn");
@@ -539,14 +609,14 @@
     const supportListView = document.getElementById("supportListView");
     const refreshChartBtn = document.getElementById("refreshChartBtn");
 
-    const selectedClass = chartViewBtn.className;
+    const selectedClass = visibleBtn.className;
     const unselectedClass = listViewBtn.className;
 
     const supportHistory = /*[[${supportHistory}]]*/;
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        chartView.style.display = "block";
+        chartView.style.display = "none";
         listView.style.display = "none";
         supportListView.style.display = "none";
 
@@ -617,7 +687,6 @@
     document.addEventListener("DOMContentLoaded", function () {
         const addTaskButton = document.getElementById("saveButton");
         addTaskButton.addEventListener("click", function () {
-            const taskList = [];
             const taskRows = document.querySelectorAll(".task-row");
 
             taskRows.forEach(function (row) {
@@ -627,42 +696,74 @@
                     estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
                     estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
                     actualStartDate: row.querySelector("[name=actualStartDate]").value,
-                    actualEndDate: row.querySelector("[name=actualEndDate]").value,
-                    actualOutput: row.querySelector("[name=actualOutput]").value,
+                    actualEndDate: row.querySelector("[name=actualEndDate]").value
                 };
 
                 if (
-                    task.categoryId === '' ||
-                    task.taskName === '' ||
-                    task.estimatedStartDate === '' ||
-                    task.estimatedEndDate ===  ''
+                    task.categoryId !== '' ||
+                    task.taskName !== '' ||
+                    task.estimatedStartDate !== '' ||
+                    task.estimatedEndDate !==  ''
                 ) {
-                    alert("작업 일정을 정확하게 입력해주세요.");
-                    return;
+                    const outputFile = row.querySelector("[name=actualOutput]").files[0];
+
+                    const formData = new FormData();
+                    formData.append('file', outputFile);
+                    formData.append("json", new Blob([JSON.stringify(task)], {type: "application/json"}));
+
+                    $.ajax({
+                        url: "/task/save/"+project.id,
+                        method: "post",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        enctype: "multipart/form-data",
+                        success: function(result) {
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            console.log(xhr);
+                        }
+                    });
                 }
 
-                taskList.push(task);
             });
 
-
-
-            $.ajax({
-                url: "/task/save/"+project.id,
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(taskList),
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (error) {
-                    console.error("Error saving tasks:", error);
-                },
-            });
         });
     });
 
+    function fileInsert(taskId){
+
+        // 파일 입력 필드
+        const fileInput = document.getElementById("fileInput"+taskId);
+
+        // 파일 버튼
+        const fileButton = document.getElementById("fileButton"+taskId);
+
+        // 파일 버튼 클릭 시 파일 입력 필드 열기
+        fileButton.addEventListener("click", function () {
+            fileInput.click();
+        });
+
+        // 파일 입력 필드의 변경 이벤트 처리
+        fileInput.addEventListener("change", function () {
+            const selectedFile = fileInput.files[0];
+
+            if (selectedFile) {
+                fileButton.innerText = selectedFile.name; // 파일명으로 버튼 텍스트 업데이트
+            } else {
+                fileButton.innerText = "파일을 선택해주세요.";
+            }
+        });
+    }
     function deleteNewTask(row){
-        row.closest("tr").remove();
+
+        var table = row.closest("table"); // Find the closest table
+        var rows = table.querySelectorAll("tbody tr"); // Get all <tr> elements within the table
+        if (rows.length > 1) {
+            row.closest("tr").remove();
+        }
+
     }
     function editTask() {
 
@@ -740,18 +841,7 @@
             var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
             var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
             var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
-            var actualOutput = taskRow.querySelector('input[name="actualOutput"]').value;
-
-            var spanCategory = taskRow.querySelector('span[name="category"]');
-            var spanTaskName = taskRow.querySelector('span[name="taskName"]');
-            var spanEstimatedStartDate = taskRow.querySelector('span[name="estimatedStartDate"]');
-            var spanEstimatedEndDate = taskRow.querySelector('span[name="estimatedEndDate"]');
-            var spanActualStartDate = taskRow.querySelector('span[name="actualStartDate"]');
-            var spanActualEndDate = taskRow.querySelector('span[name="actualEndDate"]');
-            var spanActualOutput = taskRow.querySelector('span[name="actualOutput"]');
-            var tdProgress = taskRow.querySelector('td[name="progress"]');
-            var tdState = taskRow.querySelector('td[name="state"]');
-
+            var actualOutput = taskRow.querySelector('input[name="actualOutput"]');
 
             // 수정된 데이터를 객체로 만들기
             var updatedTask = {
@@ -760,9 +850,9 @@
                 estimatedStartDate: estimatedStartDate,
                 estimatedEndDate: estimatedEndDate,
                 actualStartDate: actualStartDate,
-                actualEndDate: actualEndDate,
-                actualOutput: actualOutput
+                actualEndDate: actualEndDate
             };
+
 
             if (
                     updatedTask.categoryId === null ||
@@ -774,46 +864,28 @@
                     return false;
             }
 
-                // 서버로 데이터를 전송
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/task/update/' + taskId);
-            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-            xhr.send(JSON.stringify(updatedTask));
+            const formData = new FormData();
+            formData.append('file', actualOutput.files[0]);
+            formData.append("json", new Blob([JSON.stringify(updatedTask)], {type: "application/json"}));
 
-            // 서버 응답 처리
-            xhr.onreadystatechange = function() {
-                if (xhr.status === 200) {
+            $.ajax({
+                    url: "/task/update/"+taskId,
+                    method: "post",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    enctype: "multipart/form-data",
+                    success: function(result) {
 
-                    var selectElement = document.getElementById("category");
-                    selectElement.addEventListener("change", function() {
-                        // 선택한 옵션의 텍스트 값을 가져와서 span 요소에 설정
-                        var selectedOption = selectElement.options[selectElement.selectedIndex];
-                        spanCategory.innerHTML = selectedOption.text;
-                    });
-                    spanTaskName.innerHTML  = taskName;
-                    spanTaskName.innerHTML  = taskName;
-                    spanEstimatedStartDate.innerHTML  = estimatedStartDate;
-                    spanEstimatedEndDate.innerHTML  = estimatedEndDate;
-                    spanActualStartDate.innerHTML  = actualStartDate;
-                    spanActualEndDate.innerHTML  = actualEndDate;
-                    spanActualOutput.innerHTML  = actualOutput;
+                        window.location.hash = 'listView';
+                        window.location.reload();
 
-                    if (xhr.responseText.length > 0){
-                        tdProgress.innerHTML  = JSON.parse(xhr.responseText)+'%';
+                        },
+                    error: function(xhr) {
+                        console.log(xhr);
                     }
-                    else{
-                        tdProgress.innerHTML = '';
-                    }
-                    if (actualStartDate != '' && actualEndDate != ''){
-                        tdState.innerHTML  = '완료';
-                        tdState.style.color = 'red';
-                    }
-                    else {
-                        tdState.innerHTML  = '진행중';
-                        tdState.style.color = 'blue';
-                    }
-                }
-            };
+                });
+
         })
 
 

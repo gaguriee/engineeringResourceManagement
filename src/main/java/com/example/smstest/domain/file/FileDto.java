@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.file;
+package com.example.smstest.domain.file;
 
 import lombok.*;
 
@@ -9,6 +9,7 @@ import lombok.*;
 public class FileDto {
     private Long id;
     private Long supportId;
+    private Long taskId;
     private String origFilename;
     private String filename;
     private String filePath;
@@ -18,6 +19,7 @@ public class FileDto {
         File build = File.builder()
                 .id(id)
                 .supportId(supportId)
+                .taskId(taskId)
                 .origFilename(origFilename)
                 .filename(filename)
                 .filePath(filePath)
@@ -27,9 +29,10 @@ public class FileDto {
     }
 
     @Builder
-    public FileDto(Long id, Long supportId, String origFilename, String filename, String filePath, Long size) {
+    public FileDto(Long id, Long supportId, Long taskId, String origFilename, String filename, String filePath, Long size) {
         this.id = id;
         this.supportId = supportId;
+        this.taskId = taskId;
         this.origFilename = origFilename;
         this.filename = filename;
         this.filePath = filePath;

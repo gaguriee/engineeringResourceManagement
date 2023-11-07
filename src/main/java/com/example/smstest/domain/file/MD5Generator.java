@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.file;
+package com.example.smstest.domain.file;
 
 
 import java.io.UnsupportedEncodingException;

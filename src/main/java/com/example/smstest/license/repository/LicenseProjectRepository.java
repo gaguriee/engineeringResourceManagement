@@ -1,7 +1,11 @@
 package com.example.smstest.license.repository;
 
 import com.example.smstest.license.entity.LicenseProject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -11,5 +15,10 @@ import java.util.UUID;
  */
 @Repository
 public interface LicenseProjectRepository extends JpaRepository<LicenseProject, UUID> {
+    @Query("SELECT p FROM LicenseProject p WHERE p.projectName LIKE %:keyword% OR p.company.companyName LIKE %:keyword% OR p.projectCode LIKE %:keyword% ORDER BY p.projectRegDate DESC ")
+    Page<LicenseProject> findAllByNameContaining(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT p FROM LicenseProject p ORDER BY p.projectRegDate DESC ")
+    Page<LicenseProject> findAllOrderedByUniqueCodeDesc(Pageable pageable);
 
 }

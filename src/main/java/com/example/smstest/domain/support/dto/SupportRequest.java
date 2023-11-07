@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class SupportRequest {
 
     private String customerName;
 
-    private Long projectId;
+    private UUID projectId;
 
     private Long engineerId;
 

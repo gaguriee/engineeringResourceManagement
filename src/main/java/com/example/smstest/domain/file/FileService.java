@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.file;
+package com.example.smstest.domain.file;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,11 @@ public class FileService {
     @Transactional
     public File saveFile(FileDto fileDto) {
         return fileRepository.save(fileDto.toEntity());
+    }
+
+    @Transactional
+    public void deleteAllByTaskId(Long taskId) {
+        fileRepository.deleteAllByTaskId(taskId);
     }
 
     @Transactional

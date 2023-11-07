@@ -1,5 +1,6 @@
 package com.example.smstest.domain.task.entity;
 
+import com.example.smstest.domain.file.File;
 import com.example.smstest.domain.project.entity.Project;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 
 /**
@@ -48,9 +50,6 @@ public class Task {
     @Temporal(TemporalType.DATE)
     private Date actualEndDate;
 
-    @Column(name = "actual_output")
-    private String actualOutput;
-
     @Column(name = "name")
     private String taskName;
 
@@ -68,15 +67,18 @@ public class Task {
         }
     }
 
+    @OneToMany(mappedBy = "taskId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<File> files;
+
     @Builder
-    public Task(Project project, TaskCategory category, Date estimatedStartDate, Date estimatedEndDate, Date actualStartDate, Date actualEndDate, String actualOutput, String taskName) {
+    public Task(Project project, TaskCategory category, Date estimatedStartDate, Date estimatedEndDate, Date actualStartDate, Date actualEndDate, String taskName, Set<File> files) {
         this.project = project;
         this.category = category;
         this.estimatedStartDate = estimatedStartDate;
         this.estimatedEndDate = estimatedEndDate;
         this.actualStartDate = actualStartDate;
         this.actualEndDate = actualEndDate;
-        this.actualOutput = actualOutput;
         this.taskName = taskName;
+        this.files = files;
     }
 }

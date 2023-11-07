@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class ModifyRequest {
 
     private String customerName;
 
-    private Long projectId;
+    private UUID projectId;
 
     private Long engineerId;
 

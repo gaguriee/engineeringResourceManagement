@@ -3,7 +3,7 @@ package com.example.smstest.domain.support.dto;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.support.file.File;
+import com.example.smstest.domain.file.File;
 import lombok.Builder;
 import lombok.Data;
 

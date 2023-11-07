@@ -5,6 +5,7 @@ import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
+import com.example.smstest.domain.file.*;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.project.entity.Project;
@@ -15,10 +16,11 @@ import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.support.file.*;
 import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
+import com.example.smstest.license.entity.LicenseProject;
+import com.example.smstest.license.repository.LicenseProjectRepository;
 import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +68,7 @@ public class SupportCRUDController {
     private final ProjectRepository projectRepository;
     private final FileService fileService;
     private final FileRepository fileRepository;
+    private final LicenseProjectRepository licenseProjectRepository;
 
 
     // 날짜 형태 bind
@@ -212,11 +215,11 @@ public class SupportCRUDController {
                 // OS 따라 구분자 분리
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.contains("win")){
-                    savePath = System.getProperty("user.dir") + "\\files";
+                    savePath = System.getProperty("user.dir") + "\\files\\support";
                     filePath = savePath + "\\" + filename;
                 }
                 else{
-                    savePath = System.getProperty("user.dir") + "/files";
+                    savePath = System.getProperty("user.dir") + "/files/support";
                     filePath = savePath + "/" + filename;
                 }
 
@@ -278,7 +281,7 @@ public class SupportCRUDController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
-        List<Project> projects = projectRepository.findAll();
+        List<LicenseProject> projects = licenseProjectRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -323,7 +326,7 @@ public class SupportCRUDController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
-        List<Project> projects = projectRepository.findAll();
+        List<LicenseProject> projects = licenseProjectRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -365,11 +368,11 @@ public class SupportCRUDController {
                 // OS 따라 구분자 분리
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.contains("win")){
-                    savePath = System.getProperty("user.dir") + "\\files";
+                    savePath = System.getProperty("user.dir") + "\\files\\support";
                     filePath = savePath + "\\" + filename;
                 }
                 else{
-                    savePath = System.getProperty("user.dir") + "/files";
+                    savePath = System.getProperty("user.dir") + "/files/support";
                     filePath = savePath + "/" + filename;
                 }
 

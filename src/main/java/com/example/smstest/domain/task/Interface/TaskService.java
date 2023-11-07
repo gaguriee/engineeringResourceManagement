@@ -1,11 +1,14 @@
 package com.example.smstest.domain.task.Interface;
 
-import com.example.smstest.domain.task.dto.TaskRequestDTO;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 
 public interface TaskService {
     String deleteTask(Long taskId);
-    String updateTask(Long taskId, TaskRequestDTO updatedTask);
-    String saveTasks(Long projectId, List<TaskRequestDTO> taskList);
+    String updateTask(Long taskId, Map<String, Object> json,
+                      MultipartFile file);
+
+    String saveTask(Long taskId, Map<String, Object> json,
+                     MultipartFile file);
 }

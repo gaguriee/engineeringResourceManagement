@@ -89,12 +89,9 @@ public class Project {
         }
     }
 
-    public void updateProject(String name, Client client) {
+    public void updateProject(String name) {
         if (name != null) {
             this.name = name;
-        }
-        if (client != null) {
-            this.client = client;
         }
     }
 }

@@ -222,7 +222,7 @@
 
                 <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 8px">
                     <div th:each="product : ${selectedProducts}" style="display: block" >
-                        <span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${product.getName()}">Red</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${product.getName()}">Red</span>
                     </div>
                     <div th:each="issue : ${selectedIssues}" style="display: block">
                         <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"  th:text="${issue.getName()}">Green</span>
@@ -260,7 +260,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">프로젝트명</th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">제품명</th>
+                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">제품명</th>
                         <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
                         <th scope="col" class="px-4 py-3 w-1/12" style="width: 25%" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" >이슈명</th>
                         <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자
@@ -277,7 +277,10 @@
                     <tbody>
                     <tr th:each="post : ${posts}" class="border-b dark:border-gray-700">
                         <td class="th-pt px-4 py-3 projectName" th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">고객사</td>
-                        <td class="th-p0 px-4 py-3 productName" th:text="${post.productName}">제품명</td>
+                        <td class="th-p0 px-4 py-3 productName" >
+                            <span th:unless="${post.productName.equals('-')}" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
+                                  th:text="${post.productName}">제품명</span>
+                        </td>
                         <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
                             <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 <!-- 글자수를 최대 10자로 제한, NULL값 처리 -->

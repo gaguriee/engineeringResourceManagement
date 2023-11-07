@@ -7,7 +7,7 @@ import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.domain.project.Interface.WBSService;
+import com.example.smstest.domain.project.Interface.ProjectService;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.dto.ProjectRequest;
@@ -21,6 +21,7 @@ import com.example.smstest.domain.task.repository.TaskCategoryRepository;
 import com.example.smstest.domain.task.repository.TaskRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
+import com.example.smstest.license.entity.LicenseProject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -47,9 +48,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/project")
-public class WBSController {
+public class ProjectController {
 
-    private final WBSService WBSService;
+    private final ProjectService ProjectService;
     private final SupportRepository supportRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
@@ -71,6 +72,11 @@ public class WBSController {
             Model model) {
 
         getProjectList(Keyword, pageable, model);
+
+        Page<Project> projects = ProjectService.searchProjects(Keyword, pageable);
+        model.addAttribute("projects", projects);
+        model.addAttribute("totalPages", projects.getTotalPages());
+
         return "projectBoard";
     }
 
@@ -183,6 +189,10 @@ public class WBSController {
             Model model) {
 
         getProjectList(Keyword, pageable, model);
+        Page<LicenseProject> projects = ProjectService.searchLicenseProjects(Keyword, pageable);
+        model.addAttribute("projects", projects);
+        model.addAttribute("totalPages", projects.getTotalPages());
+
         return "projectSelect";
     }
 
@@ -191,7 +201,6 @@ public class WBSController {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Project> projects = WBSService.searchProjects(Keyword, pageable);
         List<Client> clients = clientRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
@@ -199,10 +208,8 @@ public class WBSController {
         model.addAttribute("memps", memps);
         model.addAttribute("user", user);
         model.addAttribute("clients", clients);
-        model.addAttribute("projects", projects);
         model.addAttribute("products", products);
         model.addAttribute("teams", teams);
-        model.addAttribute("totalPages", projects.getTotalPages());
         model.addAttribute("currentPage", pageable.getPageNumber());
     }
 

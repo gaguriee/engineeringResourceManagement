@@ -19,8 +19,6 @@ public class TaskRequestDTO {
 
     private Date actualEndDate;
 
-    private String actualOutput;
-
     private String taskName;
 
 }

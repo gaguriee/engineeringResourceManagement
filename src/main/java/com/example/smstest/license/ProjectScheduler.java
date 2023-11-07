@@ -72,8 +72,7 @@ public class ProjectScheduler {
                 else {
                     Project project = projectRepository.findFirstByUniqueCode(licenseProject.getProjectCode());
                     project.updateProject(
-                            licenseProject.getProjectName(),
-                            client
+                            licenseProject.getProjectName()
                     );
                     projectRepository.save(project);
 
