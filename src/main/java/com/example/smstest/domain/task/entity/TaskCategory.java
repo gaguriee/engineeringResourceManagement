@@ -1,10 +1,13 @@
-package com.example.smstest.domain.task;
+package com.example.smstest.domain.task.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * WBS 작업 분류 Entity [ 착수단계, 분석 및 설계 단계 등 ]
+ */
 @Entity
 @Getter
 @NoArgsConstructor

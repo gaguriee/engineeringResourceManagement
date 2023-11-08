@@ -15,12 +15,13 @@ import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.ProductRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
-import com.example.smstest.domain.task.Task;
-import com.example.smstest.domain.task.TaskCategory;
-import com.example.smstest.domain.task.TaskCategoryRepository;
-import com.example.smstest.domain.task.TaskRepository;
+import com.example.smstest.domain.task.entity.Task;
+import com.example.smstest.domain.task.entity.TaskCategory;
+import com.example.smstest.domain.task.repository.TaskCategoryRepository;
+import com.example.smstest.domain.task.repository.TaskRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
+import com.example.smstest.license.entity.LicenseProject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -40,13 +41,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * WBS (Project 별 지원 내역 및 일정 조회) 페이지 매핑 Controller
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/project")
 public class ProjectController {
 
-    private final ProjectService projectService;
+    private final ProjectService ProjectService;
     private final SupportRepository supportRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
@@ -68,11 +72,17 @@ public class ProjectController {
             Model model) {
 
         getProjectList(Keyword, pageable, model);
+
+        Page<Project> projects = ProjectService.searchProjects(Keyword, pageable);
+        model.addAttribute("projects", projects);
+        model.addAttribute("totalPages", projects.getTotalPages());
+
         return "projectBoard";
     }
 
     @GetMapping("/detail")
     public String viewProjectDetail(
+            @RequestParam(required = false, defaultValue = "false") Boolean supportHistory,
             @RequestParam(required = false) Long projectId,
             @PageableDefault(size = 15) Pageable pageable,
             Model model) {
@@ -119,6 +129,7 @@ public class ProjectController {
         model.addAttribute("clients", clients);
         model.addAttribute("products", products);
         model.addAttribute("teams", teams);
+        model.addAttribute("supportHistory", supportHistory);
 
         return "projectDetails";
     }
@@ -178,6 +189,11 @@ public class ProjectController {
             Model model) {
 
         getProjectList(Keyword, pageable, model);
+        Page<LicenseProject> projects = ProjectService.searchLicenseProjects(Keyword, pageable);
+
+        model.addAttribute("projects", projects);
+        model.addAttribute("totalPages", projects.getTotalPages());
+
         return "projectSelect";
     }
 
@@ -186,7 +202,6 @@ public class ProjectController {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Project> projects = projectService.searchProjects(Keyword, pageable);
         List<Client> clients = clientRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
@@ -194,10 +209,8 @@ public class ProjectController {
         model.addAttribute("memps", memps);
         model.addAttribute("user", user);
         model.addAttribute("clients", clients);
-        model.addAttribute("projects", projects);
         model.addAttribute("products", products);
         model.addAttribute("teams", teams);
-        model.addAttribute("totalPages", projects.getTotalPages());
         model.addAttribute("currentPage", pageable.getPageNumber());
     }
 

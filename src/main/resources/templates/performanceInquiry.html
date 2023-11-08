@@ -17,7 +17,6 @@
     </div>
     <div class="skeleton" style="background-color: #F7F7F7;">
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.performance-inquiry')}" width="100%" height="900" ></iframe>
-<!--        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa-mobile')}" width="100%" height="2700" ></iframe>-->
     </div>
 
 </section>
@@ -43,18 +42,6 @@
         }
     }
 
-    /*!* 모바일 화면에서는 한 줄에 1개의 열로 변경 *!*/
-    /*@media (max-width: 1064px) {*/
-
-    /*    .iframe-pc {*/
-    /*        display: none;*/
-    /*    }*/
-
-    /*    !* PC에서는 iframe-mobile을 숨김 *!*/
-    /*    .iframe-mobile {*/
-    /*        display: block;*/
-    /*    }*/
-    /*}*/
 </style>
 </body>
 </html>

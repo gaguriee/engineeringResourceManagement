@@ -2,13 +2,14 @@ package com.example.smstest.domain.main.controller;
 
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.repository.SupportRepository;
-import com.example.smstest.domain.support.service.PdfService;
-import com.example.smstest.domain.task.Task;
-import com.example.smstest.domain.task.TaskRepository;
+import com.example.smstest.domain.main.service.FileDownloadService;
+import com.example.smstest.domain.task.entity.Task;
+import com.example.smstest.domain.task.repository.TaskRepository;
 import com.google.api.client.util.IOUtils;
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -33,7 +34,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileDownloadController {
 
-    private final PdfService pdfService;
+    private final FileDownloadService fileDownloadService;
     private final SupportRepository supportRepository;
     private final TaskRepository taskRepository;
 
@@ -51,7 +52,7 @@ public class FileDownloadController {
 
         // PDF 생성 및 다운로드
         String pdfFilePath = "support_history.pdf";
-        pdfService.generateSupportPdf(supportResponse, pdfFilePath);
+        fileDownloadService.generateSupportPdf(supportResponse, pdfFilePath);
 
         // HTTP 응답 설정
 
@@ -117,7 +118,7 @@ public class FileDownloadController {
 
         // header data
         int rowCount = 0; // 데이터가 저장될 행
-        String headerNames[] = new String[]{"대분류", "업무명", "예상시작일", "예상마감일", "실제시작일", "실제마감일", "진척율", "산출물"};
+        String headerNames[] = new String[]{"업무명", "예상시작일", "예상마감일", "실제시작일", "실제마감일", "진척율", "산출물"};
 
         Row headerRow = null;
         Cell headerCell = null;
@@ -136,15 +137,21 @@ public class FileDownloadController {
 
         for (int i = 0; i < tasks.size(); i++){
             Task task = tasks.get(i);
+
+            String fileName = null ;
+
+            if (!task.getFiles().isEmpty()){
+                fileName = task.getFiles().stream().findFirst().get().getOrigFilename();
+            }
+
             String[] data = new String[]{
-                    task.getCategory().getName(),
                     task.getTaskName(),
                     String.valueOf(task.getEstimatedStartDate()),
                     String.valueOf(task.getEstimatedEndDate()),
                     String.valueOf(task.getActualStartDate()),
                     String.valueOf(task.getActualEndDate()),
                     String.valueOf(task.getProgress()),
-                    task.getActualOutput()
+                    fileName
             };
             bodyDatass.add(data);
         }
@@ -152,12 +159,50 @@ public class FileDownloadController {
         Row bodyRow = null;
         Cell bodyCell = null;
 
-        for(String[] bodyDatas : bodyDatass) {
+        int previousCategoryId = 0;
+
+        for( int i = 0; i< bodyDatass.size(); i++) {
+
+            int currentCategoryId = tasks.get(i).getCategory().getId();
+            if (previousCategoryId != currentCategoryId){
+                Row categoryRow = null;
+                Cell categoryCell = null;
+
+                sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0,6));
+
+                XSSFCellStyle categoryXssfCellStyle = (XSSFCellStyle) workbook.createCellStyle();
+
+                XSSFFont categoryXSSFFont = (XSSFFont) workbook.createFont();
+                categoryXSSFFont.setColor(new XSSFColor(new byte[]{(byte) 0, (byte) 0, (byte) 0}));
+                categoryXSSFFont.setBold(true);
+
+                // 테두리 설정
+                categoryXssfCellStyle.setBorderLeft(BorderStyle.THIN);
+                categoryXssfCellStyle.setBorderRight(BorderStyle.THIN);
+                categoryXssfCellStyle.setBorderTop(BorderStyle.THIN);
+                categoryXssfCellStyle.setBorderBottom(BorderStyle.THIN);
+
+                // 배경 설정
+                categoryXssfCellStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 0}));
+                categoryXssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                categoryXssfCellStyle.setFont(categoryXSSFFont);
+
+                categoryRow = sheet.createRow(rowCount++);
+                categoryCell = categoryRow.createCell(0);
+                categoryCell.setCellValue(tasks.get(i).getCategory().getName()); // 데이터 추가
+                categoryCell.setCellStyle(categoryXssfCellStyle); // 스타일 추가
+
+            }
+
+            previousCategoryId = currentCategoryId;
+
+            String[] bodyDatas = bodyDatass.get(i);
             bodyRow = sheet.createRow(rowCount++);
 
-            for(int i=0; i<bodyDatas.length; i++) {
-                bodyCell = bodyRow.createCell(i);
-                bodyCell.setCellValue(bodyDatas[i]); // 데이터 추가
+            for(int j=0; j<bodyDatas.length; j++) {
+
+                bodyCell = bodyRow.createCell(j);
+                bodyCell.setCellValue(bodyDatas[j]); // 데이터 추가
                 bodyCell.setCellStyle(bodyXssfCellStyle); // 스타일 추가
             }
         }

@@ -31,7 +31,7 @@ public class SupportRequest {
 
     private String customerName;
 
-    private Long projectId;
+    private String projectId;
 
     private Long engineerId;
 

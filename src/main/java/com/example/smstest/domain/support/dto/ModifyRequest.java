@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
@@ -33,12 +34,14 @@ public class ModifyRequest {
 
     private String customerName;
 
-    private Long projectId;
+    private String projectId;
 
     private Long engineerId;
 
     private Long supportTypeId;
 
     private Float supportTypeHour;
+
+    private List<Long> deletedFileId;
 
 }

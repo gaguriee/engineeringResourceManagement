@@ -103,7 +103,31 @@
                 <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskDetails} ?: ' ']]</span>
             </dd>
         </dl>
+        <div th:if="${support.files != null}">
+            <strong th:if="${support.files.size() > 0 }">첨부파일 </strong>
+            <div th:each="file : ${support.files}">
+                <a
+                        class="card-text"
+                        style="font-size: small"
+                        th:href="@{'/download/' + ${file.id}}"
+                        th:text="${file.origFilename}"
+                ></a>
+
+            </div>
+
+<!--            <div class="mt-5 flex overflow-y-auto">-->
+<!--                <div th:each="file : ${support.files}">-->
+<!--                    <th:block class="items-center text-center" th:if="${#strings.endsWith(file.origFilename, '.jpg') or #strings.endsWith(file.origFilename, '.png') or #strings.endsWith(file.origFilename, '.svg')}">-->
+<!--                        <img th:src="@{'/download/' + ${file.id}}" alt="Image Preview" style="height: auto; width: 200px; max-height: 200px; max-width: 100%; border-radius: 10px; margin: 10px;">-->
+<!--                        <p class="items-center text-center text-xs text-gray-600" style="margin-left: 10px" th:text="${file.origFilename}"></p>-->
+<!--                    </th:block>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+        </div>
     </div>
+
     <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16" style="background-color: white">
 
         <div th:if="${user.id == support.engineerId || #authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" class="flex items-center space-x-4" style="padding-top: 24px">
@@ -116,13 +140,15 @@
                 삭제
             </button>
         </div>
-        <div class="mt-8 ml-auto">
-            <a id="showBoard" href="/search?"  style="margin-right:24px; font-weight: bold;">목록보기</a>
-            <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; font-weight: bold;">PDF로 저장</button>
-        </div>
 
     </div>
 
+    <hr style="margin-bottom: 24px">
+
+    <div class="mt-8 items-center justify-center text-center">
+        <a id="showBoard" href="/search?"  style="margin-right:24px; ">목록보기</a>
+        <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; ">PDF로 저장</button>
+    </div>
 </section>
 <div th:replace="footer :: footer"></div>
 <style>
@@ -189,10 +215,10 @@
 
     if (daysDifference <= 7 || hasSuperAdminRole ) {
         deleteButton.style.display = "flex";
-        // editButton.style.display = "flex";
+        editButton.style.display = "flex";
     } else {
         deleteButton.style.display = "none";
-        // editButton.style.display = "none";
+        editButton.style.display = "none";
     }
 
     function hideModal(modalId) {

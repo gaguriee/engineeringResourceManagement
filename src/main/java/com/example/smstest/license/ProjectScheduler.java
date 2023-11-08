@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-
+/**
+ * 라이센스 DB에서 프로젝트를 주기적으로 가져오는 스케줄러
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -26,7 +28,7 @@ public class ProjectScheduler {
     private final ClientRepository clientRepository;
 
 //    @Scheduled(fixedDelay = 1000000000)
-    @Scheduled(cron = "0 0 0/1 * * ?") // 매일 1시간 간격으로 실행
+    @Scheduled(cron = "0 0 0/6 * * ?") // 매일 6시간 간격으로 실행
     public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
 
         log.info("=====START SCHEDULER=====");
@@ -70,11 +72,9 @@ public class ProjectScheduler {
                 else {
                     Project project = projectRepository.findFirstByUniqueCode(licenseProject.getProjectCode());
                     project.updateProject(
-                            licenseProject.getProjectName(),
-                            client
+                            licenseProject.getProjectName()
                     );
                     projectRepository.save(project);
-
                 }
             }
         } catch (Exception e) {

@@ -82,11 +82,8 @@
     </div>
 
     <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
-
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.teaminfo')} + ${team.id}" width="100%" height="450" ></iframe>
         <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.teaminfo-mobile')} + ${team.id}" width="100%" height="450" ></iframe>
-<!--        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/5/?standalone=2&slice_id=4&team_id=' + ${team.id} }" width="100%" height="450" ></iframe>-->
-
     </div>
 </section>
 
@@ -199,7 +196,6 @@
             display: none;
         }
 
-        /* PC에서는 iframe-mobile을 숨김 */
         .iframe-mobile {
             display: block;
         }

@@ -5,6 +5,9 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * 라이센스 DB 내 고객사 Entity
+ */
 @Entity
 @Getter
 @Table(name = "license_company_code")

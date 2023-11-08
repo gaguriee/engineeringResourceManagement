@@ -1,12 +1,19 @@
 package com.example.smstest.domain.support.entity;
 
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.file.File;
 import com.example.smstest.domain.project.entity.Project;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -66,5 +73,28 @@ public class Support {
     @Column(name = "지원형태_시간")
     private Float supportTypeHour;
 
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
 
+    @OneToMany(mappedBy = "supportId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<File> files;
+
+    public Set<File> getFiles() {
+        InetAddress localhost = null;
+        try {
+            localhost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+
+        InetAddress finalLocalhost = localhost;
+
+        if (files == null){
+            return null;
+        }
+
+        return files.stream()
+                .filter(file -> file.getSavedIpAddress().equals(finalLocalhost.getHostAddress()))
+                .collect(Collectors.toSet());
+    }
 }

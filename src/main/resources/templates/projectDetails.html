@@ -94,6 +94,7 @@
                             <option th:each="memp : ${memps}" th:value="${memp.name}" th:attr="data-submemTeamId=${memp.getTeam.getId()}"></option>
                         </datalist>
                     </div>
+                    <div></div>
 
                     <div style="display: flex; justify-content:flex-end ">
                         <button type="submit" id="projectModifyBtn" class="text-white inline-flex items-center bg-gray-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
@@ -105,13 +106,91 @@
         </div>
     </div>
 </div>
-<section class="dark:bg-gray-900 p-3 sm:p-5 antialiased" style="margin-top: 48px; margin-bottom: 84px; ">
 
-    <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16" id="contents" style="background-color: white">
+<!-- Main modal -->
+<div id="addTaskModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+    <div class="relative p-4 h-full md:h-auto" style="width: 70%;">
+        <!-- Modal content -->
+        <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-8 mt-8" style=" min-height: 600px" >
+            <div class="pc-window">
+                <div class="mt-8 mb-2.5 flex" style="align-items: center; text-align: center">
+                    <h3 style="font-weight: bold">작업 일정 추가</h3>
+                    <div id="tooltip-light" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip">
+                        일정 등록 추가
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <button id="addTaskButton" class="ml-2.5" style="margin-bottom: 2px" type="button" data-tooltip-target="tooltip-light" data-tooltip-style="light">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
+                            <path d="M9.546.5a9.5 9.5 0 1 0 9.5 9.5 9.51 9.51 0 0 0-9.5-9.5ZM13.788 11h-3.242v3.242a1 1 0 1 1-2 0V11H5.304a1 1 0 0 1 0-2h3.242V5.758a1 1 0 0 1 2 0V9h3.242a1 1 0 1 1 0 2Z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table id="createTaskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;" >
+                        <tbody id="taskList">
+                        <tr class="border-gray-200 dark:border-gray-700 task-row">
+                            <td style="width: 14%">
+                                <label for="category_create"></label>
+                                <select id="category_create" name="category_create" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                    <option value="" disabled selected>작업구분</option>
+                                    <th:block th:each="category : ${taskCategories}">
+                                        <option th:value="${category.id}" th:text="${category.name}"></option>
+                                    </th:block>
+                                </select>
+                            </td>
+                            <td style="width: 17%">
+                                <input type="text"  class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" placeholder="업무명">
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" >
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" >
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" >
+                            </td>
+                            <td style="width: 14%">
+                                <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" >
+                            </td>
+                            <td style="width: 20%" class="overflow-hidden p-1.5">
+                                <input id="actualOutput" class="upload_file edit-mode block w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
+                            </td>
+                            <td style="width: 3%">
+                                <div>
+                                    <button class="delete-new-button ml-2.5" onclick="deleteNewTask(this)" style="align-items:center; align-content: center; color: red">
+                                        <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                            <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="block" style="position: absolute; bottom: 10px; right: 10px;">
+                    <div class="flex items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600" style="padding-left: 0px">
+                        <button id="saveButton" onclick="createTask()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
+                        <button data-modal-toggle="addTaskModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">취소</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-window hidden">
+                <h3>일정 등록 및 변경은 PC 환경을 이용해주세요.</h3>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<section class="body dark:bg-gray-900 p-3 sm:p-5 antialiased" style="margin-top: 48px; margin-bottom: 84px; ">
+
+    <div class="py-8 px-4 mx-auto lg:py-16" id="contents" style="background-color: white; align-items: center">
 
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${project.name}"></h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${project.client?.name} ?: ' '"></h3>
-        <dl class="flex text-sm items-start space-x-3" style="padding-top: 24px; padding-bottom: 12px">
+        <dl class="flex text-sm items-start space-x-3" th:if="${(project.uniqueCode != null) || (project.product != null)}" style="padding-top: 24px; padding-bottom: 12px">
             <div style="margin-right: 20px;" th:if="${project.uniqueCode != null}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">고유코드</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.uniqueCode} ?: ' '"></dd>
@@ -121,7 +200,7 @@
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400" th:text="${project.product?.name} ?: ' '"></dd>
             </div>
         </dl>
-        <dl class="flex text-sm items-start flex-wrap" style="padding-bottom: 24px;">
+        <dl class="flex text-sm items-start flex-wrap" th:if="${(project.team != null) || (project.engineer != null)}" style="padding-bottom: 24px;">
             <div style="margin-right: 20px;"  th:if="${project.team != null}">
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white" >담당 팀</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"  th:text="${project.team?.name} ?: ' '"></dd>
@@ -137,224 +216,181 @@
         </dl>
 
 
-        <!-- 작업 모달 -->
-        <div id="taskCreateModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative w-1/2 max-h-full">
-                <!-- Modal content -->
-                <div class="block bg-white rounded-lg shadow dark:bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex items-start justify-between p-6 border-t rounded-t dark:border-gray-600" style="padding-bottom: 0px; margin-top: 12px;">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                            작업 추가
-                        </h3>
 
-                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="taskCreateModal">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="p-6 relative">
-
-                        <table id="createTaskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
-                                <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
-                                <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">예상시작일</th>
-                                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상마감일</th>
-                                <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">실제시작일</th>
-                                <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제마감일</th>
-                                <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 12%">산출물</th>
-
-                            </tr>
-                            </thead>
-                            <tbody id="taskList">
-                            <tr class="border-t border-gray-200 dark:border-gray-700 task-row">
-                                <td>
-                                    <label for="category_create"></label>
-                                    <select id="category_create" name="category_create" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option value="" disabled selected>작업구분</option>
-                                        <th:block th:each="category : ${taskCategories}">
-                                            <option th:value="${category.id}" th:text="${category.name}"></option>
-                                        </th:block>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" placeholder="업무명을 입력해주세요.">
-                                </td>
-                                <td>
-                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" >
-                                </td>
-                                <td>
-                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" >
-                                </td>
-                                <td>
-                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" >
-                                </td>
-                                <td>
-                                    <input type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" >
-                                </td>
-
-                                <td>
-                                    <input type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualOutput" placeholder="산출물">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <div class="block">
-                            <div style="display: inline-block; margin: 0 5px;  float: right;">
-                                <button id="addTaskButton" style="margin-bottom: 2px" type="button">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 19H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2v4M6 1v4a1 1 0 0 1-1 1H1m11 8h4m-2 2v-4m5 2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600" style="padding-left: 0px">
-                                <button id="saveButton" data-modal-hide="taskCreateModal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
-                                <button data-modal-hide="taskCreateModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">취소</button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
+        <div style="margin-bottom: 24px;">
+            <div class="flex mt-2.5" >
+                <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal" th:if="${#authorization.expression('hasAnyRole(''ROLE_SUPERADMIN'')')}" class="m-2 ml-0 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    프로젝트 수정
+                </button>
+                <button data-modal-target="addTaskModal" data-modal-toggle="addTaskModal" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    작업 일정 추가
+                </button>
+                <button type="button" id="csvDownloadBtn" class="m-2 flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                        <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Excel download</span>
+                </button>
             </div>
+
+            <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+                <li class="mr-2">
+                    <button type="button" id="visibleBtn" style="display: none" class="inline-block p-4 text-blue-700 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
+                </li>
+                <li class="mr-2">
+                    <button type="button" id="chartViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">차트 조회</button>
+                </li>
+                <li class="mr-2">
+                    <button type="button" id="listViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">일정 변경</button>
+                </li>
+                <li class="mr-2">
+                    <button type="button" id="supportListViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">지원내역 조회</button>
+                </li>
+            </ul>
         </div>
 
-        <div class="flex mb-2.5 " style="float: right">
-            <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal" th:if="${#authorization.expression('hasAnyRole(''ROLE_SUPERADMIN'')')}" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                프로젝트 수정
-            </button>
-            <button data-modal-target="taskCreateModal" data-modal-toggle="taskCreateModal" class="m-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                작업 추가
-            </button>
-            <button type="button" id="csvDownloadBtn" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
-                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
-                    <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Excel download</span>
-            </button>
-        </div>
 
 
-        <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 mb-4">
-            <li class="mr-2">
-                <button type="button" id="chartViewBtn" class="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">차트 조회</button>
-            </li>
-            <li class="mr-2">
-                <button type="button" id="listViewBtn" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">수정/삭제</button>
-            </li>
-        </ul>
+        <div id="chartView" class="hidden block" >
+            <div class="w-full h-10">
+                <button id="refreshChartBtn" type="button" onclick="reload()" class="mb-2.5" style="float: right;">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
+                    </svg>
+                </button>
+            </div>
 
-
-
-        <div id="chartView">
-            <div th:if="${tasks.size()!=0}" th:each="category : ${taskCategories}">
-                <div th:with="categoryId=${category.id}">
-                    <div th:id="'timelineTitle'+${categoryId}" class="hidden" style="background-color: yellow; padding: 4px 4px 4px 8px; font-weight: bold" th:text="${category.name} ?: ' '"></div>
-                    <div th:id="'timeline'+${categoryId}"></div>
+            <div th:if="${tasks.size()!=0}" class="w-full flex">
+                <div class="block">
+                    <div th:each="category : ${taskCategories}" th:id="'chartCategory'+${category.id}" class="flex w-32 hidden items-center bg-gray-600"
+                    style="box-shadow: 0 0 0 0.5px rgba(255,255,255,0.29) inset; "
+                    >
+                        <span class="w-full text-center text-white text-sm" th:text="${category.name}"></span>
+                    </div>
                 </div>
+
+                <div id="timeline" class="w-full h-full"></div>
             </div>
             <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
                 작업이 존재하지 않습니다.
             </div>
         </div>
 
-        <div id="listView">
-            <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-4 py-3 w-1/12" style="width: 8%">상태</th>
-                    <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">진척률</th>
-                    <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
-                    <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
-                    <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">예상시작일</th>
-                    <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">예상마감일</th>
-                    <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">실제시작일</th>
-                    <th scope="col" class="px-4 py-6 w-4/12" style="width: 10%">실제마감일</th>
-                    <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 12%">산출물</th>
-                    <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%"></th>
-
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="task : ${tasks}" th:id="'taskRow_'+${task.id}" class="border-t border-gray-200 dark:border-gray-700">
-
-                    <td name="state" class="px-4 py-3" th:text="${task.actualEndDate} == null ? '진행중' : '완료'"
-                        th:classappend="${task.actualEndDate} == null ? 'text-blue-600' : 'text-red-600'"></td>
-
-                    <td name="progress" class="px-4 py-3" th:text="${task.getProgress() != null ? task.getProgress() + '%' : ''}"></td>
-
-                    <td>
-                        <span th:text="${task.category.name}" name="category" class="read-only"></span>
-                        <label for="category"></label>
-                        <select id="category" name="category" style="display: none" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <th:block th:each="category : ${taskCategories}">
-                                <option th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == task.category.id}"></option>
-                            </th:block>
-                        </select>
-                    </td>
-                    <td>
-                        <span th:text="${task.taskName}" name="taskName" style="color: black" class="read-only"></span>
-                        <input th:value="${task.taskName}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.estimatedStartDate}" name="estimatedStartDate" class="read-only"></span>
-
-                        <input th:value="${task.estimatedStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.estimatedEndDate}" name="estimatedEndDate" class="read-only"></span>
-                        <input th:value="${task.estimatedEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.actualStartDate}" name="actualStartDate" class="read-only"></span>
-                        <input th:value="${task.actualStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" style="display: none">
-                    </td>
-                    <td>
-                        <span th:text="${task.actualEndDate}" name="actualEndDate" class="read-only"></span>
-                        <input th:value="${task.actualEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" style="display: none">
-                    </td>
-
-                    <td>
-                        <span th:text="${task.actualOutput}" name="actualOutput" class="read-only"></span>
-                        <input th:value="${task.actualOutput}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualOutput" style="display: none" placeholder="산출물">
-                    </td>
-                    <td>
-                        <div class="edit-delete-button">
-                            <button class="edit-button" th:data-task-id="${task.id}" th:onclick="'editTask('+${task.id}+')'" style="align-items:center; align-content: center; color: red">
-                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="gray" viewBox="0 0 20 20">
+        <div id="listView" class="hidden">
+            <div class="pc-window">
+                <div class="flex justify-end w-full text-left items-end text-xs text-gray-600 mb-2">파일 수정 시 반영이 지연될 수 있습니다. 잠시 후 새로고침 해주세요.</div>
+                <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full items-center text-center text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%">상태</th>
+                        <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 8%">진척률</th>
+                        <th scope="col" class="px-4 py-3 w-2/12 bg-gray-50 dark:bg-gray-800" style="width: 10%">대분류</th>
+                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">업무명</th>
+                        <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 8%">예상시작일</th>
+                        <th scope="col" class="px-4 py-6 w-4/12" style="width: 8%">예상마감일</th>
+                        <th scope="col" class="px-4 py-6 w-4/12 bg-gray-50 dark:bg-gray-800" style="width: 8%">실제시작일</th>
+                        <th scope="col" class="px-4 py-6 w-4/12" style="width: 8%">실제마감일</th>
+                        <th scope="col" class="px-4 py-3 w-1/12 bg-gray-50 dark:bg-gray-800" style="width: 20%">산출물</th>
+                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 5%">
+                            <button class="edit-button" onclick="editTask()" style="align-items:center; align-content: center; color: red">
+                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
                                     <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
                                 </svg>
                             </button>
-                            <button class="delete-button ml-2.5" th:data-task-id="${task.id}" th:onclick="'deleteTask('+this+','+${task.id}+')'" style="align-items:center; align-content: center; color: red">
-                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                    <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                            <button class="update-button" style="display: none" onclick="updateTask()">
+                                <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                    <path stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
                                 </svg>
                             </button>
-                        </div>
+                        </th>
 
-                        <button class="save-button" th:data-task-id="${task.id}" style="display: none" th:onclick="'saveTask('+${task.id}+')'">
-                            <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                <path stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-            </table>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="task : ${tasks}" th:id="${task.id}" class="taskRow border-t border-gray-200 dark:border-gray-700">
+
+                        <td name="state" class="px-4 py-3" th:text="${task.actualEndDate} == null ? '진행중' : '완료'"
+                            th:classappend="${task.actualEndDate} == null ? 'text-blue-600' : 'text-red-600'"></td>
+
+                        <td name="progress" class="px-4 py-3" th:text="${task.getProgress() != null ? task.getProgress() + '%' : ''}"></td>
+
+                        <td>
+                            <span th:text="${task.category.name}" name="category" class="read-only"></span>
+                            <label for="category"></label>
+                            <select id="category" name="category" style="display: none" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <th:block th:each="category : ${taskCategories}">
+                                    <option th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == task.category.id}"></option>
+                                </th:block>
+                            </select>
+                        </td>
+                        <td>
+                            <span th:text="${task.taskName}" name="taskName" style="color: black" class="read-only"></span>
+                            <input th:value="${task.taskName}" type="text" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="taskName" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.estimatedStartDate}" name="estimatedStartDate" class="read-only"></span>
+
+                            <input th:value="${task.estimatedStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedStartDate" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.estimatedEndDate}" name="estimatedEndDate" class="read-only"></span>
+                            <input th:value="${task.estimatedEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="estimatedEndDate" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.actualStartDate}" name="actualStartDate" class="read-only"></span>
+                            <input th:value="${task.actualStartDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualStartDate" style="display: none">
+                        </td>
+                        <td>
+                            <span th:text="${task.actualEndDate}" name="actualEndDate" class="read-only"></span>
+                            <input th:value="${task.actualEndDate}" type="date" class="edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="actualEndDate" style="display: none">
+                        </td>
+
+                        <td>
+                            <div th:each="file : ${task.files}">
+                                <a
+                                        class="read-only"
+                                        style="font-size: small"
+                                        th:href="@{'/download/' + ${file.id}}"
+                                        th:text="${file.origFilename}"
+                                ></a>
+                            </div>
+                            <div class="hidden edit-mode">
+                                <div class="flex">
+                                    <button style="width: 90%" th:id="'fileButton'+${task.id}" th:onclick="'fileInsert('+${task.id}+')'"
+                                            th:text="${task.files.isEmpty() ? '파일을 선택해주세요.' : task.files?.stream().findFirst()?.get().origFilename}"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    </button>
+                                    <button style="width: 10%" type="button" th:onclick="'fileDelete('+${task.id}+')'">X</button>
+                                    <input  th:id="'fileDeleteCheck'+${task.id}" class="hidden" type="checkbox" name="fileDeleteCheck">
+                                </div>
+                            </div>
+
+                            <input th:id="'fileInput'+${task.id}" tabindex="-1" class="upload_file hidden w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
+                        </td>
+                        <td>
+                            <div class="edit-delete-button">
+                                <button class="delete-button ml-2.5" th:data-task-id="${task.id}" th:onclick="'deleteTask('+this+','+${task.id}+')'" style="align-items:center; align-content: center; color: red">
+                                    <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                        <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="mobile-window hidden">
+                <h3>일정 등록 및 변경은 PC 환경을 이용해주세요.</h3>
+            </div>
             <div th:if="${tasks.size()==0}" style="width: 100%; padding: 48px; text-align: center">
                 작업이 존재하지 않습니다.
             </div>
+
         </div>
 
-        <hr />
-        <div class="mx-auto max-w-screen-xl mt-2.5" style="padding-top: 48px">
-            <h3 class="mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="text-align: center">지원내역</h3>
-
+        <div id="supportListView" class="hidden bg-gray-100 mx-auto w-full rounded-lg text-center items-center justify-center" >
+            <h3 class="mobile-window mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white" style="padding-top: 18px; text-align: center">지원내역</h3>
 
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                 <div class="max-h-64 overflow-hidden">
@@ -371,16 +407,16 @@
                         </thead>
                         <tbody>
                         <tr th:each="post : ${supports}" class="border-b dark:border-gray-700">
-                            <td class="px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                            <td class="px-4 py-3 th-pt projectName" th:text="${post.supportDate}">2020-01-01</td>
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
                                 <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                     <!-- 글자수를 최대 30자로 제한, NULL값 처리 -->
                                     <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
                                 </a>
                             </td>
-                            <td class="px-4 py-3" th:text="${post.product.name}"></td>
-                            <td class="px-4 py-3" th:text="${post.issue.name}"></td>
-                            <td class="px-4 py-3" th:text="${post.engineer.name}"></td>
+                            <td class="px-4 py-3 th-p0 productName" th:text="${post.product.name}"></td>
+                            <td class="px-4 py-3 th-p0" th:text="${post.issue.name}"></td>
+                            <td class="px-4 py-3 th-pb" th:text="${post.engineer.name}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -415,7 +451,7 @@
                                     <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                     <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
                                         <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                        <a th:href="@{detail(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
+                                        <a th:href="@{detail(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} + '#supportListView' : '#supportListView'}"
                                            th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
                                            th:text="${pageNo}">
                                         </a>
@@ -443,6 +479,14 @@
 </section>
 <div th:replace="footer :: footer"></div>
 <style>
+
+    .pc-window {
+        display: block;
+    }
+    .mobile-window {
+        display: none;
+    }
+
     pre{
         padding:10px;
         overflow: auto;
@@ -452,6 +496,90 @@
     th, td {
         padding: 8px 4px;
     }
+
+    .body {
+        padding: 0 120px 0 120px;
+    }
+
+    /* Mobile responsive styles */
+    @media (max-width: 640px) {
+
+        .body {
+            padding: 0px;
+        }
+
+
+        .mobile-window {
+            display: block;
+        }
+        .pc-window {
+            display: none;
+        }
+
+        .th-p0 {
+            padding-top: 0;
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .th-pb {
+            padding-top: 0;
+            font-size: 12px;
+        }
+
+        .th-pt {
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .productName{
+            display: none;
+        }
+
+        .projectName{
+            display: none;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        tbody {
+            width: 100%;
+        }
+
+        th,
+        td {
+            display: block;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+            display: none;
+
+        }
+
+        tbody tr {
+            margin-bottom: 5px;
+        }
+
+        tbody tr:last-child {
+            margin-bottom: 0;
+        }
+
+        th,
+        td {
+            padding: 0;
+        }
+
+        tbody,
+        td{
+            padding: 0;
+        }
+
+    }
+
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -462,47 +590,110 @@
 
 <script th:inline="javascript">
 
-    const tasks = /*[[${tasks}]]*/;
+    const currentPage = /*[[${currentPage }]]*/;
+    const totalPages = /*[[${totalPages }]]*/;
+
     const project = /*[[${project}]]*/;
+    const tasks = /*[[${tasks}]]*/;
+
+    let maxSize = 50 * 1024 * 1024; //* 한 파일 당 50MB 사이즈 용량 제한
+
+    $(document).ready(function () {
+        if (window.location.hash === '#listView') {
+            const listViewBtn = document.getElementById("listViewBtn");
+            listViewBtn.click();
+            removeLocationHash();
+        }
+        else if (window.location.hash === '#supportListView') {
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
+        }
+
+        $('.upload_file').change(function() {
+            var file = this.files[0];
+
+            if (file.size > maxSize) {
+                alert("파일 크기는 50MB 이하여야 합니다.");
+                $(this).val(''); // 선택한 파일 초기화
+                return;
+            }
+
+        });
+    });
+
+    function removeLocationHash(){
+        var noHashURL = window.location.href.replace(/#.*$/, '');
+        window.history.replaceState('', document.title, noHashURL)
+    }
 
     const loadingBar = document.getElementById('loadingBar');
     loadingBar.style.display = 'flex';
 
+    const visibleBtn = document.getElementById("visibleBtn");
+
     const chartViewBtn = document.getElementById("chartViewBtn");
     const listViewBtn = document.getElementById("listViewBtn");
+    const supportListViewBtn = document.getElementById("supportListViewBtn");
     const chartView = document.getElementById("chartView");
     const listView = document.getElementById("listView");
+    const supportListView = document.getElementById("supportListView");
+
+    const selectedClass = visibleBtn.className;
+    const unselectedClass = listViewBtn.className;
+
+    function reload(){
+        location.reload();
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
 
+        chartViewBtn.className = selectedClass;
         chartView.style.display = "block";
         listView.style.display = "none";
+        supportListView.style.display = "none";
 
-        // chartViewBtn의 스타일을 임시로 저장
-        const tempClass = chartViewBtn.className;
+        drawChartView()
+
 
         chartViewBtn.addEventListener("click", function () {
-            location.reload();
             chartView.style.display = "block";
             listView.style.display = "none";
-            chartViewBtn.className = listViewBtn.className;
-            listViewBtn.className = tempClass;
+            supportListView.style.display = "none";
+            chartViewBtn.className = selectedClass;
+            listViewBtn.className = unselectedClass;
+            supportListViewBtn.className = unselectedClass;
+
+            drawChartView()
+
         });
 
         listViewBtn.addEventListener("click", function () {
             chartView.style.display = "none";
             listView.style.display = "block";
-            chartViewBtn.className = listViewBtn.className;
-            listViewBtn.className = tempClass;
+            supportListView.style.display = "none";
+            chartViewBtn.className = unselectedClass;
+            listViewBtn.className = selectedClass;
+            supportListViewBtn.className = unselectedClass;
         });
+
+        supportListViewBtn.addEventListener("click", function () {
+            chartView.style.display = "none";
+            listView.style.display = "none";
+            supportListView.style.display = "block";
+            chartViewBtn.className = unselectedClass;
+            listViewBtn.className = unselectedClass;
+            supportListViewBtn.className = selectedClass;
+        });
+
     });
 
 
+    var originalRow = document.querySelector('#createTaskTable tbody tr');
 
     $(document).ready(function() {
         $("#addTaskButton").click(function() {
             // 기존 행을 복제하여 새로운 작업 행을 생성
-            var originalRow = document.querySelector('#createTaskTable tbody tr');
             var newRow = originalRow.cloneNode(true);
 
             // 입력 필드 초기화 (선택 필드를 초기 선택으로 설정하려면 선택 옵션의 value를 고려)
@@ -519,276 +710,153 @@
         });
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        // Add a click event listener to the "추가" (Add) button
-        const addTaskButton = document.getElementById("saveButton");
-        addTaskButton.addEventListener("click", function () {
-            // Collect data from the table rows and create a list of tasks
-            const taskList = [];
-            const taskRows = document.querySelectorAll(".task-row");
+    const initialChartView = document.getElementById("chartView").innerHTML;
 
-            taskRows.forEach(function (row) {
-                const task = {
-                    categoryId: row.querySelector("[name=category_create]").value,
-                    taskName: row.querySelector("[name=taskName]").value,
-                    estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
-                    estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
-                    actualStartDate: row.querySelector("[name=actualStartDate]").value,
-                    actualEndDate: row.querySelector("[name=actualEndDate]").value,
-                    actualOutput: row.querySelector("[name=actualOutput]").value,
-                };
-                taskList.push(task);
-            });
-
-            console.log(taskList)
-
-            // Send the taskList to the server using an AJAX request (Assuming you are using jQuery)
-            $.ajax({
-                url: "/task/save/"+project.id, // Replace with your actual server endpoint
-                method: "POST", // Use the appropriate HTTP method
-                contentType: "application/json",
-                data: JSON.stringify(taskList),
-                success: function (response) {
-                    // Handle the response from the server if needed
-                    location.reload();
-                },
-                error: function (error) {
-                    // Handle errors from the server
-                    console.error("Error saving tasks:", error);
-                },
-            });
-        });
-    });
-
-    function editTask(taskId) {
-        var taskRow = document.getElementById('taskRow_' + taskId);
-        var readOnlyFields = taskRow.getElementsByClassName('read-only');
-        var editFields = taskRow.getElementsByClassName('edit-mode');
-        var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
-        var saveButton = taskRow.getElementsByClassName('save-button')[0];
-
-        for (var i = 0; i < readOnlyFields.length; i++) {
-            readOnlyFields[i].style.display = 'none';
+    function drawChartView() {
+        if (tasks.length<1){
+            loadingBar.style.display = 'none';
         }
-
-        for (var i = 0; i < editFields.length; i++) {
-            editFields[i].style.display = 'block';
+        else {
+            document.getElementById("chartView").innerHTML = initialChartView;
+            google.charts.load("current", {packages: ["timeline"]});
+            google.charts.setOnLoadCallback(drawChart);
         }
-
-        editDeleteButton.style.display = 'none';
-        saveButton.style.display = 'block';
     }
 
-    function deleteTask(button, taskId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/task/delete/' + taskId);
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        xhr.send();
+    function drawChart() {
 
-        // 서버 응답 처리
-        xhr.onreadystatechange = function() {
-            if (xhr.status === 200) {
-                var row = button.closest('tr');
-                if (row) {
-                    row.remove();
-                }
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'Position' });
+        dataTable.addColumn({ type: 'string', id: 'Name' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addColumn({ type: 'string', role: 'tooltip', p: {'html': true}});
+
+        var earliestStartDate = new Date(tasks[0].estimatedStartDate);
+        var latestEndDate = new Date(tasks[0].estimatedEndDate);
+
+        for (var i = 0; i < tasks.length; i++) {
+            var estimatedStartDate = new Date(tasks[i].estimatedStartDate);
+            var actualStartDate = new Date(tasks[i].actualStartDate);
+            if (estimatedStartDate < earliestStartDate) {
+                earliestStartDate = estimatedStartDate;
             }
-        };
-
-    }
-    function saveTask(taskId) {
-        var taskRow = document.getElementById('taskRow_' + taskId);
-        var readOnlyFields = taskRow.getElementsByClassName('read-only');
-        var editFields = taskRow.getElementsByClassName('edit-mode');
-        var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
-        var saveButton = taskRow.getElementsByClassName('save-button')[0];
-
-        for (var i = 0; i < readOnlyFields.length; i++) {
-            readOnlyFields[i].style.display = 'block';
-        }
-
-        for (var i = 0; i < editFields.length; i++) {
-            editFields[i].style.display = 'none';
-        }
-
-        editDeleteButton.style.display = 'flex';
-        saveButton.style.display = 'none';
-
-        // 클라이언트에서 수정된 데이터를 가져오는 부분
-        var category = taskRow.querySelector('select[name="category"]').value;
-        var taskName = taskRow.querySelector('input[name="taskName"]').value;
-        var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
-        var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
-        var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
-        var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
-        var actualOutput = taskRow.querySelector('input[name="actualOutput"]').value;
-
-        var spanCategory = taskRow.querySelector('span[name="category"]');
-        var spanTaskName = taskRow.querySelector('span[name="taskName"]');
-        var spanEstimatedStartDate = taskRow.querySelector('span[name="estimatedStartDate"]');
-        var spanEstimatedEndDate = taskRow.querySelector('span[name="estimatedEndDate"]');
-        var spanActualStartDate = taskRow.querySelector('span[name="actualStartDate"]');
-        var spanActualEndDate = taskRow.querySelector('span[name="actualEndDate"]');
-        var spanActualOutput = taskRow.querySelector('span[name="actualOutput"]');
-        var tdProgress = taskRow.querySelector('td[name="progress"]');
-        var tdState = taskRow.querySelector('td[name="state"]');
-
-
-        // 수정된 데이터를 객체로 만들기
-        var updatedTask = {
-            categoryId: category,
-            taskName: taskName,
-            estimatedStartDate: estimatedStartDate,
-            estimatedEndDate: estimatedEndDate,
-            actualStartDate: actualStartDate,
-            actualEndDate: actualEndDate,
-            actualOutput: actualOutput
-        };
-
-        // 서버로 데이터를 전송
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/task/update/' + taskId);
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        xhr.send(JSON.stringify(updatedTask));
-
-        // 서버 응답 처리
-        xhr.onreadystatechange = function() {
-            if (xhr.status === 200) {
-
-                var selectElement = document.getElementById("category");
-                selectElement.addEventListener("change", function() {
-                    // 선택한 옵션의 텍스트 값을 가져와서 span 요소에 설정
-                    var selectedOption = selectElement.options[selectElement.selectedIndex];
-                    spanCategory.innerHTML = selectedOption.text;
-                });
-                spanTaskName.innerHTML  = taskName;
-                spanTaskName.innerHTML  = taskName;
-                spanEstimatedStartDate.innerHTML  = estimatedStartDate;
-                spanEstimatedEndDate.innerHTML  = estimatedEndDate;
-                spanActualStartDate.innerHTML  = actualStartDate;
-                spanActualEndDate.innerHTML  = actualEndDate;
-                spanActualOutput.innerHTML  = actualOutput;
-
-                if (xhr.responseText.length > 0){
-                    tdProgress.innerHTML  = JSON.parse(xhr.responseText)+'%';
-                }
-                else{
-                    tdProgress.innerHTML = '';
-                }
-                if (actualStartDate != '' && actualEndDate != ''){
-                    tdState.innerHTML  = '완료';
-                    tdState.style.color = 'red';
-                }
-                else {
-                    tdState.innerHTML  = '진행중';
-                    tdState.style.color = 'blue';
-                }
-
-
-
+            if ( (tasks[i].actualStartDate != null) && (actualStartDate < earliestStartDate)) {
+                earliestStartDate = actualStartDate;
             }
-        };
-    }
 
+            var estimatedEndDate = new Date(tasks[i].estimatedEndDate);
+            var actualEndDate = new Date(tasks[i].actualEndDate);
+            if (estimatedEndDate > latestEndDate) {
+                latestEndDate = estimatedEndDate;
+            }
+            if (actualEndDate > latestEndDate) {
+                latestEndDate = actualEndDate;
+            }
+        }
 
-
-    google.charts.load("current", {packages: ["timeline"]});
-    google.charts.setOnLoadCallback(drawCharts);
-
-
-
-    function drawCharts() {
-        const tasks = /*[[${tasks}]]*/;
+        var taskData = [];
 
         tasks.forEach(function (task) {
+            var estimatedStartDate = task.estimatedStartDate ? new Date(task.estimatedStartDate) : null;
+            var estimatedEndDate = task.estimatedEndDate ? new Date(task.estimatedEndDate) : null;
+            var actualStartDate = task.actualStartDate ? new Date(task.actualStartDate) : null;
+            var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
 
-            var earliestStartDate = new Date(tasks[0].estimatedStartDate);
-            var latestEndDate = new Date(tasks[0].estimatedEndDate);
+            const chartCategory = document.getElementById("chartCategory"+task.category.id);
 
-            for (var i = 0; i < tasks.length; i++) {
-                var estimatedStartDate = new Date(tasks[i].estimatedStartDate);
-                var actualStartDate = new Date(tasks[i].actualStartDate);
-                if (estimatedStartDate < earliestStartDate) {
-                    earliestStartDate = estimatedStartDate;
+            if (chartCategory.classList.contains('hidden')){
+                chartCategory.classList.remove('hidden');
+                chartCategory.style.height = '0px';
+            }
+
+            var rowLabel = task.id + ' & ' + task.taskName;
+
+            var tooltipContents =
+                "<div style='padding: 18px'>" +
+                "<h3>" +task.category.name+ "<h3>" +
+                "<p style='font-weight: bold'>" +task.taskName+ "<p><hr style='margin-top: 4px;'>" ;
+
+            if (estimatedStartDate !== null || estimatedEndDate !== null) {
+
+                var tooltipContent = tooltipContents + "<br>"  + task.estimatedStartDate + "   ~   " + task.estimatedEndDate + "<br><p style='font-size: small; font-weight: bold; color: dimgray'>예정</p></div>";
+
+                taskData.push([rowLabel, '예정', estimatedStartDate, estimatedEndDate, tooltipContent]);
+                $('#chartCategory'+task.category.id).css( "height", "+=40.99px" );
+            }
+
+            if (actualStartDate !== null ) {
+
+                if (task.actualEndDate == null){
+                    var tooltipContent = tooltipContents + "<br>"  +  task.actualStartDate  + "   ~   " + "<br><p style='font-size: small; font-weight: bold; color: blue'>실제</p></div>";
+
+                    taskData.push([rowLabel, '실제', actualStartDate, latestEndDate, tooltipContent]);
                 }
-                if ( (tasks[i].actualStartDate != null) && (actualStartDate < earliestStartDate)) {
-                    earliestStartDate = actualStartDate;
+                else{
+                    var tooltipContent = tooltipContents + "<br>"  +  task.actualStartDate  + "   ~   " +task.actualEndDate + "<br><p style='font-size: small; font-weight: bold; color: blue'>실제</p></div>";
+
+                    taskData.push([rowLabel, '실제', actualStartDate, actualEndDate, tooltipContent]);
                 }
 
-                var estimatedEndDate = new Date(tasks[i].estimatedEndDate);
-                var actualEndDate = new Date(tasks[i].actualEndDate);
-                if (estimatedEndDate > latestEndDate) {
-                    latestEndDate = estimatedEndDate;
-                }
-                if (actualEndDate > latestEndDate) {
-                    latestEndDate = actualEndDate;
+                if (estimatedEndDate > actualStartDate){
+                    $('#chartCategory'+task.category.id).css( "height", "+=30px" );
                 }
             }
 
-            var categoryId = task.category.id;
-            var containerId = 'timeline' + categoryId;
-            var container = document.getElementById(containerId);
+        });
 
-            var containerTitleId = 'timelineTitle' + categoryId;
-            var containerTitle = document.getElementById(containerTitleId);
-            containerTitle.style.display = 'flex';
+        dataTable.addRows(taskData);
 
-            var chart = new google.visualization.Timeline(container);
-            var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn({ type: 'string', id: 'Position' });
-            dataTable.addColumn({ type: 'string', id: 'Name' });
-            dataTable.addColumn({ type: 'date', id: 'Start' });
-            dataTable.addColumn({ type: 'date', id: 'End' });
+        var paddingHeight = 40;
+        var rowHeight = taskData.length * 55;
+        var chartHeight = rowHeight + paddingHeight;
 
-            var taskData = [];
+        var options = {
+            colors: ['rgb(107, 114, 128)', 'rgb(29, 78, 216)'],
+            timeline: {
+                groupByRowLabel: true,
+                alternatingRowStyle: true,
+                colorByRowLabel: false
+            },
+            hAxis: {
+                format: 'MM/dd',
+                ticks: dataTable.getDistinctValues(0)
+            },
+            width : '100%',
+            height: chartHeight,
+            chartArea: {
+                height: rowHeight,
+            }
+        };
 
-            var categoryTasks = tasks.filter(function (t) {
-                return t.category.id === categoryId;
-            });
+        chart.draw(dataTable, options);
 
+        function myHandler(e){
+            if(e.row != null){
+                $(".google-visualization-tooltip").html(dataTable.getValue(e.row,4)).css({width:"auto",height:"auto"});
+            }
+        }
 
-            categoryTasks.forEach(function (task) {
-                var estimatedStartDate = task.estimatedStartDate ? new Date(task.estimatedStartDate) : null;
-                var estimatedEndDate = task.estimatedEndDate ? new Date(task.estimatedEndDate) : null;
-                var actualStartDate = task.actualStartDate ? new Date(task.actualStartDate) : null;
-                var actualEndDate = task.actualEndDate ? new Date(task.actualEndDate) : null;
+        google.visualization.events.addListener(chart, 'onmouseover', myHandler);
 
-                if (estimatedStartDate !== null || estimatedEndDate !== null) {
-                    taskData.push([task.taskName, 'expected', estimatedStartDate, estimatedEndDate]);
-                }
+        // 같은 row label을 가질 경우를 대비한 후처리
 
-                if (actualStartDate !== null ) {
-                    if (task.actualEndDate == null){
-                        taskData.push([task.taskName, 'actual', actualStartDate, latestEndDate]);
-                    }
-                    else{
-                        taskData.push([task.taskName, 'actual', actualStartDate, actualEndDate]);
-                    }
-                }
-            });
+        // google timeline chart의 row label을 찾기
+        var elements = document.querySelectorAll('[text-anchor="end"]');
 
-            dataTable.addRows(taskData);
-
-            var options = {
-                timeline: {
-                    groupByRowLabel: true,
-                    alternatingRowStyle: true,
-                    colorByRowLabel: false
-                },
-                hAxis: {
-                    format: 'yy.MM.dd',
-                    ticks: dataTable.getDistinctValues(0),
-                    minValue: earliestStartDate,
-                    maxValue: latestEndDate
-                }
-            };
-
-            chart.draw(dataTable, options);
-
+        // 각 요소에서 id를 삭제한 뒤 taskName 만 포함하게 row label 수정
+        elements.forEach(function(element) {
+            var textContent = element.textContent;
+            if (textContent.includes('&')){
+                var taskName = textContent.split('&')[1].trim();
+                element.textContent = taskName;
+            }
         });
 
         loadingBar.style.display = 'none';
-
     }
 
     document.getElementById("csvDownloadBtn").addEventListener("click", function() {
@@ -796,7 +864,6 @@
     });
 
     function excelPrint() {
-        // PDF 생성 요청을 서버로 보냅니다.
         fetch('/generateExcel?projectId=' + project.id, {
             method: 'GET',
             headers: {
@@ -805,11 +872,14 @@
         })
             .then(response => response.blob())
             .then(blob => {
-                // 서버에서 받은 PDF 파일을 다운로드합니다.
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = project.name+'_'+project.uniqueCode;
+                if (project.uniqueCode !== null) {
+                    a.download = project.name + '_' + project.uniqueCode;
+                } else {
+                    a.download = project.name;
+                }
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -818,8 +888,6 @@
                 console.error('Error generating EXCEL:', error);
             });
     }
-
-
 
     /**
      *     프로젝트 수정
@@ -845,10 +913,6 @@
 
     }
 
-
-    const currentPage = /*[[${currentPage }]]*/;
-    const totalPages = /*[[${totalPages }]]*/;
-
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const queryParams = {};
@@ -862,24 +926,21 @@
 
         prevBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            console.log(currentPage);
             if (currentPage >= 5) {
                 const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = prevPage+1;
-                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
             }
         });
 
         nextBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            if (currentPage < totalPages - 1) {
+            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
                 const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
-                console.log(nextPage);
-
                 const currentParams = getCurrentURLParams();
                 currentParams['page'] = nextPage+1;
-                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString();
+                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
             }
         });
     });
@@ -911,6 +972,348 @@
             }
         }
     });
+
+    function updateTask() {
+        var taskRows = document.querySelectorAll('.taskRow');
+        var saveButton = document.getElementsByClassName('update-button')[0];
+        var editButton = document.getElementsByClassName('edit-button')[0];
+        saveButton.style.display = 'none';
+        editButton.style.display = 'block';
+
+        let hasValidTask = false;
+
+        for (let i = 0; i < taskRows.length; i++) {
+            const taskRow = taskRows[i];
+            var taskId = taskRow.id;
+
+            var readOnlyFields = taskRow.getElementsByClassName('read-only');
+            var editFields = taskRow.getElementsByClassName('edit-mode');
+            var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
+
+            for (var j = 0; j < readOnlyFields.length; j++) {
+                readOnlyFields[j].style.display = 'block';
+            }
+
+            for (var z = 0; z < editFields.length; z++) {
+                editFields[z].style.display = 'none';
+            }
+
+            editDeleteButton.style.display = 'flex';
+
+            // 클라이언트에서 수정된 데이터를 가져오는 부분
+            var category = taskRow.querySelector('select[name="category"]').value;
+            var taskName = taskRow.querySelector('input[name="taskName"]').value;
+            var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
+            var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
+            var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
+            var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
+            var actualOutput = taskRow.querySelector('input[name="actualOutput"]');
+            var fileDeleteCheck = taskRow.querySelector('input[name="fileDeleteCheck"]').checked;
+
+            // 수정된 데이터를 객체로 만들기
+            var updatedTask = {
+                categoryId: category,
+                taskName: taskName,
+                estimatedStartDate: estimatedStartDate,
+                estimatedEndDate: estimatedEndDate,
+                actualStartDate: actualStartDate,
+                actualEndDate: actualEndDate,
+                fileDeleted: fileDeleteCheck
+            };
+
+            if (
+                updatedTask.categoryId !== '' &&
+                updatedTask.taskName !== '' &&
+                updatedTask.estimatedStartDate !== '' &&
+                updatedTask.estimatedEndDate !== ''
+            ) {
+                if (checkDateFormat(updatedTask.estimatedStartDate) && checkDateFormat(updatedTask.estimatedEndDate)) {
+                    if (updatedTask.actualStartDate !== '' || updatedTask.actualEndDate !== '') {
+                        if (updatedTask.actualStartDate === '' && updatedTask.actualEndDate !== '') {
+                            alert("실제 시작일이 누락되었지만 실제 종료일이 존재합니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+
+                        if (
+                            (updatedTask.actualStartDate !== '' && checkDateFormat(updatedTask.actualStartDate)) ||
+                            (updatedTask.actualEndDate !== '' && checkDateFormat(updatedTask.actualEndDate))
+                        ) {
+                            hasValidTask = true;
+                        } else {
+                            alert("실제 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+                    } else {
+                        hasValidTask = true;
+                    }
+                } else {
+                    alert("예상 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                    hasValidTask = false;
+                    break;
+                }
+            } else {
+                alert("일정 내용을 정확히 입력해주세요.");
+                hasValidTask = false;
+                break;
+            }
+        }
+
+        if (hasValidTask){
+            for (let i = 0; i < taskRows.length; i++) {
+                const taskRow = taskRows[i];
+                var taskId = taskRow.id;
+
+                // 클라이언트에서 수정된 데이터를 가져오는 부분
+                var category = taskRow.querySelector('select[name="category"]').value;
+                var taskName = taskRow.querySelector('input[name="taskName"]').value;
+                var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
+                var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
+                var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
+                var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
+                var actualOutput = taskRow.querySelector('input[name="actualOutput"]');
+                var fileDeleteCheck = taskRow.querySelector('input[name="fileDeleteCheck"]').checked;
+
+                // 수정된 데이터를 객체로 만들기
+                var updatedTask = {
+                    categoryId: category,
+                    taskName: taskName,
+                    estimatedStartDate: estimatedStartDate,
+                    estimatedEndDate: estimatedEndDate,
+                    actualStartDate: actualStartDate,
+                    actualEndDate: actualEndDate,
+                    fileDeleted: fileDeleteCheck
+                };
+
+                const formData = new FormData();
+                formData.append('file', actualOutput.files[0]);
+                formData.append("json", new Blob([JSON.stringify(updatedTask)], {type: "application/json"}));
+
+                $.ajax({
+                    url: "/task/update/" + taskId,
+                    method: "post",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    enctype: "multipart/form-data",
+                    success: function (result) {
+                        window.location.hash = 'listView';
+                        window.location.reload();
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
+
+        }
+    }
+
+
+    function createTask() {
+
+        const taskRows = document.querySelectorAll(".task-row");
+
+        let hasValidTask = false;
+
+        for (let i = 0; i < taskRows.length; i++) {
+            const row = taskRows[i];
+
+            const task = {
+                categoryId: row.querySelector("[name=category_create]").value,
+                taskName: row.querySelector("[name=taskName]").value,
+                estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
+                estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
+                actualStartDate: row.querySelector("[name=actualStartDate]").value,
+                actualEndDate: row.querySelector("[name=actualEndDate]").value
+            };
+
+            const outputFile = row.querySelector("[name=actualOutput]").files[0];
+
+            const formData = new FormData();
+            formData.append('file', outputFile);
+            formData.append("json", new Blob([JSON.stringify(task)], {type: "application/json"}));
+
+
+            if (
+                task.categoryId !== '' &&
+                task.taskName !== '' &&
+                task.estimatedStartDate !== '' &&
+                task.estimatedEndDate !== ''
+            ) {
+                if (checkDateFormat(task.estimatedStartDate) && checkDateFormat(task.estimatedEndDate)) {
+                    if (task.actualStartDate !== '' || task.actualEndDate !== '') {
+                        if (task.actualStartDate === '' && task.actualEndDate !== '') {
+                            alert("실제 시작일이 누락되었지만 실제 종료일이 존재합니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+
+                        if (
+                            (task.actualStartDate !== '' && checkDateFormat(task.actualStartDate)) ||
+                            (task.actualEndDate !== '' && checkDateFormat(task.actualEndDate))
+                        ) {
+                            hasValidTask = true;
+                        } else {
+                            alert("실제 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+                    } else {
+                        hasValidTask = true;
+                    }
+                } else {
+                    alert("예상 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                    hasValidTask = false;
+                    break;
+                }
+            } else {
+                alert("일정 내용을 정확히 입력해주세요.");
+                hasValidTask = false;
+                break;
+            }
+        }
+
+        if (hasValidTask){
+
+            taskRows.forEach(function (row) {
+                const task = {
+                    categoryId: row.querySelector("[name=category_create]").value,
+                    taskName: row.querySelector("[name=taskName]").value,
+                    estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
+                    estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
+                    actualStartDate: row.querySelector("[name=actualStartDate]").value,
+                    actualEndDate: row.querySelector("[name=actualEndDate]").value
+                };
+
+                const outputFile = row.querySelector("[name=actualOutput]").files[0];
+
+                const formData = new FormData();
+                formData.append('file', outputFile);
+                formData.append("json", new Blob([JSON.stringify(task)], {type: "application/json"}));
+
+                $.ajax({
+                    url: "/task/save/" + project.id,
+                    method: "post",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    enctype: "multipart/form-data",
+                    success: function (result) {
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            });
+        }
+
+    }
+
+    function fileInsert(taskId){
+
+        // 파일 입력 필드
+        const fileInput = document.getElementById("fileInput"+taskId);
+
+        // 파일 버튼
+        const fileButton = document.getElementById("fileButton"+taskId);
+
+        const fileDeleteCheck = document.getElementById("fileDeleteCheck"+taskId);
+
+        fileInput.click();
+
+        // 파일 입력 필드의 변경 이벤트 처리
+        fileInput.addEventListener("change", function () {
+            const selectedFile = fileInput.files[0];
+
+            if (selectedFile) {
+                fileDeleteCheck.checked = false;
+                fileButton.innerText = selectedFile.name; // 파일명으로 버튼 텍스트 업데이트
+            } else {
+                fileDeleteCheck.checked = true;
+                fileButton.innerText = "파일을 선택해주세요.";
+            }
+        });
+    }
+
+    function fileDelete(taskId){
+
+        // 파일 입력 필드
+        const fileInput = document.getElementById("fileInput"+taskId);
+        // 파일 버튼
+        const fileButton = document.getElementById("fileButton"+taskId);
+
+        const fileDeleteCheck = document.getElementById("fileDeleteCheck"+taskId);
+
+        fileDeleteCheck.checked = true;
+        fileInput.value = '';
+        fileButton.innerText = "파일을 선택해주세요.";
+    }
+
+    function deleteNewTask(row){
+
+        var table = row.closest("table"); // Find the closest table
+        var rows = table.querySelectorAll("tbody tr"); // Get all <tr> elements within the table
+        if (rows.length > 1) {
+            row.closest("tr").remove();
+        }
+
+    }
+    function editTask() {
+
+        var taskRows = document.querySelectorAll('.taskRow')
+        var saveButton = document.getElementsByClassName('update-button')[0];
+        var editButton = document.getElementsByClassName('edit-button')[0];
+        saveButton.style.display = 'block';
+        editButton.style.display = 'none';
+
+        taskRows.forEach(function (taskRow) {
+            var readOnlyFields = taskRow.getElementsByClassName('read-only');
+            var editFields = taskRow.getElementsByClassName('edit-mode');
+            var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
+
+            for (var i = 0; i < readOnlyFields.length; i++) {
+                readOnlyFields[i].style.display = 'none';
+            }
+
+            for (var i = 0; i < editFields.length; i++) {
+                editFields[i].style.display = 'block';
+            }
+
+            editDeleteButton.style.display = 'none';
+        })
+
+    }
+
+    function deleteTask(button, taskId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/task/delete/' + taskId);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send();
+
+        // 서버 응답 처리
+        xhr.onreadystatechange = function() {
+            if (xhr.status === 200) {
+                var row = button.closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+        };
+
+    }
+
+    function checkDateFormat(dateValue){
+        var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (!datePattern.test(dateValue)) {
+            return false;
+        }
+        else
+            return true;
+    }
 
 </script>
 <style>

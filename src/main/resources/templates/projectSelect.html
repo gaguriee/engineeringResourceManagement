@@ -146,11 +146,11 @@
                         </thead>
                         <tbody>
                         <tr th:each="project : ${projects}" class="border-b dark:border-gray-700">
-                            <td class="px-4 py-3" th:text="${project.client.name}">고객사</td>
-                            <td class="px-4 py-3"  th:text="${project.uniqueCode}">2000-0000</td>
+                            <td class="px-4 py-3" th:text="${project.company.companyName}">고객사</td>
+                            <td class="px-4 py-3"  th:text="${project.projectCode}">2000-0000</td>
                             <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
-                                <a href="#" th:onclick="setProject([[${project.id}]], [[${project.name}]])"
-                                   th:text="${project.name}" class="hover:text-primary-700 dark:hover:text-primary-500">
+                                <a href="#" th:onclick="setProject([[${project.projectGuid}]], [[${project.projectName}]])"
+                                   th:text="${project.projectName}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 </a>
                             </td>
                         </tr>
