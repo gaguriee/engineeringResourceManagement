@@ -3,6 +3,7 @@ package com.example.smstest.domain.file;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.net.UnknownHostException;
 
 @Service
 public class FileService {
@@ -13,7 +14,7 @@ public class FileService {
     }
 
     @Transactional
-    public File saveFile(FileDto fileDto) {
+    public File saveFile(FileDto fileDto) throws UnknownHostException {
         return fileRepository.save(fileDto.toEntity());
     }
 

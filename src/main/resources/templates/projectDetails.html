@@ -171,7 +171,7 @@
                 </div>
                 <div class="block" style="position: absolute; bottom: 10px; right: 10px;">
                     <div class="flex items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600" style="padding-left: 0px">
-                        <button id="saveButton" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
+                        <button id="saveButton" onclick="createTask()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">작업 저장</button>
                         <button data-modal-toggle="addTaskModal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">취소</button>
                     </div>
                 </div>
@@ -254,7 +254,7 @@
 
         <div id="chartView" class="hidden block" >
             <div class="w-full h-10">
-                <button id="refreshChartBtn" class="mb-2.5" style="float: right;">
+                <button id="refreshChartBtn" type="button" onclick="reload()" class="mb-2.5" style="float: right;">
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
                     </svg>
@@ -279,6 +279,7 @@
 
         <div id="listView" class="hidden">
             <div class="pc-window">
+                <div class="flex justify-end w-full text-left items-end text-xs text-gray-600 mb-2">파일 수정 시 반영이 지연될 수 있습니다. 잠시 후 새로고침 해주세요.</div>
                 <table th:if="${tasks.size()!=0}" id="taskTable" class="w-full items-center text-center text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -297,7 +298,7 @@
                                     <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
                                 </svg>
                             </button>
-                            <button class="save-button" style="display: none" onclick="saveTask()">
+                            <button class="update-button" style="display: none" onclick="updateTask()">
                                 <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
                                     <path stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
                                 </svg>
@@ -354,10 +355,17 @@
                                         th:text="${file.origFilename}"
                                 ></a>
                             </div>
-                            <button th:id="'fileButton'+${task.id}" th:onclick="'fileInsert('+${task.id}+')'"
-                                    th:text="${task.files.isEmpty() ? '파일을 선택해주세요.' : task.files?.stream().findFirst()?.get().origFilename}"
-                                    class="hidden edit-mode bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            </button>
+                            <div class="hidden edit-mode">
+                                <div class="flex">
+                                    <button style="width: 90%" th:id="'fileButton'+${task.id}" th:onclick="'fileInsert('+${task.id}+')'"
+                                            th:text="${task.files.isEmpty() ? '파일을 선택해주세요.' : task.files?.stream().findFirst()?.get().origFilename}"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    </button>
+                                    <button style="width: 10%" type="button" th:onclick="'fileDelete('+${task.id}+')'">X</button>
+                                    <input  th:id="'fileDeleteCheck'+${task.id}" class="hidden" type="checkbox" name="fileDeleteCheck">
+                                </div>
+                            </div>
+
                             <input th:id="'fileInput'+${task.id}" tabindex="-1" class="upload_file hidden w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="actualOutput">
                         </td>
                         <td>
@@ -630,12 +638,13 @@
     const chartView = document.getElementById("chartView");
     const listView = document.getElementById("listView");
     const supportListView = document.getElementById("supportListView");
-    const refreshChartBtn = document.getElementById("refreshChartBtn");
 
     const selectedClass = visibleBtn.className;
     const unselectedClass = listViewBtn.className;
 
-    const supportHistory = /*[[${supportHistory}]]*/;
+    function reload(){
+        location.reload();
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -646,9 +655,6 @@
 
         drawChartView()
 
-        refreshChartBtn.addEventListener("click", function () {
-            location.reload();
-        });
 
         chartViewBtn.addEventListener("click", function () {
             chartView.style.display = "block";
@@ -704,215 +710,6 @@
         });
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const addTaskButton = document.getElementById("saveButton");
-        addTaskButton.addEventListener("click", function () {
-            const taskRows = document.querySelectorAll(".task-row");
-
-            taskRows.forEach(function (row) {
-                const task = {
-                    categoryId: row.querySelector("[name=category_create]").value,
-                    taskName: row.querySelector("[name=taskName]").value,
-                    estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
-                    estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
-                    actualStartDate: row.querySelector("[name=actualStartDate]").value,
-                    actualEndDate: row.querySelector("[name=actualEndDate]").value
-                };
-
-                if (
-                    task.categoryId !== '' ||
-                    task.taskName !== '' ||
-                    task.estimatedStartDate !== '' ||
-                    task.estimatedEndDate !==  ''
-                ) {
-                    const outputFile = row.querySelector("[name=actualOutput]").files[0];
-
-                    const formData = new FormData();
-                    formData.append('file', outputFile);
-                    formData.append("json", new Blob([JSON.stringify(task)], {type: "application/json"}));
-
-                    $.ajax({
-                        url: "/task/save/"+project.id,
-                        method: "post",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        enctype: "multipart/form-data",
-                        success: function(result) {
-                            location.reload();
-                        },
-                        error: function(xhr) {
-                            console.log(xhr);
-                        }
-                    });
-                }
-
-            });
-
-        });
-    });
-
-    var MaxSize = 100;
-
-
-
-
-    function fileInsert(taskId){
-
-        // 파일 입력 필드
-        const fileInput = document.getElementById("fileInput"+taskId);
-
-        // 파일 버튼
-        const fileButton = document.getElementById("fileButton"+taskId);
-
-        fileInput.click();
-
-        // 파일 입력 필드의 변경 이벤트 처리
-        fileInput.addEventListener("change", function () {
-            const selectedFile = fileInput.files[0];
-
-            if (selectedFile) {
-                fileButton.innerText = selectedFile.name; // 파일명으로 버튼 텍스트 업데이트
-            } else {
-                fileButton.innerText = "파일을 선택해주세요.";
-            }
-        });
-    }
-    function deleteNewTask(row){
-
-        var table = row.closest("table"); // Find the closest table
-        var rows = table.querySelectorAll("tbody tr"); // Get all <tr> elements within the table
-        if (rows.length > 1) {
-            row.closest("tr").remove();
-        }
-
-    }
-    function editTask() {
-
-        var taskRows = document.querySelectorAll('.taskRow')
-        var saveButton = document.getElementsByClassName('save-button')[0];
-        var editButton = document.getElementsByClassName('edit-button')[0];
-        saveButton.style.display = 'block';
-        editButton.style.display = 'none';
-
-        taskRows.forEach(function (taskRow) {
-            var readOnlyFields = taskRow.getElementsByClassName('read-only');
-            var editFields = taskRow.getElementsByClassName('edit-mode');
-            var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
-
-            for (var i = 0; i < readOnlyFields.length; i++) {
-                readOnlyFields[i].style.display = 'none';
-            }
-
-            for (var i = 0; i < editFields.length; i++) {
-                editFields[i].style.display = 'block';
-            }
-
-            editDeleteButton.style.display = 'none';
-        })
-
-    }
-
-    function deleteTask(button, taskId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/task/delete/' + taskId);
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        xhr.send();
-
-        // 서버 응답 처리
-        xhr.onreadystatechange = function() {
-            if (xhr.status === 200) {
-                var row = button.closest('tr');
-                if (row) {
-                    row.remove();
-                }
-            }
-        };
-
-    }
-    function saveTask() {
-
-        var taskRows = document.querySelectorAll('.taskRow')
-        var saveButton = document.getElementsByClassName('save-button')[0];
-        var editButton = document.getElementsByClassName('edit-button')[0];
-        saveButton.style.display = 'none';
-        editButton.style.display = 'block';
-
-        taskRows
-            .forEach(function (taskRow) {
-            var taskId = taskRow.id;
-
-            var readOnlyFields = taskRow.getElementsByClassName('read-only');
-            var editFields = taskRow.getElementsByClassName('edit-mode');
-            var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
-
-            for (var i = 0; i < readOnlyFields.length; i++) {
-                readOnlyFields[i].style.display = 'block';
-            }
-
-            for (var i = 0; i < editFields.length; i++) {
-                editFields[i].style.display = 'none';
-            }
-
-            editDeleteButton.style.display = 'flex';
-
-            // 클라이언트에서 수정된 데이터를 가져오는 부분
-            var category = taskRow.querySelector('select[name="category"]').value;
-            var taskName = taskRow.querySelector('input[name="taskName"]').value;
-            var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
-            var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
-            var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
-            var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
-            var actualOutput = taskRow.querySelector('input[name="actualOutput"]');
-
-            // 수정된 데이터를 객체로 만들기
-            var updatedTask = {
-                categoryId: category,
-                taskName: taskName,
-                estimatedStartDate: estimatedStartDate,
-                estimatedEndDate: estimatedEndDate,
-                actualStartDate: actualStartDate,
-                actualEndDate: actualEndDate
-            };
-
-
-            if (
-                    updatedTask.categoryId === null ||
-                    updatedTask.taskName === null ||
-                    updatedTask.estimatedStartDate === null ||
-                    updatedTask.estimatedEndDate === null
-                ) {
-                    alert("작업 일정을 정확하게 입력해주세요.");
-                    return false;
-            }
-
-            const formData = new FormData();
-            formData.append('file', actualOutput.files[0]);
-            formData.append("json", new Blob([JSON.stringify(updatedTask)], {type: "application/json"}));
-
-            $.ajax({
-                    url: "/task/update/"+taskId,
-                    method: "post",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    enctype: "multipart/form-data",
-                    success: function(result) {
-
-                        window.location.hash = 'listView';
-                        window.location.reload();
-
-                        },
-                    error: function(xhr) {
-                        console.log(xhr);
-                    }
-                });
-
-        })
-
-
-    }
-
     const initialChartView = document.getElementById("chartView").innerHTML;
 
     function drawChartView() {
@@ -936,6 +733,7 @@
         dataTable.addColumn({ type: 'string', id: 'Name' });
         dataTable.addColumn({ type: 'date', id: 'Start' });
         dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addColumn({ type: 'string', role: 'tooltip', p: {'html': true}});
 
         var earliestStartDate = new Date(tasks[0].estimatedStartDate);
         var latestEndDate = new Date(tasks[0].estimatedEndDate);
@@ -977,20 +775,32 @@
 
             var rowLabel = task.id + ' & ' + task.taskName;
 
+            var tooltipContents =
+                "<div style='padding: 18px'>" +
+                "<h3>" +task.category.name+ "<h3>" +
+                "<p style='font-weight: bold'>" +task.taskName+ "<p><hr style='margin-top: 4px;'>" ;
+
             if (estimatedStartDate !== null || estimatedEndDate !== null) {
-                taskData.push([rowLabel, '예정', estimatedStartDate, estimatedEndDate]);
+
+                var tooltipContent = tooltipContents + "<br>"  + task.estimatedStartDate + "   ~   " + task.estimatedEndDate + "<br><p style='font-size: small; font-weight: bold; color: dimgray'>예정</p></div>";
+
+                taskData.push([rowLabel, '예정', estimatedStartDate, estimatedEndDate, tooltipContent]);
                 $('#chartCategory'+task.category.id).css( "height", "+=40.99px" );
             }
 
             if (actualStartDate !== null ) {
+
                 if (task.actualEndDate == null){
-                    taskData.push([rowLabel, '실제', actualStartDate, latestEndDate]);
+                    var tooltipContent = tooltipContents + "<br>"  +  task.actualStartDate  + "   ~   " + "<br><p style='font-size: small; font-weight: bold; color: blue'>실제</p></div>";
+
+                    taskData.push([rowLabel, '실제', actualStartDate, latestEndDate, tooltipContent]);
                 }
                 else{
-                    taskData.push([rowLabel, '실제', actualStartDate, actualEndDate]);
+                    var tooltipContent = tooltipContents + "<br>"  +  task.actualStartDate  + "   ~   " +task.actualEndDate + "<br><p style='font-size: small; font-weight: bold; color: blue'>실제</p></div>";
+
+                    taskData.push([rowLabel, '실제', actualStartDate, actualEndDate, tooltipContent]);
                 }
 
-                console.log()
                 if (estimatedEndDate > actualStartDate){
                     $('#chartCategory'+task.category.id).css( "height", "+=30px" );
                 }
@@ -1023,6 +833,14 @@
         };
 
         chart.draw(dataTable, options);
+
+        function myHandler(e){
+            if(e.row != null){
+                $(".google-visualization-tooltip").html(dataTable.getValue(e.row,4)).css({width:"auto",height:"auto"});
+            }
+        }
+
+        google.visualization.events.addListener(chart, 'onmouseover', myHandler);
 
         // 같은 row label을 가질 경우를 대비한 후처리
 
@@ -1057,7 +875,11 @@
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = project.name+'_'+project.uniqueCode;
+                if (project.uniqueCode !== null) {
+                    a.download = project.name + '_' + project.uniqueCode;
+                } else {
+                    a.download = project.name;
+                }
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -1150,6 +972,348 @@
             }
         }
     });
+
+    function updateTask() {
+        var taskRows = document.querySelectorAll('.taskRow');
+        var saveButton = document.getElementsByClassName('update-button')[0];
+        var editButton = document.getElementsByClassName('edit-button')[0];
+        saveButton.style.display = 'none';
+        editButton.style.display = 'block';
+
+        let hasValidTask = false;
+
+        for (let i = 0; i < taskRows.length; i++) {
+            const taskRow = taskRows[i];
+            var taskId = taskRow.id;
+
+            var readOnlyFields = taskRow.getElementsByClassName('read-only');
+            var editFields = taskRow.getElementsByClassName('edit-mode');
+            var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
+
+            for (var j = 0; j < readOnlyFields.length; j++) {
+                readOnlyFields[j].style.display = 'block';
+            }
+
+            for (var z = 0; z < editFields.length; z++) {
+                editFields[z].style.display = 'none';
+            }
+
+            editDeleteButton.style.display = 'flex';
+
+            // 클라이언트에서 수정된 데이터를 가져오는 부분
+            var category = taskRow.querySelector('select[name="category"]').value;
+            var taskName = taskRow.querySelector('input[name="taskName"]').value;
+            var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
+            var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
+            var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
+            var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
+            var actualOutput = taskRow.querySelector('input[name="actualOutput"]');
+            var fileDeleteCheck = taskRow.querySelector('input[name="fileDeleteCheck"]').checked;
+
+            // 수정된 데이터를 객체로 만들기
+            var updatedTask = {
+                categoryId: category,
+                taskName: taskName,
+                estimatedStartDate: estimatedStartDate,
+                estimatedEndDate: estimatedEndDate,
+                actualStartDate: actualStartDate,
+                actualEndDate: actualEndDate,
+                fileDeleted: fileDeleteCheck
+            };
+
+            if (
+                updatedTask.categoryId !== '' &&
+                updatedTask.taskName !== '' &&
+                updatedTask.estimatedStartDate !== '' &&
+                updatedTask.estimatedEndDate !== ''
+            ) {
+                if (checkDateFormat(updatedTask.estimatedStartDate) && checkDateFormat(updatedTask.estimatedEndDate)) {
+                    if (updatedTask.actualStartDate !== '' || updatedTask.actualEndDate !== '') {
+                        if (updatedTask.actualStartDate === '' && updatedTask.actualEndDate !== '') {
+                            alert("실제 시작일이 누락되었지만 실제 종료일이 존재합니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+
+                        if (
+                            (updatedTask.actualStartDate !== '' && checkDateFormat(updatedTask.actualStartDate)) ||
+                            (updatedTask.actualEndDate !== '' && checkDateFormat(updatedTask.actualEndDate))
+                        ) {
+                            hasValidTask = true;
+                        } else {
+                            alert("실제 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+                    } else {
+                        hasValidTask = true;
+                    }
+                } else {
+                    alert("예상 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                    hasValidTask = false;
+                    break;
+                }
+            } else {
+                alert("일정 내용을 정확히 입력해주세요.");
+                hasValidTask = false;
+                break;
+            }
+        }
+
+        if (hasValidTask){
+            for (let i = 0; i < taskRows.length; i++) {
+                const taskRow = taskRows[i];
+                var taskId = taskRow.id;
+
+                // 클라이언트에서 수정된 데이터를 가져오는 부분
+                var category = taskRow.querySelector('select[name="category"]').value;
+                var taskName = taskRow.querySelector('input[name="taskName"]').value;
+                var estimatedStartDate = taskRow.querySelector('input[name="estimatedStartDate"]').value;
+                var estimatedEndDate = taskRow.querySelector('input[name="estimatedEndDate"]').value;
+                var actualStartDate = taskRow.querySelector('input[name="actualStartDate"]').value;
+                var actualEndDate = taskRow.querySelector('input[name="actualEndDate"]').value;
+                var actualOutput = taskRow.querySelector('input[name="actualOutput"]');
+                var fileDeleteCheck = taskRow.querySelector('input[name="fileDeleteCheck"]').checked;
+
+                // 수정된 데이터를 객체로 만들기
+                var updatedTask = {
+                    categoryId: category,
+                    taskName: taskName,
+                    estimatedStartDate: estimatedStartDate,
+                    estimatedEndDate: estimatedEndDate,
+                    actualStartDate: actualStartDate,
+                    actualEndDate: actualEndDate,
+                    fileDeleted: fileDeleteCheck
+                };
+
+                const formData = new FormData();
+                formData.append('file', actualOutput.files[0]);
+                formData.append("json", new Blob([JSON.stringify(updatedTask)], {type: "application/json"}));
+
+                $.ajax({
+                    url: "/task/update/" + taskId,
+                    method: "post",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    enctype: "multipart/form-data",
+                    success: function (result) {
+                        window.location.hash = 'listView';
+                        window.location.reload();
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
+
+        }
+    }
+
+
+    function createTask() {
+
+        const taskRows = document.querySelectorAll(".task-row");
+
+        let hasValidTask = false;
+
+        for (let i = 0; i < taskRows.length; i++) {
+            const row = taskRows[i];
+
+            const task = {
+                categoryId: row.querySelector("[name=category_create]").value,
+                taskName: row.querySelector("[name=taskName]").value,
+                estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
+                estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
+                actualStartDate: row.querySelector("[name=actualStartDate]").value,
+                actualEndDate: row.querySelector("[name=actualEndDate]").value
+            };
+
+            const outputFile = row.querySelector("[name=actualOutput]").files[0];
+
+            const formData = new FormData();
+            formData.append('file', outputFile);
+            formData.append("json", new Blob([JSON.stringify(task)], {type: "application/json"}));
+
+
+            if (
+                task.categoryId !== '' &&
+                task.taskName !== '' &&
+                task.estimatedStartDate !== '' &&
+                task.estimatedEndDate !== ''
+            ) {
+                if (checkDateFormat(task.estimatedStartDate) && checkDateFormat(task.estimatedEndDate)) {
+                    if (task.actualStartDate !== '' || task.actualEndDate !== '') {
+                        if (task.actualStartDate === '' && task.actualEndDate !== '') {
+                            alert("실제 시작일이 누락되었지만 실제 종료일이 존재합니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+
+                        if (
+                            (task.actualStartDate !== '' && checkDateFormat(task.actualStartDate)) ||
+                            (task.actualEndDate !== '' && checkDateFormat(task.actualEndDate))
+                        ) {
+                            hasValidTask = true;
+                        } else {
+                            alert("실제 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                            hasValidTask = false;
+                            break;
+                        }
+                    } else {
+                        hasValidTask = true;
+                    }
+                } else {
+                    alert("예상 시작일 또는 종료일의 날짜 형식이 유효하지 않습니다.");
+                    hasValidTask = false;
+                    break;
+                }
+            } else {
+                alert("일정 내용을 정확히 입력해주세요.");
+                hasValidTask = false;
+                break;
+            }
+        }
+
+        if (hasValidTask){
+
+            taskRows.forEach(function (row) {
+                const task = {
+                    categoryId: row.querySelector("[name=category_create]").value,
+                    taskName: row.querySelector("[name=taskName]").value,
+                    estimatedStartDate: row.querySelector("[name=estimatedStartDate]").value,
+                    estimatedEndDate: row.querySelector("[name=estimatedEndDate]").value,
+                    actualStartDate: row.querySelector("[name=actualStartDate]").value,
+                    actualEndDate: row.querySelector("[name=actualEndDate]").value
+                };
+
+                const outputFile = row.querySelector("[name=actualOutput]").files[0];
+
+                const formData = new FormData();
+                formData.append('file', outputFile);
+                formData.append("json", new Blob([JSON.stringify(task)], {type: "application/json"}));
+
+                $.ajax({
+                    url: "/task/save/" + project.id,
+                    method: "post",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    enctype: "multipart/form-data",
+                    success: function (result) {
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            });
+        }
+
+    }
+
+    function fileInsert(taskId){
+
+        // 파일 입력 필드
+        const fileInput = document.getElementById("fileInput"+taskId);
+
+        // 파일 버튼
+        const fileButton = document.getElementById("fileButton"+taskId);
+
+        const fileDeleteCheck = document.getElementById("fileDeleteCheck"+taskId);
+
+        fileInput.click();
+
+        // 파일 입력 필드의 변경 이벤트 처리
+        fileInput.addEventListener("change", function () {
+            const selectedFile = fileInput.files[0];
+
+            if (selectedFile) {
+                fileDeleteCheck.checked = false;
+                fileButton.innerText = selectedFile.name; // 파일명으로 버튼 텍스트 업데이트
+            } else {
+                fileDeleteCheck.checked = true;
+                fileButton.innerText = "파일을 선택해주세요.";
+            }
+        });
+    }
+
+    function fileDelete(taskId){
+
+        // 파일 입력 필드
+        const fileInput = document.getElementById("fileInput"+taskId);
+        // 파일 버튼
+        const fileButton = document.getElementById("fileButton"+taskId);
+
+        const fileDeleteCheck = document.getElementById("fileDeleteCheck"+taskId);
+
+        fileDeleteCheck.checked = true;
+        fileInput.value = '';
+        fileButton.innerText = "파일을 선택해주세요.";
+    }
+
+    function deleteNewTask(row){
+
+        var table = row.closest("table"); // Find the closest table
+        var rows = table.querySelectorAll("tbody tr"); // Get all <tr> elements within the table
+        if (rows.length > 1) {
+            row.closest("tr").remove();
+        }
+
+    }
+    function editTask() {
+
+        var taskRows = document.querySelectorAll('.taskRow')
+        var saveButton = document.getElementsByClassName('update-button')[0];
+        var editButton = document.getElementsByClassName('edit-button')[0];
+        saveButton.style.display = 'block';
+        editButton.style.display = 'none';
+
+        taskRows.forEach(function (taskRow) {
+            var readOnlyFields = taskRow.getElementsByClassName('read-only');
+            var editFields = taskRow.getElementsByClassName('edit-mode');
+            var editDeleteButton = taskRow.getElementsByClassName('edit-delete-button')[0];
+
+            for (var i = 0; i < readOnlyFields.length; i++) {
+                readOnlyFields[i].style.display = 'none';
+            }
+
+            for (var i = 0; i < editFields.length; i++) {
+                editFields[i].style.display = 'block';
+            }
+
+            editDeleteButton.style.display = 'none';
+        })
+
+    }
+
+    function deleteTask(button, taskId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/task/delete/' + taskId);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send();
+
+        // 서버 응답 처리
+        xhr.onreadystatechange = function() {
+            if (xhr.status === 200) {
+                var row = button.closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+        };
+
+    }
+
+    function checkDateFormat(dateValue){
+        var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (!datePattern.test(dateValue)) {
+            return false;
+        }
+        else
+            return true;
+    }
 
 </script>
 <style>

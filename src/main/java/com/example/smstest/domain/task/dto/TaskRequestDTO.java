@@ -21,4 +21,7 @@ public class TaskRequestDTO {
 
     private String taskName;
 
+    private Boolean fileDeleted;
+
+
 }

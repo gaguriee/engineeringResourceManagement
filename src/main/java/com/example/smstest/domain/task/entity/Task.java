@@ -8,8 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -69,6 +72,18 @@ public class Task {
 
     @OneToMany(mappedBy = "taskId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<File> files;
+
+    public Set<File> getFiles() throws UnknownHostException {
+        InetAddress localhost = InetAddress.getLocalHost();
+
+        if (files == null){
+            return null;
+        }
+
+        return files.stream()
+                .filter(file -> file.getSavedIpAddress().equals(localhost.getHostAddress()))
+                .collect(Collectors.toSet());
+    }
 
     @Builder
     public Task(Project project, TaskCategory category, Date estimatedStartDate, Date estimatedEndDate, Date actualStartDate, Date actualEndDate, String taskName, Set<File> files) {

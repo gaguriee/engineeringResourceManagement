@@ -17,10 +17,10 @@ public class File {
     @GeneratedValue
     private Long id;
 
-    @JoinColumn(name = "support_id")
+    @Column(name = "support_id")
     private Long supportId;
 
-    @JoinColumn(name = "task_id")
+    @Column(name = "task_id")
     private Long taskId;
 
     @Column(nullable = false)
@@ -35,8 +35,11 @@ public class File {
     @Column(nullable = false)
     private Long size;
 
+    @Column(name = "saved_ip_address")
+    private String savedIpAddress;
+
     @Builder
-    public File(Long id, Long supportId, Long taskId, String origFilename, String filename, String filePath, Long size) {
+    public File(Long id, Long supportId, Long taskId, String origFilename, String filename, String filePath, Long size, String savedIpAddress) {
         this.id = id;
         this.supportId = supportId;
         this.taskId = taskId;
@@ -44,5 +47,6 @@ public class File {
         this.filename = filename;
         this.filePath = filePath;
         this.size = size;
+        this.savedIpAddress = savedIpAddress;
     }
 }

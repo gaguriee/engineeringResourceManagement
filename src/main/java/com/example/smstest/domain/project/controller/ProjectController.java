@@ -190,6 +190,7 @@ public class ProjectController {
 
         getProjectList(Keyword, pageable, model);
         Page<LicenseProject> projects = ProjectService.searchLicenseProjects(Keyword, pageable);
+
         model.addAttribute("projects", projects);
         model.addAttribute("totalPages", projects.getTotalPages());
 

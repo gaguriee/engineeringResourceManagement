@@ -1,7 +1,6 @@
 package com.example.smstest.domain.task.service;
 
 import com.example.smstest.domain.file.FileDto;
-import com.example.smstest.domain.file.FileRepository;
 import com.example.smstest.domain.file.FileService;
 import com.example.smstest.domain.file.MD5Generator;
 import com.example.smstest.domain.project.repository.ProjectRepository;
@@ -27,8 +26,6 @@ public class TaskServiceImpl implements TaskService {
     private final TaskCategoryRepository taskCategoryRepository;
     private final ProjectRepository projectRepository;
     private final FileService fileService;
-    private final FileRepository fileRepository;
-
 
     @Override
     public String deleteTask(Long taskId) {
@@ -83,6 +80,12 @@ public class TaskServiceImpl implements TaskService {
         task.setEstimatedEndDate(updatedTask.getEstimatedEndDate());
         task.setActualStartDate(updatedTask.getActualStartDate());
         task.setActualEndDate(updatedTask.getActualEndDate());
+
+        if (updatedTask.getFileDeleted()){
+            task.setFiles(null);
+            fileService.deleteAllByTaskId(task.getId());
+        }
+
         Task newTask = taskRepository.save(task);
 
         return setTaskFile(file, newTask);
@@ -138,6 +141,8 @@ public class TaskServiceImpl implements TaskService {
             fileDto.setFilePath(filePath);
             fileDto.setTaskId(newTask.getId());
 //          새 첨부 파일 저장
+
+
             fileService.saveFile(fileDto);
 
 

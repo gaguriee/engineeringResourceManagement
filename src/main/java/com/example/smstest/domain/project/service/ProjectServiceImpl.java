@@ -39,6 +39,6 @@ public class ProjectServiceImpl implements ProjectService {
         if (keyword != null) {
             return licenseProjectRepository.findAllByNameContaining(keyword, pageable);
         }
-        return licenseProjectRepository.findAllOrderedByUniqueCodeDesc(pageable);
+        return licenseProjectRepository.findAllOrderedByCustomPriority(pageable);
     }
 }

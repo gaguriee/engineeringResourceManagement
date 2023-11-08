@@ -2,6 +2,9 @@ package com.example.smstest.domain.file;
 
 import lombok.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 @Getter
 @Setter
 @ToString
@@ -15,7 +18,10 @@ public class FileDto {
     private String filePath;
     private Long size;
 
-    public File toEntity() {
+    public File toEntity() throws UnknownHostException {
+
+        InetAddress localhost = InetAddress.getLocalHost();
+
         File build = File.builder()
                 .id(id)
                 .supportId(supportId)
@@ -24,6 +30,7 @@ public class FileDto {
                 .filename(filename)
                 .filePath(filePath)
                 .size(size)
+                .savedIpAddress(localhost.getHostAddress())
                 .build();
         return build;
     }

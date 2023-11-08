@@ -59,7 +59,7 @@
                         <tbody>
                         <tr th:each="project : ${projects}" class="border-b dark:border-gray-700">
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
-                                <a th:href="'/project/detail?projectId=' + ${project.id}" th:onclick="setProject([[${project.id}]], [[${project.name}]])"
+                                <a th:href="'/project/detail?projectId=' + ${project.id}"
                                    th:text="${project.name}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 </a>
                             </td>
@@ -128,11 +128,6 @@
 
     const currentPage = /*[[${currentPage }]]*/;
     const totalPages = /*[[${totalPages }]]*/;
-
-    function setProject(id, name){
-        window.opener.setProject(id, name);
-        window.close();
-    }
 
     function applyResetBtn() {
 

@@ -112,7 +112,19 @@
                         th:href="@{'/download/' + ${file.id}}"
                         th:text="${file.origFilename}"
                 ></a>
+
             </div>
+
+<!--            <div class="mt-5 flex overflow-y-auto">-->
+<!--                <div th:each="file : ${support.files}">-->
+<!--                    <th:block class="items-center text-center" th:if="${#strings.endsWith(file.origFilename, '.jpg') or #strings.endsWith(file.origFilename, '.png') or #strings.endsWith(file.origFilename, '.svg')}">-->
+<!--                        <img th:src="@{'/download/' + ${file.id}}" alt="Image Preview" style="height: auto; width: 200px; max-height: 200px; max-width: 100%; border-radius: 10px; margin: 10px;">-->
+<!--                        <p class="items-center text-center text-xs text-gray-600" style="margin-left: 10px" th:text="${file.origFilename}"></p>-->
+<!--                    </th:block>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
         </div>
     </div>
 
