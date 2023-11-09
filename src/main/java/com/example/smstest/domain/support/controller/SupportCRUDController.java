@@ -19,7 +19,6 @@ import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
-import com.example.smstest.license.entity.LicenseProject;
 import com.example.smstest.license.repository.LicenseProjectRepository;
 import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
@@ -281,7 +280,6 @@ public class SupportCRUDController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
-        List<LicenseProject> projects = licenseProjectRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -290,7 +288,6 @@ public class SupportCRUDController {
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
-        model.addAttribute("projects", projects);
         model.addAttribute("issues", issues);
         model.addAttribute("issueCategories", issueCategories);
         model.addAttribute("states", states);
@@ -326,7 +323,6 @@ public class SupportCRUDController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
-        List<LicenseProject> projects = licenseProjectRepository.findAll();
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -335,7 +331,6 @@ public class SupportCRUDController {
         model.addAttribute("user", user);
 
         model.addAttribute("customers", customers);
-        model.addAttribute("projects", projects);
         model.addAttribute("issues", issues);
         model.addAttribute("issueCategories", issueCategories);
         model.addAttribute("states", states);
