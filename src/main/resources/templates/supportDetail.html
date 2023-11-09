@@ -93,15 +93,16 @@
         <hr style="margin-bottom: 24px">
         <dl style="padding-top: 24px; margin-bottom: 24px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업요약</dt>
-            <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskSummary} ?: ' ']]</span>
+            <dd class="mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400">
+                <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskSummary} ?: ' ']]
+                </span>
             </dd>
         </dl>
         <dl style="padding-top: 24px; padding-bottom: 96px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
-            <dd class="w-full mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400 line-break" >
-                <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${support.taskDetails} ?: ' ']]</span>
-            </dd>
+            <div class="w-full mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400 line-break" >
+                <div id="taskDetails" class="w-full" style="white-space: pre-wrap; word-wrap: break-word;" th:utext="${support.taskDetails}"></div>
+            </div>
         </dl>
         <div th:if="${support.files != null}">
             <strong th:if="${support.files.size() > 0 }">첨부파일 </strong>
@@ -156,6 +157,21 @@
         padding:10px;
         overflow: auto;
         white-space: pre-wrap;
+    }
+
+    #taskDetails ol, #taskDetails ul {
+        list-style: revert;
+        padding-left: 24px;
+    }
+
+    #taskDetails h1 {
+        font-size: xx-large;
+    }
+    #taskDetails h2 {
+        font-size: x-large;
+    }
+    #taskDetails h3 {
+        font-size: large;
     }
 
 </style>

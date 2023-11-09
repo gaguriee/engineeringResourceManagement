@@ -7,7 +7,7 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
 <div th:replace="header :: header"></div>
@@ -286,7 +286,8 @@
             </div>
             <div class="sm:col-span-2">
                 <label for="taskDetails" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세 *</label>
-                <textarea name = "taskDetails" id="taskDetails" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)" ></textarea>
+                <textarea name = "taskDetails" id="taskDetails" rows="16" class="hidden p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)" ></textarea>
+                <div id="editor" style="height: 400px"></div>
             </div>
             <div class="form-group row mt-2.5">
                 <div class="col-sm-10">
@@ -344,7 +345,68 @@
 <div th:replace="footer :: footer"></div>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+<script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+
 <script  th:inline="javascript">
+
+    function quilljsediterInit(){
+        var option = {
+            modules: {
+                toolbar: [
+                    [{header: [1,2,false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['image', 'code-block'],
+                    [{ list: 'ordered' }, { list: 'bullet' }]
+                ]
+            },
+            placeholder: '자세한 내용을 입력해 주세요!',
+            theme: 'snow'
+        };
+
+        quill = new Quill('#editor', option);
+        quill.on('text-change', function() {
+            document.getElementById("taskDetails").value = quill.root.innerHTML;
+        });
+        quill.getModule('toolbar').addHandler('image', function () {
+            selectLocalImage();
+        });
+    }
+
+    function selectLocalImage() {
+        const fileInput = document.createElement('input');
+        fileInput.setAttribute('type', 'file');
+        console.log("input.type " + fileInput.type);
+
+        fileInput.click();
+
+        fileInput.addEventListener("change", function () {  // change 이벤트로 input 값이 바뀌면 실행
+            const formData = new FormData();
+            const file = fileInput.files[0];
+            formData.append('uploadFile', file);
+
+            $.ajax({
+                type: 'post',
+                enctype: 'multipart/form-data',
+                url: '/file/upload',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'text',
+                success: function (data) {
+                    const range = quill.getSelection();
+                    quill.insertEmbed(range.index, 'image', "/file/display?fileName=" + data);
+
+                },
+                error: function (err) {
+                    console.log('ERROR!! ::');
+                    console.log(err);
+                }
+            });
+
+        });
+    }
+
+    quilljsediterInit();
 
     let dataTransfer = new DataTransfer();
 
@@ -362,6 +424,7 @@
                 // 파일 용량 제한
                 let fileSize = fileInput.files[0].size; //업로드한 파일용량
                 totalFileSize += fileSize;
+
 
                 if(fileSize > maxSize){
                     alert("파일첨부 사이즈는 50MB 이내로 가능합니다.");
