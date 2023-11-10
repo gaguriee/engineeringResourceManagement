@@ -383,7 +383,7 @@
 
         quill.setContents(delta, 'silent');
 
-        quill.clipboard.dangerouslyPasteHTML(support.taskDetails);
+        quill.root.innerHTML = support.taskDetails;
 
         quill.on('text-change', function() {
             document.getElementById("taskDetails").value = quill.root.innerHTML;
