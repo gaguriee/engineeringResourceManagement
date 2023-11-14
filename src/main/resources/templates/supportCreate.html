@@ -349,15 +349,20 @@
 
 <script  th:inline="javascript">
 
+    var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'header': 1 }, { 'header': 2 }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+
+        [{ 'color': [] }, { 'background': [] }],
+        ['image', 'link'],
+
+    ];
+
     function quilljsediterInit(){
         var option = {
             modules: {
-                toolbar: [
-                    [{header: [1,2,false] }],
-                    ['bold', 'italic', 'underline'],
-                    ['image', 'code-block'],
-                    [{ list: 'ordered' }, { list: 'bullet' }]
-                ]
+                toolbar: toolbarOptions
             },
 
             placeholder: '지원 작업 상세 내역을 작성해주세요. (스크립트 포함)',
@@ -376,6 +381,7 @@
     function selectLocalImage() {
         const fileInput = document.createElement('input');
         fileInput.setAttribute('type', 'file');
+        fileInput.accept = "image/*";
 
         fileInput.click();
 

@@ -19,12 +19,12 @@ public interface LicenseProjectRepository extends JpaRepository<LicenseProject, 
     @Query("SELECT p FROM LicenseProject p " +
             "ORDER BY " +
             "CASE " +
-            "WHEN p.projectGuid = '15484' THEN 1 " +
-            "WHEN p.projectGuid = '15485' THEN 2 " +
-            "WHEN p.projectGuid = '15486' THEN 3 " +
-            "WHEN p.projectGuid = '15487' THEN 4 " +
-            "WHEN p.projectGuid = '15488' THEN 5 " +
-            "WHEN p.projectGuid = '15489' THEN 6 " +
+            "WHEN p.projectGuid = '8032' THEN 1 " +
+            "WHEN p.projectGuid = '8031' THEN 2 " +
+            "WHEN p.projectGuid = '8030' THEN 3 " +
+            "WHEN p.projectGuid = '8029' THEN 4 " +
+            "WHEN p.projectGuid = '8028' THEN 5 " +
+            "WHEN p.projectGuid = '8027' THEN 6 " +
             "ELSE 6 " +
             "END, " +
             "p.projectRegDate DESC")

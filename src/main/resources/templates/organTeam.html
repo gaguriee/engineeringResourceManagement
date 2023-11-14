@@ -134,7 +134,6 @@
             var events = [];
 
             var eventDidMount = function(info) {
-                console.log(info.event)
                 tippy(info.el, {
                     content:  '[작업요약] \n' + info.event.extendedProps.description,//이벤트 디스크립션을 툴팁으로 가져옵니다.
                 });
