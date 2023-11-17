@@ -2,6 +2,7 @@ package com.example.smstest.domain.file;
 
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.UUID;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/file")
 public class FileRestController {
 
@@ -94,6 +97,8 @@ public class FileRestController {
 
             result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 
+        } catch (NoSuchFileException e){
+            log.error("No Such FileException {}", e.getFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
