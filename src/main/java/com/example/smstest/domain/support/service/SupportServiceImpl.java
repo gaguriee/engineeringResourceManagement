@@ -56,7 +56,7 @@ public class SupportServiceImpl implements SupportService {
     @Override
     public SupportResponse getDetails(Long supportId) {
         Support support = supportRepository.findById(supportId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         return SupportResponse.entityToResponse(support);
     }
