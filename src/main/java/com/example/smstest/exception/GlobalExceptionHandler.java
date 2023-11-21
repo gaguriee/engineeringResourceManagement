@@ -31,6 +31,9 @@ public class GlobalExceptionHandler extends RuntimeException {
         String serverIp = InetAddress.getLocalHost().getHostAddress();
         Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
 
+
+        // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
+
         ReqResLogging reqResLogging = new ReqResLogging(
                 request.getMethod(),
                 request.getRequestURI(),
@@ -54,6 +57,7 @@ public class GlobalExceptionHandler extends RuntimeException {
         else if (e.getErrorCode().getHttpStatus().equals(HttpStatus.NOT_FOUND)){
             return "error/404.html";
         }
+
         return "error/500.html";
     }
 
