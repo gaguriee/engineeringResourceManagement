@@ -16,17 +16,22 @@ import java.nio.file.NoSuchFileException;
 import java.util.UUID;
 
 
+/**
+ * 에디터를 통한 사진 파일 업로드 및 사진 파일 첨부 RestController
+ */
 @RestController
 @Slf4j
 @RequestMapping("/file")
 public class FileRestController {
 
+    /**
+     * 에디터 내 사진 파일 업로드
+     * @param uploadFile
+     * @return savePath - 저장경로
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String uploadTestPOST(MultipartFile[] uploadFile) {
 
-        // 내가 업로드 파일을 저장할 경로
-
-        /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
         String savePath;
 
         // OS 따라 구분자 분리
@@ -38,14 +43,9 @@ public class FileRestController {
             savePath = System.getProperty("user.dir") + "/files/image";
         }
 
-//        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date = new Date();
-//        String formatDate = sdt.format(date);
-//
-//        String datePath = formatDate.replace("-", java.io.File.separator);
-
         java.io.File uploadPath = new java.io.File(savePath);
 
+        // 파일 저장 경로가 없으면 신규 생성
         if (!uploadPath.exists()) {
             uploadPath.mkdirs();
         }
@@ -54,8 +54,9 @@ public class FileRestController {
 
             String uploadFileName = multipartFile.getOriginalFilename();
 
-            /* 변경 위치 ............. */
             String uuid = UUID.randomUUID().toString();
+
+            // 파일명 저장
             uploadFileName = uuid + "_" + uploadFileName;
 
             java.io.File saveFile = new java.io.File(uploadPath, uploadFileName);
@@ -70,6 +71,11 @@ public class FileRestController {
         return savePath;
     }
 
+    /**
+     * 에디터 내 사진 파일 첨부
+     * @param fileName
+     * @return
+     */
     @ResponseBody
     @GetMapping(value = "/display")
     public ResponseEntity<byte[]> showImageGET(
@@ -86,6 +92,8 @@ public class FileRestController {
         else{
             savePath = System.getProperty("user.dir") + "/files/image/";
         }
+
+        // 설정한 경로로 파일 다운로드
         java.io.File file = new java.io.File(savePath + fileName);
 
         ResponseEntity<byte[]> result = null;

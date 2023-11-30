@@ -12,9 +12,11 @@ import java.util.Optional;
  */
 public interface MempRepository  extends JpaRepository<Memp, Long> {
 
+    List<Memp> findAllByActiveTrue();
+
     List<Memp> findAllByTeamId(Integer teamId);
 
-    Optional<Memp> findByUsername(String username);
+    Optional<Memp> findByUsernameAndActiveTrue(String username);
 
     Optional<Memp> findOneByName(String mempName);
 

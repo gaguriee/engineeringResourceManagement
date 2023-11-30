@@ -4,7 +4,6 @@ import com.example.smstest.domain.file.FileDto;
 import com.example.smstest.domain.file.FileService;
 import com.example.smstest.domain.file.MD5Generator;
 import com.example.smstest.domain.project.repository.ProjectRepository;
-import com.example.smstest.domain.task.Interface.TaskService;
 import com.example.smstest.domain.task.dto.TaskRequestDTO;
 import com.example.smstest.domain.task.entity.Task;
 import com.example.smstest.domain.task.repository.TaskCategoryRepository;
@@ -18,36 +17,54 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
+/**
+ * 일정 관련 Service
+ */
 @Service
 @RequiredArgsConstructor
-public class TaskServiceImpl implements TaskService {
+public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskCategoryRepository taskCategoryRepository;
     private final ProjectRepository projectRepository;
     private final FileService fileService;
 
-    @Override
+    /**
+     * 일정 삭제
+     * @param taskId
+     * @return
+     */
     public String deleteTask(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElse(null);
-        if (task != null) {
-            taskRepository.delete(task);
-            return "Task deleted!";
-        }
-        return "Task not found!";
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TASK_NOT_FOUND));
+
+        taskRepository.delete(task);
+        return "Task deleted!";
     }
 
-    @Override
+    /**
+     * 기존 일정 업데이트
+     * @param taskId
+     * @param json
+     * @param file
+     * @return
+     */
     public String updateTask(Long taskId, Map<String, Object> json,
                              MultipartFile file) {
-        Task task = taskRepository.findById(taskId).orElse(null);
-        if (task != null) {
-            return setTaskRequestDto(json, file, task);
-        }
-        return "Task not found!";
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TASK_NOT_FOUND));
+
+        setTaskRequestDto(json, file, task);
+        return "Task updated!";
     }
 
-    @Override
+    /**
+     * 신규 일정 등록
+     * @param projectId
+     * @param json
+     * @param file
+     * @return
+     */
     public String saveTask(Long projectId, Map<String, Object> json,
                             MultipartFile file) {
 
@@ -67,7 +84,13 @@ public class TaskServiceImpl implements TaskService {
         return setTaskFile(file, newTask);
     }
 
-
+    /**
+     * json으로 받은 Request를 TaskRequestDto로 매핑
+     * @param json
+     * @param file
+     * @param task
+     * @return
+     */
     private String setTaskRequestDto(Map<String, Object> json,
                                      MultipartFile file, Task task) {
 
@@ -91,11 +114,20 @@ public class TaskServiceImpl implements TaskService {
         return setTaskFile(file, newTask);
     }
 
+    /**
+     * 요청 들어온 file 저장
+     * @param file
+     * @param newTask
+     * @return
+     */
     private String setTaskFile(MultipartFile file, Task newTask){
+
+        // 요청 들어온 file이 없을 경우 그냥 return
         if (file == null){
             return "작업 목록이 성공적으로 저장되었습니다.";
         }
 
+        // file이 있을 경우 저장
         try {
 
             if (file.getOriginalFilename().isEmpty())
@@ -119,7 +151,6 @@ public class TaskServiceImpl implements TaskService {
             }
 
 
-            /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
             if (!new java.io.File(savePath).exists()) {
                 try{
                     new java.io.File(savePath).mkdir();
@@ -131,7 +162,7 @@ public class TaskServiceImpl implements TaskService {
 
             file.transferTo(new java.io.File(filePath));
             
-            // 이전 파일 삭제
+            // 이전에 등록되어 있던 File 삭제
             fileService.deleteAllByTaskId(newTask.getId());
 
             FileDto fileDto = new FileDto();
@@ -140,9 +171,8 @@ public class TaskServiceImpl implements TaskService {
             fileDto.setFilename(filename);
             fileDto.setFilePath(filePath);
             fileDto.setTaskId(newTask.getId());
-//          새 첨부 파일 저장
 
-
+            // 신규 등록 File 저장
             fileService.saveFile(fileDto);
 
 

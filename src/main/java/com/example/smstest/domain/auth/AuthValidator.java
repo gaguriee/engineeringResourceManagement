@@ -47,7 +47,7 @@ public class AuthValidator implements Validator {
             //비밀번호와 비밀번호 확인이 다르다면
             errors.rejectValue("password", "key","비밀번호가 일치하지 않습니다.");
         }
-        else if(mempRepository.findByUsername(((AccountRequest) obj).getUsername()) !=null){
+        else if(mempRepository.findByUsernameAndActiveTrue(((AccountRequest) obj).getUsername()) !=null){
             // 이름이 존재하면
             errors.rejectValue("username", "key","이미 사용자 이름이 존재합니다.");
         }
@@ -72,7 +72,7 @@ public class AuthValidator implements Validator {
      */
     public void validatePassword(ModifyUserinfoRequest modifyUserinfoRequest, Errors errors) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(modifyUserinfoRequest.getPassword_confirm(), user.getPassword())){

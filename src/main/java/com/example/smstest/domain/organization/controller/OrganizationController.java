@@ -1,9 +1,8 @@
 package com.example.smstest.domain.organization.controller;
 
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.client.repository.ClientRepository;
-import com.example.smstest.domain.support.repository.StateRepository;
-import com.example.smstest.domain.organization.Interface.OraganizationService;
 import com.example.smstest.domain.organization.dto.MemberInfoDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.organization.dto.TeamInfoDTO;
@@ -11,9 +10,10 @@ import com.example.smstest.domain.organization.entity.Department;
 import com.example.smstest.domain.organization.entity.Division;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.DepartmentRepository;
-import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.organization.repository.DivisionRepository;
 import com.example.smstest.domain.organization.repository.TeamRepository;
+import com.example.smstest.domain.organization.service.OraganizationService;
+import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +24,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 소속별 조회 관련 Controller
@@ -59,7 +63,7 @@ public class OrganizationController {
     @GetMapping("/organizationFastSearch")
     public String organizationFastSearch(Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         List<Division> divisions = divisionRepository.findAll();
         List<Department> departments = departmentRepository.findAll();
@@ -90,7 +94,7 @@ public class OrganizationController {
     @GetMapping("/department")
     public String viewDivision(@RequestParam(required = true) Integer divisionId, Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         List<Department> departments = departmentRepository.findByDivisionId(divisionId);
         Division division = divisionRepository.findById(divisionId)

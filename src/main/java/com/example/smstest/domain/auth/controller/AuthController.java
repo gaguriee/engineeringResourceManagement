@@ -1,5 +1,7 @@
-package com.example.smstest.domain.auth;
+package com.example.smstest.domain.auth.controller;
 
+import com.example.smstest.domain.auth.AuthValidator;
+import com.example.smstest.domain.auth.service.AuthService;
 import com.example.smstest.domain.auth.Enum.Position;
 import com.example.smstest.domain.auth.Enum.Rank;
 import com.example.smstest.domain.auth.dto.AccountRequest;
@@ -135,7 +137,7 @@ public class AuthController {
 
         ModifyUserinfoRequest modifyUserinfoRequest = new ModifyUserinfoRequest();
 
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         modifyUserinfoRequest.setRank(memp.getRank());

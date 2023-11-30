@@ -27,4 +27,6 @@ public class Employee {
     @JoinColumn(name = "deptguid", foreignKey = @ForeignKey(name = "fk_tb_mempda_deptguid"))
     private Department department;
 
+    @Column(name = "userstatus", nullable = false)
+    private Integer userstatus;
 }

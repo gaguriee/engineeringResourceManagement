@@ -2,9 +2,9 @@ package com.example.smstest.domain.client.controller;
 
 
 import com.example.smstest.domain.client.entity.Client;
-import com.example.smstest.domain.client.service.ClientServiceImpl;
+import com.example.smstest.domain.client.service.ClientService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,13 +27,9 @@ import java.util.Date;
 @Controller
 @Slf4j
 @RequestMapping("/customer")
+@RequiredArgsConstructor
 public class ClientCRUDController {
-    private final ClientServiceImpl customerServiceImpl;
-
-    @Autowired
-    public ClientCRUDController(ClientServiceImpl customerServiceImpl) {
-        this.customerServiceImpl = customerServiceImpl;
-    }
+    private final ClientService clientService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -49,13 +45,13 @@ public class ClientCRUDController {
      * @return 고객사 리스트 페이지
      */
     @GetMapping("/search")
-    public String searchSupportByFilters(
+    public String searchClientByFilters(
             @RequestParam(required = false) String Keyword,
             @PageableDefault(size = 30) Pageable pageable,
             Model model) {
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        Page<Client> result = customerServiceImpl.searchClients(Keyword, pageable);
+        Page<Client> result = clientService.searchClients(Keyword, pageable);
 
         model.addAttribute("customers", result);
         model.addAttribute("totalPages", result.getTotalPages());
@@ -71,7 +67,7 @@ public class ClientCRUDController {
      */
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Integer customerId, Model model) {
-        Client client = customerServiceImpl.getClientDetails(customerId);
+        Client client = clientService.getClientDetails(customerId);
         model.addAttribute("customer", client);
 
         return "clientDetails";

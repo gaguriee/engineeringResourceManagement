@@ -5,6 +5,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
+/**
+ * File Table 엔티티
+ */
 @Getter
 @Setter
 @Entity
@@ -35,6 +38,10 @@ public class File {
     @Column(nullable = false)
     private Long size;
 
+    /**
+     * 파일이 저장된 ip를 저장해서, 같은 ip에서 저장된 객체들만 가져옴
+     * (로컬, 개발, 운영 서버 등 저장된 위치 구분)
+     */
     @Column(name = "saved_ip_address")
     private String savedIpAddress;
 

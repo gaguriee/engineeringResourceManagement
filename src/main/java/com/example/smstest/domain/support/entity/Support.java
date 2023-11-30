@@ -79,6 +79,10 @@ public class Support {
     @OneToMany(mappedBy = "supportId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<File> files;
 
+    /**
+     * 파일이 저장된 ip를 저장해서, 같은 ip에서 저장된 객체들만 가져옴
+     * (로컬, 개발, 운영 서버 등 저장된 위치 구분)
+     */
     public Set<File> getFiles() {
         InetAddress localhost = null;
         try {
@@ -94,7 +98,7 @@ public class Support {
         }
 
         return files.stream()
-                .filter(file -> file.getSavedIpAddress().equals(finalLocalhost.getHostAddress()))
+                .filter(file -> file.getSavedIpAddress().equals(finalLocalhost.getHostAddress())) // 저장 ip와 현 ip가 동일한 파일만 가져옴
                 .collect(Collectors.toSet());
     }
 }

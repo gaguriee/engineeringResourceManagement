@@ -14,9 +14,6 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
     List<Support> findByEngineerId(Long engineerId);
 
     Page<Support> findAllByProjectIdOrderBySupportDateDesc(Long projectId, Pageable pageable);
-    Long countByEngineerId(Long engineerId);
-    Long countByEngineerTeamIdAndStateId(Integer engineerId, Long issueId);
-    Long countByEngineerTeamIdAndProductId(Integer engineerId, Long issueId);
 
     Page<Support> findAllByEngineerIdAndProjectClientIdAndProductIdAndStateIdOrderBySupportDateAsc(
             Long engineerId, Integer customerId, Long productId, Long stateId, Pageable pageable);
@@ -44,4 +41,7 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
 
     @Query("SELECT SUM(s.supportTypeHour) FROM Support s WHERE s.state = :state AND s.engineer.team = :team AND s.engineer.team.department.division.id = 2")
     Long findTotalSupportTypeHourByStateAndTeam_E(@Param("state") State state, @Param("team") Team team);
+
+    Page<Support> findByTaskTitleContaining(String taskTitle, Pageable pageable);
+
 }
