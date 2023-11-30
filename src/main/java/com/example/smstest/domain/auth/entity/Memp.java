@@ -47,6 +47,9 @@ public class Memp {
     @NotNull
     private String password;
 
+    @Column(name = "active")
+    private boolean active;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_authority",

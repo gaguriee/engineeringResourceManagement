@@ -47,7 +47,7 @@ public class MainController {
     @GetMapping("/")
     public String main(Model model) {
 
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElse(null);
         model.addAttribute("user", memp);
 
@@ -137,7 +137,7 @@ public class MainController {
     @PostMapping("/dismissAnnouncement")
     public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
 
-        Memp currentUser = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp currentUser = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Announcement> announcementOptional = announcementRepository.findById(announcementId);

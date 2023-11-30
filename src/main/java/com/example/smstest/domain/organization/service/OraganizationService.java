@@ -3,7 +3,6 @@ package com.example.smstest.domain.organization.service;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.client.repository.ClientRepository;
-import com.example.smstest.domain.organization.Interface.OraganizationService;
 import com.example.smstest.domain.organization.dto.AggregatedDataDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDetailDTO;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class OraganizationServiceImpl implements OraganizationService {
+public class OraganizationService {
 
     private final ProductRepository productRepository;
     private final StateRepository stateRepository;

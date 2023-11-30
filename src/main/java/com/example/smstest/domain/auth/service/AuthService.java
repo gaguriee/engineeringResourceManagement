@@ -1,4 +1,4 @@
-package com.example.smstest.domain.auth;
+package com.example.smstest.domain.auth.service;
 
 import com.example.smstest.domain.auth.dto.AccountRequest;
 import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
@@ -65,7 +65,7 @@ public class AuthService {
     public Memp savePassword(ResetPasswordRequest resetPasswordRequest){
 
         // 현재 로그인한 유저 객체 받아옴
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 신규 패스워드로 저장, 인코딩
@@ -83,7 +83,7 @@ public class AuthService {
     public Memp saveUserInfo(ModifyUserinfoRequest modifyUserinfoRequest){
 
         // 현재 로그인한 유저 객체 받아옴
-        Memp memp = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 변경할 팀, 직급 저장

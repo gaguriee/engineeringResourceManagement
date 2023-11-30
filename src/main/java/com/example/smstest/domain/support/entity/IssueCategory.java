@@ -32,6 +32,9 @@ public class IssueCategory {
     @Column(name = "division_id", nullable = false)
     private Integer divisionId;
 
+    /**
+     * 순환 참조 문제로 만든 별도의 toString 메소드
+     */
     @Override
     public String toString() {
         return "IssueCategory{" +

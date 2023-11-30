@@ -20,12 +20,4 @@ public class State {
     @Column(name = "참조")
     private String description;
 
-
-    @Override
-    public String toString() {
-        return "State{" +
-                "Id=" + id +
-                ", Name='" + name + '\'' +
-                '}';
-    }
 }
