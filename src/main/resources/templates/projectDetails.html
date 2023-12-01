@@ -300,9 +300,15 @@
                             class="inline-block p-4 text-blue-700 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
                 </li>
                 <li class="mr-2">
+                    <button type="button" id="dashboardViewBtn"
+                            class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                        지원 현황
+                    </button>
+                </li>
+                <li class="mr-2">
                     <button type="button" id="chartViewBtn"
                             class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                        차트 조회
+                        WBS 차트
                     </button>
                 </li>
                 <li class="mr-2">
@@ -318,6 +324,17 @@
                     </button>
                 </li>
             </ul>
+        </div>
+
+<!--        지원현황 대쉬보드 뷰-->
+        <div id="dashboardView" class="hidden block">
+
+            <div class="skeleton mb-6" style="background-color: #F7F7F7;">
+
+                <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project')} + ${project.id}" width="100%" height="950" ></iframe>
+                <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project-mobile')} + ${project.id}" width="100%" height="900" ></iframe>
+
+            </div>
         </div>
 
 <!--        WBS 간트 차트 뷰 :: reload(), -->
@@ -351,7 +368,7 @@
 <!--        일정 리스트 수정 뷰 :: editTask(), updateTask() -->
         <div id="listView" class="hidden">
             <div class="pc-window">
-                <div class="flex justify-end w-full text-left items-end text-xs text-gray-600 mb-2">파일 수정 시 반영이 지연될 수
+                <div th:if="${tasks.size()!=0}" class="flex justify-end w-full text-left items-end text-xs text-gray-600 mb-2">파일 수정 시 반영이 지연될 수
                     있습니다. 잠시 후 새로고침 해주세요.
                 </div>
                 <table th:if="${tasks.size()!=0}" id="taskTable"
@@ -754,9 +771,11 @@
     loadingBar.style.display = 'flex';
 
     const visibleBtn = document.getElementById("visibleBtn");
+    const dashboardViewBtn = document.getElementById("dashboardViewBtn");
     const chartViewBtn = document.getElementById("chartViewBtn");
     const listViewBtn = document.getElementById("listViewBtn");
     const supportListViewBtn = document.getElementById("supportListViewBtn");
+    const dashboardView = document.getElementById("dashboardView");
     const chartView = document.getElementById("chartView");
     const listView = document.getElementById("listView");
     const supportListView = document.getElementById("supportListView");
@@ -770,18 +789,32 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        chartViewBtn.className = selectedClass;
-        chartView.style.display = "block";
+        dashboardViewBtn.className = selectedClass;
+        dashboardView.style.display = "block";
+        chartView.style.display = "none";
         listView.style.display = "none";
         supportListView.style.display = "none";
 
         drawChartView()
 
+        dashboardViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "block";
+            chartView.style.display = "none";
+            listView.style.display = "none";
+            supportListView.style.display = "none";
+            dashboardViewBtn.className = selectedClass;
+            chartViewBtn.className = unselectedClass;
+            listViewBtn.className = unselectedClass;
+            supportListViewBtn.className = unselectedClass;
+        });
+
 
         chartViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "none";
             chartView.style.display = "block";
             listView.style.display = "none";
             supportListView.style.display = "none";
+            dashboardViewBtn.className = unselectedClass;
             chartViewBtn.className = selectedClass;
             listViewBtn.className = unselectedClass;
             supportListViewBtn.className = unselectedClass;
@@ -791,18 +824,22 @@
         });
 
         listViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "none";
             chartView.style.display = "none";
             listView.style.display = "block";
             supportListView.style.display = "none";
+            dashboardViewBtn.className = unselectedClass;
             chartViewBtn.className = unselectedClass;
             listViewBtn.className = selectedClass;
             supportListViewBtn.className = unselectedClass;
         });
 
         supportListViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "none";
             chartView.style.display = "none";
             listView.style.display = "none";
             supportListView.style.display = "block";
+            dashboardViewBtn.className = unselectedClass;
             chartViewBtn.className = unselectedClass;
             listViewBtn.className = unselectedClass;
             supportListViewBtn.className = selectedClass;
@@ -1445,6 +1482,32 @@
 <style>
     * {
         font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
+    .skeleton * {
+        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
+        background-size: 200% 100%;
+        background-position: 100% 0;
+        animation: load 1s infinite;
+    }
+
+    @keyframes load {
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
+
+    /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
+    @media (max-width: 1064px) {
+
+        .iframe-pc {
+            display: none;
+        }
+
+        /* PC에서는 iframe-mobile을 숨김 */
+        .iframe-mobile {
+            display: block;
+        }
     }
 </style>
 </body>

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    @Query("SELECT p FROM Project p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.client.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.uniqueCode) LIKE LOWER(CONCAT('%', :keyword, '%')) ORDER BY p.projectRegDate DESC")
+    @Query("SELECT p FROM Project p JOIN Support s ON p.id = s.project.id WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.client.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.uniqueCode) LIKE LOWER(CONCAT('%', :keyword, '%')) GROUP BY p.id ORDER BY COUNT(s.id) DESC")
     Page<Project> findAllByNameContaining(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT p FROM Project p ORDER BY p.projectRegDate DESC ")
@@ -20,6 +20,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT p FROM Project p JOIN Support s ON p.id = s.project.id GROUP BY p.id ORDER BY COUNT(s.id) DESC")
     List<Project> findAllByOrderBySupportCountDesc();
+
+    @Query("SELECT p FROM Project p JOIN Support s ON p.id = s.project.id GROUP BY p.id ORDER BY COUNT(s.id) DESC")
+    Page<Project> findAllByOrderBySupportCountDesc(Pageable pageable);
 
     Project findFirstByUniqueCode(String uniqueCode);
 

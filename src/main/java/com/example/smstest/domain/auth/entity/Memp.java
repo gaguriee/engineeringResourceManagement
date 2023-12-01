@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Set;
 
 
@@ -62,6 +63,10 @@ public class Memp {
     )
     @ToString.Exclude
     private Set<Authority> authorities;
+
+    @Column(name = "last_login_at")
+    private Timestamp lastLoginAt;
+
 
     public Memp(AccountRequest accountRequest){
         this.username= accountRequest.getUsername();

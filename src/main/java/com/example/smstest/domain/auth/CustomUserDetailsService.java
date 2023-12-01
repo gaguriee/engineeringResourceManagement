@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
@@ -54,9 +55,14 @@ public class CustomUserDetailsService implements UserDetailsService {
          */
 
         // 1. 먼저 로컬 ERM DB 내에서 user id로 기존 회원을 검색한다. 해당 user id가 존재하며 active=true 상태일 경우 바로 로그인을 진행한다.
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
         Optional<Memp> memp = mempRepository.findByUsernameAndActiveTrue(username);
         if (memp.isPresent()){
+
+            Memp currentMemp = memp.get();
+            currentMemp.setLastLoginAt(currentTimestamp);
+            mempRepository.save(currentMemp);
             return new User(memp.get().getUsername(), memp.get().getPassword(),
                     memp.get().getAuthorities().stream()
                             .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
@@ -103,6 +109,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         catch (Exception e){
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
+
+        Memp currentMemp = memp.get();
+        currentMemp.setLastLoginAt(currentTimestamp);
+        mempRepository.save(currentMemp);
 
         // 유저 인증 후 해당 유저 정보 반환
         return new User(memp.get().getUsername(), memp.get().getPassword(),
