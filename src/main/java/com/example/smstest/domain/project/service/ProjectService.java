@@ -30,7 +30,7 @@ public class ProjectService {
         if (keyword != null) {
             return projectRepository.findAllByNameContaining(keyword, pageable);
         }
-        return projectRepository.findAllOrderedByUniqueCodeDesc(pageable);    }
+        return projectRepository.findAllByOrderBySupportCountDesc(pageable);    }
 
     public Page<LicenseProject> searchLicenseProjects(String keyword, Pageable pageable) {
         if (keyword != null) {
