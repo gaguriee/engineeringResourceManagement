@@ -5,8 +5,7 @@ import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.repository.MempRepository;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
-import com.example.smstest.domain.file.FileDto;
-import com.example.smstest.domain.file.FileService;
+import com.example.smstest.domain.file.*;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.project.entity.Project;
@@ -58,6 +57,7 @@ import java.util.*;
 public class SupportCRUDController {
     private final SupportService supportService;
     private final FileService fileService;
+    private final FileRepository fileRepository;
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
@@ -349,7 +349,60 @@ public class SupportCRUDController {
 
         try {
 
-            SupportResponse supportResponse = supportService.modifySupport(files, modifyRequest);
+            if (modifyRequest.getDeletedFileId() != null){
+                fileRepository.deleteAllById(modifyRequest.getDeletedFileId());
+            }
+            List<File> savedFiles = new ArrayList<>();
+
+            for(MultipartFile file : files) {
+                if (file.getOriginalFilename().isEmpty())
+                    continue;
+                String origFilename = file.getOriginalFilename();
+                String filename = new MD5Generator(origFilename).toString();
+                /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
+                String savePath;
+                String filePath;
+
+                // OS 따라 구분자 분리
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("win")){
+                    savePath = System.getProperty("user.dir") + "\\files\\support";
+                    filePath = savePath + "\\" + filename;
+                }
+                else{
+                    savePath = System.getProperty("user.dir") + "/files/support";
+                    filePath = savePath + "/" + filename;
+                }
+
+
+                /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
+                if (!new java.io.File(savePath).exists()) {
+                    try{
+                        new java.io.File(savePath).mkdir();
+                    }
+                    catch(Exception e){
+                        e.getStackTrace();
+                    }
+                }
+
+                file.transferTo(new java.io.File(filePath));
+
+                FileDto fileDto = new FileDto();
+                fileDto.setOrigFilename(origFilename);
+                fileDto.setSize(file.getSize());
+                fileDto.setFilename(filename);
+                fileDto.setFilePath(filePath);
+
+//                새 첨부 파일 저장
+                savedFiles.add(fileService.saveFile(fileDto));
+            }
+
+            SupportResponse supportResponse = supportService.modifySupport(modifyRequest);
+
+            for (File savedFile : savedFiles){
+                savedFile.setSupportId(supportResponse.getId());
+                fileRepository.save(savedFile);
+            }
 
             return "redirect:/details?supportId="+supportResponse.getId();
 

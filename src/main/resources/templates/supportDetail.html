@@ -148,7 +148,7 @@
 
     <div class="mt-8 items-center justify-center text-center">
         <a id="showBoard" href="/search?"  style="margin-right:24px; ">목록보기</a>
-        <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; ">PDF로 저장</button>
+<!--        <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; ">PDF로 저장</button>-->
     </div>
 </section>
 <div th:replace="footer :: footer"></div>
@@ -197,9 +197,9 @@
         return authority.authority === 'ROLE_SUPERADMIN';
     });
 
-    document.getElementById("generatePdfButton").addEventListener("click", function() {
-        pdfPrint();
-    });
+    // document.getElementById("generatePdfButton").addEventListener("click", function() {
+    //     pdfPrint();
+    // });
 
     function pdfPrint() {
         // PDF 생성 요청을 서버로 보냅니다.

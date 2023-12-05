@@ -141,12 +141,7 @@ public class SupportService  {
         return SupportResponse.entityToResponse(newsupport);
     }
 
-    public SupportResponse modifySupport( List<MultipartFile> files, ModifyRequest supportRequest) {
-
-        // 기존에 등록되어 있던 파일 중, 삭제된 파일 id가 존재한다면 File DB에서 지워주기
-        if (supportRequest.getDeletedFileId() != null){
-            fileRepository.deleteAllById(supportRequest.getDeletedFileId());
-        }
+    public SupportResponse modifySupport(ModifyRequest supportRequest) {
 
         Support support = supportRepository.findById(supportRequest.getSupportId()).get();
 
