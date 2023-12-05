@@ -113,9 +113,9 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
 
     private BooleanExpression taskContains(String keyword) {
         return keyword != null
-                ? QSupport.support.taskTitle.contains(keyword)
-                .or(QSupport.support.taskSummary.contains(keyword))
-                .or(QSupport.support.engineer.name.contains(keyword))
+                ? QSupport.support.taskTitle.toLowerCase().contains(keyword.toLowerCase())
+                .or(QSupport.support.taskSummary.toLowerCase().contains(keyword.toLowerCase()))
+                .or(QSupport.support.engineer.name.toLowerCase().contains(keyword.toLowerCase()))
                 : null;
     }
 
