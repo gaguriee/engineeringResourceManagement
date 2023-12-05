@@ -27,6 +27,9 @@ public class Issue {
     @Column(name = "priority")
     private Integer priority;
 
+    /**
+     * 순환 참조 문제로 만든 별도의 toString 메소드
+     */
     @Override
     public String toString() {
         return "Issue{" +

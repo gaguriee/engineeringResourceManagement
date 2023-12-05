@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
@@ -40,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private String basicPassword;
 
     /**
-     * 사용자 인증 작업 진행 ( 정보 검색 -> 반환 -> 예외처리-UsernameNotFoundException )
+     * 사용자 인증 작업 진행 ( 정보 검색 -> 반환 -> 예외 처리 - UsernameNotFoundException )
      * @param username the username identifying the user whose data is required.
      * @return UserDetails
      * @throws UsernameNotFoundException
@@ -53,17 +54,24 @@ public class CustomUserDetailsService implements UserDetailsService {
         Memp => ERM DB에서 가져오는 사용자 data
          */
 
-        Optional<Memp> memp = mempRepository.findByUsername(username);
+        // 1. 먼저 로컬 ERM DB 내에서 user id로 기존 회원을 검색한다. 해당 user id가 존재하며 active=true 상태일 경우 바로 로그인을 진행한다.
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+
+        Optional<Memp> memp = mempRepository.findByUsernameAndActiveTrue(username);
         if (memp.isPresent()){
+
+            Memp currentMemp = memp.get();
+            currentMemp.setLastLoginAt(currentTimestamp);
+            mempRepository.save(currentMemp);
             return new User(memp.get().getUsername(), memp.get().getPassword(),
                     memp.get().getAuthorities().stream()
                             .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
                             .collect(Collectors.toSet()));
         }
 
-
-        // 인증 시도한 사용자 객체 반환, 없을 경우 에러 반환 ( 인사 DB 내 미존재 username일 경우 로그인 안됨 )
-        Employee employee = employeeRepository.findByUserid(username);
+        // 2. 로컬 ERM DB 내 존재하지 않는 유저일 경우 (ex 신규 유저), 소만사 인사 DB 내에서 user id로 해당 회원을 검색한다.
+        // 인증 시도한 사용자 객체 반환, 없을 경우 에러 반환 ( 인사 DB 내 미존재 username이거나 퇴사했을 경우 (userstatus=0) 로그인 안됨 )
+        Employee employee = employeeRepository.findByUserstatusAndUserid(1, username);
 
         if (employee == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
@@ -77,33 +85,34 @@ public class CustomUserDetailsService implements UserDetailsService {
         Set<Authority> authoritiesSet = new HashSet<>();
         authoritiesSet.add(Authority.of("ROLE_USER"));
 
-        // 로그인 한 username의 정보가 인사정보 DB에는 있지만 ERM DB에는 없는 경우 신규 등록
-        memp = mempRepository.findByUsername(username);
-        if (memp.isEmpty()) {
+        // ERM DB에 해당 유저를 신규 등록한다.
 
-            // 인사정보 DB에서 팀 정보 가져옴, 없을 경우 에러 반환
-            Team team = teamRepository.findByName(employee.getDepartment().getDeptname())
-                    .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+        // 인사정보 DB에서 로컬 ERM DB와 매칭되는 팀 정보 가져옴, 없을 경우 에러 반환
+        Team team = teamRepository.findByName(employee.getDepartment().getDeptname())
+                .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
 
-            // 신규 유저 객체 생성, 저장
-            memp = Optional.ofNullable(Memp.builder()
-                    .name(employee.getEmpname())
-                    .rank("엔지니어")
-                    .position("팀원")
-                    .team(team)
-                    .username(employee.getUserid())
-                    .password(basicPassword)
-                    .calenderColor(randomColor)
-                    .authorities(authoritiesSet)
-                    .build());
+        // 신규 유저 객체 생성, 저장
+        memp = Optional.ofNullable(Memp.builder()
+                .name(employee.getEmpname())
+                .rank("엔지니어") // default
+                .position("팀원") // default
+                .team(team)
+                .username(employee.getUserid())
+                .password(basicPassword)
+                .calenderColor(randomColor)
+                .authorities(authoritiesSet)
+                .build());
 
-            try{
-                mempRepository.save(memp.get());
-            }
-            catch (Exception e){
-                throw new UsernameNotFoundException("User not found with username: " + username);
-            }
+        try{
+            mempRepository.save(memp.get());
         }
+        catch (Exception e){
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
+        Memp currentMemp = memp.get();
+        currentMemp.setLastLoginAt(currentTimestamp);
+        mempRepository.save(currentMemp);
 
         // 유저 인증 후 해당 유저 정보 반환
         return new User(memp.get().getUsername(), memp.get().getPassword(),

@@ -10,16 +10,15 @@ import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.repository.ProjectRepository;
-import com.example.smstest.domain.support.Interface.SupportService;
 import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.domain.support.service.SupportService;
 import com.example.smstest.exception.CustomException;
 import com.example.smstest.exception.ErrorCode;
-import com.example.smstest.license.repository.LicenseProjectRepository;
 import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,11 +48,17 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * 지원내역 관련 Controller
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class SupportCRUDController {
     private final SupportService supportService;
+    private final FileService fileService;
+    private final FileRepository fileRepository;
+
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final IssueRepository issueRepository;
@@ -65,19 +70,35 @@ public class SupportCRUDController {
     private final SupportTypeRepository supportTypeRepository;
     private final SupportRepository supportRepository;
     private final ProjectRepository projectRepository;
-    private final FileService fileService;
-    private final FileRepository fileRepository;
-    private final LicenseProjectRepository licenseProjectRepository;
 
 
-    // 날짜 형태 bind
+    /**
+     * 날짜 형태를 자동으로 bind해주는 메소드
+     * @param binder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
-    // 필터링
+    /**
+     * 지원내역 조회 (QueryDSL 사용)
+     * @param customerName 고객사명 (String)
+     * @param projectName 프로젝트명 (String)
+     * @param teamId 팀 id
+     * @param productId 제품 id
+     * @param issueId 이슈 id
+     * @param stateId 상태(업무) id
+     * @param engineerId 엔지니어 id
+     * @param Keyword 검색 키워드
+     * @param startDate 시작일
+     * @param endDate 종료일
+     * @param sortOrder 정렬방식 (desc, asc)
+     * @param pageable 페이지네이션할 때 사용하는 파라미터 (현재 페이지, 총 페이지 수, offset 등)
+     * @param model Controller 에서 생성된 데이터를 담아 View 로 전달할 때 사용하는 객체 ( key:value 형식 )
+     * @return 지원내역 검색 결과 뷰
+     */
     @GetMapping("/search")
     public String searchSupportByFilters(@RequestParam(required = false) String customerName,
                                          @RequestParam(required = false) String projectName,
@@ -93,7 +114,7 @@ public class SupportCRUDController {
                                          Pageable pageable,
                                          Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         SupportFilterCriteria criteria = new SupportFilterCriteria();
@@ -182,10 +203,15 @@ public class SupportCRUDController {
     }
 
 
-    // 상세보기
+    /**
+     * 지원내역 상세 보기
+     * @param supportId 지원내역 id
+     * @param model
+     * @return
+     */
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Long supportId, Model model) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         SupportResponse supportResponse = supportService.getDetails(supportId);
@@ -196,77 +222,14 @@ public class SupportCRUDController {
         return "supportDetail";
     }
 
-    // 등록하기
-    @PostMapping("/post")
-    public String createSupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute SupportRequest supportRequest, RedirectAttributes redirectAttributes) {
-
-        try {
-            List<File> savedFiles = new ArrayList<>();
-            for(MultipartFile file : files) {
-                if (file.getOriginalFilename().isEmpty())
-                    continue;
-                String origFilename = file.getOriginalFilename();
-                String filename = new MD5Generator(origFilename).toString();
-                /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
-                String savePath;
-                String filePath;
-
-                // OS 따라 구분자 분리
-                String os = System.getProperty("os.name").toLowerCase();
-                if (os.contains("win")){
-                    savePath = System.getProperty("user.dir") + "\\files\\support";
-                    filePath = savePath + "\\" + filename;
-                }
-                else{
-                    savePath = System.getProperty("user.dir") + "/files/support";
-                    filePath = savePath + "/" + filename;
-                }
-
-
-                /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
-                if (!new java.io.File(savePath).exists()) {
-                    try{
-                        new java.io.File(savePath).mkdir();
-                    }
-                    catch(Exception e){
-                        e.getStackTrace();
-                    }
-                }
-
-                file.transferTo(new java.io.File(filePath));
-
-                FileDto fileDto = new FileDto();
-                fileDto.setOrigFilename(origFilename);
-                fileDto.setSize(file.getSize());
-                fileDto.setFilename(filename);
-                fileDto.setFilePath(filePath);
-
-//                새 첨부 파일 저장
-                savedFiles.add(fileService.saveFile(fileDto));
-            }
-
-
-            SupportResponse supportResponse = supportService.createSupport(supportRequest);
-
-            for (File savedFile : savedFiles){
-                savedFile.setSupportId(supportResponse.getId());
-                fileRepository.save(savedFile);
-            }
-
-            return "redirect:/details?supportId="+supportResponse.getId();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-
-        }
-
-
-    }
-
+    /**
+     * 지원내역 등록 뷰 리턴
+     * @param model
+     * @return
+     */
     @GetMapping("/create")
     public String createView(Model model) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         List<Client> customers = clientRepository.findAll();
@@ -299,14 +262,44 @@ public class SupportCRUDController {
         return "supportCreate";
     }
 
+    /**
+     * 지원내역 등록하기
+     * @param files 업로드 시 받아오는 파일 리스트
+     * @param supportRequest 지원내역 등록/수정 시 매핑되는 DTO
+     * @return
+     */
+    @PostMapping("/post")
+    public String createSupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute SupportRequest supportRequest) {
 
-    // 수정
+        try {
 
+            SupportResponse supportResponse = supportService.createSupport(files, supportRequest);
+
+            return "redirect:/details?supportId="+supportResponse.getId();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        }
+
+
+    }
+
+
+    /**
+     * 지원내역 수정 뷰 리턴
+     * - 등록과 거의 동일, 해당 support Id로 기존 정보 가져와서 수정페이지에 보여줌
+     * @param supportId
+     * @param model
+     * @return
+     */
     @GetMapping("/modify")
     public String modifyView(@RequestParam(required = false) Long supportId, Model model) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 기존 등록 정보 찾기
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -324,6 +317,7 @@ public class SupportCRUDController {
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
 
+        // 리스트 소팅 메소드 (각각의 이름 기존 오름차순 정렬)
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -341,6 +335,15 @@ public class SupportCRUDController {
 
         return "supportModify";
     }
+
+    /**
+     * 지원내역 수정하기
+     * - 등록과 거의 동일, 등록은 신규 엔티티를 생성 후 save하는 것이라면, 수정은 기존 엔티티를 supportId로 검색 후 update한 뒤 save
+     * @param files
+     * @param modifyRequest
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/modify")
     public String modifySupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute ModifyRequest modifyRequest, RedirectAttributes redirectAttributes) {
 
@@ -410,28 +413,36 @@ public class SupportCRUDController {
         }
     }
 
-    // 삭제
+    /**
+     * 지원내역 삭제
+     * @param supportId
+     * @return 지원내역 조회 페이지로 리다이렉트
+     */
     @PostMapping("/delete")
-    public String deleteSupport(@RequestParam(required = false) Long supportId, Model model) {
+    public String deleteSupport(@RequestParam(required = false) Long supportId) {
 
         supportService.deleteSupport(supportId);
 
         return "redirect:/search?";
     }
 
+    /**
+     * 파일 다운로드 메소드
+     * @param fileId
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());
         try{
             Resource resource = new InputStreamResource(Files.newInputStream(path));
-            // 파일 이름을 UTF-8로 인코딩
             String encodedFileName = new String(fileDto.getOrigFilename().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
 
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/octet-stream"));
 
-            // Content-Disposition 헤더에 올바른 파일 이름 설정
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"");
 
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);

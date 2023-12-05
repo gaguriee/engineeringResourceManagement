@@ -24,6 +24,9 @@ public class Product {
     @JoinColumn(name = "대분류_제품_id")
     private ProductCategory 대분류;
 
+    /**
+     * 순환 참조 문제로 만든 별도의 toString 메소드
+     */
     @Override
     public String toString() {
         return "Product{" +

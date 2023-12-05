@@ -27,10 +27,13 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+
+    // Query DSL 필터링 메소드
     @Override
     public Page<Support> searchSupportByFilters(SupportFilterCriteria criteria, Pageable pageable, String sort) {
         QSupport support = QSupport.support;
 
+        // 필터링 조건 추가
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(customerNameIn(criteria.getCustomerName()));
         whereClause.and(projectNameIn(criteria.getProjectName()));
@@ -40,6 +43,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         whereClause.and(stateIdIn(criteria.getStateId()));
         whereClause.and(engineerIdIn(criteria.getEngineerId()));
         whereClause.and(taskContains(criteria.getTaskKeyword()));
+
         if (criteria.getStartDate() != null) {
             whereClause.and(support.supportDate.goe(criteria.getStartDate()));
         }
@@ -56,6 +60,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
             orderSpecifier = support.supportDate.desc();
         }
 
+        // 필터링 결과 객체
         List<Support> result = queryFactory
                 .selectFrom(support)
                 .leftJoin(support.project).fetchJoin()
@@ -108,9 +113,9 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
 
     private BooleanExpression taskContains(String keyword) {
         return keyword != null
-                ? QSupport.support.taskTitle.contains(keyword)
-                .or(QSupport.support.taskSummary.contains(keyword))
-                .or(QSupport.support.engineer.name.contains(keyword))
+                ? QSupport.support.taskTitle.toLowerCase().contains(keyword.toLowerCase())
+                .or(QSupport.support.taskSummary.toLowerCase().contains(keyword.toLowerCase()))
+                .or(QSupport.support.engineer.name.toLowerCase().contains(keyword.toLowerCase()))
                 : null;
     }
 

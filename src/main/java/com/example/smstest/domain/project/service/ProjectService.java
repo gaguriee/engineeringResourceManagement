@@ -1,6 +1,5 @@
 package com.example.smstest.domain.project.service;
 
-import com.example.smstest.domain.project.Interface.ProjectService;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.license.entity.LicenseProject;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ProjectServiceImpl implements ProjectService {
+public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final LicenseProjectRepository licenseProjectRepository;
@@ -26,15 +25,13 @@ public class ProjectServiceImpl implements ProjectService {
      * @param pageable
      * @return
      */
-    @Override
     public Page<Project> searchProjects(String keyword, Pageable pageable) {
 
         if (keyword != null) {
             return projectRepository.findAllByNameContaining(keyword, pageable);
         }
-        return projectRepository.findAllOrderedByUniqueCodeDesc(pageable);    }
+        return projectRepository.findAllByOrderBySupportCountDesc(pageable);    }
 
-    @Override
     public Page<LicenseProject> searchLicenseProjects(String keyword, Pageable pageable) {
         if (keyword != null) {
             return licenseProjectRepository.findAllByNameContaining(keyword, pageable);

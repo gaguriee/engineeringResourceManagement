@@ -5,6 +5,9 @@ import lombok.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * 파일 업로드 및 다운로드에 사용되는 File DTO
+ */
 @Getter
 @Setter
 @ToString

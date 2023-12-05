@@ -7,9 +7,9 @@ import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.domain.project.Interface.ProjectService;
 import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.project.service.ProjectService;
 import com.example.smstest.domain.support.dto.ProjectRequest;
 import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.support.entity.Support;
@@ -50,7 +50,7 @@ import java.util.Optional;
 @RequestMapping("/project")
 public class ProjectController {
 
-    private final ProjectService ProjectService;
+    private final ProjectService projectService;
     private final SupportRepository supportRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
@@ -73,7 +73,7 @@ public class ProjectController {
 
         getProjectList(Keyword, pageable, model);
 
-        Page<Project> projects = ProjectService.searchProjects(Keyword, pageable);
+        Page<Project> projects = projectService.searchProjects(Keyword, pageable);
         model.addAttribute("projects", projects);
         model.addAttribute("totalPages", projects.getTotalPages());
 
@@ -87,7 +87,7 @@ public class ProjectController {
             @PageableDefault(size = 15) Pageable pageable,
             Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
@@ -139,7 +139,7 @@ public class ProjectController {
             ProjectRequest projectRequest, BindingResult bindingResult,
             Model model) {
 
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         model.addAttribute("user", user);
 
@@ -189,7 +189,7 @@ public class ProjectController {
             Model model) {
 
         getProjectList(Keyword, pageable, model);
-        Page<LicenseProject> projects = ProjectService.searchLicenseProjects(Keyword, pageable);
+        Page<LicenseProject> projects = projectService.searchLicenseProjects(Keyword, pageable);
 
         model.addAttribute("projects", projects);
         model.addAttribute("totalPages", projects.getTotalPages());
@@ -198,7 +198,7 @@ public class ProjectController {
     }
 
     private void getProjectList(@RequestParam(required = false) String Keyword, @PageableDefault(size = 30) Pageable pageable, Model model) {
-        Memp user = mempRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());

@@ -1,8 +1,9 @@
 package com.example.smstest.domain.client.service;
 
-import com.example.smstest.domain.client.Interface.ClientService;
 import com.example.smstest.domain.client.entity.Client;
 import com.example.smstest.domain.client.repository.ClientRepository;
+import com.example.smstest.exception.CustomException;
+import com.example.smstest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ClientServiceImpl implements ClientService {
+public class ClientService {
 
     private final ClientRepository clientRepository;
 
@@ -24,7 +25,6 @@ public class ClientServiceImpl implements ClientService {
      * @param pageable
      * @return Page<Client>
      */
-    @Override
     public Page<Client> searchClients(String keyword, Pageable pageable) {
         if (keyword != null) {
             return clientRepository.findByNameContainingOrderBySupportCountDesc(keyword, pageable);
@@ -37,9 +37,9 @@ public class ClientServiceImpl implements ClientService {
      * @param customerId
      * @return
      */
-    @Override
     public Client getClientDetails(Integer customerId) {
-        return clientRepository.findById(customerId).orElse(null);
+        return clientRepository.findById(customerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
     }
 
 }

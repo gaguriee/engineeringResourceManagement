@@ -23,6 +23,9 @@ public class ProductCategory {
     @OneToMany(mappedBy = "대분류", fetch = FetchType.EAGER) // 즉시 로딩으로 변경
     private List<Product> products;
 
+    /**
+     * 순환 참조 문제로 만든 별도의 toString 메소드
+     */
     @Override
     public String toString() {
         return "ProductCategory{" +

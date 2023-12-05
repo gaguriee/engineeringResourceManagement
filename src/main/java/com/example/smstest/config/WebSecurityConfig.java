@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
 /**
@@ -45,6 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 앤드포인트 별 접근 권한 제어
                 .authorizeRequests()
+                .antMatchers("/api/**").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/templates/**").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(customUserDetailsService);
     }
 
+    // Thymeleaf에서 sec 속성을 사용할 수 있다. (인증정보에 직접 접근해서 인가를 할 수 있음)
     @Bean
     public SpringSecurityDialect springSecurityDialect(){
         return new SpringSecurityDialect();
