@@ -41,10 +41,8 @@
     </div>
 
     <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
-
         <iframe class="skeleton iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.department')} + ${division.id}" width="100%" height="1400" ></iframe>
         <iframe class="skeleton iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.department-mobile')}  + ${division.id}" width="100%" height="1400" ></iframe>
-<!--        <iframe th:src="@{'https://err2.somansa.com/superset/dashboard/6/?standalone=2&slice_id=4' }" width="100%" height="1400" ></iframe>-->
     </div>
 </section>
 
@@ -56,8 +54,8 @@
         form.addEventListener('submit', function (event) {
             const selectedDepartment = document.getElementById('department').value;
             if (!selectedDepartment) {
-                event.preventDefault(); // Prevent form submission
-                alert('소속을 선택해주세요.'); // You can display an error message to the user
+                event.preventDefault();
+                alert('소속을 선택해주세요.');
             }
         });
     });
@@ -78,14 +76,12 @@
         }
     }
 
-    /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
     @media (max-width: 1064px) {
 
         .iframe-pc {
             display: none;
         }
 
-        /* PC에서는 iframe-mobile을 숨김 */
         .iframe-mobile {
             display: block;
         }

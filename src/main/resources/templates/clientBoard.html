@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="kor">
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="kor">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
@@ -7,7 +8,6 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
 </head>
 <body>
 <div th:replace="header :: header"></div>
@@ -33,8 +33,6 @@
                             </button>
                         </div>
                     </form>
-
-
                 </div>
             </div>
             <div style="display: flex; flex-wrap: wrap; flex-direction: row;" class="p-8 pl-2 pr-2">
@@ -63,26 +61,21 @@
                             </svg>
                         </a>
                     </li>
-                    <!-- 페이지 번호를 반복하여 링크 생성 -->
-                    <!-- Determine the current group number (e.g., 0 for 1-10, 1 for 11-20, etc.) -->
                     <th:block th:with="currentGroupNo=${currentPage/5}">
 
-                        <!-- Calculate the start and end page numbers for the current group -->
                         <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
 
-                            <!-- Iterate over the page numbers in the current group -->
                             <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
-                                <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                 <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
-                                    <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                    <a th:href="@{/customer/search(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
-                                       th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white' "  th:text="${pageNo}">
-                                    </a>
+                                    <button
+                                            type="button"
+                                            th:onclick="'pageMove('+${pageNo}+')'"
+                                            th:classappend=" (${pageNo} == ${currentPage+1}) ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                            th:text="${pageNo}">
+                                    </button>
                                 </th:block>
                             </li>
-
                         </th:block>
-
                     </th:block>
                     <li>
                         <a href="#" id="nextBtn" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -99,14 +92,14 @@
 
         </div>
 </section>
-<!-- End block -->
 <div th:replace="footer :: footer"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+
 <script th:inline="javascript">
 
-    const currentPage = /*[[${currentPage }]]*/;
-    const totalPages = /*[[${totalPages }]]*/;
+    const currentPage = [[${currentPage}]];
+    const totalPages = [[${totalPages}]];
 
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -143,18 +136,20 @@
         });
     });
 
-
+    function pageMove(pageNum) {
+        const currentParams = getCurrentURLParams();
+        currentParams["page"] = pageNum;
+        window.location.href = "/customer/search?" + new URLSearchParams(currentParams).toString();
+    }
 
     function submitSearch(event) {
         event.preventDefault();
         const searchInput = document.getElementById("simple-search");
         const searchQuery = searchInput.value.trim();
-        const currentPage = 0; // Change this value to the current page number
+        const currentPage = 0;
         if (searchQuery !== "") {
-            // Redirect to the URL with the search keyword and current page number
             window.location.href = "/customer/search?page=" + currentPage + "&Keyword=" + encodeURIComponent(searchQuery);
         } else {
-            // Redirect to the URL without the search keyword (remove the query parameter)
             window.location.href = "/customer/search?page=" + currentPage;
         }
         return false;
@@ -171,16 +166,12 @@
         width: 100%;
     }
 
-
-
-    /* 데스크탑에서는 한 줄에 세 개가 표시되도록 스타일 조정 */
     @media screen and (min-width: 768px) {
         .customer-card {
             flex: 0 0 33.33%;
         }
     }
 
-    /* Mobile responsive styles */
     @media (max-width: 640px) {
 
         .customer-card {
@@ -198,10 +189,6 @@
             margin-bottom: 4px;
         }
 
-        .table-container {
-            overflow-x: auto;
-        }
-
         table {
             display: block;
             width: 100%;
@@ -216,8 +203,7 @@
 
         th {
             font-weight: bold;
-            display: none; /* Hide table header on mobile */
-
+            display: none;
         }
 
         tbody tr {

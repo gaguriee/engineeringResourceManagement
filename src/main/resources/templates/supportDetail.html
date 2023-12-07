@@ -7,6 +7,7 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 </head>
 <body style="background-color: white">
@@ -101,7 +102,7 @@
         <dl style="padding-top: 24px; padding-bottom: 96px">
             <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
             <div class="w-full mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400 line-break" >
-                <div id="taskDetails" class="w-full" style="white-space: pre-wrap; word-wrap: break-word;" th:utext="${support.taskDetails}"></div>
+                <div id="taskDetails" class="w-full ql-editor" style="white-space: pre-wrap; word-wrap: break-word; word-spacing: 4px;" th:utext="${support.taskDetails}"></div>
             </div>
         </dl>
         <div th:if="${support.files != null}">
@@ -115,16 +116,6 @@
                 ></a>
 
             </div>
-
-<!--            <div class="mt-5 flex overflow-y-auto">-->
-<!--                <div th:each="file : ${support.files}">-->
-<!--                    <th:block class="items-center text-center" th:if="${#strings.endsWith(file.origFilename, '.jpg') or #strings.endsWith(file.origFilename, '.png') or #strings.endsWith(file.origFilename, '.svg')}">-->
-<!--                        <img th:src="@{'/download/' + ${file.id}}" alt="Image Preview" style="height: auto; width: 200px; max-height: 200px; max-width: 100%; border-radius: 10px; margin: 10px;">-->
-<!--                        <p class="items-center text-center text-xs text-gray-600" style="margin-left: 10px" th:text="${file.origFilename}"></p>-->
-<!--                    </th:block>-->
-<!--                </div>-->
-<!--            </div>-->
-
 
         </div>
     </div>
@@ -181,16 +172,19 @@
         text-decoration: underline;
     }
 
+
+
 </style>
+<script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
-    const supportId = /*[[${support.id }]]*/;
-    const taskTitle = /*[[${support.taskTitle }]]*/;
-    const date = /*[[${support.supportDate }]]*/;
+    const supportId = [[${support.id }]];
+    const taskTitle = [[${support.taskTitle }]];
+    const date = [[${support.supportDate }]];
 
     var userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
     var hasSuperAdminRole = userAuthorities.some(function(authority) {
@@ -268,6 +262,123 @@
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+
+    .ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
+        padding-left: 4.5em;
+    }
+    .ql-editor .ql-indent-1:not(.ql-direction-rtl) {
+        padding-left: 3em;
+    }
+    .ql-editor ol li.ql-indent-1 {
+        counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-1 {
+        counter-increment: list-1;
+    }
+
+    .ql-editor li.ql-indent-2:not(.ql-direction-rtl) {
+        padding-left: 7.5em;
+    }
+    .ql-editor .ql-indent-2:not(.ql-direction-rtl) {
+        padding-left: 6em;
+    }
+    .ql-editor ol li.ql-indent-2 {
+        counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-2 {
+        counter-increment: list-2;
+    }
+    .ql-editor li.ql-indent-3:not(.ql-direction-rtl) {
+        padding-left: 10.5em;
+    }
+    .ql-editor .ql-indent-3:not(.ql-direction-rtl) {
+        padding-left: 9em;
+    }
+    .ql-editor ol li.ql-indent-3 {
+        counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-3 {
+        counter-increment: list-3;
+    }
+
+    .ql-editor li.ql-indent-4:not(.ql-direction-rtl) {
+        padding-left: 13.5em;
+    }
+    .ql-editor .ql-indent-4:not(.ql-direction-rtl) {
+        padding-left: 12em;
+    }
+    .ql-editor ol li.ql-indent-4 {
+        counter-reset: list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-4 {
+        counter-increment: list-4;
+    }
+
+    .ql-editor li.ql-indent-5:not(.ql-direction-rtl) {
+        padding-left: 16.5em;
+    }
+    .ql-editor .ql-indent-5:not(.ql-direction-rtl) {
+        padding-left: 15em;
+    }
+    .ql-editor ol li.ql-indent-5 {
+        counter-reset: list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-5 {
+        counter-increment: list-5;
+    }
+
+    .ql-editor li.ql-indent-6:not(.ql-direction-rtl) {
+        padding-left: 19.5em;
+    }
+    .ql-editor .ql-indent-6:not(.ql-direction-rtl) {
+        padding-left: 18em;
+    }
+    .ql-editor ol li.ql-indent-6 {
+        counter-reset: list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-6 {
+        counter-increment: list-6;
+    }
+
+    .ql-editor li.ql-indent-7:not(.ql-direction-rtl) {
+        padding-left: 22.5em;
+    }
+    .ql-editor .ql-indent-7:not(.ql-direction-rtl) {
+        padding-left: 21em;
+    }
+    .ql-editor ol li.ql-indent-7 {
+        counter-reset: list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-7 {
+        counter-increment: list-7;
+    }
+
+    .ql-editor li.ql-indent-8:not(.ql-direction-rtl) {
+        padding-left: 25.5em;
+    }
+    .ql-editor .ql-indent-8:not(.ql-direction-rtl) {
+        padding-left: 24em;
+    }
+    .ql-editor ol li.ql-indent-8 {
+        counter-reset: list-9;
+    }
+    .ql-editor ol li.ql-indent-8 {
+        counter-increment: list-8;
+    }
+
+    .ql-editor ol li:not(.ql-direction-rtl), .ql-editor ul li:not(.ql-direction-rtl) {
+        padding-left: 1.5em;
+    }
+    .ql-editor ol li {
+        counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+        counter-increment: list-0;
+    }
+    .ql-editor ol > li, .ql-editor ul > li {
+        list-style-type: none;
+    }
+    .ql-snow * {
+        box-sizing: border-box;
+    }
 </style>
 </body>
 </html>

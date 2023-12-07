@@ -4,19 +4,15 @@
     <meta charset="UTF-8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <!-- jquery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- fullcalendar CDN -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>
-    <!-- fullcalendar 언어 CDN -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
 </head>
 <body>
 <div th:replace="header :: header"></div>
@@ -130,7 +126,6 @@
                 locale: 'ko',
             });
 
-            // supports 리스트 가져오기
             var events = [];
 
             var eventDidMount = function(info) {
@@ -138,7 +133,7 @@
                     content:  '[작업요약] \n' + info.event.extendedProps.description,//이벤트 디스크립션을 툴팁으로 가져옵니다.
                 });
             }
-                    // supports 리스트 순회하여 events 배열에 데이터 추가
+
             supports.forEach(function (support) {
                 var event = null;
                 if (support.supportType != null){
@@ -168,7 +163,6 @@
             calendar.setOption('eventDidMount', eventDidMount);
             calendar.setOption('events', events);
 
-            // 캘린더 랜더링
             calendar.render();
         });
     })();

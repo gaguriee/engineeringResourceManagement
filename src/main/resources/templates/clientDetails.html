@@ -7,7 +7,6 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
 </head>
 <body>
 <div th:replace="header :: header"></div>
@@ -15,23 +14,18 @@
     <div class="mt-14 py-8 px-4 mx-auto max-w-4xl lg:py-8" style="align-items: center; display: grid; align-content: center; text-align: center">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${customer.name}"></h2>
     </div>
-
     <div class="skeleton mb-6" style="background-color: #F7F7F7;">
-
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer')} + ${customer.id}" width="100%" height="900" ></iframe>
         <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer-mobile')} + ${customer.id}" width="100%" height="900" ></iframe>
-
     </div>
-
 </section>
 <div th:replace="footer :: footer"></div>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
 
     .skeleton * {
-        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
         background-size: 200% 100%;
-        background-position: 100% 0;
+        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%) 100% 0;
         animation: load 1s infinite;
     }
 
@@ -41,15 +35,12 @@
         }
     }
 
-
-    /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
     @media (max-width: 1064px) {
 
         .iframe-pc {
             display: none;
         }
 
-        /* PC에서는 iframe-mobile을 숨김 */
         .iframe-mobile {
             display: block;
         }
@@ -57,7 +48,5 @@
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
-
 </body>
-
 </html>

@@ -15,8 +15,6 @@
 </head>
 <body>
 
-<!--WBS용 프로젝트 리스트 조회 -->
-
 <div th:replace="header :: header"></div>
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -89,19 +87,18 @@
                                 </svg>
                             </a>
                         </li>
-                        <!-- 페이지 번호를 반복하여 링크 생성 -->
                         <th:block th:with="currentGroupNo=${currentPage/5}">
 
                             <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
 
                                 <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
-                                    <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                     <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
-                                        <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                        <a th:href="@{/project/search(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
-                                           th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
-                                           th:text="${pageNo}">
-                                        </a>
+                                        <button
+                                                type="button"
+                                                th:onclick="'pageMove('+${pageNo}+')'"
+                                                th:classappend=" (${pageNo} == ${currentPage+1}) ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                                th:text="${pageNo}">
+                                        </button>
                                     </th:block>
                                 </li>
 
@@ -126,8 +123,8 @@
 <div th:replace="footer :: footer"></div>
 <script th:inline="javascript">
 
-    const currentPage = /*[[${currentPage }]]*/;
-    const totalPages = /*[[${totalPages }]]*/;
+    const currentPage = [[${currentPage }]];
+    const totalPages = [[${totalPages }]];
 
     function applyResetBtn() {
 
@@ -181,19 +178,11 @@
         return false;
     }
 
-    /**
-     *     프로젝트 등록
-     */
-
-
-    var clientName = document.getElementById("clientName");
-    var projectName = document.getElementById("projectName");
-    var productId = document.getElementById("productId");
-    var teamId = document.getElementById("teamId");
-    var engineerName = document.getElementById("engineer");
-    var subEngineerName = document.getElementById("subEngineer");
-    var directSelect = document.getElementById("direct-select");
-
+    function pageMove(pageNum) {
+        const currentParams = getCurrentURLParams();
+        currentParams["page"] = pageNum;
+        window.location.href = "/project/search?" + new URLSearchParams(currentParams).toString();
+    }
 
 </script>
 <style>

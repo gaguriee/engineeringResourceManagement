@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,6 +71,15 @@ public class SupportService  {
     public SupportResponse createSupport(List<MultipartFile> files,  SupportRequest supportRequest) throws NoSuchAlgorithmException, IOException {
 
         Support support = new Support();
+
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        boolean containsSuperAdmin = user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"));
+
+        if (!containsSuperAdmin && isBeforeSevenDays(supportRequest.getSupportDate())){
+            throw new CustomException(ErrorCode.DATE_INVALID);
+        }
 
         LicenseProject licenseProject = licenseProjectRepository.findById(supportRequest.getProjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
@@ -141,9 +151,24 @@ public class SupportService  {
         return SupportResponse.entityToResponse(newsupport);
     }
 
+    private static boolean isBeforeSevenDays(Date supportDate) {
+        long sevenDaysAgoMillis = System.currentTimeMillis() - 8 * 24 * 60 * 60 * 1000;
+        Date sevenDaysAgo = new Date(sevenDaysAgoMillis);
+        return supportDate.before(sevenDaysAgo);
+    }
+
     public SupportResponse modifySupport(ModifyRequest supportRequest) {
 
         Support support = supportRepository.findById(supportRequest.getSupportId()).get();
+
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        boolean containsSuperAdmin = user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"));
+
+        if (!containsSuperAdmin && isBeforeSevenDays(supportRequest.getSupportDate())){
+            throw new CustomException(ErrorCode.DATE_INVALID);
+        }
 
         LicenseProject licenseProject = licenseProjectRepository.findById(supportRequest.getProjectId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
@@ -190,8 +215,6 @@ public class SupportService  {
         }
 
 
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (support.getEngineer().getUsername().equals(user.getUsername())
         || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"))){
             support.setSupportDate(supportRequest.getSupportDate());
