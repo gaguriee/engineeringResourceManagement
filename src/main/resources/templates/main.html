@@ -12,7 +12,6 @@
 
     <style>
         * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
-        /* PC에서의 스타일 */
 
         .skeleton * {
             background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
@@ -27,11 +26,10 @@
             }
         }
 
-
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* PC에서는 한 줄에 2개의 열 */
-            gap: 10px; /* 아이템 사이의 간격 */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
 
         .radar-chart {
@@ -41,7 +39,6 @@
 
         }
 
-        /* 모바일 화면에서는 한 줄에 1개의 열로 변경 */
         @media (max-width: 1064px) {
 
             .grid-container {
@@ -52,7 +49,6 @@
                 display: none;
             }
 
-            /* PC에서는 iframe-mobile을 숨김 */
             .iframe-mobile {
                 display: block;
             }
@@ -77,10 +73,8 @@
 
 <section class="bg-white dark:bg-gray-900" >
 
-<!--    팝업 모달-->
     <th:block th:each="announcement : ${announcements}"
               th:if="${user != null and not #lists.contains(announcement.dismissedUsers, user.id)}">
-        <!-- 각 모달에 announcement.id를 ID로 할당 -->
         <div th:id="'modal_' + ${announcement.id}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full" aria-modal="true">
             <div class="relative w-full max-w-2xl max-h-full">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -97,7 +91,6 @@
                         <div class="mb-4 w-full">
                             <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400" style="white-space: pre-wrap; word-wrap: break-word;" th:text="${announcement.content}"></p>
                         </div>
-                        <!-- Add a "다시 보지 않음" 체크박스 -->
                         <label class="inline-flex items-center">
                             <input type="checkbox" th:id="'dismissCheckbox_'+${announcement.id}"  class="form-checkbox h-4 w-4 text-blue-600" />
                             <span class="ml-2 text-gray-700 dark:text-gray-400">다시 보지 않음</span>
@@ -116,10 +109,8 @@
     </th:block>
 
     <div class="skeleton" style="background-color: #F7F7F7;">
-<!--        <iframe src="https://err2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" width="100%" height="900" ></iframe>-->
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa')}" width="100%" height="1350" ></iframe>
         <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa-mobile')}" width="100%" height="2700" ></iframe>
-
     </div>
 
 
@@ -145,16 +136,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
-    var user = /*[[${user}]]*/ ;
+    let user = [[${user}]];
 
     function closeModal(modalId) {
-        var modal = document.getElementById(modalId);
+        const modal = document.getElementById(modalId);
         modal.style.display = 'none';
     }
 
-    // 각 확인 버튼에 클릭 이벤트 리스너 추가
     document.addEventListener('DOMContentLoaded', function() {
-        var confirmButtons = document.querySelectorAll('[data-modal-hide]');
+        const confirmButtons = document.querySelectorAll('[data-modal-hide]');
         confirmButtons.forEach(function(button) {
             button.addEventListener('click', function() {
                 var modalId = 'modal_' + button.getAttribute('data-modal-hide');
@@ -177,15 +167,15 @@
         }
     }
 
-    var stateNames = /*[[${stateNames}]]*/ ;
+    var stateNames = [[${stateNames}]] ;
 
-    var overallSupportTypeHourSums_N = /*[[${overallSupportTypeHourSums_N}]]*/ ;
-    var teamDataMap_N = /*[[${teamDataMap_N}]]*/ ;
+    var overallSupportTypeHourSums_N = [[${overallSupportTypeHourSums_N}]] ;
+    var teamDataMap_N = [[${teamDataMap_N}]] ;
 
-    var overallSupportTypeHourSums_E = /*[[${overallSupportTypeHourSums_E}]]*/ ;
-    var teamDataMap_E = /*[[${teamDataMap_E}]]*/ ;
+    var overallSupportTypeHourSums_E = [[${overallSupportTypeHourSums_E}]] ;
+    var teamDataMap_E = [[${teamDataMap_E}]] ;
 
-    var teamColorMap = /*[[${teamColorMap}]]*/ ;
+    var teamColorMap = [[${teamColorMap}]] ;
 
     var teamDatasets_N = [];
     var teamDatasets_E = [];
@@ -220,14 +210,14 @@
         });
     }
 
-    var overallCtx_N = document.getElementById('overallRadarChart_N').getContext('2d');
-    var teamCtx_N = document.getElementById('teamRadarChart_N').getContext('2d');
+    const overallCtx_N = document.getElementById('overallRadarChart_N').getContext('2d');
+    const teamCtx_N = document.getElementById('teamRadarChart_N').getContext('2d');
 
-    var overallCtx_E = document.getElementById('overallRadarChart_E').getContext('2d');
-    var teamCtx_E = document.getElementById('teamRadarChart_E').getContext('2d');
+    const overallCtx_E = document.getElementById('overallRadarChart_E').getContext('2d');
+    const teamCtx_E = document.getElementById('teamRadarChart_E').getContext('2d');
 
     // 기술N본부 데이터셋 추가
-    var overallDataset_N = [{
+    const overallDataset_N = [{
         label: "기술N본부",
         data: overallSupportTypeHourSums_N,
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -236,7 +226,7 @@
     }];
 
     // 기술E본부 데이터셋 추가
-    var overallDataset_E = [{
+    const overallDataset_E = [{
         label: "기술E본부",
         data: overallSupportTypeHourSums_E,
         backgroundColor: 'rgba(99,148,255, 0.2)',
@@ -244,9 +234,6 @@
         borderWidth: 2
     }];
 
-
-
-    // Radar Chart 생성
     var overallRadarChart_N = new Chart(overallCtx_N, {
         type: 'radar',
         data: {
@@ -258,7 +245,7 @@
                 r: {
                     pointLabels: {
                         font: {
-                            size: 18 // 글꼴 크기 설정
+                            size: 18
                         }
                     }
                 }
@@ -268,14 +255,14 @@
                     display: true,
                     text: "기술 N본부 업무 집중도 분석",
                     font: {
-                        size: 18 // 제목 글꼴 크기 설정
+                        size: 18
                     }
                 },
                 legend: {
                     display: true,
                     labels: {
                         font: {
-                            size: 12 // 레전드 글꼴 크기 설정
+                            size: 12
                         }
                     }
                 }
@@ -294,7 +281,7 @@
                 r: {
                     pointLabels: {
                         font: {
-                            size: 18 // 글꼴 크기 설정
+                            size: 18
                         }
                     }
                 }
@@ -304,14 +291,14 @@
                     display: true,
                     text: "기술 N본부 팀별 업무 집중도 분석",
                     font: {
-                        size: 18 // 제목 글꼴 크기 설정
+                        size: 18
                     }
                 },
                 legend: {
                     display: true,
                     labels: {
                         font: {
-                            size: 12 // 레전드 글꼴 크기 설정
+                            size: 12
                         }
                     }
                 }
@@ -319,7 +306,6 @@
         }
     });
 
-    // Radar Chart 생성
     var overallRadarChart_E = new Chart(overallCtx_E, {
         type: 'radar',
         data: {

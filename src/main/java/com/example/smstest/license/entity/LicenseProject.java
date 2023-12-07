@@ -19,7 +19,7 @@ public class LicenseProject {
     private String projectGuid;
 
     @ManyToOne
-    @JoinColumn(name = "COMPANY_GUID", referencedColumnName = "COMPANY_GUID", insertable = false, updatable = false)
+    @JoinColumn(name = "COMPANY_GUID", referencedColumnName = "COMPANY_GUID", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
     private LicenseCompany company;
 
     @Column(name = "AUTOCOMMAND_GUID", length = 50)

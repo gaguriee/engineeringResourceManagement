@@ -77,22 +77,16 @@
                             </svg>
                         </a>
                     </li>
-                    <!-- 페이지 번호를 반복하여 링크 생성 -->
-                    <!-- Determine the current group number (e.g., 0 for 1-10, 1 for 11-20, etc.) -->
                     <th:block th:with="currentGroupNo=${currentPage/5}">
-
-                        <!-- Calculate the start and end page numbers for the current group -->
                         <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
-
-                            <!-- Iterate over the page numbers in the current group -->
                             <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
-                                <!-- 현재 URL에서 쿼리 매개변수 추출 -->
                                 <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
-                                    <!-- 페이지 링크에 페이지 및 필터링 매개변수 추가 -->
-                                    <a th:href="@{/memberInfoDetail(page=${pageNo})} + @{${currentParams} != null ? '&amp;' + ${currentParams} : ''}"
-                                       th:classappend="${pageNo} == ${currentPage+1} ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
-                                       th:text="${pageNo}">
-                                    </a>
+                                    <button
+                                            type="button"
+                                            th:onclick="'pageMove('+${pageNo}+')'"
+                                            th:classappend=" (${pageNo} == ${currentPage+1}) ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                            th:text="${pageNo}">
+                                    </button>
                                 </th:block>
                             </li>
 
@@ -118,7 +112,6 @@
 
 <style>
 
-    /* Mobile responsive styles */
     @media (max-width: 640px) {
 
         .th-p0 {
@@ -161,7 +154,7 @@
 
         th {
             font-weight: bold;
-            display: none; /* Hide table header on mobile */
+            display: none;
 
         }
 
@@ -196,8 +189,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
-    const currentPage = /*[[${currentPage }]]*/;
-    const totalPages = /*[[${totalPages }]]*/;
+    const currentPage = [[${currentPage }]];
+    const totalPages = [[${totalPages }]];
 
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -232,6 +225,12 @@
             }
         });
     });
+
+    function pageMove(pageNum) {
+        const currentParams = getCurrentURLParams();
+        currentParams["page"] = pageNum;
+        window.location.href = "/memberInfoDetail?" + new URLSearchParams(currentParams).toString();
+    }
 
 </script>
 <style>

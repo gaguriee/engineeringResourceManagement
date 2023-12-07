@@ -249,6 +249,7 @@ public class SupportCRUDController {
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         model.addAttribute("user", user);
+        model.addAttribute("currentDate", new Date());
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
@@ -323,6 +324,7 @@ public class SupportCRUDController {
         Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         model.addAttribute("user", user);
+        model.addAttribute("currentDate", new Date());
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
