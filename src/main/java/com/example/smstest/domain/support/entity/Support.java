@@ -2,10 +2,9 @@ package com.example.smstest.domain.support.entity;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.file.File;
-import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.Project;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.net.InetAddress;
@@ -73,8 +72,8 @@ public class Support {
     @Column(name = "지원형태_시간")
     private Float supportTypeHour;
 
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
+    @Column(name = "created_at", nullable = false, insertable = false)
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "supportId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<File> files;

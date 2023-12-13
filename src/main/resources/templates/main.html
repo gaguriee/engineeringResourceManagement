@@ -41,10 +41,6 @@
 
         @media (max-width: 1064px) {
 
-            .grid-container {
-                margin-top: -180px;
-            }
-
             .iframe-pc {
                 display: none;
             }
@@ -114,19 +110,24 @@
     </div>
 
 
-    <div class="grid-container"   style="background-color: #F7F7F7; padding: 32px; padding-top: 0px; width: 100%">
-        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
-            <canvas id="overallRadarChart_N"></canvas>
+    <div style="background-color: #F7F7F7; padding: 0 32px 32px;width: 100%">
+        <p class="text-xs mb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
+
+        <div class="grid-container" >
+            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+                <canvas id="overallRadarChart_N"></canvas>
+            </div>
+            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+                <canvas id="teamRadarChart_N"></canvas>
+            </div>
+            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+                <canvas id="overallRadarChart_E"></canvas>
+            </div>
+            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+                <canvas id="teamRadarChart_E"></canvas>
+            </div>
         </div>
-        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
-            <canvas id="teamRadarChart_N"></canvas>
-        </div>
-        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
-            <canvas id="overallRadarChart_E"></canvas>
-        </div>
-        <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
-            <canvas id="teamRadarChart_E"></canvas>
-        </div>
+
     </div>
 </section>
 

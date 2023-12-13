@@ -11,7 +11,9 @@ public interface IssueCategoryRepository extends JpaRepository<IssueCategory, Lo
 
     // 본부별 이슈 분류 가져오기
     @Query("SELECT ic FROM IssueCategory ic WHERE ic.visibility = true AND (ic.divisionId is null OR ic.divisionId = :divisionId) ORDER BY ic.priority")
-    List<IssueCategory> findAllOrderedByPriority(@Param("divisionId") Integer divisionId);
+    List<IssueCategory> findAllByDivisionIdOrderedByPriority(@Param("divisionId") Integer divisionId);
 
+    @Query("SELECT ic FROM IssueCategory ic WHERE ic.visibility = true ORDER BY ic.priority")
+    List<IssueCategory> findAllOrderedByPriority();
 }
 

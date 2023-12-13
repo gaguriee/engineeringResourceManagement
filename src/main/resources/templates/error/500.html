@@ -17,16 +17,34 @@
 <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-sm text-center">
-            <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">500</h1>
-            <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Internal Server Error.</p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">불편을 끼쳐드려 죄송합니다. </p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">해당 페이지가 보이는 경우, 이전 화면을 캡쳐하여 담당자에 전달해주시면 더욱 빠른 처리가 가능합니다.</p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">편안한 웹 이용을 위해 노력하겠습니다.</p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">담당자: 기술 2실 직속 김가경 </p>
+            <div class="py-12">
+                <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">500</h1>
+                <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Internal Server Error.</p>
+                <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">불편을 끼쳐드려 죄송합니다. </p>
+                <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">해당 페이지가 보이는 경우, 화면을 캡쳐하여 담당자에 전달해주시면 더욱 빠른 처리가 가능합니다.</p>
+                <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">편안한 웹 이용을 위해 노력하겠습니다.</p>
+                <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">담당자: 기술 2실 직속 김가경 </p>
+            </div>
 
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Your Submitted Content</p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400" th:text="${request}"></p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400" th:text="${params}"></p>
+
+            <div class="text-left px-8 py-8" th:if="${taskSummary != null || taskDetails != null}">
+                <p class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">* 기존 작성 내역 확인하기</p>
+
+                <hr style="margin-bottom: 24px; margin-top: 24px">
+                <dl style="padding-top: 24px; margin-bottom: 24px">
+                    <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업요약</dt>
+                    <dd class="mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400">
+                <span class="w-full" th:inline="text" style="white-space: pre-wrap; word-wrap: break-word;">[[${taskSummary} ?: ' ']]
+                </span>
+                    </dd>
+                </dl>
+                <dl style="padding-top: 24px; padding-bottom: 96px">
+                    <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
+                    <div class="w-full mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400 line-break" >
+                        <div id="taskDetails" class="w-full ql-editor" style="white-space: pre-wrap; word-wrap: break-word; word-spacing: 4px;" th:utext="${taskDetails}"></div>
+                    </div>
+                </dl>
+            </div>
 
         </div>
     </div>
@@ -39,7 +57,151 @@
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
-</style>
 
+    .ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
+        padding-left: 4.5em;
+    }
+    .ql-editor .ql-indent-1:not(.ql-direction-rtl) {
+        padding-left: 3em;
+    }
+    .ql-editor ol li.ql-indent-1 {
+        counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-1 {
+        counter-increment: list-1;
+    }
+
+    .ql-editor li.ql-indent-2:not(.ql-direction-rtl) {
+        padding-left: 7.5em;
+    }
+    .ql-editor .ql-indent-2:not(.ql-direction-rtl) {
+        padding-left: 6em;
+    }
+    .ql-editor ol li.ql-indent-2 {
+        counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-2 {
+        counter-increment: list-2;
+    }
+    .ql-editor li.ql-indent-3:not(.ql-direction-rtl) {
+        padding-left: 10.5em;
+    }
+    .ql-editor .ql-indent-3:not(.ql-direction-rtl) {
+        padding-left: 9em;
+    }
+    .ql-editor ol li.ql-indent-3 {
+        counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-3 {
+        counter-increment: list-3;
+    }
+
+    .ql-editor li.ql-indent-4:not(.ql-direction-rtl) {
+        padding-left: 13.5em;
+    }
+    .ql-editor .ql-indent-4:not(.ql-direction-rtl) {
+        padding-left: 12em;
+    }
+    .ql-editor ol li.ql-indent-4 {
+        counter-reset: list-5 list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-4 {
+        counter-increment: list-4;
+    }
+
+    .ql-editor li.ql-indent-5:not(.ql-direction-rtl) {
+        padding-left: 16.5em;
+    }
+    .ql-editor .ql-indent-5:not(.ql-direction-rtl) {
+        padding-left: 15em;
+    }
+    .ql-editor ol li.ql-indent-5 {
+        counter-reset: list-6 list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-5 {
+        counter-increment: list-5;
+    }
+
+    .ql-editor li.ql-indent-6:not(.ql-direction-rtl) {
+        padding-left: 19.5em;
+    }
+    .ql-editor .ql-indent-6:not(.ql-direction-rtl) {
+        padding-left: 18em;
+    }
+    .ql-editor ol li.ql-indent-6 {
+        counter-reset: list-7 list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-6 {
+        counter-increment: list-6;
+    }
+
+    .ql-editor li.ql-indent-7:not(.ql-direction-rtl) {
+        padding-left: 22.5em;
+    }
+    .ql-editor .ql-indent-7:not(.ql-direction-rtl) {
+        padding-left: 21em;
+    }
+    .ql-editor ol li.ql-indent-7 {
+        counter-reset: list-8 list-9;
+    }
+    .ql-editor ol li.ql-indent-7 {
+        counter-increment: list-7;
+    }
+
+    .ql-editor li.ql-indent-8:not(.ql-direction-rtl) {
+        padding-left: 25.5em;
+    }
+    .ql-editor .ql-indent-8:not(.ql-direction-rtl) {
+        padding-left: 24em;
+    }
+    .ql-editor ol li.ql-indent-8 {
+        counter-reset: list-9;
+    }
+    .ql-editor ol li.ql-indent-8 {
+        counter-increment: list-8;
+    }
+
+    .ql-editor ol li:not(.ql-direction-rtl), .ql-editor ul li:not(.ql-direction-rtl) {
+        padding-left: 1.5em;
+    }
+    .ql-editor ol li {
+        counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+        counter-increment: list-0;
+    }
+    .ql-editor ol > li, .ql-editor ul > li {
+        list-style-type: none;
+    }
+    .ql-snow * {
+        box-sizing: border-box;
+    }
+
+    pre{
+        padding: 6px;
+        font-size: small;
+        overflow: auto;
+        white-space: pre-wrap;
+        background-color: black;
+        color: white;
+    }
+
+    #taskDetails ol, #taskDetails ul {
+        list-style: revert;
+        padding-left: 24px;
+    }
+
+    #taskDetails h1 {
+        font-size: xx-large;
+    }
+    #taskDetails h2 {
+        font-size: x-large;
+    }
+    #taskDetails h3 {
+        font-size: large;
+    }
+
+    #taskDetails a{
+        text-decoration: underline;
+    }
+</style>
 </body>
 </html>

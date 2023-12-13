@@ -268,7 +268,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="post : ${posts}" class="border-b dark:border-gray-700">
+                    <tr th:each="post : ${posts}" class="border-b dark:border-gray-700" th:data-support-id="${post.id}">
                         <td class="th-pt px-4 py-3 projectName" th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">고객사</td>
                         <td class="th-p0 px-4 py-3 productName" >
                             <span th:unless="${post.productName.equals('-')}" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
@@ -276,7 +276,7 @@
                         </td>
                         <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
                             <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
-                                <span style="font-weight: 600" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
+                                <span style="font-weight: 500" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
                             </a>
                         </td>
                         <td class="th-p0 px-4 py-3" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" th:text="${post.issueType}">이슈</td>
@@ -340,6 +340,7 @@
 <!-- End block -->
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
 <style>
     /* 기본적으로 사이드바는 숨겨진 상태 */
@@ -440,6 +441,30 @@
 
 
 <script th:inline="javascript">
+
+    $(document).ready(function() {
+        // 페이지 로드 시 로컬 스토리지에서 클릭 이력 가져오기
+        var clickedRows = JSON.parse(localStorage.getItem('clickedRows')) || [];
+
+        $(document).ready(function() {
+            // 클릭 이벤트 처리
+            $('table tbody tr').on('click', function() {
+                // 클릭된 행의 support id 가져오기
+                var supportId = $(this).data('support-id');
+
+                // supportId가 기존에 존재하지 않을때만 추가
+                if (clickedRows.indexOf(supportId) === -1) {
+                    clickedRows.push(supportId);
+                    localStorage.setItem('clickedRows', JSON.stringify(clickedRows));
+                }
+            });
+        });
+
+        // 저장된 클릭 이력에 따라 스타일 적용
+        clickedRows.forEach(function(postId) {
+            $('table tbody tr[data-support-id="' + postId + '"]').addClass('clicked-row');
+        });
+    });
 
     function selectAll() {
         var checkboxes = document.querySelectorAll('[id^="state_"]');
@@ -708,6 +733,9 @@
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    .clicked-row .task-title-column {
+        color: #919191; /* 회색으로 변경할 색상 */
+    }
 </style>
 
 </body>

@@ -2,7 +2,7 @@ package com.example.smstest.domain.main.controller;
 
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.auth.repository.MempRepository;
+import com.example.smstest.domain.auth.MempRepository;
 import com.example.smstest.domain.main.entity.Announcement;
 import com.example.smstest.domain.main.repository.AnnouncementRepository;
 import com.example.smstest.domain.support.entity.State;
@@ -10,8 +10,8 @@ import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.exception.CustomException;
-import com.example.smstest.exception.ErrorCode;
+import com.example.smstest.global.exception.CustomException;
+import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

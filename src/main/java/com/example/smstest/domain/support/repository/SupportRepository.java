@@ -44,4 +44,6 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
 
     Page<Support> findByTaskTitleContaining(String taskTitle, Pageable pageable);
 
+    List<Support> findTop5ByEngineerIdOrderByCreatedAtDesc(Long userId);
+
 }
