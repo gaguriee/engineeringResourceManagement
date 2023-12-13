@@ -1,7 +1,7 @@
 package com.example.smstest.domain.file;
 
-import com.example.smstest.exception.CustomException;
-import com.example.smstest.exception.ErrorCode;
+import com.example.smstest.global.exception.CustomException;
+import com.example.smstest.global.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -112,11 +112,20 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
     }
 
     private BooleanExpression taskContains(String keyword) {
-        return keyword != null
-                ? QSupport.support.taskTitle.toLowerCase().contains(keyword.toLowerCase())
-                .or(QSupport.support.taskSummary.toLowerCase().contains(keyword.toLowerCase()))
-                .or(QSupport.support.engineer.name.toLowerCase().contains(keyword.toLowerCase()))
-                : null;
+        if (keyword != null) {
+            String[] words = keyword.split("\\s+");
+            BooleanExpression expression = QSupport.support.id.eq(QSupport.support.id);
+            for (String word : words) {
+                expression = expression
+                        .and(QSupport.support.taskTitle.toLowerCase().contains(word.toLowerCase())
+                                .or(QSupport.support.taskSummary.toLowerCase().contains(word.toLowerCase()))
+                                .or(QSupport.support.engineer.name.toLowerCase().contains(word.toLowerCase())));
+            }
+
+            return expression;
+        }
+
+        return null;
     }
 
 }
