@@ -3,6 +3,7 @@ package com.example.smstest.global.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,7 +35,6 @@ public class GlobalExceptionHandler extends RuntimeException {
         String taskDetails = (String) params.get("taskDetails");
         model.addAttribute("taskDetails", taskDetails);
 
-        String deviceType = request.getHeader("x-custom-device-type");
         String serverIp = InetAddress.getLocalHost().getHostAddress();
         Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
 
@@ -43,15 +43,16 @@ public class GlobalExceptionHandler extends RuntimeException {
         // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
 
         ReqResLogging reqResLogging = new ReqResLogging(
+                "customException",
                 request.getMethod(),
                 request.getRequestURI(),
                 params,
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
                 serverIp,
-                deviceType,
                 requestBody,
                 e.getErrorCode(),
-                e.getErrorCode().getMessage()
+                e.getErrorCode().getMessage(),
+                SecurityContextHolder.getContext().getAuthentication().getName()
         );
 
         log.info(reqResLogging.toString());
@@ -81,7 +82,6 @@ public class GlobalExceptionHandler extends RuntimeException {
         String taskDetails = (String) params.get("taskDetails");
         model.addAttribute("taskDetails", taskDetails);
 
-        String deviceType = request.getHeader("x-custom-device-type");
         String serverIp = InetAddress.getLocalHost().getHostAddress();
         Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
 
@@ -91,15 +91,16 @@ public class GlobalExceptionHandler extends RuntimeException {
         // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
 
         ReqResLogging reqResLogging = new ReqResLogging(
+                "UnhandledException",
                 request.getMethod(),
                 request.getRequestURI(),
                 params,
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
                 serverIp,
-                deviceType,
                 requestBody,
                 ErrorCode.SERVER_ERROR,
-                e.getMessage()
+                e.getMessage(),
+                SecurityContextHolder.getContext().getAuthentication().getName()
         );
 
         e.printStackTrace();

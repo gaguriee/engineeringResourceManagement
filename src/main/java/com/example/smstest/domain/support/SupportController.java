@@ -246,7 +246,6 @@ public class SupportController {
 
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
-        Collections.reverse(recentProjects);
 
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -314,7 +313,6 @@ public class SupportController {
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
-        Collections.reverse(recentProjects);
 
         // 리스트 소팅 메소드 (각각의 이름 기존 오름차순 정렬)
         Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));

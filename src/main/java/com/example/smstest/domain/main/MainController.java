@@ -1,10 +1,8 @@
-package com.example.smstest.domain.main.controller;
+package com.example.smstest.domain.main;
 
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.MempRepository;
-import com.example.smstest.domain.main.entity.Announcement;
-import com.example.smstest.domain.main.repository.AnnouncementRepository;
 import com.example.smstest.domain.support.entity.State;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;

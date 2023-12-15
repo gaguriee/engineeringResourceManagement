@@ -16,6 +16,9 @@ import java.util.Map;
 @Data
 public class ReqResLogging {
 
+    @JsonProperty(value = "error_type")
+    private String errorType;
+
     @JsonProperty(value = "http_method")
     private String httpMethod;
 
@@ -31,9 +34,6 @@ public class ReqResLogging {
     @JsonProperty(value = "server_ip")
     private String serverIp;
 
-    @JsonProperty(value = "device_type")
-    private String deviceType;
-
     @JsonProperty(value = "request_body")
     private Object requestBody;
 
@@ -44,15 +44,21 @@ public class ReqResLogging {
     private String errorMessage;
 
 
-    public ReqResLogging(String httpMethod, String uri, Map<String, Object> params, String logTime, String serverIp, String deviceType, Object requestBody, ErrorCode errorCode, String errorMessage) {
+    @JsonProperty(value = "user_id")
+    private String userId;
+
+
+
+    public ReqResLogging(String errorType, String httpMethod, String uri, Map<String, Object> params, String logTime, String serverIp, Object requestBody, ErrorCode errorCode, String errorMessage, String userId) {
+        this.errorType = errorType;
         this.httpMethod = httpMethod;
         this.uri = uri;
         this.params = params;
         this.logTime = logTime;
         this.serverIp = serverIp;
-        this.deviceType = deviceType;
         this.requestBody = requestBody;
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
+        this.userId = userId;
     }
 }

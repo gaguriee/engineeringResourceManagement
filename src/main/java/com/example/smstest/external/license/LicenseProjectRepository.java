@@ -1,6 +1,5 @@
 package com.example.smstest.external.license;
 
-import com.example.smstest.external.license.entity.LicenseProject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -16,7 +16,7 @@ import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
-import com.example.smstest.external.license.entity.LicenseProject;
+import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.external.license.LicenseProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
