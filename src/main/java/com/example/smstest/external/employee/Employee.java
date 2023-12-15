@@ -1,4 +1,4 @@
-package com.example.smstest.external.employee.entity;
+package com.example.smstest.external.employee;
 
 import lombok.Data;
 

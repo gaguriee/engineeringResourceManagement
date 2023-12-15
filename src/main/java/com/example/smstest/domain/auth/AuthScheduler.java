@@ -1,7 +1,7 @@
 package com.example.smstest.domain.auth;
 
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.external.employee.entity.Employee;
+import com.example.smstest.external.employee.Employee;
 import com.example.smstest.external.employee.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

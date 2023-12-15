@@ -4,7 +4,6 @@ import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.client.ClientRepository;
 import com.example.smstest.domain.project.Project;
 import com.example.smstest.domain.project.ProjectRepository;
-import com.example.smstest.external.license.entity.LicenseProject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

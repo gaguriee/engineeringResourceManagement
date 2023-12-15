@@ -4,7 +4,7 @@ import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.external.employee.entity.Employee;
+import com.example.smstest.external.employee.Employee;
 import com.example.smstest.external.employee.EmployeeRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;

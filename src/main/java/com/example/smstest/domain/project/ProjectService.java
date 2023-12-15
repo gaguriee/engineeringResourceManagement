@@ -1,6 +1,6 @@
 package com.example.smstest.domain.project;
 
-import com.example.smstest.external.license.entity.LicenseProject;
+import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.external.license.LicenseProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

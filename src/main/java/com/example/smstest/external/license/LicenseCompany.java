@@ -1,4 +1,4 @@
-package com.example.smstest.external.license.entity;
+package com.example.smstest.external.license;
 
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
-package com.example.smstest.domain.main.repository;
+package com.example.smstest.domain.main;
 
-import com.example.smstest.domain.main.entity.Announcement;
+import com.example.smstest.domain.main.Announcement;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
