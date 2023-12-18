@@ -105,13 +105,13 @@
     </th:block>
 
     <div class="skeleton" style="background-color: #F7F7F7;">
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa')}" width="100%" height="1350" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa-mobile')}" width="100%" height="2700" ></iframe>
+        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa')}" width="100%" height="800" ></iframe>
+        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa-mobile')}" width="100%" height="600" ></iframe>
     </div>
 
 
     <div style="background-color: #F7F7F7; padding: 0 32px 32px;width: 100%">
-        <p class="text-xs mb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
+        <p class="text-xs pt-2 pb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
 
         <div class="grid-container" >
             <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">

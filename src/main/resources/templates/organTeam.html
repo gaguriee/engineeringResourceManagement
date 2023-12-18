@@ -78,8 +78,8 @@
     </div>
 
     <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.teaminfo')} + ${team.id}" width="100%" height="450" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.teaminfo-mobile')} + ${team.id}" width="100%" height="450" ></iframe>
+        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team')} + ${team.id}" width="100%" height="450" ></iframe>
+        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team-mobile')} + ${team.id}" width="100%" height="450" ></iframe>
     </div>
 </section>
 
@@ -97,6 +97,14 @@
                 event.preventDefault();
                 alert('팀원을 선택해주세요.');
             }
+        });
+
+        var selectForm = document.getElementById('selectForm');
+        var memberSelect = document.getElementById('member');
+
+        memberSelect.addEventListener('dblclick', function () {
+            // 더블클릭 시 폼을 제출합니다.
+            selectForm.submit();
         });
     });
 

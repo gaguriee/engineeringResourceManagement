@@ -115,7 +115,6 @@
                                 <tbody>
                                 <tr th:each="project : ${recentProjects}" class="dark:border-gray-700">
                                     <td th:text="${project.client.getName()}">고객사</td>
-                                    <td class="px-2" th:text="${project.uniqueCode}">2000-0000</td>
                                     <td class="px-2">
                                         <a href="#" th:onclick="setProject([[${project.projectGuid}]], [[${project.name}]])"
                                            th:text="${project.name}" class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
@@ -472,7 +471,7 @@
             keyboard: {
                 bindings: {
                     'list autofill': {
-                        prefix: /^\s*()$/
+                        prefix: false
                     }
                 }
             }
