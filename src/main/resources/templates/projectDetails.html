@@ -299,28 +299,28 @@
                     <button type="button" id="visibleBtn" style="display: none"
                             class="inline-block p-4 text-blue-700 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
                 </li>
-                <li class="mr-2">
+                <li>
                     <button type="button" id="dashboardViewBtn"
                             class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                        지원 현황
+                        지원현황
                     </button>
                 </li>
-                <li class="mr-2">
+                <li>
                     <button type="button" id="chartViewBtn"
                             class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                        WBS 차트
+                        WBS
                     </button>
                 </li>
-                <li class="mr-2">
+                <li>
                     <button type="button" id="listViewBtn"
                             class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                        일정 변경
+                        일정변경
                     </button>
                 </li>
-                <li class="mr-2">
+                <li>
                     <button type="button" id="supportListViewBtn"
                             class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                        지원내역 조회
+                        지원내역
                     </button>
                 </li>
             </ul>
@@ -331,8 +331,8 @@
 
             <div class="skeleton mb-6" style="background-color: #F7F7F7;">
 
-                <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project')} + ${project.id}" width="100%" height="950" ></iframe>
-                <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project-mobile')} + ${project.id}" width="100%" height="900" ></iframe>
+                <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project')} + ${project.id}" width="100%" height="500" ></iframe>
+                <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project-mobile')} + ${project.id}" width="100%" height="400" ></iframe>
 
             </div>
         </div>

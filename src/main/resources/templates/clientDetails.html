@@ -15,8 +15,8 @@
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${customer.name}"></h2>
     </div>
     <div class="skeleton mb-6" style="background-color: #F7F7F7;">
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer')} + ${customer.id}" width="100%" height="900" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer-mobile')} + ${customer.id}" width="100%" height="900" ></iframe>
+        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer')} + ${customer.id}" width="100%" height="600" ></iframe>
+        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer-mobile')} + ${customer.id}" width="100%" height="400" ></iframe>
     </div>
 </section>
 <div th:replace="footer :: footer"></div>

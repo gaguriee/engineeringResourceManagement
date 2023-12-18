@@ -105,7 +105,7 @@ public class GlobalExceptionHandler extends RuntimeException {
 
         e.printStackTrace();
 
-        log.error("===UnhandledException=== " + reqResLogging.toString());
+        log.error(reqResLogging.toString());
 
         // 에러 페이지로 포워딩
         return "error/500";
