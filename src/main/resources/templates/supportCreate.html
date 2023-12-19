@@ -384,12 +384,12 @@
 <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
 
 <script  th:inline="javascript">
-
     function validateAndSubmit() {
-        if (validateForm()) {
-            console.log("isValid");
-            document.getElementById("submitForm").submit();
-        }
+        validateForm().then(function (isValid) {
+            if (isValid) {
+                document.getElementById("submitForm").submit();
+            }
+        });
     }
 
     var toolbarOptions = [
@@ -711,6 +711,30 @@
 
     function validateForm() {
 
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: "/check-session",
+                method: "GET",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        alert("세션이 만료되었습니다. 재로그인 후 등록해주세요.");
+                        resolve(false);
+                    } else {
+                        handleFormValidation(resolve);
+                    }
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                    reject(false);
+                }
+            });
+        });
+    }
+
+    function handleFormValidation(resolve) {
+
         document.getElementById("taskDetails").value = quill.root.innerHTML;
 
         var taskTitle = document.getElementById('taskTitle').value;
@@ -741,25 +765,25 @@
             taskDetails.trim() === '' ||
             projectId === ''
 
-    ) {
+        ) {
             alertForm.style.display = 'flex';
-            return false;
+            resolve(false);
         }
 
-        else{
+        else {
 
             alertForm.style.display = 'none';
 
-            if (!hasSuperAdminRole && getSevenDaysAgo() > supportDate){
+            if (!hasSuperAdminRole && getSevenDaysAgo() > supportDate) {
                 alertForm7daysOver.style.display = 'flex';
-                return false;
+                resolve(false);
             }
 
             const imgTags = document.querySelectorAll('img');
 
             const ajaxRequests = [];
 
-            imgTags.forEach(function(img) {
+            imgTags.forEach(function (img) {
                 var currentSrc = img.getAttribute('src');
 
                 // 이미지가 base64로 인코딩되어 있는지 확인
@@ -768,7 +792,7 @@
                     // base64 데이터 추출
                     const splitDataURI = currentSrc.split(',')
 
-                    if (splitDataURI[0].indexOf('base64') >= 0){
+                    if (splitDataURI[0].indexOf('base64') >= 0) {
                         const ajaxRequest = $.ajax({
                             type: 'post',
                             enctype: 'multipart/form-data',
@@ -793,15 +817,16 @@
                 }
             });
 
-            if (ajaxRequests.length===0){
-                return true;
+            if (ajaxRequests.length === 0) {
+                resolve(true);
             }
-            // 모든 AJAX 요청이 완료된 후에 폼 제출
+
             $.when.apply($, ajaxRequests).done(function () {
-                return true;
+                resolve(true);
             }).fail(function () {
-                return false;
+                resolve(false);
             });
+
         }
     }
 

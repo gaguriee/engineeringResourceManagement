@@ -43,7 +43,9 @@ public class MainController {
      * @return 레더 차트를 위한 전체/팀별 데이터, 팝업 데이터 전달
      */
     @GetMapping("/")
-    public String main(Model model) {
+    public String main(
+            @RequestParam(required = false, defaultValue = "2023") Integer year,
+            Model model) {
 
         Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElse(null);
@@ -63,10 +65,10 @@ public class MainController {
 
         // 전체 데이터 합계 계산
         for (State state : states) {
-            Long overallSum_N = supportRepository.findTotalSupportTypeHourByState_N(state);
+            Long overallSum_N = supportRepository.findTotalSupportTypeHourByState_N(state, year);
             overallSupportTypeHourSums_N.add(overallSum_N != null ? overallSum_N : 0);
 
-            Long overallSum_E = supportRepository.findTotalSupportTypeHourByState_E(state);
+            Long overallSum_E = supportRepository.findTotalSupportTypeHourByState_E(state, year);
             overallSupportTypeHourSums_E.add(overallSum_E != null ? overallSum_E : 0);
         }
 
@@ -75,7 +77,7 @@ public class MainController {
             List<Long> supportTypeHourSums_N = new ArrayList<>();
 
             for (State state : states) {
-                Long sum_N = supportRepository.findTotalSupportTypeHourByStateAndTeam_N( state, team );
+                Long sum_N = supportRepository.findTotalSupportTypeHourByStateAndTeam_N( state, team, year );
                 supportTypeHourSums_N.add(sum_N != null ? sum_N : 0);
             }
             teamDataMap_N.put(team.getName(), supportTypeHourSums_N);
@@ -87,7 +89,7 @@ public class MainController {
             List<Long> supportTypeHourSums_E = new ArrayList<>();
 
             for (State state : states) {
-                Long sum_E = supportRepository.findTotalSupportTypeHourByStateAndTeam_E( state, team );
+                Long sum_E = supportRepository.findTotalSupportTypeHourByStateAndTeam_E( state, team, year );
                 supportTypeHourSums_E.add(sum_E != null ? sum_E : 0);
             }
             teamDataMap_E.put(team.getName(), supportTypeHourSums_E);
@@ -109,6 +111,11 @@ public class MainController {
 
         List<Announcement> announcements = announcementRepository.findByDisplayTrueOrderByPriorityDesc();
 
+
+        List<Integer> allSupportYears = supportRepository.findAllYear();
+        allSupportYears.sort(Comparator.comparingInt(arr -> (Integer) arr)); // 정수로 캐스팅하여 오름차순 정렬
+
+        model.addAttribute("allSupportYears", allSupportYears);
         model.addAttribute("announcements", announcements);
         model.addAttribute("chartData", chartData);
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());

@@ -31,6 +31,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -235,8 +236,16 @@ public class SupportController {
         List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
         List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
+        for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+            // 권한 목록에 ROLE_SUPERADMIN이 포함되어 있는지 확인
+            if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
+                issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+                break;
+            }
+        }
+
         for (IssueCategory category : issueCategories) {
-            Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
+            category.getIssues().sort(Comparator.comparingInt(Issue::getPriority));
         }
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
@@ -247,9 +256,9 @@ public class SupportController {
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
 
-        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+        issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+        products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         model.addAttribute("user", user);
         model.addAttribute("currentDate", new Date());
@@ -303,6 +312,15 @@ public class SupportController {
         List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
         List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
+
+        for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+            // 권한 목록에 ROLE_SUPERADMIN이 포함되어 있는지 확인
+            if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
+                issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+                break;
+            }
+        }
+
         for (IssueCategory category : issueCategories) {
             Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
         }
@@ -315,9 +333,9 @@ public class SupportController {
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
 
         // 리스트 소팅 메소드 (각각의 이름 기존 오름차순 정렬)
-        Collections.sort(memps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(issues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(products, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+        issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+        products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         model.addAttribute("user", user);
         model.addAttribute("currentDate", new Date());
@@ -392,7 +410,7 @@ public class SupportController {
                 fileDto.setFilename(filename);
                 fileDto.setFilePath(filePath);
 
-//                새 첨부 파일 저장
+                // 새 첨부 파일 저장
                 savedFiles.add(fileService.saveFile(fileDto));
             }
 

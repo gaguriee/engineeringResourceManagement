@@ -46,13 +46,18 @@
 
     <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${team.name}"></h2>
-        <form id="selectForm" action="/memberInfo" method="get"> <!-- Specify the action and method for the form -->
+        <div class="text-right text-sm" >
+            <input type="checkbox" id="showInactive" onchange="toggleInactiveMembers()"> 퇴사자 및 팀 이동자 포함
+        </div>
+
+        <form id="selectForm" action="/memberInfo" method="get">
             <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
             <select id="member" size="3" name="memberId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <th:block th:each="memp, iterStat : ${memps}">
-                    <option th:value="${memp.id}" th:text="${memp.name}" th:selected="${iterStat.index == 0}"></option>
+                    <option th:value="${memp.id}" th:text="${memp.name}" th:selected="${iterStat.index == 0}" th:attr="data-active=${memp.active}"></option>
                 </th:block>
             </select>
+
 
             <div style="display: flex; align-items: end; justify-content: flex-end;">
                 <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
@@ -88,6 +93,28 @@
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script th:inline="javascript">
+
+    function toggleInactiveMembers() {
+        var showInactiveCheckbox = document.getElementById("showInactive");
+        var memberSelect = document.getElementById("member");
+
+        if (showInactiveCheckbox.checked) {
+
+            for (var i = 0; i < memberSelect.options.length; i++) {
+                var option = memberSelect.options[i];
+                option.style.display = "block";
+
+            }
+        } else {
+            for (var i = 0; i < memberSelect.options.length; i++) {
+                var option = memberSelect.options[i];
+                option.style.display = option.getAttribute("data-active") === "true" ? "block" : "none";
+
+            }
+        }
+    }
+
+    toggleInactiveMembers();
 
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('selectForm');

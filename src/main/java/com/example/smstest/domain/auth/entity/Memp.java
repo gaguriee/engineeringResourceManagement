@@ -74,7 +74,7 @@ public class Memp {
     }
 
     @Builder
-    public Memp(String name, Team team, String position, String rank, String calenderColor, String username, @NotNull String password, Set<Authority> authorities) {
+    public Memp(String name, Team team, String position, String rank, String calenderColor, String username, @NotNull String password, Set<Authority> authorities, boolean active) {
         this.name = name;
         this.team = team;
         this.position = position;
@@ -83,6 +83,7 @@ public class Memp {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
+        this.active = active;
     }
 
     /**

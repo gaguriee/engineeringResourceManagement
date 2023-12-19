@@ -1,7 +1,7 @@
 package com.example.smstest.domain.organization;
 
-import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.MempRepository;
+import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.ClientRepository;
 import com.example.smstest.domain.organization.dto.AggregatedDataDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDTO;
@@ -23,6 +23,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +54,9 @@ public class OraganizationService {
         Optional<Team> teamOptional = teamRepository.findById(teamId);
         if (teamOptional.isPresent()) {
             List<Memp> memps = mempRepository.findAllByTeamId(teamId);
-            List<Support> supports = supportRepository.findByEngineerTeamId(teamId);
+
+            LocalDateTime fourWeeksAgo = LocalDateTime.now().minus(4, ChronoUnit.WEEKS);
+            List<Support> supports = supportRepository.findByTeamIdAndCreatedAtAfter(teamId, fourWeeksAgo);
 
             TeamInfoDTO teamInfoDTO = new TeamInfoDTO();
             teamInfoDTO.setMemps(memps); // 해당 팀 소속 엔지니어
@@ -73,7 +77,10 @@ public class OraganizationService {
      */
     public MemberInfoDTO getMemberInfo(Long memberId) {
         Optional<Memp> memp = mempRepository.findById(memberId);
-        List<Support> supports = supportRepository.findByEngineerId(memberId);
+
+        LocalDateTime fourWeeksAgo = LocalDateTime.now().minus(4, ChronoUnit.WEEKS);
+        List<Support> supports = supportRepository.findByEngineerIdAndCreatedAtAfter(memberId, fourWeeksAgo);
+
         Optional<Team> team = teamRepository.findById(memp.get().getTeam().getId());
         List<Memp> memps = mempRepository.findAllByTeamId(team.get().getId());
 

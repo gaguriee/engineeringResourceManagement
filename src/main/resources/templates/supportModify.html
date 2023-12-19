@@ -384,6 +384,7 @@
                     등록하기
                 </button>
             </div>
+            </div>
 
         </form>
     </div>
@@ -397,10 +398,18 @@
 <script  th:inline="javascript">
 
     function validateAndSubmit() {
-        if (validateForm()) {
-            document.getElementById("submitForm").submit();
-        }
+        validateForm().then(function (isValid) {
+            if (isValid) {
+                console.log("isValid");
+                document.getElementById("submitForm").submit();
+            }
+        })
+            .catch(function(err) {
+                console.error(err); // Error 출력
+            });
+
     }
+
 
     const support = [[${support }]];
 
@@ -788,6 +797,31 @@
     }
 
     function validateForm() {
+
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: "/check-session",
+                method: "GET",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        alert("세션이 만료되었습니다. 재로그인 후 등록해주세요.");
+                        resolve(false);
+                    } else {
+                        handleFormValidation(resolve);
+                    }
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                    reject(data);
+                }
+            });
+        });
+    }
+
+    function handleFormValidation(resolve) {
+
         var taskTitle = document.getElementById('taskTitle').value;
         var product = document.getElementById('product').value;
         var issue = document.getElementById('selectedIssue').value;
@@ -819,7 +853,7 @@
 
         ) {
             alertForm.style.display = 'flex';
-            return false;
+            resolve(false);
         }
 
         else{
@@ -827,7 +861,7 @@
 
             if (!hasSuperAdminRole && getSevenDaysAgo() > supportDate){
                 alertForm7daysOver.style.display = 'flex';
-                return false;
+                resolve(false);
             }
 
             const imgTags = document.querySelectorAll('img');
@@ -869,12 +903,12 @@
             });
 
             if (ajaxRequests.length===0){
-                return true;
+                resolve(true);
             }
             $.when.apply($, ajaxRequests).done(function () {
-                return true;
+                resolve(true);
             }).fail(function () {
-                return false;
+                resolve(false);
             });
         }
 

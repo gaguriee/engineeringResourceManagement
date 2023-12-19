@@ -1,16 +1,20 @@
 package com.example.smstest.domain.task;
 
+import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 /**
  * WBS 작업 일정에 관련된 Controller
  * 작업 일정 생성, 업데이트, 삭제
  */
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/task")
 public class TaskController {
@@ -54,6 +58,20 @@ public class TaskController {
     public String saveTasks(@PathVariable Long projectId, @RequestPart Map<String, Object> json,
                             @RequestPart(required = false) MultipartFile file) {
         return taskService.saveTask(projectId, json, file);
+    }
+
+    /**
+     * WBS 작업 히스토리 다운로드
+     * @param projectId
+     * @param response
+     * @throws IOException
+     * @throws DocumentException
+     */
+    @GetMapping("/generateExcel")
+    public void generateProjectExcel(@RequestParam(required = false) Long projectId, HttpServletResponse response) throws DocumentException, IOException {
+
+        taskService.generateExcel(projectId, response);
+
     }
 
 }

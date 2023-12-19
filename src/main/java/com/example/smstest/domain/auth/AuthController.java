@@ -155,6 +155,7 @@ public class AuthController {
     @PostMapping("/modifyUserinfo")
     public String modifyUserinfo(ModifyUserinfoRequest modifyUserinfoRequest, BindingResult bindingResult, Model model) {
 
+        log.info("===MODIFY USER INFO=== " +modifyUserinfoRequest);
         authValidator.validatePassword(modifyUserinfoRequest, bindingResult);
 
         if(bindingResult.hasErrors()) {
@@ -166,7 +167,7 @@ public class AuthController {
         }
         else {
             authService.saveUserInfo(modifyUserinfoRequest);
-            return "redirect:/";
+            return "redirect:/logout";
         }
     }
 

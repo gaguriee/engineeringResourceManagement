@@ -1029,7 +1029,7 @@
     });
 
     function excelPrint() {
-        fetch('/generateExcel?projectId=' + project.id, {
+        fetch('/task/generateExcel?projectId=' + project.id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

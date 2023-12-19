@@ -111,7 +111,10 @@
 
 
     <div style="background-color: #F7F7F7; padding: 0 32px 32px;width: 100%">
-        <p class="text-xs pt-2 pb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
+        <p class="text-xs pt-4 pb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
+        <div class="flex pb-2" >
+            <a th:each="year : ${allSupportYears}" th:href="'?year=' + ${year}" th:text="${year}" class="mr-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400 inline-flex items-center justify-center"></a>
+        </div>
 
         <div class="grid-container" >
             <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
