@@ -5,19 +5,31 @@ import com.example.smstest.domain.auth.Enum.Rank;
 import com.example.smstest.domain.auth.dto.AccountRequest;
 import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
 import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
+import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
+import com.example.smstest.external.employee.Employee;
+import com.example.smstest.external.employee.EmployeeRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * 사용자 상호작용과 관련된 Controller
@@ -33,6 +45,7 @@ public class AuthController {
     private final AuthValidator authValidator;
     private final TeamRepository teamRepository;
     private final MempRepository mempRepository;
+    private final EmployeeRepository employeeRepository;
 
     /**
      *
@@ -171,5 +184,65 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/organizationChange/{memberId}")
+    public ResponseEntity<String> organizationChange(@PathVariable("memberId") Long memberId) {
+
+        Optional<Memp> memp = mempRepository.findById(memberId);
+        if (memp.isPresent()){
+            Memp currentMemp = memp.get();
+
+            Employee employee = employeeRepository.findByUserstatusAndUserid(1, currentMemp.getUsername());
+
+            if (employee != null) {
+
+                // 부서이동이 있을 때 (인사 DB와 ERM DB의 팀이 일치하지 않을 때)
+                if (!currentMemp.getTeam().getName().equals(employee.getDepartment().getDeptname())){
+
+                    currentMemp.setActive(false);
+                    mempRepository.save(currentMemp);
+
+                    // 사용자별 캘린더 색상 랜덤 지정
+                    Random rand = new Random();
+                    String randomColor = String.format("#%02X%02X%02X", rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+
+                    // 사용자 ROLE 지정 (defualt: ROLE_USER)
+                    Set<Authority> authoritiesSet = new HashSet<>();
+                    authoritiesSet.add(Authority.of("ROLE_USER"));
+
+                    // ERM DB에 해당 유저를 신규 등록한다.
+
+                    // 인사정보 DB에서 로컬 ERM DB와 매칭되는 팀 정보 가져옴, 없을 경우 에러 반환
+                    Team team = teamRepository.findByName(employee.getDepartment().getDeptname())
+                            .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+
+                    // 신규 유저 객체 생성, 저장
+                    Memp newMemp = Memp.builder()
+                            .name(employee.getEmpname())
+                            .rank("엔지니어") // default
+                            .position("팀원") // default
+                            .team(team)
+                            .username(employee.getUserid())
+                            .password(currentMemp.getPassword())
+                            .calenderColor(randomColor)
+                            .authorities(authoritiesSet)
+                            .authorities(authoritiesSet)
+                            .active(true)
+                            .build();
+
+                    mempRepository.save(newMemp);
+                    return new ResponseEntity<>("부서 이동이 성공적으로 처리되었습니다.", HttpStatus.OK);
+
+                }
+                else {
+                    return new ResponseEntity<>("부서 이동 이력이 존재하지 않습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+            else {
+                return new ResponseEntity<>("부서 이동 처리 중 오류가 발생했습니다. 관리자에 문의해주세요.", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>("부서 이동 처리 중 오류가 발생했습니다. 관리자에 문의해주세요.", HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
 
 }

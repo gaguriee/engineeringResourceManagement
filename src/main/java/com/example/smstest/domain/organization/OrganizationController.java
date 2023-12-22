@@ -1,10 +1,9 @@
 package com.example.smstest.domain.organization;
 
-import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.MempRepository;
+import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.ClientRepository;
 import com.example.smstest.domain.organization.dto.MemberInfoDTO;
-import com.example.smstest.domain.organization.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.organization.dto.TeamInfoDTO;
 import com.example.smstest.domain.organization.entity.Department;
 import com.example.smstest.domain.organization.entity.Division;
@@ -18,7 +17,6 @@ import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +26,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -134,8 +133,18 @@ public class OrganizationController {
      * @return 현재 선택된 팀, 해당 팀에 포함되는 엔지니어 데이터 전달
      */
     @GetMapping("/teamInfo")
-    public String viewTeam(@RequestParam(required = true) Integer teamId, Model model) {
-        TeamInfoDTO teamInfoDTO = oraganizationService.getTeamInfo(teamId);
+    public String viewTeam(@RequestParam(required = true) Integer teamId,
+                           @RequestParam(required = false) java.sql.Date startDate,
+                           @RequestParam(required = false) java.sql.Date endDate,
+                           Model model) {
+
+        if (startDate==null && endDate==null){
+            LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
+            startDate = java.sql.Date.valueOf(threeMonthsAgo);
+            endDate = java.sql.Date.valueOf(LocalDate.now());
+        }
+
+        TeamInfoDTO teamInfoDTO = oraganizationService.getTeamInfo(teamId, startDate, endDate);
 
         if (teamInfoDTO != null) {
             model.addAttribute("memps", teamInfoDTO.getMemps());
@@ -147,6 +156,8 @@ public class OrganizationController {
         } else {
             model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");
         }
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
 
         return "organTeam";
     }
@@ -158,10 +169,21 @@ public class OrganizationController {
      * @return 현재 선택된 팀, 엔지니어 정보 전달
      */
     @GetMapping("/memberInfo")
-    public String getMemberInfo(@RequestParam(required = true) Long memberId, Model model) {
-        MemberInfoDTO memberInfoDTO = oraganizationService.getMemberInfo(memberId);
+    public String getMemberInfo(@RequestParam(required = true) Long memberId,
+                                @RequestParam(required = false) Integer clientId,
+                                @RequestParam(required = false) java.sql.Date startDate,
+                                @RequestParam(required = false) java.sql.Date endDate,
+                                Model model) {
 
-        model.addAttribute("memps", mempRepository.findAllByTeamId(memberInfoDTO.getTeam().getId()));
+        if (startDate == null && endDate == null) {
+            LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
+            startDate = java.sql.Date.valueOf(threeMonthsAgo);
+            endDate = java.sql.Date.valueOf(LocalDate.now());
+        }
+
+        MemberInfoDTO memberInfoDTO = oraganizationService.getMemberInfo(memberId, clientId, startDate, endDate);
+
+        model.addAttribute("memps", mempRepository.findAllByTeamIdAndActiveTrue(memberInfoDTO.getTeam().getId()));
 
         model.addAttribute("member", memberInfoDTO.getMemp());
         model.addAttribute("team", memberInfoDTO.getTeam());
@@ -169,41 +191,14 @@ public class OrganizationController {
         model.addAttribute("division", memberInfoDTO.getDepartment().getDivision());
 
         model.addAttribute("supports", memberInfoDTO.getSupports());
-        model.addAttribute("aggregatedData", memberInfoDTO.getAggregatedData());
+        model.addAttribute("allClients", memberInfoDTO.getAllClients());
+        model.addAttribute("clients", memberInfoDTO.getClients());
+
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("clientId", clientId);
 
         return "organMember";
     }
-
-    /**
-     * 엔지니어별 지원내역 조회
-     * @param sortOrder 정렬순서
-     * @param memberId 엔지니어 id
-     * @param customerId 고객사 id
-     * @param productId 제품 id
-     * @param stateId 상태 id
-     * @param pageable 페이지네이션
-     * @param model
-     * @return
-     */
-    @GetMapping("/memberInfoDetail")
-    public String getMemberInfoDetail(
-            @RequestParam(required = false, defaultValue = "desc") String sortOrder,
-            @RequestParam(required = true) Long memberId,
-            Integer customerId, Long productId, Long stateId,
-            Pageable pageable,
-            Model model) {
-
-        MemberInfoDetailDTO memberInfoDetailDTO = oraganizationService.getMemberInfoDetail(memberId, customerId, productId, stateId, pageable, sortOrder);
-
-        model.addAttribute("member", mempRepository.findById(memberInfoDetailDTO.getMemberId()).get());
-        model.addAttribute("customer", clientRepository.findById(memberInfoDetailDTO.getCustomerId()).get());
-        model.addAttribute("state", stateRepository.findById(memberInfoDetailDTO.getStateId()).get());
-        model.addAttribute("posts", memberInfoDetailDTO.getPosts());
-        model.addAttribute("totalPages", memberInfoDetailDTO.getTotalPages());
-        model.addAttribute("currentPage", memberInfoDetailDTO.getCurrentPage());
-
-        return "organMemberSupportList";
-    }
-
 
 }

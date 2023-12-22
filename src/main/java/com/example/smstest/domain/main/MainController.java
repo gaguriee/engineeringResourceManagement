@@ -1,13 +1,13 @@
 package com.example.smstest.domain.main;
 
 
-import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.MempRepository;
+import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.organization.entity.Team;
+import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.support.entity.State;
 import com.example.smstest.domain.support.repository.StateRepository;
 import com.example.smstest.domain.support.repository.SupportRepository;
-import com.example.smstest.domain.organization.entity.Team;
-import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -44,93 +45,92 @@ public class MainController {
      */
     @GetMapping("/")
     public String main(
-            @RequestParam(required = false, defaultValue = "2023") Integer year,
+            @RequestParam(required = false) Integer radarchartYear,
             Model model) {
+
+        if (radarchartYear == null) {
+            radarchartYear = LocalDate.now().getYear();
+        }
 
         Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElse(null);
         model.addAttribute("user", memp);
 
         List<State> states = stateRepository.findAll();
-        List<Team> teams_N = teamRepository.findByDepartment_DivisionId(1);
-        List<Team> teams_E = teamRepository.findByDepartment_DivisionId(2);
-
-        List<Long> overallSupportTypeHourSums_N = new ArrayList<>();
-        Map<String, List<Long>> teamDataMap_N = new HashMap<>();
-
-        List<Long> overallSupportTypeHourSums_E = new ArrayList<>();
-        Map<String, List<Long>> teamDataMap_E = new HashMap<>();
 
         Map<String, String> teamColorMap = new HashMap<>();
 
-        // 전체 데이터 합계 계산
-        for (State state : states) {
-            Long overallSum_N = supportRepository.findTotalSupportTypeHourByState_N(state, year);
-            overallSupportTypeHourSums_N.add(overallSum_N != null ? overallSum_N : 0);
-
-            Long overallSum_E = supportRepository.findTotalSupportTypeHourByState_E(state, year);
-            overallSupportTypeHourSums_E.add(overallSum_E != null ? overallSum_E : 0);
-        }
-
         // 팀별 데이터 계산
-        for (Team team : teams_N) {
-            List<Long> supportTypeHourSums_N = new ArrayList<>();
-
-            for (State state : states) {
-                Long sum_N = supportRepository.findTotalSupportTypeHourByStateAndTeam_N( state, team, year );
-                supportTypeHourSums_N.add(sum_N != null ? sum_N : 0);
-            }
-            teamDataMap_N.put(team.getName(), supportTypeHourSums_N);
-
+        for (Team team : teamRepository.findAll()) {
             teamColorMap.put(team.getName(), team.getColor());
         }
 
-        for (Team team : teams_E) {
-            List<Long> supportTypeHourSums_E = new ArrayList<>();
+        List<Map<String, Long>> resultInN = supportRepository.findTotalSupportTypeHourByState_N(radarchartYear);
+        List<Object[]> resultByTeamInN = supportRepository.findTotalSupportTypeHourByStateAndTeam_N(radarchartYear);
+        Map<String, Map<String, Double>> resultMapByTeamInN = new HashMap<>();
 
-            for (State state : states) {
-                Long sum_E = supportRepository.findTotalSupportTypeHourByStateAndTeam_E( state, team, year );
-                supportTypeHourSums_E.add(sum_E != null ? sum_E : 0);
-            }
-            teamDataMap_E.put(team.getName(), supportTypeHourSums_E);
+        List<Map<String, Long>> resultInE = supportRepository.findTotalSupportTypeHourByState_E(radarchartYear);
+        List<Object[]> resultByTeamInE = supportRepository.findTotalSupportTypeHourByStateAndTeam_E(radarchartYear);
+        Map<String, Map<String, Double>> resultMapByTeamInE = new HashMap<>();
 
-            teamColorMap.put(team.getName(), team.getColor());
+        for (Object[] row : resultByTeamInN) {
+            String teamName = (String) row[0];
+            String stateName = (String) row[1];
+            Double totalHour = (Double) row[2];
+
+            resultMapByTeamInN.computeIfAbsent(teamName, k -> new TreeMap<>(Comparator.comparingInt(this::getStateOrder))).put(stateName, totalHour);
         }
 
-        List<Object[]> rankCounts = mempRepository.countByRank();
+        for (Object[] row : resultByTeamInE) {
+            String teamName = (String) row[0];
+            String stateName = (String) row[1];
+            Double totalHour = (Double) row[2];
 
-        List<Map<String, Object>> chartData = new ArrayList<>();
-        for (Object[] row : rankCounts) {
-            Map<String, Object> dataPoint = new HashMap<>();
-            dataPoint.put("rank", row[0]);
-            dataPoint.put("count", row[1]);
-            chartData.add(dataPoint);
+            resultMapByTeamInE.computeIfAbsent(teamName, k -> new TreeMap<>(Comparator.comparingInt(this::getStateOrder))).put(stateName, totalHour);
         }
 
         // 팝업
 
         List<Announcement> announcements = announcementRepository.findByDisplayTrueOrderByPriorityDesc();
 
-
         List<Integer> allSupportYears = supportRepository.findAllYear();
         allSupportYears.sort(Comparator.comparingInt(arr -> (Integer) arr)); // 정수로 캐스팅하여 오름차순 정렬
 
         model.addAttribute("allSupportYears", allSupportYears);
         model.addAttribute("announcements", announcements);
-        model.addAttribute("chartData", chartData);
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());
 
         // N본부
-        model.addAttribute("overallSupportTypeHourSums_N", overallSupportTypeHourSums_N);
-        model.addAttribute("teamDataMap_N", teamDataMap_N);
+        model.addAttribute("resultInN", resultInN);
+        model.addAttribute("resultMapByTeamInN", resultMapByTeamInN);
 
         // E본부
-        model.addAttribute("overallSupportTypeHourSums_E", overallSupportTypeHourSums_E);
-        model.addAttribute("teamDataMap_E", teamDataMap_E);
+        model.addAttribute("resultInE", resultInE);
+        model.addAttribute("resultMapByTeamInE", resultMapByTeamInE);
 
         model.addAttribute("teamColorMap", teamColorMap);
+        model.addAttribute("radarchartYear", radarchartYear);
 
         return "main";
+    }
+
+    private int getStateOrder(String stateName) {
+        switch (stateName) {
+            case "납품":
+                return 1;
+            case "WA":
+                return 2;
+            case "MA":
+                return 3;
+            case "Pre-Sales":
+                return 4;
+            case "협업":
+                return 5;
+            case "혁신성과":
+                return 6;
+            default:
+                return Integer.MAX_VALUE; // 기타 상태에 대한 처리
+        }
     }
 
     /**

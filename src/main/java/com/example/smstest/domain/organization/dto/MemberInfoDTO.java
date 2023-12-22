@@ -1,5 +1,6 @@
 package com.example.smstest.domain.organization.dto;
 
+import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.organization.entity.Department;
 import com.example.smstest.domain.auth.entity.Memp;
@@ -18,5 +19,6 @@ public class MemberInfoDTO {
     private Memp memp;
     private Team team;
     private List<Support> supports;
-    private List<AggregatedDataDTO> aggregatedData;
+    private List<Client> clients;
+    private List<Client> allClients;
 }

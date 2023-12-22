@@ -14,7 +14,7 @@ public interface MempRepository  extends JpaRepository<Memp, Long> {
 
     List<Memp> findAllByActiveTrue();
 
-    List<Memp> findAllByTeamId(Integer teamId);
+    List<Memp> findAllByTeamIdAndActiveTrue(Integer teamId);
 
     Optional<Memp> findByUsernameAndActiveTrue(String username);
     Optional<Memp> findByUsername(String username);

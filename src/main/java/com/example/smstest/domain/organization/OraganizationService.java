@@ -2,13 +2,14 @@ package com.example.smstest.domain.organization;
 
 import com.example.smstest.domain.auth.MempRepository;
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.client.ClientRepository;
-import com.example.smstest.domain.organization.dto.AggregatedDataDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDTO;
 import com.example.smstest.domain.organization.dto.MemberInfoDetailDTO;
 import com.example.smstest.domain.organization.dto.TeamInfoDTO;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
+import com.example.smstest.domain.project.Project;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.ProductRepository;
@@ -23,10 +24,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,13 +50,12 @@ public class OraganizationService {
      * @param teamId
      * @return
      */
-    public TeamInfoDTO getTeamInfo(Integer teamId) {
+    public TeamInfoDTO getTeamInfo(Integer teamId, Date startDate, Date endDate) {
         Optional<Team> teamOptional = teamRepository.findById(teamId);
         if (teamOptional.isPresent()) {
-            List<Memp> memps = mempRepository.findAllByTeamId(teamId);
+            List<Memp> memps = mempRepository.findAllByTeamIdAndActiveTrue(teamId);
 
-            LocalDateTime fourWeeksAgo = LocalDateTime.now().minus(4, ChronoUnit.WEEKS);
-            List<Support> supports = supportRepository.findByTeamIdAndCreatedAtAfter(teamId, fourWeeksAgo);
+            List<Support> supports = supportRepository.findByTeamIdAndCreatedAtBetween(teamId, startDate, endDate);
 
             TeamInfoDTO teamInfoDTO = new TeamInfoDTO();
             teamInfoDTO.setMemps(memps); // 해당 팀 소속 엔지니어
@@ -75,31 +74,37 @@ public class OraganizationService {
      * @param memberId
      * @return
      */
-    public MemberInfoDTO getMemberInfo(Long memberId) {
+    public MemberInfoDTO getMemberInfo(Long memberId, Integer clientId, Date startDate, Date endDate) {
         Optional<Memp> memp = mempRepository.findById(memberId);
 
-        LocalDateTime fourWeeksAgo = LocalDateTime.now().minus(4, ChronoUnit.WEEKS);
-        List<Support> supports = supportRepository.findByEngineerIdAndCreatedAtAfter(memberId, fourWeeksAgo);
+        List<Support> allSupports = supportRepository.findByEngineerIdAndCreatedAtBetween(memberId, startDate, endDate);
+
+        List<Support> supports = null;
+
+        if (clientId==null){
+            supports = allSupports;
+        }
+        else {
+            supports = supportRepository.findByEngineerIdAndCreatedAtBetween(memberId, clientId, startDate, endDate);
+        }
+        List<Client> clients = supports.stream()
+                .map(Support::getProject)
+                .filter(Objects::nonNull) // Project가 null이 아닌 경우에만 진행
+                .map(Project::getClient)
+                .filter(Objects::nonNull) // Client가 null이 아닌 경우에만 진행
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Client> allClients = allSupports.stream()
+                .map(Support::getProject)
+                .filter(Objects::nonNull) // Project가 null이 아닌 경우에만 진행
+                .map(Project::getClient)
+                .filter(Objects::nonNull) // Client가 null이 아닌 경우에만 진행
+                .distinct()
+                .collect(Collectors.toList());
 
         Optional<Team> team = teamRepository.findById(memp.get().getTeam().getId());
-        List<Memp> memps = mempRepository.findAllByTeamId(team.get().getId());
-
-        List<Object[]> aggregatedData = supportRepository.countAttributesByEngineer(memberId);
-        List<AggregatedDataDTO> dtoList = new ArrayList<>();
-        for (Object[] data : aggregatedData) {
-            AggregatedDataDTO dto = new AggregatedDataDTO();
-            dto.setCustomerId((Integer) data[0]);
-            dto.setProductId((Long) data[1]);
-            dto.setStateId((Long) data[2]);
-
-            if (dto.getCustomerId() != null && dto.getProductId() != null && dto.getStateId() != null) {
-                dto.setCustomerName(clientRepository.findById(dto.getCustomerId()).get().getName());
-                dto.setProductName(productRepository.findById(dto.getProductId()).get().getName());
-                dto.setStateName(stateRepository.findById(dto.getStateId()).get().getName());
-                dto.setCount((Double) data[3]);
-                dtoList.add(dto);
-            }
-        }
+        List<Memp> memps = mempRepository.findAllByTeamIdAndActiveTrue(team.get().getId());
 
         MemberInfoDTO memberInfoDTO = new MemberInfoDTO();
         memberInfoDTO.setMemps(memps);
@@ -107,7 +112,8 @@ public class OraganizationService {
         memberInfoDTO.setMemp(memp.get());
         memberInfoDTO.setTeam(team.get());
         memberInfoDTO.setSupports(supports);
-        memberInfoDTO.setAggregatedData(dtoList);
+        memberInfoDTO.setClients(clients);
+        memberInfoDTO.setAllClients(allClients);
 
         return memberInfoDTO;
     }
