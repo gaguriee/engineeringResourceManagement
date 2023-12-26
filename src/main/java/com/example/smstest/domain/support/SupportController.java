@@ -16,6 +16,8 @@ import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.external.license.LicenseProject;
+import com.example.smstest.external.license.LicenseProjectRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
 import com.google.common.net.HttpHeaders;
@@ -48,6 +50,7 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 지원내역 관련 Controller
@@ -71,6 +74,7 @@ public class SupportController {
     private final SupportTypeRepository supportTypeRepository;
     private final SupportRepository supportRepository;
     private final ProjectRepository projectRepository;
+    private final LicenseProjectRepository licenseProjectRepository;
 
 
     /**
@@ -256,13 +260,20 @@ public class SupportController {
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
 
+        List<LicenseProject> licenseProjects = recentProjects.stream()
+                .map(project -> {
+                    return licenseProjectRepository.findById(project.getProjectGuid())
+                            .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+                })
+                .collect(Collectors.toList());
+
         memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
         issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
         products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
 
         model.addAttribute("user", user);
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("recentProjects", recentProjects);
+        model.addAttribute("recentProjects", licenseProjects);
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
@@ -332,6 +343,16 @@ public class SupportController {
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
 
+        List<LicenseProject> licenseProjects = recentProjects.stream()
+                .map(project -> {
+                    return licenseProjectRepository.findById(project.getProjectGuid())
+                            .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+                })
+                .collect(Collectors.toList());
+
+        LicenseProject licenseProject = licenseProjectRepository.findById(support.getProject().getProjectGuid())
+                .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+
         // 리스트 소팅 메소드 (각각의 이름 기존 오름차순 정렬)
         memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
         issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -339,7 +360,7 @@ public class SupportController {
 
         model.addAttribute("user", user);
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("recentProjects", recentProjects);
+        model.addAttribute("licenseProject", licenseProject);
 
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
@@ -349,6 +370,7 @@ public class SupportController {
         model.addAttribute("productCategories", productCategories);
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
+        model.addAttribute("recentProjects", licenseProjects);
 
         return "supportModify";
     }

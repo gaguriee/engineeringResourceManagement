@@ -141,7 +141,7 @@
                             <td class="px-4 py-3" th:text="${project.company.companyName}">고객사</td>
                             <td class="px-4 py-3"  th:text="${project.projectCode}">2000-0000</td>
                             <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
-                                <a href="#" th:onclick="setProject([[${project.projectGuid}]], [[${project.projectName}]])"
+                                <a href="#" th:onclick="setProject([[${project}]])"
                                    th:text="${project.projectName}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 </a>
                             </td>
@@ -207,8 +207,8 @@
     const currentPage = [[${currentPage }]];
     const totalPages = [[${totalPages }]];
 
-    function setProject(id, name){
-        window.opener.setProject(id, name);
+    function setProject(project){
+        window.opener.setProject(project);
         window.close();
     }
 
@@ -268,106 +268,6 @@
     function applyResetBtn() {
 
         window.location.href = '/project/select?';
-    }
-
-
-    /**
-     *     프로젝트 등록
-     */
-
-
-    var clientName = document.getElementById("clientName");
-    var projectName = document.getElementById("projectName");
-    var productId = document.getElementById("productId");
-    var teamId = document.getElementById("teamId");
-    var engineerName = document.getElementById("engineer");
-    var subEngineerName = document.getElementById("subEngineer");
-    var directSelect = document.getElementById("direct-select");
-    var uniqueCode = document.getElementById("uniqueCode");
-
-    var projectCreateBtn = document.getElementById("projectCreateBtn");
-    var closeButton = document.getElementById("closeButton");
-
-    var memps = /*[[${memps}]]*/ [];
-
-
-    if (projectCreateBtn) {
-        projectCreateBtn.addEventListener('click', function () {
-
-            // 해당 engineer를 포함하는지 확인
-            var containsEngineerName = memps.some(function(m) {
-                return m.name === engineerName.value;
-            });
-
-            var containsSubEngineerName = memps.some(function(m) {
-                return m.name === subEngineerName.value;
-            });
-
-            if (clientName.value.length < 1) {
-                alert("정확한 고객사명을 입력해 주세요.");
-                return;
-            }
-            if (projectName.value.length < 1) {
-                alert("정확한 프로젝트명과 입력해 주세요.");
-                return;
-            }
-            if (productId.value === '') {
-                alert("제품을 선택해주세요.");
-                return;
-            }
-            if (teamId.value === '') {
-                alert("담당 팀을 선택해주세요.");
-                return;
-            }
-            if (engineerName.value === '' ) {
-                alert("담당 엔지니어를 입력해주세요.");
-                return;
-            }
-            if ( !containsEngineerName || !containsSubEngineerName ) {
-                alert("엔지니어를 정확히 입력해주세요.");
-                return;
-            }
-            if (uniqueCode.value === '' ) {
-                alert("프로젝트 고유 코드를 입력해주세요.");
-                return;
-            }
-            fetch("/project/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    clientName: clientName.value,
-                    projectName: projectName.value,
-                    productId : productId.value,
-                    teamId : teamId.value,
-                    engineerName : engineerName.value,
-                    subEngineerName: subEngineerName.value,
-                    uniqueCode : uniqueCode.value
-
-                }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.projectExist) {
-                        alert("이미 존재하는 프로젝트입니다.");
-                    } else if (!data.projectExist) {
-                        alert("등록이 완료되었습니다.");
-                        closeButton.click();
-
-                        if (directSelect.checked){
-                            setProject(data.projectId ,projectName.value);
-                        }
-
-                    } else {
-                        alert("등록을 실패했습니다. 관리자에 문의해주시기 바랍니다.");
-
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
-        });
     }
 
 </script>

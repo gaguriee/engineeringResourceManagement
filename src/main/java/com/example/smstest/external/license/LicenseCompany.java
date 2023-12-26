@@ -1,15 +1,18 @@
 package com.example.smstest.external.license;
 
-import lombok.Getter;
+import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
  * 라이센스 DB 내 고객사 Entity
  */
 @Entity
-@Getter
+@Data
 @Table(name = "license_company_code")
 public class LicenseCompany {
     @Id

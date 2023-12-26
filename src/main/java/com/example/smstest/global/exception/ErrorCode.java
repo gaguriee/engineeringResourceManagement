@@ -16,7 +16,7 @@ public enum ErrorCode {
 
     /* 404 NOT_FOUND : Resource를 찾을 수 없음 */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 정보의 사용자를 찾을 수 없습니다."),
-    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 정보의 사용자를 찾을 수 없습니다."),
+    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 소속을 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 게시글을 찾을 수 없습니다."),
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 고객사를 찾을 수 없습니다."),
     TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 일정을 찾을 수 없습니다."),

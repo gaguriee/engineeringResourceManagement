@@ -1,7 +1,6 @@
 package com.example.smstest.external.license;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -10,8 +9,7 @@ import java.sql.Date;
  * 라이센스 DB 내 프로젝트 Entity
  */
 @Entity
-@Getter
-@ToString
+@Data
 @Table(name = "license_project_code")
 public class LicenseProject {
     @Id

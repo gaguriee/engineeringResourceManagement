@@ -2,6 +2,7 @@ package com.example.smstest.global.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
@@ -21,6 +22,47 @@ import java.util.Map;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends RuntimeException {
+
+    @ExceptionHandler(DataAccessResourceFailureException.class)
+    public String handleJDBCConnectionException(DataAccessResourceFailureException e,  Model model, HttpServletRequest request) throws IOException {
+        model.addAttribute("message", "데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.");
+
+        Map<String, Object> params = getParams(request);
+
+        String taskSummary = (String) params.get("taskSummary");
+        model.addAttribute("taskSummary", taskSummary);
+
+        String taskDetails = (String) params.get("taskDetails");
+        model.addAttribute("taskDetails", taskDetails);
+
+        String serverIp = InetAddress.getLocalHost().getHostAddress();
+        Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
+
+        model.addAttribute("requestBody", requestBody );
+        model.addAttribute("params", params );
+
+        // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
+
+        ReqResLogging reqResLogging = new ReqResLogging(
+                "UnhandledException",
+                request.getMethod(),
+                request.getRequestURI(),
+                params,
+                LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
+                serverIp,
+                requestBody,
+                ErrorCode.SERVER_ERROR,
+                e.getMessage(),
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        );
+
+        e.printStackTrace();
+
+        log.error(reqResLogging.toString());
+
+        return "error/500";
+
+    }
 
     @ExceptionHandler(CustomException.class)
     public String CustomException(CustomException e, Model model, HttpServletRequest request) throws IOException {

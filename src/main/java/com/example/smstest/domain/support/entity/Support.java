@@ -75,6 +75,9 @@ public class Support {
     @Column(name = "created_at", nullable = false, insertable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "modified_at", nullable = true)
+    private LocalDateTime modifiedAt;
+
     @OneToMany(mappedBy = "supportId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<File> files;
 
