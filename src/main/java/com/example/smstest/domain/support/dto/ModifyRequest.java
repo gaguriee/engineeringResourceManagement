@@ -42,6 +42,9 @@ public class ModifyRequest {
 
     private Float supportTypeHour;
 
+    /**
+     * 기존에 저장된 파일 중 삭제할 File 별도 처리
+     */
     private List<Long> deletedFileId;
 
 }

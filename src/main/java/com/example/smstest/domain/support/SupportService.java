@@ -17,7 +17,6 @@ import com.example.smstest.domain.support.repository.*;
 import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -159,7 +158,15 @@ public class SupportService  {
         return supportDate.before(sevenDaysAgo);
     }
 
-    public SupportResponse modifySupport(ModifyRequest supportRequest) throws JsonProcessingException {
+    public SupportResponse modifySupport(List<MultipartFile> files,  ModifyRequest supportRequest) throws NoSuchAlgorithmException, IOException {
+
+        // 삭제된 FileId가 존재할 경우, 기존에 File table에서 해당 id 전부 삭제함
+        if (supportRequest.getDeletedFileId() != null){
+            fileRepository.deleteAllById(supportRequest.getDeletedFileId());
+        }
+
+        // 새로운 File 리스트 객체 생성
+        List<File> savedFiles = new ArrayList<>();
 
         Support support = supportRepository.findById(supportRequest.getSupportId()).get();
 
@@ -219,7 +226,7 @@ public class SupportService  {
 
 
         if (support.getEngineer().getUsername().equals(user.getUsername())
-        || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"))){
+                || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"))){
             support.setSupportDate(supportRequest.getSupportDate());
             support.setRedmineIssue(supportRequest.getRedmineIssue());
             support.setTaskTitle(supportRequest.getTaskTitle());
@@ -236,12 +243,22 @@ public class SupportService  {
             support.setModifiedAt(LocalDateTime.now());
             // Support 엔티티를 저장하고 반환
             Support savedsupport = supportRepository.save(support);
+
+            saveFile(files, savedsupport.getId());
+
             log.info("===MODIFY=== ("+ SupportResponse.entityToResponse(savedsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
+
+            // 파일 일괄 저장
+            for (File savedFile : savedFiles){
+                savedFile.setSupportId(savedsupport.getId());
+                fileRepository.save(savedFile);
+            }
 
             return SupportResponse.entityToResponse(savedsupport);
         }
-
-        return null;
+        else {
+            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
+        }
     }
 
     public void deleteSupport(Long supportId) {
@@ -256,7 +273,7 @@ public class SupportService  {
         }
     }
 
-    private List<File> saveFile(List<MultipartFile> files, Long supportId) throws NoSuchAlgorithmException, IOException {
+    private void saveFile(List<MultipartFile> files, Long supportId) throws NoSuchAlgorithmException, IOException {
         List<File> savedFiles = new ArrayList<>();
 
         for(MultipartFile file : files) {
@@ -304,8 +321,6 @@ public class SupportService  {
             fileRepository.save(savedFile);
         }
 
-
-        return savedFiles;
     }
 
 }

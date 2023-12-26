@@ -40,7 +40,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -59,10 +58,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class SupportController {
+
     private final SupportService supportService;
     private final FileService fileService;
-    private final FileRepository fileRepository;
 
+    private final FileRepository fileRepository;
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final IssueRepository issueRepository;
@@ -115,13 +115,15 @@ public class SupportController {
                                          @RequestParam(required = false) String Keyword,
                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
-                                         @RequestParam(required = false, defaultValue = "desc")  String sortOrder, // 추가된 파라미터
+                                         @RequestParam(required = false, defaultValue = "desc")  String sortOrder,
                                          Pageable pageable,
                                          Model model) {
 
+        // 현재 유저 가져옴
         Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 필터링에 사용할 Criteria(기준) 작성
         SupportFilterCriteria criteria = new SupportFilterCriteria();
         criteria.setCustomerName(customerName);
         criteria.setProjectName(projectName);
@@ -134,21 +136,22 @@ public class SupportController {
         criteria.setStartDate(startDate);
         criteria.setEndDate(endDate);
 
+        // 현재 페이지, 페이지 사이즈로 Pageable 객체 생성
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 
+        // 필터링 결과값 가져옴
         Page<SupportResponse> responsePage = supportService.searchSupportByFilters(criteria, pageable, sortOrder);
-
 
         model.addAttribute("posts", responsePage);
         model.addAttribute("totalPages", responsePage.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", pageable.getPageNumber()); // 현재 페이지
 
-        // Product 엔티티
+        // 전체 Product 엔티티
         List<Product> allProducts = productRepository.findAll();
         List<ProductCategory> allProductCategories = productCategoryRepository.findAll();
         model.addAttribute("allProductCategories", allProductCategories);
 
-        // Issue 엔티티
+        // 전체 Issue 엔티티
         List<Issue> allIssues = issueRepository.findAll();
         List<IssueCategory> allIssueCategories = issueCategoryRepository.findAllOrderedByPriority();
         for (IssueCategory category : allIssueCategories) {
@@ -156,21 +159,22 @@ public class SupportController {
         }
         model.addAttribute("allIssueCategories", allIssueCategories);
 
-        // State 엔티티
+        // 전체 State 엔티티
         List<State> allStates = stateRepository.findAll();
 
-        // Team 엔티티
+        // 전체 Team 엔티티
         List<Team> allTeams = teamRepository.findAll();
 
-        // Member 엔티티
+        // 전체 Member 엔티티
         List<Memp> allMemps = mempRepository.findAll();
 
-        // Client 엔티티
+        // 전체 Client 엔티티
         List<Client> allCustomers = clientRepository.findByOrderBySupportCountDesc();
 
-        // Project 엔티티
+        // 전체 Project 엔티티
         List<Project> allProjects = projectRepository.findAllByOrderBySupportCountDesc();
 
+        // 이름 순으로 정렬
         Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
         Collections.sort(allStates, (c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -239,27 +243,31 @@ public class SupportController {
 
         List<Client> customers = clientRepository.findAll();
         List<Issue> issues = issueRepository.findAll();
+
+        // 이슈 대분류 리스트 소속 반영 (N 본부는 N 이슈만), 우선순위대로 정렬해서 가져옴
         List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
         for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
-            // 권한 목록에 ROLE_SUPERADMIN이 포함되어 있는지 확인
+            // ROLE_SUPERADMIN 권한이 있다면 이슈 리스트 소속 반영 없이 전체 가져옴
             if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
                 issueCategories = issueCategoryRepository.findAllOrderedByPriority();
                 break;
             }
         }
 
+        // 이슈 리스트 우선순위 정렬
         for (IssueCategory category : issueCategories) {
             category.getIssues().sort(Comparator.comparingInt(Issue::getPriority));
         }
+
         List<State> states = stateRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
 
+        // 최근 등록한 프로젝트 (최대 5개) 가져온 후 LicenseProject 객체로 변환 (등록 내 요청 객체를 통일시키는 목적)
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
-
         List<LicenseProject> licenseProjects = recentProjects.stream()
                 .map(project -> {
                     return licenseProjectRepository.findById(project.getProjectGuid())
@@ -267,6 +275,7 @@ public class SupportController {
                 })
                 .collect(Collectors.toList());
 
+        // 이름순 정렬
         memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
         issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
         products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
@@ -275,14 +284,7 @@ public class SupportController {
         model.addAttribute("currentDate", new Date());
         model.addAttribute("recentProjects", licenseProjects);
 
-        model.addAttribute("customers", customers);
-        model.addAttribute("issues", issues);
-        model.addAttribute("issueCategories", issueCategories);
-        model.addAttribute("states", states);
-        model.addAttribute("products", products);
-        model.addAttribute("productCategories", productCategories);
-        model.addAttribute("memps", memps);
-        model.addAttribute("supportTypes", supportTypes);
+        setMoel(model, customers, issues, issueCategories, states, products, memps, supportTypes, productCategories);
 
         return "supportCreate";
     }
@@ -314,18 +316,19 @@ public class SupportController {
         Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 기존 등록 정보 찾기
+        // 기존 지원내역 가져옴
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         model.addAttribute("support", support);
 
+        // 등록 프로세스와 동일
         List<Client> customers = clientRepository.findAll();
+
         List<Issue> issues = issueRepository.findAll();
         List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
 
         for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
-            // 권한 목록에 ROLE_SUPERADMIN이 포함되어 있는지 확인
             if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
                 issueCategories = issueCategoryRepository.findAllOrderedByPriority();
                 break;
@@ -340,6 +343,7 @@ public class SupportController {
         List<Memp> memps = mempRepository.findAll();
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
+
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
 
@@ -353,8 +357,7 @@ public class SupportController {
         LicenseProject licenseProject = licenseProjectRepository.findById(support.getProject().getProjectGuid())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
 
-        // 리스트 소팅 메소드 (각각의 이름 기존 오름차순 정렬)
-        memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+        memps.sort(Comparator.comparing(Memp::getName));
         issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
         products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
 
@@ -362,6 +365,13 @@ public class SupportController {
         model.addAttribute("currentDate", new Date());
         model.addAttribute("licenseProject", licenseProject);
 
+        setMoel(model, customers, issues, issueCategories, states, products, memps, supportTypes, productCategories);
+        model.addAttribute("recentProjects", licenseProjects);
+
+        return "supportModify";
+    }
+
+    private void setMoel(Model model, List<Client> customers, List<Issue> issues, List<IssueCategory> issueCategories, List<State> states, List<Product> products, List<Memp> memps, List<SupportType> supportTypes, List<ProductCategory> productCategories) {
         model.addAttribute("customers", customers);
         model.addAttribute("issues", issues);
         model.addAttribute("issueCategories", issueCategories);
@@ -370,9 +380,6 @@ public class SupportController {
         model.addAttribute("productCategories", productCategories);
         model.addAttribute("memps", memps);
         model.addAttribute("supportTypes", supportTypes);
-        model.addAttribute("recentProjects", licenseProjects);
-
-        return "supportModify";
     }
 
     /**
@@ -380,76 +387,14 @@ public class SupportController {
      * - 등록과 거의 동일, 등록은 신규 엔티티를 생성 후 save하는 것이라면, 수정은 기존 엔티티를 supportId로 검색 후 update한 뒤 save
      * @param files
      * @param modifyRequest
-     * @param redirectAttributes
      * @return
      */
     @PostMapping("/modify")
-    public String modifySupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute ModifyRequest modifyRequest, RedirectAttributes redirectAttributes) {
+    public String modifySupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute ModifyRequest modifyRequest) throws NoSuchAlgorithmException, IOException {
 
-        try {
+        SupportResponse supportResponse = supportService.modifySupport(files, modifyRequest);
 
-            if (modifyRequest.getDeletedFileId() != null){
-                fileRepository.deleteAllById(modifyRequest.getDeletedFileId());
-            }
-            List<File> savedFiles = new ArrayList<>();
-
-            for(MultipartFile file : files) {
-                if (file.getOriginalFilename().isEmpty())
-                    continue;
-                String origFilename = file.getOriginalFilename();
-                String filename = new MD5Generator(origFilename).toString();
-                /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
-                String savePath;
-                String filePath;
-
-                // OS 따라 구분자 분리
-                String os = System.getProperty("os.name").toLowerCase();
-                if (os.contains("win")){
-                    savePath = System.getProperty("user.dir") + "\\files\\support";
-                    filePath = savePath + "\\" + filename;
-                }
-                else{
-                    savePath = System.getProperty("user.dir") + "/files/support";
-                    filePath = savePath + "/" + filename;
-                }
-
-
-                /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
-                if (!new java.io.File(savePath).exists()) {
-                    try{
-                        new java.io.File(savePath).mkdir();
-                    }
-                    catch(Exception e){
-                        e.getStackTrace();
-                    }
-                }
-
-                file.transferTo(new java.io.File(filePath));
-
-                FileDto fileDto = new FileDto();
-                fileDto.setOrigFilename(origFilename);
-                fileDto.setSize(file.getSize());
-                fileDto.setFilename(filename);
-                fileDto.setFilePath(filePath);
-
-                // 새 첨부 파일 저장
-                savedFiles.add(fileService.saveFile(fileDto));
-            }
-
-            SupportResponse supportResponse = supportService.modifySupport(modifyRequest);
-
-            for (File savedFile : savedFiles){
-                savedFile.setSupportId(supportResponse.getId());
-                fileRepository.save(savedFile);
-            }
-
-            return "redirect:/details?supportId="+supportResponse.getId();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-
-        }
+        return "redirect:/details?supportId="+supportResponse.getId();
     }
 
     /**
