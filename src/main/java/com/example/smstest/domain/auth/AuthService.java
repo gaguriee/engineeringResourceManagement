@@ -3,8 +3,9 @@ package com.example.smstest.domain.auth;
 import com.example.smstest.domain.auth.dto.AccountRequest;
 import com.example.smstest.domain.auth.dto.ModifyUserinfoRequest;
 import com.example.smstest.domain.auth.dto.ResetPasswordRequest;
-import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.auth.entity.Authority;
+import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -85,20 +87,70 @@ public class AuthService {
         Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 변경할 팀, 직급 저장
-        memp.setTeam(teamRepository.findById(modifyUserinfoRequest.getTeamId()).get());
-        memp.setRank(modifyUserinfoRequest.getRank());
+        // 팀이 변경되었다면
+        if (! memp.getTeam().getId().equals(modifyUserinfoRequest.getTeamId())){
 
-        //  직책 저장, 팀장일 경우 ADMIN 권한 부여
-        if (modifyUserinfoRequest.getPosition().equals("팀장")){
-            memp.getAuthorities().add(Authority.of("ROLE_ADMIN"));
-        }
-        else{
-            memp.getAuthorities().remove(Authority.of("ROLE_ADMIN"));
-        }
-        memp.setPosition(modifyUserinfoRequest.getPosition());
+            // 기존 사용자 active false처리
+            memp.setActive(false);
+            mempRepository.save(memp);
 
-        return mempRepository.save(memp);
+            // 사용자 ROLE 지정 (defualt: ROLE_USER)
+            Set<Authority> authoritiesSet = new HashSet<>();
+            authoritiesSet.add(Authority.of("ROLE_USER"));
+
+            // ERM DB에 해당 유저를 신규 등록한다.
+
+            // 인사정보 DB에서 로컬 ERM DB와 매칭되는 팀 정보 가져옴, 없을 경우 에러 반환
+            Team team = teamRepository.findById(modifyUserinfoRequest.getTeamId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+
+            // 사용자별 캘린더 색상 랜덤 지정
+            Random rand = new Random();
+            String randomColor = String.format("#%02X%02X%02X", rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+
+            // 신규 유저 객체 생성, 저장
+            Memp newMemp = Memp.builder()
+                    .name(memp.getName())
+                    .rank("엔지니어") // default
+                    .position("팀원") // default
+                    .team(team)
+                    .username(memp.getUsername())
+                    .password(memp.getPassword())
+                    .calenderColor(randomColor)
+                    .authorities(authoritiesSet)
+                    .active(true)
+                    .build();
+
+            //  직책 저장, 팀장일 경우 ADMIN 권한 부여
+            if (modifyUserinfoRequest.getPosition().equals("팀장")){
+                newMemp.getAuthorities().add(Authority.of("ROLE_ADMIN"));
+            }
+            else{
+                newMemp.getAuthorities().remove(Authority.of("ROLE_ADMIN"));
+            }
+            newMemp.setRank(modifyUserinfoRequest.getRank());
+            newMemp.setPosition(modifyUserinfoRequest.getPosition());
+
+            return mempRepository.save(newMemp);
+
+        }
+        // 팀이 변경되지 않았다면
+        else {
+            //  직책 저장, 팀장일 경우 ADMIN 권한 부여
+            if (modifyUserinfoRequest.getPosition().equals("팀장")){
+                memp.getAuthorities().add(Authority.of("ROLE_ADMIN"));
+            }
+            else{
+                memp.getAuthorities().remove(Authority.of("ROLE_ADMIN"));
+            }
+            // 변경할 직급 저장
+            memp.setRank(modifyUserinfoRequest.getRank());
+            memp.setPosition(modifyUserinfoRequest.getPosition());
+
+            return mempRepository.save(memp);
+
+        }
+
     }
 
 }

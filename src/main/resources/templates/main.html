@@ -111,7 +111,15 @@
 
 
     <div style="background-color: #F7F7F7; padding: 0 32px 32px;width: 100%">
-        <p class="text-xs pt-2 pb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
+        <p class="text-xs pt-4 pb-2">* 하단의 차트는  필터링 적용 범위가 아닙니다.</p>
+        <div class="flex pb-2" >
+            <a th:each="year : ${allSupportYears}"
+               th:href="'?radarchartYear=' + ${year}"
+               th:text="${year}"
+               th:classappend="${year == radarchartYear} ? 'bg-blue-300' : 'bg-blue-100'"
+               class="mr-1 hover:bg-blue-200 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 border border-blue-400 inline-flex items-center justify-center">
+            </a>
+        </div>
 
         <div class="grid-container" >
             <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
@@ -168,48 +176,74 @@
         }
     }
 
-    var stateNames = [[${stateNames}]] ;
-
-    var overallSupportTypeHourSums_N = [[${overallSupportTypeHourSums_N}]] ;
-    var teamDataMap_N = [[${teamDataMap_N}]] ;
-
-    var overallSupportTypeHourSums_E = [[${overallSupportTypeHourSums_E}]] ;
-    var teamDataMap_E = [[${teamDataMap_E}]] ;
+    var resultMapByTeamInN  = [[${resultMapByTeamInN}]] ;
+    var resultMapByTeamInE  = [[${resultMapByTeamInE }]] ;
 
     var teamColorMap = [[${teamColorMap}]] ;
-
-    var teamDatasets_N = [];
-    var teamDatasets_E = [];
-
     var colorIndex = 0;
 
-    for (var teamName in teamDataMap_N) {
-        var color = teamColorMap[teamName]; // 색상을 반복해서 할당
-        var transparentColor =  addAlphaChannel(color, 0.3); // 투명도 추가
+    const customStateOrder = ['납품', 'WA', 'MA', 'Pre-Sales', '협업', '업무혁신'];
+
+    const stateNames_N = [...new Set(Object.values(resultMapByTeamInN).flatMap(teamData => Object.keys(teamData)))];
+
+    stateNames_N.sort((a, b) => {
+        const orderA = customStateOrder.indexOf(a);
+        const orderB = customStateOrder.indexOf(b);
+        if (orderA === -1) return 1;
+        if (orderB === -1) return -1;
+
+        return orderA - orderB;
+    });
+
+    const stateNames_E = [...new Set(Object.values(resultMapByTeamInE).flatMap(teamData => Object.keys(teamData)))];
+
+    stateNames_E.sort((a, b) => {
+        const orderA = customStateOrder.indexOf(a);
+        const orderB = customStateOrder.indexOf(b);
+        if (orderA === -1) return 1;
+        if (orderB === -1) return -1;
+
+        return orderA - orderB;
+    });
+
+    const teamDataset_N = [];
+    const teamDataset_E = [];
+
+    Object.keys(resultMapByTeamInN).forEach(teamName => {
+
+        var color = teamColorMap[teamName];
+        var transparentColor =  addAlphaChannel(color, 0.3);
         colorIndex++;
 
-        teamDatasets_N.push({
+        const teamData = resultMapByTeamInN[teamName];
+        const teamDataset = {
             label: teamName,
-            data: teamDataMap_N[teamName],
-            backgroundColor: transparentColor, // 투명도 추가된 색상
+            data: stateNames_N.map(stateName => teamData[stateName] || 0),
+            backgroundColor: transparentColor,
             borderColor: color,
             borderWidth: 2
-        });
-    }
+        };
 
-    for (var teamName in teamDataMap_E) {
-        var color = teamColorMap[teamName]; // 색상을 반복해서 할당
-        var transparentColor =  addAlphaChannel(color, 0.3); // 투명도 추가
+        teamDataset_N.push(teamDataset);
+    });
+
+    Object.keys(resultMapByTeamInE).forEach(teamName => {
+
+        var color = teamColorMap[teamName];
+        var transparentColor =  addAlphaChannel(color, 0.3);
         colorIndex++;
 
-        teamDatasets_E.push({
+        const teamData = resultMapByTeamInE[teamName];
+        const teamDataset = {
             label: teamName,
-            data: teamDataMap_E[teamName],
-            backgroundColor: transparentColor, // 투명도 추가된 색상
+            data: stateNames_E.map(stateName => teamData[stateName] || 0),
+            backgroundColor: transparentColor,
             borderColor: color,
             borderWidth: 2
-        });
-    }
+        };
+
+        teamDataset_E.push(teamDataset);
+    });
 
     const overallCtx_N = document.getElementById('overallRadarChart_N').getContext('2d');
     const teamCtx_N = document.getElementById('teamRadarChart_N').getContext('2d');
@@ -217,28 +251,39 @@
     const overallCtx_E = document.getElementById('overallRadarChart_E').getContext('2d');
     const teamCtx_E = document.getElementById('teamRadarChart_E').getContext('2d');
 
+    var resultInN = [[${resultInN}]] ;
+    var resultInE = [[${resultInE}]] ;
+
     // 기술N본부 데이터셋 추가
     const overallDataset_N = [{
         label: "기술N본부",
-        data: overallSupportTypeHourSums_N,
+        data: [],
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 2
     }];
 
+    resultInN.forEach(item => {
+        overallDataset_N[0].data.push(item.totalSupportTypeHour);
+    });
+
     // 기술E본부 데이터셋 추가
     const overallDataset_E = [{
         label: "기술E본부",
-        data: overallSupportTypeHourSums_E,
+        data:[],
         backgroundColor: 'rgba(99,148,255, 0.2)',
         borderColor: 'rgb(99,148,255,1)',
         borderWidth: 2
     }];
 
+    resultInE.forEach(item => {
+        overallDataset_E[0].data.push(item.totalSupportTypeHour);
+    });
+
     var overallRadarChart_N = new Chart(overallCtx_N, {
         type: 'radar',
         data: {
-            labels: stateNames,
+            labels: resultInN.map(item => item.state),
             datasets: overallDataset_N
         },
         options: {
@@ -274,8 +319,8 @@
     var teamRadarChart_N = new Chart(teamCtx_N, {
         type: 'radar',
         data: {
-            labels: stateNames,
-            datasets: teamDatasets_N
+            labels: stateNames_N,
+            datasets: teamDataset_N
         },
         options: {
             scales: {
@@ -310,7 +355,7 @@
     var overallRadarChart_E = new Chart(overallCtx_E, {
         type: 'radar',
         data: {
-            labels: stateNames,
+            labels: resultInE.map(item => item.state),
             datasets: overallDataset_E
         },
         options: {
@@ -318,7 +363,7 @@
                 r: {
                     pointLabels: {
                         font: {
-                            size: 18 // 글꼴 크기 설정
+                            size: 18
                         }
                     }
                 }
@@ -328,26 +373,25 @@
                     display: true,
                     text: "기술 E본부 업무 집중도 분석",
                     font: {
-                        size: 18 // 제목 글꼴 크기 설정
+                        size: 18
                     }
                 },
                 legend: {
                     display: true,
                     labels: {
                         font: {
-                            size: 12 // 레전드 글꼴 크기 설정
+                            size: 12
                         }
                     }
                 }
             }
         }
     });
-
     var teamRadarChart_E = new Chart(teamCtx_E, {
         type: 'radar',
         data: {
-            labels: stateNames,
-            datasets: teamDatasets_E
+            labels: stateNames_E,
+            datasets: teamDataset_E
         },
         options: {
             scales: {

@@ -100,6 +100,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .password(basicPassword)
                 .calenderColor(randomColor)
                 .authorities(authoritiesSet)
+                .authorities(authoritiesSet)
+                .active(true)
                 .build());
 
         try{

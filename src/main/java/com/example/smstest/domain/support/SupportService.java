@@ -1,8 +1,8 @@
 package com.example.smstest.domain.support;
 
+import com.example.smstest.domain.auth.MempRepository;
 import com.example.smstest.domain.auth.entity.Authority;
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.auth.MempRepository;
 import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.client.ClientRepository;
 import com.example.smstest.domain.file.*;
@@ -14,10 +14,11 @@ import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
-import com.example.smstest.external.license.LicenseProject;
-import com.example.smstest.external.license.LicenseProjectRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +48,6 @@ public class SupportService  {
     private final MempRepository mempRepository;
     private final SupportTypeRepository supportTypeRepository;
     private final ProjectRepository projectRepository;
-    private final LicenseProjectRepository licenseProjectRepository;
     private final ClientRepository clientRepository;
     private final FileService fileService;
     private final FileRepository fileRepository;
@@ -81,10 +82,11 @@ public class SupportService  {
             throw new CustomException(ErrorCode.DATE_INVALID);
         }
 
-        LicenseProject licenseProject = licenseProjectRepository.findById(supportRequest.getProjectId())
-                .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        Optional<Project> project = projectRepository.findFirstByProjectGuid(supportRequest.getProjectId());
+        LicenseProject licenseProject = objectMapper.readValue(supportRequest.getProject(), LicenseProject.class);
+
+        Optional<Project> project = projectRepository.findFirstByProjectGuid(licenseProject.getProjectGuid());
 
         if (project.isPresent()){
             project.get().updateProject(
@@ -157,7 +159,7 @@ public class SupportService  {
         return supportDate.before(sevenDaysAgo);
     }
 
-    public SupportResponse modifySupport(ModifyRequest supportRequest) {
+    public SupportResponse modifySupport(ModifyRequest supportRequest) throws JsonProcessingException {
 
         Support support = supportRepository.findById(supportRequest.getSupportId()).get();
 
@@ -170,10 +172,11 @@ public class SupportService  {
             throw new CustomException(ErrorCode.DATE_INVALID);
         }
 
-        LicenseProject licenseProject = licenseProjectRepository.findById(supportRequest.getProjectId())
-                .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        Optional<Project> project = projectRepository.findFirstByProjectGuid(supportRequest.getProjectId());
+        LicenseProject licenseProject = objectMapper.readValue(supportRequest.getProject(), LicenseProject.class);
+
+        Optional<Project> project = projectRepository.findFirstByProjectGuid(licenseProject.getProjectGuid());
 
         if (project.isPresent()){
             project.get().updateProject(
@@ -230,7 +233,7 @@ public class SupportService  {
             support.setEngineer(mempRepository.findById(supportRequest.getEngineerId())
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
             support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
-
+            support.setModifiedAt(LocalDateTime.now());
             // Support 엔티티를 저장하고 반환
             Support savedsupport = supportRepository.save(support);
             log.info("===MODIFY=== ("+ SupportResponse.entityToResponse(savedsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());

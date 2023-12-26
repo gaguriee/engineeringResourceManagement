@@ -16,6 +16,7 @@
 <body>
 <div th:replace="header :: header"></div>
 
+
 <section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
 
     <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
@@ -67,53 +68,126 @@
             </li>
         </ol>
 
+        <a href="#" class="block text-sm text-right text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem" onclick="confirmOrganizationChange()">
+                <div class="h-full inline-flex items-center text-blue-700">
+                    부서 이동 신청
+                </div>
+        </a>
     </nav>
 
-    <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
-        <hr style="margin-bottom: 48px">
+    <div class="pt-16 px-4 mx-auto max-w-4xl" style="align-items: center; display: grid; align-content: center; text-align: center">
         <div style="display: flex">
             <span class="mb-4 text-xl font-bold text-gray-400 dark:text-white mr-2.5 align-bottom" style="font-size: medium; text-align: left" th:text="${team.name}"></span>
             <span class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="margin-bottom: 48px; font-size: x-large; text-align: left" th:text="${member.name}"></span>
         </div>
 
-        <hr style="margin-bottom: 48px">
 
-        <span class="mb-4 text-xl font-bold text-gray-700 dark:text-white" style="margin-bottom: 24px; font-size: large; text-align: left">지원내역 조회</span>
+        <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+            <li class="mr-2">
+                <button type="button" id="visibleBtn" style="display: none"
+                        class="inline-block p-4 text-blue-700 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
+            </li>
+            <li>
+                <button type="button" id="supportListViewBtn"
+                        class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                    지원내역
+                </button>
+            </li>
 
-        <div id='calendar-container'>
-            <div id='calendar' style="margin-bottom: 24px"></div>
-        </div>
-        <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
-
-            <iframe th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.member')} + ${member.id} " width="100%" height="450" ></iframe>
-
-        </div>
-
-        <table id="supportTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-8 mb-8">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">고객사</th>
-                <th scope="col" class="px-6 py-3">제품명</th>
-                <th scope="col" class="px-6 py-3">상태</th>
-                <th scope="col" class="px-6 py-3">누적 지원시간</th>
-            </tr>
-            </thead>
-
-            <tr th:each="data : ${aggregatedData}" class="border">
-                <td class="px-6 py-4 text-black font-bold border" style="color: black" th:text="${data.customerName}"></td>
-                <td class="px-6 py-4 border" th:text="${data.productName}"></td>
-                <td class="px-6 py-4 border" th:text="${data.stateName}"></td>
-                <td class="px-6 py-4 text-red-600 font-normal border" style="color: red; cursor: pointer;" th:text="${data.count} + 'h'"
-                    th:data-memberId="${member.id}"
-                    th:data-customerId="${data.customerId}"
-                    th:data-productId="${data.productId}"
-                    th:data-stateId="${data.stateId}"
-                    onclick="redirectToMemberInfoDetail(this)">
-                </td>
-            </tr>
-
-        </table>
+            <li>
+                <button type="button" id="dashboardViewBtn"
+                        class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                    지원현황
+                </button>
+            </li>
+        </ul>
     </div>
+
+    <div class="justify-center items-center pb-16">
+        <div id="supportListView" class="container mx-auto p-4">
+            <div style=" margin: 0; padding: 0; box-sizing: border-box; display: grid; grid-template-columns: 1fr 3fr 1fr;">
+
+                <div class="flex-1 p-4 block" >
+                    <span class="text-gray-600">고객사 목록</span>
+                    <hr class="my-4 h-1">
+                    <ul>
+                        <li class="font-sans text-sm " >
+                            <a th:class="${clientId == null ? 'text-blue-700' : ''} " th:href="@{/memberInfo(memberId=${member.id}, startDate=${startDate}, endDate=${endDate})}">전체보기</a>
+                        </li>
+                        <li class="font-sans text-sm" th:each="client : ${allClients}">
+                            <a th:class="${(clientId != null && clientId == client.id) ? 'text-blue-700' : ''} " th:href="@{/memberInfo(memberId=${member.id}, clientId=${client.id}, startDate=${startDate}, endDate=${endDate})}" th:text="${client.name}"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-5 p-3" >
+                    <div class="block">
+                        <form class="flex mb-10" th:action="@{/memberInfo}" >
+                            <div class="flex w-full" style="justify-content: flex-end;">
+                                <input name="memberId" th:value="${member.id}" class="hidden">
+                                <div date-rangepicker class="flex" style="vertical-align: bottom; align-self: flex-end;">
+                                    <input th:value="${startDate}" name="startDate" id="startDate" type="date" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
+                                    <div class="p-4 items-center justify-center">
+                                        <svg class="w-2 h-2 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                        </svg>
+                                    </div>
+                                    <input th:value="${endDate}" name="endDate" id="endDate" type="date" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
+
+                                    <button class="h-10 ml-1 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-500 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="submit">
+                                        적용
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div id='calendar-container'>
+                            <div id='calendar' style="margin-bottom: 24px"></div>
+                        </div>
+
+                        <div id="supportList"
+                             class="bg-gray-100 mx-auto w-full rounded-lg text-center items-center justify-center">
+                            <h3 class="mobile-window mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white"
+                                style="padding-top: 18px; text-align: center">지원내역</h3>
+                            <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                                <div class="max-h-64 overflow-hidden">
+                                    <table class="supportTable w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
+                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">프로젝트명</th>
+                                            <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
+                                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="post : ${supports}" class="border-b dark:border-gray-700" th:data-support-id="${post.id}">
+                                            <td class="th-pt px-4 py-3 projectName" th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">고객사</td>
+                                            <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
+                                                <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
+                                                    <span style="font-weight: 500" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
+                                                </a>
+                                            </td>
+                                            <td class="th-p0 px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-4" ></div>
+            </div>
+    </div>
+        <div id="dashboardView">
+            <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
+                <iframe class="supersetIframe" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.member')} + ${member.id} " width="100%" height="500" ></iframe>
+            </div>
+        </div>
+    </div>
+
+
 </section>
 
 <div th:replace="footer :: footer"></div>
@@ -123,42 +197,84 @@
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script th:inline="javascript">
 
-    function redirectToMemberInfoDetail(element) {
-        const memberId = element.getAttribute('data-memberId');
-        const customerId = element.getAttribute('data-customerId');
-        const productId = element.getAttribute('data-productId');
-        const stateId = element.getAttribute('data-stateId');
+    const supports  = [[${supports }]] ;
+    const member  = [[${member }]] ;
 
-        const url = `/memberInfoDetail?memberId=${memberId}&customerId=${customerId}&productId=${productId}&stateId=${stateId}`;
-        window.location.href = url;
-    }
+    const visibleBtn = document.getElementById("visibleBtn");
+    const dashboardViewBtn = document.getElementById("dashboardViewBtn");
+    const supportListViewBtn = document.getElementById("supportListViewBtn");
+    const dashboardView = document.getElementById("dashboardView");
+    const supportListView = document.getElementById("supportListView");
 
-    function mergeRows(tableId, columnIndex) {
-        var table = document.getElementById(tableId);
-        var rows = table.getElementsByTagName('tr');
+    const selectedClass = visibleBtn.className;
+    const unselectedClass = supportListViewBtn.className;
 
-        var currentRowValue = null;
-        var rowSpan = 1;
+    function confirmOrganizationChange() {
+        if (confirm("부서 이동을 신청합니다.")) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/account/organizationChange/"+ member.id, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-        for (var i = 1; i < rows.length; i++) {
-            var cell = rows[i].getElementsByTagName('td')[columnIndex];
-
-            if (cell) {
-                if (currentRowValue === cell.innerText) {
-                    cell.style.display = 'none';
-                    rowSpan++;
-                    rows[i - rowSpan + 1].getElementsByTagName('td')[columnIndex].rowSpan = rowSpan;
-                } else {
-                    currentRowValue = cell.innerText;
-                    rowSpan = 1;
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // 부서 이동이 성공적으로 처리된 경우
+                        alert(xhr.responseText);
+                        // 로그아웃 페이지로 리다이렉트
+                        window.location.href = "/logout";
+                    } else {
+                        // 부서 이동 처리 중 오류가 발생한 경우
+                        alert(xhr.responseText);
+                    }
                 }
-            }
+            };
+
+            // 여기서 {username}을 실제 사용자 이름으로 대체해야 합니다.
+            xhr.send();
+        } else {
+            // 사용자가 "No"를 클릭한 경우
+            // 아무런 조치를 취하지 않습니다.
         }
     }
 
-    mergeRows('supportTable', 0);
 
-    const supports  = /*[[${supports }]]*/ [];
+    $(document).ready(function () {
+
+        // 새로고침 시 url 해시 값을 통해 기존 뷰 페이지로 돌아감
+        if (window.location.hash === '#supportListViewBtn') { // 일정 변경 뷰
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
+        } else if (window.location.hash === '#supportListView') { // 지원내역 조회 뷰
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
+        }
+
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        supportListViewBtn.className = selectedClass;
+        supportListView.style.display = "block";
+        dashboardView.style.display = "none";
+
+        dashboardViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "block";
+            supportListView.style.display = "none";
+            dashboardViewBtn.className = selectedClass;
+            supportListViewBtn.className = unselectedClass;
+        });
+
+        supportListViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "none";
+            supportListView.style.display = "block";
+            dashboardViewBtn.className = unselectedClass;
+            supportListViewBtn.className = selectedClass;
+        });
+
+    });
+
 
     (function () {
         $(function () {
@@ -175,8 +291,8 @@
                 },
                 initialView: 'dayGridMonth',
                 navLinks: true,
-                editable: true,
-                selectable: true,
+                editable: false,
+                selectable: false,
                 nowIndicator: true,
                 dayMaxEvents: true,
                 locale: 'ko'
@@ -222,6 +338,11 @@
             calendar.render();
         });
     })();
+
+    function removeLocationHash() {
+        var noHashURL = window.location.href.replace(/#.*$/, '');
+        window.history.replaceState('', document.title, noHashURL)
+    }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <style>
@@ -234,19 +355,89 @@
         animation: load 1s infinite;
     }
 
+    .pc-window {
+        display: block;
+    }
+
+    .mobile-window {
+        display: none;
+    }
+
     @keyframes load {
         100% {
             background-position: -100% 0;
         }
     }
 
-    @media (max-width: 1064px) {
+    /* Mobile responsive styles */
+    @media (max-width: 640px) {
+
+        .mobile-window {
+            display: block;
+        }
+
+        .supportTable .th-p0 {
+            padding-top: 0;
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .supportTable .th-pb {
+            padding-top: 0;
+            font-size: 12px;
+        }
+
+        .supportTable .th-pt {
+            padding-bottom: 0;
+            font-size: 12px;
+        }
+
+        .supportTable .projectName{
+            display: none;
+        }
+
+        .supportTable table {
+            width: 100%;
+        }
+
+        .supportTable tbody {
+            width: 100%;
+        }
+
+        .supportTable th,
+        .supportTable td {
+            display: block;
+            text-align: left;
+        }
+
+        .supportTable th {
+            font-weight: bold;
+            display: none;
+
+        }
+
+        .supportTable tbody tr {
+            margin-bottom: 5px;
+            padding: 12px;
+        }
+
+        .supportTable tbody tr:last-child {
+            margin-bottom: 0;
+        }
+
+
         .fc .fc-button {
             padding : .1em .3em;
         }
 
         .fc-toolbar-title {
             font-size: medium;
+        }
+        .flex-1 {
+            display: none;
+        }
+        .flex-5{
+            width: 100%;
         }
     }
 

@@ -97,16 +97,16 @@
                 <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="60" placeholder="제목은 필수입니다. (60자 이내)"></textarea>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
-                <label for="projectId" class="hidden"></label>
-                <input type="text"  name="projectId" id="projectId" class="hidden">
-                <label for="project" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트 검색 *</label>
+                <label for="project" class="hidden"></label>
+                <input type="text"  name="project" id="project" class="hidden">
+                <label for="projectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트 검색 *</label>
                 <div id="projectSearchBtn" class="relative">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                         </svg>
                     </div>
-                    <input type="text" name="projectrName" readonly id="project" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트를 선택해주세요." required="">
+                    <input type="text" name="projectrName" readonly id="projectName" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트를 선택해주세요." required="">
                 </div>
                 <div class="mt-1.5 " style="text-align: end; align-content: end; align-items: end">
                 </div>
@@ -118,14 +118,14 @@
                             <table class="mt-2 w-full text-sm text-left text-gray-500 dark:text-gray-400" s>
                                 <tbody>
                                 <tr th:each="project : ${recentProjects}" class="dark:border-gray-700">
-                                    <td th:text="${project.client.getName()}">고객사</td>
+                                    <td th:text="${project.company.companyName}">고객사</td>
                                     <td class="px-2">
-                                        <a href="#" th:onclick="setProject([[${project.projectGuid}]], [[${project.name}]])"
-                                           th:text="${project.name}" class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
+                                        <a href="#" th:onclick="setProject([[${project}]])"
+                                           th:text="${project.projectName}" class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
                                         </a>
                                     </td>
                                     <td class="px-2">
-                                        <a href="#" th:onclick="setProject([[${project.projectGuid}]], [[${project.name}]])"
+                                        <a href="#" th:onclick="setProject([[${project}]])"
                                            class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
                                             <svg class="w-3 h-3 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
@@ -384,6 +384,7 @@
                     등록하기
                 </button>
             </div>
+            </div>
 
         </form>
     </div>
@@ -396,13 +397,19 @@
 
 <script  th:inline="javascript">
 
-    function validateAndSubmit() {
-        if (validateForm()) {
-            document.getElementById("submitForm").submit();
-        }
-    }
-
     const support = [[${support }]];
+    const licenseProject = [[${licenseProject }]];
+
+    function validateAndSubmit() {
+        validateForm().then(function (isValid) {
+            if (isValid) {
+                document.getElementById("submitForm").submit();
+            }
+        })
+            .catch(function(err) {
+                console.error(err); // Error 출력
+            });
+    }
 
     var toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -617,7 +624,7 @@
     var taskDetails = document.getElementById('taskDetails');
     var redmineIssue = document.getElementById('redmineIssue');
     var supportId = document.getElementById('supportId');
-    var projectId = document.getElementById('projectId');
+    var projectName = document.getElementById('projectName');
     var project = document.getElementById('project');
 
     function assignValue(inputElement, value) {
@@ -638,17 +645,17 @@
     assignValue(taskDetails, support.taskDetails);
     assignValue(redmineIssue, support.redmineIssue);
     assignValue(supportId, support.id);
-    assignValue(projectId, support.project?.projectGuid);
-    assignValue(project, support.project?.name);
+    assignValue(projectName, support.project?.name);
+    assignValue(project, JSON.stringify(licenseProject));
 
     document.getElementById('selectedIssueText').innerHTML =support.issue.name;
 
     var memps = [[${memps}]];
     var user = [[${user}]] ;
 
-    function setProject(id, name){
-        document.getElementById('projectId').value = id;
-        document.getElementById('project').value = name;
+    function setProject(project){
+        document.getElementById('project').value = JSON.stringify(project);
+        document.getElementById('projectName').value = project.projectName;
     }
 
     window.onload = function(){
@@ -788,6 +795,31 @@
     }
 
     function validateForm() {
+
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: "/check-session",
+                method: "GET",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        alert("세션이 만료되었습니다. 재로그인 후 등록해주세요.");
+                        resolve(false);
+                    } else {
+                        handleFormValidation(resolve);
+                    }
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                    reject(data);
+                }
+            });
+        });
+    }
+
+    function handleFormValidation(resolve) {
+
         var taskTitle = document.getElementById('taskTitle').value;
         var product = document.getElementById('product').value;
         var issue = document.getElementById('selectedIssue').value;
@@ -798,7 +830,7 @@
         var supportDate = document.getElementById('supportDate').value;
         var taskSummary = document.getElementById('taskSummary').value;
         var taskDetails = document.getElementById('taskDetails').value;
-        var projectId = document.getElementById('projectId').value;
+        var project = document.getElementById('project').value;
 
         var alertForm = document.getElementById('alertForm');
         var alertForm7daysOver = document.getElementById('alertForm7daysOver');
@@ -815,11 +847,11 @@
             supportDate.trim() === '' ||
             taskSummary.trim() === '' ||
             taskDetails.trim() === '' ||
-            projectId === ''
+            project === ''
 
         ) {
             alertForm.style.display = 'flex';
-            return false;
+            resolve(false);
         }
 
         else{
@@ -827,7 +859,7 @@
 
             if (!hasSuperAdminRole && getSevenDaysAgo() > supportDate){
                 alertForm7daysOver.style.display = 'flex';
-                return false;
+                resolve(false);
             }
 
             const imgTags = document.querySelectorAll('img');
@@ -869,12 +901,12 @@
             });
 
             if (ajaxRequests.length===0){
-                return true;
+                resolve(true);
             }
             $.when.apply($, ajaxRequests).done(function () {
-                return true;
+                resolve(true);
             }).fail(function () {
-                return false;
+                resolve(false);
             });
         }
 

@@ -139,7 +139,6 @@
 
     <div class="mt-8 items-center justify-center text-center">
         <a id="showBoard" href="/search?"  style="margin-right:24px; ">목록보기</a>
-<!--        <button id="generatePdfButton" class="btn btn-primary" style="text-decoration: midnightblue; ">PDF로 저장</button>-->
     </div>
 </section>
 <div th:replace="footer :: footer"></div>
@@ -158,35 +157,6 @@
     var hasSuperAdminRole = userAuthorities.some(function(authority) {
         return authority.authority === 'ROLE_SUPERADMIN';
     });
-
-    // document.getElementById("generatePdfButton").addEventListener("click", function() {
-    //     pdfPrint();
-    // });
-
-    function pdfPrint() {
-        // PDF 생성 요청을 서버로 보냅니다.
-        fetch('/generatePdf?supportId=' + supportId, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/pdf'
-            },
-        })
-            .then(response => response.blob())
-            .then(blob => {
-                // 서버에서 받은 PDF 파일을 다운로드합니다.
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = taskTitle+'_'+date;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error('Error generating PDF:', error);
-            });
-    }
-
 
     var currentDate = new Date();
     var supportDate = new Date(date)

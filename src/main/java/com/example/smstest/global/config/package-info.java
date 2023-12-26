@@ -1,6 +1,6 @@
 /**
  * <h3 style="color: red; font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;">
- *     기본적인 설정 파일로 구성된 패키지입니다.
+ *     ㆍ     기본적인 설정 파일로 구성된 패키지입니다.
  *     </h3>
  * <hr>
  * <ul style="font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;">
@@ -9,5 +9,4 @@
  * </ul>
  * <hr>
  */
-
 package com.example.smstest.global.config;

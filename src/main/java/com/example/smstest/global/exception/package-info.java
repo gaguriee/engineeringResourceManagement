@@ -1,6 +1,6 @@
 /**
  * <h3 style="color: red; font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;">
- *     서비스 내에서 에러 발생 시 핸들링을 위한 패키지입니다.
+ *     ㆍ     서비스 내에서 에러 발생 시 핸들링을 위한 패키지입니다.
  *     </h3>
  * <hr>
  * <ul style="font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;">

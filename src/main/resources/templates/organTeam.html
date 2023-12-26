@@ -44,15 +44,17 @@
         </ol>
     </nav>
 
-    <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16" style="align-items: center; display: grid; align-content: center; text-align: center">
+    <div class="pt-16 px-4 mx-auto max-w-4xl" style="align-items: center; display: grid; align-content: center; text-align: center">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${team.name}"></h2>
-        <form id="selectForm" action="/memberInfo" method="get"> <!-- Specify the action and method for the form -->
+
+        <form id="selectForm" action="/memberInfo" method="get">
             <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
             <select id="member" size="3" name="memberId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <th:block th:each="memp, iterStat : ${memps}">
-                    <option th:value="${memp.id}" th:text="${memp.name}" th:selected="${iterStat.index == 0}"></option>
+                    <option th:value="${memp.id}" th:text="${memp.name}" th:selected="${iterStat.index == 0}" th:attr="data-active=${memp.active}"></option>
                 </th:block>
             </select>
+
 
             <div style="display: flex; align-items: end; justify-content: flex-end;">
                 <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
@@ -61,26 +63,69 @@
             </div>
         </form>
 
+        <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+            <li class="mr-2">
+                <button type="button" id="visibleBtn" style="display: none"
+                        class="inline-block p-4 text-blue-700 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500"></button>
+            </li>
+            <li>
+                <button type="button" id="supportListViewBtn"
+                        class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                    지원내역
+                </button>
+            </li>
 
-        <div id="container" class="w-full" style="display: grid">
+            <li>
+                <button type="button" id="dashboardViewBtn"
+                        class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                    지원현황
+                </button>
+            </li>
+        </ul>
+    </div>
 
-            <div class="mt-8" style="align-items: center; display: grid; align-content: center; text-align: center">
+    <div class="justify-center items-center pb-16">
+        <div id="supportListView" class="container mx-auto p-4">
+            <div style=" margin: 0; padding: 0; box-sizing: border-box; display: grid; grid-template-columns: 1fr 3fr 1fr;">
+                <div class="flex-1 p-4"></div>
+                <div class="flex-5 p-4">
+                    <div class="block">
+                        <form class="flex mb-10" th:action="@{/teamInfo}" >
+                            <div class="flex w-full" style="justify-content: flex-end;">
+                                <input name="teamId" th:value="${team.id}" class="hidden">
+                                <div date-rangepicker class="flex" style="vertical-align: bottom; align-self: flex-end;">
+                                    <input th:value="${startDate}" name="startDate" id="startDate" type="date" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
+                                    <div class="p-4 items-center justify-center">
+                                        <svg class="w-2 h-2 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                        </svg>
+                                    </div>
+                                    <input th:value="${endDate}" name="endDate" id="endDate" type="date" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
 
-                <span class="mb-4 text-xl font-bold text-gray-700 dark:text-white" style="margin-bottom: 24px; font-size: large; text-align: left">지원내역 조회</span>
+                                    <button class="h-10 ml-1 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-500 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="submit">
+                                        적용
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
 
-                <!-- calendar 태그 -->
-                <div id='calendar-container'>
-                    <div id='calendar' style="margin-bottom: 24px"></div>
+                        <div id='calendar-container'>
+                            <div id='calendar' style="margin-bottom: 24px"></div>
+                        </div>
+
+                    </div>
                 </div>
+                <div class="flex-1 p-4"></div>
             </div>
-
+        </div>
+        <div id="dashboardView">
+            <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
+                <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team')} + ${team.id}" width="100%" height="500" ></iframe>
+                <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team-mobile')} + ${team.id}" width="100%" height="450" ></iframe>
+            </div>
         </div>
     </div>
 
-    <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team')} + ${team.id}" width="100%" height="450" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team-mobile')} + ${team.id}" width="100%" height="450" ></iframe>
-    </div>
 </section>
 
 <div th:replace="footer :: footer"></div>
@@ -88,6 +133,54 @@
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <script th:inline="javascript">
+
+    const visibleBtn = document.getElementById("visibleBtn");
+    const dashboardViewBtn = document.getElementById("dashboardViewBtn");
+    const supportListViewBtn = document.getElementById("supportListViewBtn");
+    const dashboardView = document.getElementById("dashboardView");
+    const supportListView = document.getElementById("supportListView");
+
+    const selectedClass = visibleBtn.className;
+    const unselectedClass = supportListViewBtn.className;
+
+
+    $(document).ready(function () {
+
+        // 새로고침 시 url 해시 값을 통해 기존 뷰 페이지로 돌아감
+        if (window.location.hash === '#supportListViewBtn') { // 일정 변경 뷰
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
+        } else if (window.location.hash === '#supportListView') { // 지원내역 조회 뷰
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
+        }
+
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        supportListViewBtn.className = selectedClass;
+        supportListView.style.display = "block";
+        dashboardView.style.display = "none";
+
+        dashboardViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "block";
+            supportListView.style.display = "none";
+            dashboardViewBtn.className = selectedClass;
+            supportListViewBtn.className = unselectedClass;
+        });
+
+        supportListViewBtn.addEventListener("click", function () {
+            dashboardView.style.display = "none";
+            supportListView.style.display = "block";
+            dashboardViewBtn.className = unselectedClass;
+            supportListViewBtn.className = selectedClass;
+        });
+
+    });
+
 
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('selectForm');
@@ -127,8 +220,8 @@
                 },
                 initialView: 'dayGridMonth',
                 navLinks: true,
-                editable: true,
-                selectable: true,
+                editable: false,
+                selectable: false,
                 nowIndicator: true,
                 dayMaxEvents: true,
                 locale: 'ko',
@@ -208,6 +301,15 @@
         .fc-toolbar-title {
             font-size: x-large;
         }
+
+        .flex-1 {
+            display: none;
+        }
+
+        .flex-5{
+            width: 100%;
+        }
+
     }
 
 
