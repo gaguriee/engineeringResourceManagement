@@ -7,12 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * 라이센스 DB 내 프로젝트 Repository
  */
 @Repository
 public interface LicenseProjectRepository extends JpaRepository<LicenseProject, String> {
 
+    Optional<LicenseProject> findByCompany_CompanyGuidAndProjectGuid(String companyGuid, String projectGuid);
     @Query("SELECT p FROM LicenseProject p WHERE " +
             "(:keyword is null OR p.projectName LIKE %:keyword% OR p.company.companyName LIKE %:keyword% OR p.projectCode LIKE %:keyword%) " +
             "ORDER BY p.projectRegDate DESC")

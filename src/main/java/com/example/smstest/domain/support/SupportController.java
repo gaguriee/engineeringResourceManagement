@@ -271,7 +271,7 @@ public class SupportController {
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        LicenseProject licenseProject = licenseProjectRepository.findById(support.getProject().getProjectGuid())
+        LicenseProject licenseProject =  licenseProjectRepository.findByCompany_CompanyGuidAndProjectGuid(support.getProject().getClient().getCompanyGuid(), support.getProject().getProjectGuid())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
 
         model.addAttribute("support", support);
@@ -377,7 +377,7 @@ public class SupportController {
 
         List<LicenseProject> licenseProjects = recentProjects.stream()
                 .map(project -> {
-                    return licenseProjectRepository.findById(project.getProjectGuid())
+                    return licenseProjectRepository.findByCompany_CompanyGuidAndProjectGuid(project.getClient().getCompanyGuid(), project.getProjectGuid())
                             .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
                 })
                 .collect(Collectors.toList());
