@@ -3,7 +3,8 @@ package com.example.smstest.domain.support.entity;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.file.File;
 import com.example.smstest.domain.project.Project;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -15,7 +16,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "support")
 public class Support {
 

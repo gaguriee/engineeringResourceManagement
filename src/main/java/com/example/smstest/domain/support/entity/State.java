@@ -1,11 +1,11 @@
 package com.example.smstest.domain.support.entity;
 
-import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
 @Table(name = "state")
 public class State {
 

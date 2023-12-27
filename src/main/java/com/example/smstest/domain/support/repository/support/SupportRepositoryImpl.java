@@ -1,4 +1,4 @@
-package com.example.smstest.domain.support.repository;
+package com.example.smstest.domain.support.repository.support;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.entity.QSupport;
 import com.example.smstest.domain.support.entity.Support;
@@ -35,7 +35,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
 
         // 필터링 조건 추가
         BooleanBuilder whereClause = new BooleanBuilder();
-        whereClause.and(customerNameIn(criteria.getCustomerName()));
+        whereClause.and(clientNameIn(criteria.getCustomerName()));
         whereClause.and(projectNameIn(criteria.getProjectName()));
         whereClause.and(teamIdIn(criteria.getTeamId()));
         whereClause.and(productIdIn(criteria.getProductId()));
@@ -82,7 +82,7 @@ public class SupportRepositoryImpl implements SupportRepositoryCustom {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    private BooleanExpression customerNameIn(String customerName) {
+    private BooleanExpression clientNameIn(String customerName) {
         return customerName != null && !customerName.isEmpty() ? QSupport.support.project.client.name.contains(customerName) : null;
     }
 

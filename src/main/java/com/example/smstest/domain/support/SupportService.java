@@ -8,12 +8,12 @@ import com.example.smstest.domain.client.ClientRepository;
 import com.example.smstest.domain.file.*;
 import com.example.smstest.domain.project.Project;
 import com.example.smstest.domain.project.ProjectRepository;
-import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.domain.support.repository.support.SupportRepository;
 import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
@@ -29,11 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +47,14 @@ public class SupportService  {
     private final FileService fileService;
     private final FileRepository fileRepository;
 
+    /**
+     * [지원내역 조회]
+     * 필터 조건을 사용해서 검색 후 Page 객체에 담아 반환
+     * @param criteria
+     * @param pageable
+     * @param sortOrder
+     * @return
+     */
     public Page<SupportResponse> searchSupportByFilters(
             SupportFilterCriteria criteria, Pageable pageable, String sortOrder) {
         Page<Support> result = supportRepository.searchSupportByFilters(criteria, pageable, sortOrder);
@@ -61,6 +65,13 @@ public class SupportService  {
                 result.getPageable(),
                 result.getTotalElements());
     }
+
+    /**
+     * [지원내역 디테일]
+     * support Id로 Support Entity를 검색해서 Response DTO (SupportResponse)로 매핑 후 반환
+     * @param supportId
+     * @return
+     */
     public SupportResponse getDetails(Long supportId) {
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -68,10 +79,46 @@ public class SupportService  {
         return SupportResponse.entityToResponse(support);
     }
 
+    /**
+     * [지원내역 등록]
+     *
+     * @param files
+     * @param supportRequest
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
     public SupportResponse createSupport(List<MultipartFile> files,  SupportRequest supportRequest) throws NoSuchAlgorithmException, IOException {
 
-        Support support = new Support();
+        Support newsupport = saveSupport(new Support(), files, supportRequest);
 
+        log.info("===CREATE=== ("+ SupportResponse.entityToResponse(newsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
+
+        return SupportResponse.entityToResponse(newsupport);
+    }
+
+    private static boolean isBeforeSevenDays(Date supportDate) {
+        long sevenDaysAgoMillis = System.currentTimeMillis() - 8 * 24 * 60 * 60 * 1000;
+        Date sevenDaysAgo = new Date(sevenDaysAgoMillis);
+        return supportDate.before(sevenDaysAgo);
+    }
+
+    public SupportResponse modifySupport(List<MultipartFile> files,  SupportRequest supportRequest) throws NoSuchAlgorithmException, IOException {
+
+        // 삭제된 FileId가 존재할 경우, 기존에 File table에서 해당 id 전부 삭제함
+        if (supportRequest.getDeletedFileId() != null){
+            fileRepository.deleteAllById(supportRequest.getDeletedFileId());
+        }
+
+        Support savedSupport = saveSupport(supportRepository.findById(supportRequest.getSupportId()).get(), files, supportRequest) ;
+
+        log.info("===MODIFY=== ("+ SupportResponse.entityToResponse(savedSupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
+
+        return SupportResponse.entityToResponse(savedSupport);
+
+    }
+
+    private Support saveSupport(Support support, List<MultipartFile> files,  SupportRequest supportRequest) throws IOException, NoSuchAlgorithmException {
         Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -120,7 +167,7 @@ public class SupportService  {
                     .projectRegDate(licenseProject.getProjectRegDate())
                     .projectGuid(licenseProject.getProjectGuid())
                     .build();
-           ;
+            ;
 
             support.setProject(projectRepository.save(newProject));
 
@@ -147,119 +194,9 @@ public class SupportService  {
 
         saveFile(files, newsupport.getId());
 
-        log.info("===CREATE=== ("+ SupportResponse.entityToResponse(newsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
-
-        return SupportResponse.entityToResponse(newsupport);
+        return newsupport;
     }
 
-    private static boolean isBeforeSevenDays(Date supportDate) {
-        long sevenDaysAgoMillis = System.currentTimeMillis() - 8 * 24 * 60 * 60 * 1000;
-        Date sevenDaysAgo = new Date(sevenDaysAgoMillis);
-        return supportDate.before(sevenDaysAgo);
-    }
-
-    public SupportResponse modifySupport(List<MultipartFile> files,  ModifyRequest supportRequest) throws NoSuchAlgorithmException, IOException {
-
-        // 삭제된 FileId가 존재할 경우, 기존에 File table에서 해당 id 전부 삭제함
-        if (supportRequest.getDeletedFileId() != null){
-            fileRepository.deleteAllById(supportRequest.getDeletedFileId());
-        }
-
-        // 새로운 File 리스트 객체 생성
-        List<File> savedFiles = new ArrayList<>();
-
-        Support support = supportRepository.findById(supportRequest.getSupportId()).get();
-
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        boolean containsSuperAdmin = user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"));
-
-        if (!containsSuperAdmin && isBeforeSevenDays(supportRequest.getSupportDate())){
-            throw new CustomException(ErrorCode.DATE_INVALID);
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        LicenseProject licenseProject = objectMapper.readValue(supportRequest.getProject(), LicenseProject.class);
-
-        Optional<Project> project = projectRepository.findFirstByProjectGuid(licenseProject.getProjectGuid());
-
-        if (project.isPresent()){
-            project.get().updateProject(
-                    licenseProject.getProjectName()
-            );
-            projectRepository.save(project.get());
-
-            support.setProject(project.get());
-        }
-        else {
-
-            if (!clientRepository.existsByCompanyGuid(licenseProject.getCompany().getCompanyGuid())) {
-                Client newClient = new Client();
-                newClient.setName(licenseProject.getCompany().getCompanyName());
-                newClient.setCompanyGuid(licenseProject.getCompany().getCompanyGuid());
-                newClient.setCompanyRegDate(licenseProject.getCompany().getCompanyRegDate());
-
-                clientRepository.save(newClient);
-                log.info("Saved Client :: " + newClient.getName());
-            }
-            else{
-                Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
-                newClient.setName(licenseProject.getCompany().getCompanyName());
-                clientRepository.save(newClient);
-            }
-
-            Client client = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
-
-            Project newProject = Project.builder()
-                    .client(client)
-                    .name(licenseProject.getProjectName())
-                    .uniqueCode(licenseProject.getProjectCode())
-                    .projectRegDate(licenseProject.getProjectRegDate())
-                    .projectGuid(licenseProject.getProjectGuid())
-                    .build();
-            projectRepository.save(newProject);
-            log.info("Saved Project :: " + newProject.getName() + " (" + newProject.getUniqueCode() + ")");
-
-        }
-
-
-        if (support.getEngineer().getUsername().equals(user.getUsername())
-                || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"))){
-            support.setSupportDate(supportRequest.getSupportDate());
-            support.setRedmineIssue(supportRequest.getRedmineIssue());
-            support.setTaskTitle(supportRequest.getTaskTitle());
-            support.setTaskSummary(supportRequest.getTaskSummary());
-            support.setTaskDetails(supportRequest.getTaskDetails());
-            support.setSupportTypeHour(supportRequest.getSupportTypeHour());
-
-            support.setProduct(productRepository.findById(supportRequest.getProductId()).orElse(null));
-            support.setIssue(issueRepository.findById(supportRequest.getIssueId()).orElse(null));
-            support.setState(stateRepository.findById(supportRequest.getStateId()).orElse(null));
-            support.setEngineer(mempRepository.findById(supportRequest.getEngineerId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
-            support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
-            support.setModifiedAt(LocalDateTime.now());
-            // Support 엔티티를 저장하고 반환
-            Support savedsupport = supportRepository.save(support);
-
-            saveFile(files, savedsupport.getId());
-
-            log.info("===MODIFY=== ("+ SupportResponse.entityToResponse(savedsupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
-
-            // 파일 일괄 저장
-            for (File savedFile : savedFiles){
-                savedFile.setSupportId(savedsupport.getId());
-                fileRepository.save(savedFile);
-            }
-
-            return SupportResponse.entityToResponse(savedsupport);
-        }
-        else {
-            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
-        }
-    }
 
     public void deleteSupport(Long supportId) {
         Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -277,7 +214,7 @@ public class SupportService  {
         List<File> savedFiles = new ArrayList<>();
 
         for(MultipartFile file : files) {
-            if (file.getOriginalFilename().isEmpty())
+            if (Objects.requireNonNull(file.getOriginalFilename()).isEmpty())
                 continue;
             String origFilename = file.getOriginalFilename();
             String filename = new MD5Generator(origFilename).toString();

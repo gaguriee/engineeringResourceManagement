@@ -10,12 +10,12 @@ import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.project.Project;
 import com.example.smstest.domain.project.ProjectRepository;
-import com.example.smstest.domain.support.dto.ModifyRequest;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
 import com.example.smstest.domain.support.entity.*;
 import com.example.smstest.domain.support.repository.*;
+import com.example.smstest.domain.support.repository.support.SupportRepository;
 import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.external.license.LicenseProjectRepository;
 import com.example.smstest.global.exception.CustomException;
@@ -62,7 +62,6 @@ public class SupportController {
     private final SupportService supportService;
     private final FileService fileService;
 
-    private final FileRepository fileRepository;
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final IssueRepository issueRepository;
@@ -79,7 +78,6 @@ public class SupportController {
 
     /**
      * 날짜 형태를 자동으로 bind해주는 메소드
-     * @param binder
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -155,7 +153,7 @@ public class SupportController {
         List<Issue> allIssues = issueRepository.findAll();
         List<IssueCategory> allIssueCategories = issueCategoryRepository.findAllOrderedByPriority();
         for (IssueCategory category : allIssueCategories) {
-            Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
+            category.getIssues().sort(Comparator.comparingInt(Issue::getPriority));
         }
         model.addAttribute("allIssueCategories", allIssueCategories);
 
@@ -175,11 +173,11 @@ public class SupportController {
         List<Project> allProjects = projectRepository.findAllByOrderBySupportCountDesc();
 
         // 이름 순으로 정렬
-        Collections.sort(allProducts, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(allIssues, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(allStates, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(allTeams, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-        Collections.sort(allMemps, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        allProducts.sort(Comparator.comparing(Product::getName));
+        allIssues.sort(Comparator.comparing(Issue::getName));
+        allStates.sort(Comparator.comparing(State::getName));
+        allTeams.sort(Comparator.comparing(Team::getName));
+        allMemps.sort(Comparator.comparing(Memp::getName));
 
         model.addAttribute("allProducts", allProducts);
         model.addAttribute("allIssues", allIssues);
@@ -238,53 +236,8 @@ public class SupportController {
      */
     @GetMapping("/create")
     public String createView(Model model) {
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        List<Client> customers = clientRepository.findAll();
-        List<Issue> issues = issueRepository.findAll();
-
-        // 이슈 대분류 리스트 소속 반영 (N 본부는 N 이슈만), 우선순위대로 정렬해서 가져옴
-        List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
-        for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
-            // ROLE_SUPERADMIN 권한이 있다면 이슈 리스트 소속 반영 없이 전체 가져옴
-            if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
-                issueCategories = issueCategoryRepository.findAllOrderedByPriority();
-                break;
-            }
-        }
-
-        // 이슈 리스트 우선순위 정렬
-        for (IssueCategory category : issueCategories) {
-            category.getIssues().sort(Comparator.comparingInt(Issue::getPriority));
-        }
-
-        List<State> states = stateRepository.findAll();
-        List<Product> products = productRepository.findAll();
-        List<Memp> memps = mempRepository.findAll();
-        List<SupportType> supportTypes = supportTypeRepository.findAll();
-        List<ProductCategory> productCategories = productCategoryRepository.findAll();
-
-        // 최근 등록한 프로젝트 (최대 5개) 가져온 후 LicenseProject 객체로 변환 (등록 내 요청 객체를 통일시키는 목적)
-        List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
-        List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
-        List<LicenseProject> licenseProjects = recentProjects.stream()
-                .map(project -> {
-                    return licenseProjectRepository.findById(project.getProjectGuid())
-                            .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
-                })
-                .collect(Collectors.toList());
-
-        // 이름순 정렬
-        memps.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
-        issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
-        products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
-
-        model.addAttribute("user", user);
-        model.addAttribute("currentDate", new Date());
-        model.addAttribute("recentProjects", licenseProjects);
-
-        setMoel(model, customers, issues, issueCategories, states, products, memps, supportTypes, productCategories);
+        setDefaultSupportCreateView(model);
 
         return "supportCreate";
     }
@@ -313,86 +266,35 @@ public class SupportController {
      */
     @GetMapping("/modify")
     public String modifyView(@RequestParam(required = false) Long supportId, Model model) {
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 기존 지원내역 가져옴
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        model.addAttribute("support", support);
-
-        // 등록 프로세스와 동일
-        List<Client> customers = clientRepository.findAll();
-
-        List<Issue> issues = issueRepository.findAll();
-        List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
-
-        for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
-            if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
-                issueCategories = issueCategoryRepository.findAllOrderedByPriority();
-                break;
-            }
-        }
-
-        for (IssueCategory category : issueCategories) {
-            Collections.sort(category.getIssues(), Comparator.comparingInt(Issue::getPriority));
-        }
-        List<State> states = stateRepository.findAll();
-        List<Product> products = productRepository.findAll();
-        List<Memp> memps = mempRepository.findAll();
-        List<SupportType> supportTypes = supportTypeRepository.findAll();
-        List<ProductCategory> productCategories = productCategoryRepository.findAll();
-
-        List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
-        List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
-
-        List<LicenseProject> licenseProjects = recentProjects.stream()
-                .map(project -> {
-                    return licenseProjectRepository.findById(project.getProjectGuid())
-                            .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
-                })
-                .collect(Collectors.toList());
-
         LicenseProject licenseProject = licenseProjectRepository.findById(support.getProject().getProjectGuid())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
 
-        memps.sort(Comparator.comparing(Memp::getName));
-        issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
-        products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
-
-        model.addAttribute("user", user);
-        model.addAttribute("currentDate", new Date());
+        model.addAttribute("support", support);
         model.addAttribute("licenseProject", licenseProject);
 
-        setMoel(model, customers, issues, issueCategories, states, products, memps, supportTypes, productCategories);
-        model.addAttribute("recentProjects", licenseProjects);
+        // 등록과 동일
+        setDefaultSupportCreateView(model);
 
         return "supportModify";
     }
 
-    private void setMoel(Model model, List<Client> customers, List<Issue> issues, List<IssueCategory> issueCategories, List<State> states, List<Product> products, List<Memp> memps, List<SupportType> supportTypes, List<ProductCategory> productCategories) {
-        model.addAttribute("customers", customers);
-        model.addAttribute("issues", issues);
-        model.addAttribute("issueCategories", issueCategories);
-        model.addAttribute("states", states);
-        model.addAttribute("products", products);
-        model.addAttribute("productCategories", productCategories);
-        model.addAttribute("memps", memps);
-        model.addAttribute("supportTypes", supportTypes);
-    }
 
     /**
      * 지원내역 수정하기
      * - 등록과 거의 동일, 등록은 신규 엔티티를 생성 후 save하는 것이라면, 수정은 기존 엔티티를 supportId로 검색 후 update한 뒤 save
      * @param files
-     * @param modifyRequest
+     * @param supportRequest
      * @return
      */
     @PostMapping("/modify")
-    public String modifySupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute ModifyRequest modifyRequest) throws NoSuchAlgorithmException, IOException {
+    public String modifySupport(@RequestParam("files") List<MultipartFile> files, @ModelAttribute SupportRequest supportRequest) throws NoSuchAlgorithmException, IOException {
 
-        SupportResponse supportResponse = supportService.modifySupport(files, modifyRequest);
+        SupportResponse supportResponse = supportService.modifySupport(files, supportRequest);
 
         return "redirect:/details?supportId="+supportResponse.getId();
     }
@@ -417,7 +319,7 @@ public class SupportController {
      * @throws IOException
      */
     @GetMapping("/download/{fileId}")
-    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
+    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) {
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());
         try{
@@ -434,6 +336,69 @@ public class SupportController {
         catch (Exception e){
             throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         }
+
+    }
+
+    /**
+     * 지원내역 등록/ 수정 페이지 로드 시 필요한 data들을 model 객체에 넣습니다.
+     * @param model
+     */
+    private void setDefaultSupportCreateView(Model model) {
+
+        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Client> customers = clientRepository.findAll();
+        List<Issue> issues = issueRepository.findAll();
+
+        // 이슈 대분류 리스트 소속 반영 (N 본부는 N 이슈만), 우선순위대로 정렬해서 가져옴
+        List<IssueCategory> issueCategories = issueCategoryRepository.findAllByDivisionIdOrderedByPriority(user.getTeam().getDepartment().getDivision().getId());
+        for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+            // ROLE_SUPERADMIN 권한이 있다면 이슈 리스트 소속 반영 없이 전체 가져옴
+            if (authority.getAuthority().equals("ROLE_SUPERADMIN")) {
+                issueCategories = issueCategoryRepository.findAllOrderedByPriority();
+                break;
+            }
+        }
+
+        // 이슈 리스트 우선순위 정렬
+        for (IssueCategory category : issueCategories) {
+            category.getIssues().sort(Comparator.comparingInt(Issue::getPriority));
+        }
+
+        List<State> states = stateRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        List<Memp> memps = mempRepository.findAll();
+        List<SupportType> supportTypes = supportTypeRepository.findAll();
+        List<ProductCategory> productCategories = productCategoryRepository.findAll();
+
+        List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
+        List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
+
+        List<LicenseProject> licenseProjects = recentProjects.stream()
+                .map(project -> {
+                    return licenseProjectRepository.findById(project.getProjectGuid())
+                            .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+                })
+                .collect(Collectors.toList());
+
+        memps.sort(Comparator.comparing(Memp::getName));
+        issues.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+        products.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+
+        model.addAttribute("user", user);
+        model.addAttribute("currentDate", new Date());
+
+        model.addAttribute("memps", memps);
+        model.addAttribute("customers", customers);
+        model.addAttribute("issues", issues);
+        model.addAttribute("issueCategories", issueCategories);
+        model.addAttribute("states", states);
+        model.addAttribute("products", products);
+        model.addAttribute("productCategories", productCategories);
+        model.addAttribute("supportTypes", supportTypes);
+
+        model.addAttribute("recentProjects", licenseProjects);
 
     }
 

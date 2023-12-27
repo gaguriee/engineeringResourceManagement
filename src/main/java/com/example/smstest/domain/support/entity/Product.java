@@ -1,11 +1,11 @@
 package com.example.smstest.domain.support.entity;
 
-import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
 @Table(name = "product")
 public class Product {
 
@@ -27,7 +27,6 @@ public class Product {
     /**
      * 순환 참조 문제로 만든 별도의 toString 메소드
      */
-    @Override
     public String toString() {
         return "Product{" +
                 "Id=" + id +

@@ -7,7 +7,7 @@ import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.support.entity.State;
 import com.example.smstest.domain.support.repository.StateRepository;
-import com.example.smstest.domain.support.repository.SupportRepository;
+import com.example.smstest.domain.support.repository.support.SupportRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

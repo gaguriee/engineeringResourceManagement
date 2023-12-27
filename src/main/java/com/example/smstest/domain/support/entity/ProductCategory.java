@@ -1,13 +1,13 @@
 package com.example.smstest.domain.support.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
 @Table(name = "product_대분류")
 public class ProductCategory {
 
@@ -26,7 +26,6 @@ public class ProductCategory {
     /**
      * 순환 참조 문제로 만든 별도의 toString 메소드
      */
-    @Override
     public String toString() {
         return "ProductCategory{" +
                 "Id=" + id +

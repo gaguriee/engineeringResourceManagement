@@ -46,12 +46,11 @@ public class FileService {
     public FileDto getFile(Long id) {
         File file = fileRepository.findById(id).get();
 
-        FileDto fileDto = FileDto.builder()
+        return FileDto.builder()
                 .id(id)
                 .origFilename(file.getOrigFilename())
                 .filename(file.getFilename())
                 .filePath(file.getFilePath())
                 .build();
-        return fileDto;
     }
 }

@@ -1,52 +1,52 @@
 package com.example.smstest.domain.support.dto;
 
 import com.example.smstest.domain.auth.entity.Memp;
+import com.example.smstest.domain.file.File;
 import com.example.smstest.domain.project.Project;
 import com.example.smstest.domain.support.entity.*;
-import com.example.smstest.domain.file.File;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
-@Data
+@Getter
 public class SupportResponse {
 
-    private Long id;
+    private final Long id;
 
-    private String productName;
+    private final String productName;
 
-    private Project project;
+    private final Project project;
 
-    private String issueType;
+    private final String issueType;
 
-    private Long issueId;
+    private final Long issueId;
 
-    private String state;
+    private final String state;
 
-    private String engineerName;
+    private final String engineerName;
 
-    private Long engineerId;
+    private final Long engineerId;
 
-    private String subEngineerName;
+    private final String subEngineerName;
 
-    private Date supportDate;
+    private final Date supportDate;
 
-    private String supportType;
+    private final String supportType;
 
-    private Float supportTypeHour;
+    private final Float supportTypeHour;
 
-    private String redmineIssue;
+    private final String redmineIssue;
 
-    private String taskTitle;
+    private final String taskTitle;
 
-    private String taskSummary;
+    private final String taskSummary;
 
-    private String taskDetails;
+    private final String taskDetails;
 
-    private Set<File> files;
+    private final Set<File> files;
 
     @Builder
     public SupportResponse(Long id, String productName, Project project, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails,Set<File> files) {
