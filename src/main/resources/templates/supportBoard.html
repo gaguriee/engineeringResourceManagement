@@ -274,9 +274,15 @@
                                   th:text="${post.productName}">제품명</span>
                         </td>
                         <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
-                            <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
+                            <a th:href="@{/details(supportId=${post.id})}" class="flex items-center hover:text-primary-700 dark:hover:text-primary-500">
                                 <span style="font-weight: 500" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
+
+                                <svg th:if="${post.files.size() > 0}" class="w-3 h-3 ml-2.5 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Z"/>
+                                </svg>
                             </a>
+
                         </td>
                         <td class="th-p0 px-4 py-3" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" th:text="${post.issueType}">이슈</td>
                         <td class="th-p0 px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>

@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
     private final MempRepository mempRepository;
     private final TeamRepository teamRepository;
-
     private final EmployeeRepository employeeRepository;
 
     // 소만사 기본 Password

@@ -21,6 +21,7 @@
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
                 <div class="w-full" id="list_header" style="justify-items: end; align-items: end">
+<!--                    프로젝트 검색-->
                     <form class="flex items-center flex" onsubmit="return submitSearch(event)">
                         <label for="simple-search" class="sr-only">Search</label>
                         <div id="search-container" class="relative w-1/2">
@@ -46,6 +47,7 @@
             <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
 
                 <div class="max-h-64 overflow-hidden">
+<!--                    프로젝트 리스트-->
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
@@ -65,10 +67,9 @@
                         </tr>
                         </tbody>
                     </table>
-
-
                 </div>
 
+<!--                페이지네이션-->
                 <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
@@ -126,11 +127,7 @@
     const currentPage = [[${currentPage }]];
     const totalPages = [[${totalPages }]];
 
-    function applyResetBtn() {
-
-        window.location.href = '/project/search?';
-    }
-
+    // 페이지네이션 < , > 버튼 클릭 시
     document.addEventListener('DOMContentLoaded', function () {
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
@@ -156,6 +153,12 @@
         });
     });
 
+    // 검색 초기화
+    function applyResetBtn() {
+        window.location.href = '/project/search?';
+    }
+
+    // 현재 페이지의 url params 가져오기
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const queryParams = {};
@@ -163,6 +166,7 @@
         return queryParams;
     }
 
+    // 키워드 검색
     function submitSearch(event) {
         event.preventDefault();
 

@@ -19,6 +19,5 @@ public class MemberInfoDTO {
     private Memp memp;
     private Team team;
     private List<Support> supports;
-    private List<Client> clients;
     private List<Client> allClients;
 }

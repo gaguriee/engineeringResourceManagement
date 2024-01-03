@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 지원내역 등록, 수정 시 사용될 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

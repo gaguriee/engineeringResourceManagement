@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 유저 관리와 관련된 스케줄러
+ * - 매주 탈퇴 유저 체크 메소드
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

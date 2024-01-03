@@ -15,6 +15,7 @@
 <div th:replace="header :: header"></div>
 
 <section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
+<!--    페이지 상단 선택된 본부와 소속(실)-->
     <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
         <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-3 sm:mb-0">
             <li>
@@ -32,6 +33,7 @@
             </li>
         </ol>
     </nav>
+<!--    팀 검색-->
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-8">
         <form id="selectForm" action="/teamInfo" method="get"> <!-- Specify the action and method for the form -->
             <div id="select-wrapper">
@@ -51,6 +53,7 @@
         </form>
     </div>
 
+    <!--    해당 소속(실) 대상 슈퍼셋 (iframe)-->
     <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
         <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.department')} + ${department.id} " width="100%" height="550" ></iframe>
         <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.department-mobile')} + ${department.id} " width="100%" height="400" ></iframe>

@@ -18,6 +18,7 @@
 <div th:replace="header :: header"></div>
 
 <section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
+    <!--    페이지 상단 선택된 본부와 소속(실), 팀-->
     <nav style="height: 62px" class="justify-between px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
         <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-3 sm:mb-0">
             <li>
@@ -43,7 +44,7 @@
             </li>
         </ol>
     </nav>
-
+<!--    엔지니어 검색-->
     <div class="pt-16 px-4 mx-auto max-w-4xl" style="align-items: center; display: grid; align-content: center; text-align: center">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${team.name}"></h2>
 
@@ -63,6 +64,7 @@
             </div>
         </form>
 
+<!--        뷰 선택 버튼-->
         <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
             <li class="mr-2">
                 <button type="button" id="visibleBtn" style="display: none"
@@ -85,6 +87,7 @@
     </div>
 
     <div class="justify-center items-center pb-16">
+<!--        현재 팀 지원내역 뷰-->
         <div id="supportListView" class="container mx-auto p-4">
             <div style=" margin: 0; padding: 0; box-sizing: border-box; display: grid; grid-template-columns: 1fr 3fr 1fr;">
                 <div class="flex-1 p-4"></div>
@@ -118,6 +121,7 @@
                 <div class="flex-1 p-4"></div>
             </div>
         </div>
+<!--        현재 팀 대상 슈퍼셋 (iframe)-->
         <div id="dashboardView">
             <div class="skeleton mt-8 mb-6" style="background-color: #F7F7F7;">
                 <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.team')} + ${team.id}" width="100%" height="500" ></iframe>

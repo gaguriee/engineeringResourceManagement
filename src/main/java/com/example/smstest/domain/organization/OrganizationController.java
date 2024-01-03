@@ -58,6 +58,7 @@ public class OrganizationController {
 
         Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         List<Division> divisions = divisionRepository.findAll();
         List<Department> departments = departmentRepository.findAll();
         List<Team> teams = teamRepository.findAll();
@@ -89,6 +90,7 @@ public class OrganizationController {
 
         Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         List<Department> departments = departmentRepository.findByDivisionId(divisionId);
         Division division = divisionRepository.findById(divisionId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORGANIZATION_NOT_FOUND));
@@ -133,12 +135,14 @@ public class OrganizationController {
                            @RequestParam(required = false) java.sql.Date endDate,
                            Model model) {
 
+        // Default : 현재 시간 기준 3달 전 ~ 현재
         if (startDate==null && endDate==null){
             LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
             startDate = java.sql.Date.valueOf(threeMonthsAgo);
             endDate = java.sql.Date.valueOf(LocalDate.now());
         }
 
+        // team id와 기간으로 해당 팀 정보 및 지원내역 반환
         TeamInfoDTO teamInfoDTO = oraganizationService.getTeamInfo(teamId, startDate, endDate);
 
         if (teamInfoDTO != null) {
@@ -170,12 +174,14 @@ public class OrganizationController {
                                 @RequestParam(required = false) java.sql.Date endDate,
                                 Model model) {
 
+        // Default : 현재 시간 기준 3달 전 ~ 현재
         if (startDate == null && endDate == null) {
             LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
             startDate = java.sql.Date.valueOf(threeMonthsAgo);
             endDate = java.sql.Date.valueOf(LocalDate.now());
         }
 
+        // member Id와 고객사 id, 기간으로 해당 팀 정보 및 지원내역 반환
         MemberInfoDTO memberInfoDTO = oraganizationService.getMemberInfo(memberId, clientId, startDate, endDate);
 
         model.addAttribute("memps", mempRepository.findAllByTeamIdAndActiveTrue(memberInfoDTO.getTeam().getId()));
@@ -187,7 +193,6 @@ public class OrganizationController {
 
         model.addAttribute("supports", memberInfoDTO.getSupports());
         model.addAttribute("allClients", memberInfoDTO.getAllClients());
-        model.addAttribute("clients", memberInfoDTO.getClients());
 
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);

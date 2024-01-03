@@ -86,7 +86,7 @@ public class ProjectController {
     }
 
     /**
-     * [ 지원내역 등록 ]
+     * [ 지원내역 등록 내 ]
      * 라이센스 프로젝트 리스트 가져오기
      * @param Keyword
      * @param pageable
@@ -146,6 +146,7 @@ public class ProjectController {
         List<TaskCategory> taskCategories = taskCategoryRepository.findAll();
         model.addAttribute("taskCategories", taskCategories);
 
+        // 프로젝트 수정을 위한 DTO 객체 생성
         ProjectRequest projectRequest = ProjectRequest.builder()
                 .engineerId(Optional.ofNullable(project.getEngineer()).map(Memp::getId).orElse(null))
                 .subEngineerId(Optional.ofNullable(project.getSubEngineer()).map(Memp::getId).orElse(null))
@@ -171,6 +172,12 @@ public class ProjectController {
         return "projectDetails";
     }
 
+    /**
+     * [ 프로젝트 수정 ]
+     * @param projectRequest
+     * @param model
+     * @return
+     */
     @PostMapping("/modify")
     public String modifyProject(
             ProjectRequest projectRequest, Model model) {

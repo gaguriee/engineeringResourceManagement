@@ -25,7 +25,6 @@
 </div>
 
 <!--프로젝트 수정창-->
-<!--return validateForm()-->
 <div id="projectModifyModal" tabindex="-1" aria-hidden="true"
      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto" style="align-items: center; align-content: center; ">
@@ -243,6 +242,7 @@
 
     <div class="py-8 px-4 mx-auto lg:py-16" id="contents" style="background-color: white; align-items: center">
 
+<!--        현재 프로젝트 정보-->
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white"
             style="padding-bottom: 24px" th:text="${project.name}"></h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white"
@@ -290,7 +290,7 @@
             </div>
         </dl>
 
-
+<!--        프로젝트 수정 및 작업 일정 추가, 엑셀 다운로드 버튼-->
         <div style="margin-bottom: 24px;">
             <div class="flex mt-2.5">
                 <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal"
@@ -315,6 +315,7 @@
                 </button>
             </div>
 
+            <!--        뷰 전환 버튼-->
             <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li class="mr-2">
                     <button type="button" id="visibleBtn" style="display: none"
@@ -785,6 +786,7 @@
         });
     });
 
+    // 기존에 Location 해쉬 값 삭제
     function removeLocationHash() {
         var noHashURL = window.location.href.replace(/#.*$/, '');
         window.history.replaceState('', document.title, noHashURL)

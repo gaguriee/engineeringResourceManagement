@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * 지원내역 응답 반환, 또는 로깅 시 사용될 DTO
+ */
 @Getter
 public class SupportResponse {
 
