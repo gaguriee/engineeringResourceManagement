@@ -23,7 +23,7 @@ public class AuthScheduler {
     public void deactivateUsersWithStatusZero() {
         List<Memp> memps = mempRepository.findAllByActiveTrue();
         for (Memp memp : memps) {
-            Optional<Employee> employee= employeeRepository.findByUserid(memp.getUsername());
+            Optional<Employee> employee= employeeRepository.findFirstByUserid(memp.getUsername());
             if (employee.isPresent()){
                 int userStatus = employee.get().getUserstatus();
                 if (userStatus == 0) {

@@ -31,14 +31,14 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
             "WHERE (:keyword is null OR " +
             "LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "GROUP BY c.id ORDER BY COUNT(s.id) DESC")
-    Page<Client> findByNameContainingOrderBySupportCountDesc(@Param("keyword") String keyword, Pageable pageable);
+    Page<Client> findAllByNameContainingOrderBySupportCountDesc(@Param("keyword") String keyword, Pageable pageable);
 
     /**
      * 지원내역 수 내림차 순으로 고객사 리스트 가져오기
      * @return 고객사 리스트
      */
     @Query("SELECT c FROM Client c WHERE c IN (SELECT p.client FROM Project p JOIN Support s ON p.id = s.project.id GROUP BY p.client.id ORDER BY COUNT(s.id) DESC)")
-    List<Client> findByOrderBySupportCountDesc();
+    List<Client> findAllByOrderBySupportCountDesc();
 
     /**
      * companyGuid로 해당 고객사 존재하는지 찾기

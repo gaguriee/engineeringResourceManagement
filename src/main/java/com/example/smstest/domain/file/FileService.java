@@ -1,24 +1,26 @@
 package com.example.smstest.domain.file;
 
+import com.example.smstest.global.exception.CustomException;
+import com.example.smstest.global.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.net.UnknownHostException;
+import java.util.Optional;
 
 
 /**
  * 파일 등록 Service
  */
 @Service
+@RequiredArgsConstructor
 public class FileService {
-    private FileRepository fileRepository;
 
-    public FileService(FileRepository fileRepository) {
-        this.fileRepository = fileRepository;
-    }
+    private final FileRepository fileRepository;
 
     /**
-     * 파일 저장
+     * [ 파일 저장 ]
      * @param fileDto
      * @return
      * @throws UnknownHostException
@@ -29,7 +31,7 @@ public class FileService {
     }
 
     /**
-     * 일정 삭제 시 해당 일정에 첨부된 파일 삭제
+     * [ 일정 삭제 시 해당 일정에 첨부된 파일 삭제 ]
      * @param taskId
      */
     @Transactional
@@ -38,19 +40,27 @@ public class FileService {
     }
 
     /**
-     * 파일 가져오기
+     * [ 파일 가져오기 ]
      * @param id
      * @return FileDto
      */
     @Transactional
     public FileDto getFile(Long id) {
-        File file = fileRepository.findById(id).get();
+        Optional<File> file = fileRepository.findById(id);
 
-        return FileDto.builder()
-                .id(id)
-                .origFilename(file.getOrigFilename())
-                .filename(file.getFilename())
-                .filePath(file.getFilePath())
-                .build();
+        if (file.isPresent()){
+
+            return FileDto.builder()
+                    .id(id)
+                    .origFilename(file.get().getOrigFilename())
+                    .filename(file.get().getFilename())
+                    .filePath(file.get().getFilePath())
+                    .build();
+        }
+
+        else {
+            throw new CustomException(ErrorCode.FILE_NOT_FOUND);
+        }
+
     }
 }

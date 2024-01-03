@@ -86,7 +86,7 @@ public class SupportController {
     }
 
     /**
-     * 지원내역 조회 (QueryDSL 사용)
+     * [ 지원내역 조회 ]
      * @param customerName 고객사명 (String)
      * @param projectName 프로젝트명 (String)
      * @param teamId 팀 id
@@ -118,7 +118,7 @@ public class SupportController {
                                          Model model) {
 
         // 현재 유저 가져옴
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 필터링에 사용할 Criteria(기준) 작성
@@ -167,7 +167,7 @@ public class SupportController {
         List<Memp> allMemps = mempRepository.findAll();
 
         // 전체 Client 엔티티
-        List<Client> allCustomers = clientRepository.findByOrderBySupportCountDesc();
+        List<Client> allCustomers = clientRepository.findAllByOrderBySupportCountDesc();
 
         // 전체 Project 엔티티
         List<Project> allProjects = projectRepository.findAllByOrderBySupportCountDesc();
@@ -211,14 +211,14 @@ public class SupportController {
 
 
     /**
-     * 지원내역 상세 보기
+     * [ 지원내역 상세 보기 ]
      * @param supportId 지원내역 id
      * @param model
      * @return
      */
     @GetMapping("/details")
     public String getDetails(@RequestParam(required = false) Long supportId, Model model) {
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         SupportResponse supportResponse = supportService.getDetails(supportId);
@@ -230,7 +230,7 @@ public class SupportController {
     }
 
     /**
-     * 지원내역 등록 뷰 리턴
+     * [ 지원내역 등록 뷰 리턴 ]
      * @param model
      * @return
      */
@@ -243,7 +243,7 @@ public class SupportController {
     }
 
     /**
-     * 지원내역 등록하기
+     * [ 지원내역 등록하기 ]
      * @param files 업로드 시 받아오는 파일 리스트
      * @param supportRequest 지원내역 등록/수정 시 매핑되는 DTO
      * @return
@@ -258,7 +258,7 @@ public class SupportController {
 
 
     /**
-     * 지원내역 수정 뷰 리턴
+     * [ 지원내역 수정 뷰 리턴 ]
      * - 등록과 거의 동일, 해당 support Id로 기존 정보 가져와서 수정페이지에 보여줌
      * @param supportId
      * @param model
@@ -271,7 +271,8 @@ public class SupportController {
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        LicenseProject licenseProject =  licenseProjectRepository.findByCompany_CompanyGuidAndProjectGuid(support.getProject().getClient().getCompanyGuid(), support.getProject().getProjectGuid())
+        // 기존 프로젝트 -> 라이센스 프로젝트 형식으로 매핑 (구조 통일 목적)
+        LicenseProject licenseProject =  licenseProjectRepository.findFirstByCompany_CompanyGuidAndProjectGuid(support.getProject().getClient().getCompanyGuid(), support.getProject().getProjectGuid())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
 
         model.addAttribute("support", support);
@@ -285,7 +286,7 @@ public class SupportController {
 
 
     /**
-     * 지원내역 수정하기
+     * [ 지원내역 수정하기 ]
      * - 등록과 거의 동일, 등록은 신규 엔티티를 생성 후 save하는 것이라면, 수정은 기존 엔티티를 supportId로 검색 후 update한 뒤 save
      * @param files
      * @param supportRequest
@@ -300,7 +301,7 @@ public class SupportController {
     }
 
     /**
-     * 지원내역 삭제
+     * [ 지원내역 삭제 ]
      * @param supportId
      * @return 지원내역 조회 페이지로 리다이렉트
      */
@@ -313,7 +314,7 @@ public class SupportController {
     }
 
     /**
-     * 파일 다운로드 메소드
+     * [ 지원내역 첨부파일 다운로드 메소드 ]
      * @param fileId
      * @return
      * @throws IOException
@@ -339,13 +340,10 @@ public class SupportController {
 
     }
 
-    /**
-     * 지원내역 등록/ 수정 페이지 로드 시 필요한 data들을 model 객체에 넣습니다.
-     * @param model
-     */
+    // 지원내역 등록/수정 페이지 로드 시 필요한 data들을 model 객체에 넣습니다.
     private void setDefaultSupportCreateView(Model model) {
 
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         List<Client> customers = clientRepository.findAll();
@@ -377,7 +375,7 @@ public class SupportController {
 
         List<LicenseProject> licenseProjects = recentProjects.stream()
                 .map(project -> {
-                    return licenseProjectRepository.findByCompany_CompanyGuidAndProjectGuid(project.getClient().getCompanyGuid(), project.getProjectGuid())
+                    return licenseProjectRepository.findFirstByCompany_CompanyGuidAndProjectGuid(project.getClient().getCompanyGuid(), project.getProjectGuid())
                             .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
                 })
                 .collect(Collectors.toList());

@@ -48,7 +48,7 @@ public class SupportService  {
     private final FileRepository fileRepository;
 
     /**
-     * [지원내역 조회]
+     * [ 지원내역 조회 ]
      * 필터 조건을 사용해서 검색 후 Page 객체에 담아 반환
      * @param criteria
      * @param pageable
@@ -67,7 +67,7 @@ public class SupportService  {
     }
 
     /**
-     * [지원내역 디테일]
+     * [ 지원내역 디테일 ]
      * support Id로 Support Entity를 검색해서 Response DTO (SupportResponse)로 매핑 후 반환
      * @param supportId
      * @return
@@ -80,7 +80,7 @@ public class SupportService  {
     }
 
     /**
-     * [지원내역 등록]
+     * [ 지원내역 등록 ]
      *
      * @param files
      * @param supportRequest
@@ -97,43 +97,62 @@ public class SupportService  {
         return SupportResponse.entityToResponse(newsupport);
     }
 
+    // 7일 전 이내의 지원내역인지 확인
     private static boolean isBeforeSevenDays(Date supportDate) {
         long sevenDaysAgoMillis = System.currentTimeMillis() - 8 * 24 * 60 * 60 * 1000;
         Date sevenDaysAgo = new Date(sevenDaysAgoMillis);
         return supportDate.before(sevenDaysAgo);
     }
 
+    /**
+     * [ 지원내역 수정]
+     * @param files
+     * @param supportRequest
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
     public SupportResponse modifySupport(List<MultipartFile> files,  SupportRequest supportRequest) throws NoSuchAlgorithmException, IOException {
+
+        Optional<Support> currentSupport = supportRepository.findById(supportRequest.getSupportId());
 
         // 삭제된 FileId가 존재할 경우, 기존에 File table에서 해당 id 전부 삭제함
         if (supportRequest.getDeletedFileId() != null){
             fileRepository.deleteAllById(supportRequest.getDeletedFileId());
         }
 
-        Support savedSupport = saveSupport(supportRepository.findById(supportRequest.getSupportId()).get(), files, supportRequest) ;
-
-        log.info("===MODIFY=== ("+ SupportResponse.entityToResponse(savedSupport) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
-
-        return SupportResponse.entityToResponse(savedSupport);
+        if (currentSupport.isPresent()) {
+            Support savedSupport = saveSupport(currentSupport.get(), files, supportRequest);
+            log.info("===MODIFY=== (" + SupportResponse.entityToResponse(savedSupport) + ") by " + SecurityContextHolder.getContext().getAuthentication().getName());
+            return SupportResponse.entityToResponse(savedSupport);
+        }
+        else {
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
 
     }
 
+    // 지원내역 업데이트
     private Support saveSupport(Support support, List<MultipartFile> files,  SupportRequest supportRequest) throws IOException, NoSuchAlgorithmException {
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         boolean containsSuperAdmin = user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN"));
 
+        // Super Admin 권한이 없고 7일 이내의 지원내역이 아닐 경우 DATE_INVALID 에러 반환
         if (!containsSuperAdmin && isBeforeSevenDays(supportRequest.getSupportDate())){
             throw new CustomException(ErrorCode.DATE_INVALID);
         }
 
+        // json으로 받은 license project 객체로 매핑
         ObjectMapper objectMapper = new ObjectMapper();
 
         LicenseProject licenseProject = objectMapper.readValue(supportRequest.getProject(), LicenseProject.class);
 
+        // 1. ProjectGuid로 로컬 DB에서 해당 프로젝트 검색
         Optional<Project> project = projectRepository.findFirstByProjectGuid(licenseProject.getProjectGuid());
 
+        // 프로젝트 존재 시 업데이트 후 지원내역에 저장
         if (project.isPresent()){
             project.get().updateProject(
                     licenseProject.getProjectName()
@@ -141,9 +160,19 @@ public class SupportService  {
 
             support.setProject(projectRepository.save(project.get()));
         }
+        // 프로젝트 미존재 시
         else {
 
-            if (!clientRepository.existsByCompanyGuid(licenseProject.getCompany().getCompanyGuid())) {
+            // 2. 로컬 DB에 해당 고객사가 존재하는지 조회
+            // 고객사 존재 시 업데이트 후 지원내역에 저장
+            if (clientRepository.existsByCompanyGuid(licenseProject.getCompany().getCompanyGuid())) {
+                Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
+                newClient.setName(licenseProject.getCompany().getCompanyName());
+
+                clientRepository.save(newClient);
+            }
+            // 고객사 미존재 시 새로운 객체 생성 후 저장
+            else{
                 Client newClient = new Client();
                 newClient.setName(licenseProject.getCompany().getCompanyName());
                 newClient.setCompanyGuid(licenseProject.getCompany().getCompanyGuid());
@@ -151,11 +180,6 @@ public class SupportService  {
 
                 clientRepository.save(newClient);
                 log.info("Saved Client :: " + newClient.getName());
-            }
-            else{
-                Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
-                newClient.setName(licenseProject.getCompany().getCompanyName());
-                clientRepository.save(newClient);
             }
 
             Client client = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
@@ -198,18 +222,37 @@ public class SupportService  {
     }
 
 
+    /**
+     * [ 지원내역 삭제 ]
+     * @param supportId
+     */
     public void deleteSupport(Long supportId) {
-        Memp user = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Support support = supportRepository.findById(supportId).orElse(null);
 
+        Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Support support = supportRepository.findById(supportId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        // 해당 지원내역에 첨부된 파일 전부 삭제
+        fileRepository.deleteAllBySupportId(supportId);
+
+        // 작성자와 삭제요청자가 동일하거나, 유저가 SUPERADMIN 권한을 가졌을 때 지원내역 삭제
         if (support != null && (support.getEngineer().getUsername().equals(user.getUsername())
                 || user.getAuthorities().contains(Authority.of("ROLE_SUPERADMIN")))){
             supportRepository.delete(support);
             log.info("===DELETE=== ("+ SupportResponse.entityToResponse(support) +") by "+ SecurityContextHolder.getContext().getAuthentication().getName());
         }
+
     }
 
+    /**
+     * [ 지원 내역 첨부 파일 저장 ]
+     * @param files
+     * @param supportId
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     */
     private void saveFile(List<MultipartFile> files, Long supportId) throws NoSuchAlgorithmException, IOException {
         List<File> savedFiles = new ArrayList<>();
 

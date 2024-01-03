@@ -32,13 +32,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     boolean existsByUniqueCode(String uniqueCode);
 
-
-    @Query("SELECT DISTINCT s.project, s.createdAt " +
-            "FROM Support s " +
-            "WHERE s.engineer.id = :userId " +
-            "ORDER BY s.createdAt DESC")
-    List<Object[]> findTop5RecentProjectsByUserId(@Param("userId") Long userId);
-
     @Query("SELECT DISTINCT s.project FROM Support s WHERE s IN :supports")
     List<Project> findDistinctProjectsBySupports(@Param("supports") List<Support> supports);
 

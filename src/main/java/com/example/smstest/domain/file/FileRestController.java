@@ -31,7 +31,7 @@ import java.util.UUID;
 public class FileRestController {
 
     /**
-     * 에디터 내 사진 파일 업로드
+     * [ 지원내역 등록 에디터 내 사진 파일 업로드 ]
      * @param uploadFile
      * @return savePath - 저장경로
      */
@@ -65,11 +65,12 @@ public class FileRestController {
             // 파일명 저장
             uploadFileName = uuid + "_" + uploadFileName;
 
-            java.io.File saveFile = new java.io.File(uploadPath, uploadFileName);
-
             try {
+                java.io.File saveFile = new java.io.File(uploadPath, uploadFileName);
                 multipartFile.transferTo(saveFile);
                 return uploadFileName;
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.FILE_SAVE_ERROR);
             } catch (Exception e) {
                 throw new CustomException(ErrorCode.BAD_REQUEST);
             }
@@ -78,7 +79,7 @@ public class FileRestController {
     }
 
     /**
-     * 에디터 내 사진 파일 첨부
+     * [ 지원내역 등록 에디터 내 업로드한 사진 파일 보여주기 ]
      * @param fileName
      * @return
      */
@@ -120,6 +121,11 @@ public class FileRestController {
         return result;
     }
 
+    /**
+     * [ 지원내역 등록 내 에디터에서 base64 형식으로 등록된 img 변환 ]
+     * @param base64Image
+     * @return
+     */
     @RequestMapping(value = "/uploadBase64", method = RequestMethod.POST)
     public String handleBase64Upload(@RequestBody String base64Image) {
         try {
@@ -165,6 +171,7 @@ public class FileRestController {
         }
     }
 
+    // file name 생성
     public static String truncateAndAppendTimestamp(String base64Image, int maxLength) {
         // 제거할 특수문자 정규식
         String specialCharactersRegex = "[^a-zA-Z0-9]";

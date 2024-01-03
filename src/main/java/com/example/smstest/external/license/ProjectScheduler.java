@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 
 /**
@@ -27,7 +25,7 @@ public class ProjectScheduler {
 
 //    @Scheduled(fixedDelay = 1000000000)
     @Scheduled(cron = "0 0 0/6 * * ?") // 매일 6시간 간격으로 실행
-    public void scheduleGetInitialFiles() throws InterruptedException, GeneralSecurityException, IOException {
+    public void scheduleGetInitialFiles() {
 
         log.info("=====START SCHEDULER=====");
 
@@ -37,7 +35,12 @@ public class ProjectScheduler {
 
             for (LicenseProject licenseProject : licenseProjects) {
 
-                if (!clientRepository.existsByCompanyGuid(licenseProject.getCompany().getCompanyGuid())) {
+                if (clientRepository.existsByCompanyGuid(licenseProject.getCompany().getCompanyGuid())) {
+                    Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
+                    newClient.setName(licenseProject.getCompany().getCompanyName());
+                    clientRepository.save(newClient);
+                }
+                else{
                     Client newClient = new Client();
                     newClient.setName(licenseProject.getCompany().getCompanyName());
                     newClient.setCompanyGuid(licenseProject.getCompany().getCompanyGuid());
@@ -45,11 +48,6 @@ public class ProjectScheduler {
 
                     clientRepository.save(newClient);
                     log.info("Saved Client :: " + newClient.getName());
-                }
-                else{
-                    Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
-                    newClient.setName(licenseProject.getCompany().getCompanyName());
-                    clientRepository.save(newClient);
                 }
 
                 Client client = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());

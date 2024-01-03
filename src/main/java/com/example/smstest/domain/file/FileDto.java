@@ -25,7 +25,7 @@ public class FileDto {
 
         InetAddress localhost = InetAddress.getLocalHost();
 
-        File build = File.builder()
+        return File.builder()
                 .id(id)
                 .supportId(supportId)
                 .taskId(taskId)
@@ -35,7 +35,6 @@ public class FileDto {
                 .size(size)
                 .savedIpAddress(localhost.getHostAddress())
                 .build();
-        return build;
     }
 
     @Builder

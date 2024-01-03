@@ -26,10 +26,6 @@ public class Project {
     @Column(name = "프로젝트명")
     private String name;
 
-//    @Column(name = "만료일")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date expirationDate;
-
     @ManyToOne
     @JoinColumn(name = "고객사_id")
     private Client client;
@@ -59,8 +55,16 @@ public class Project {
     @Column(name = "project_guid", length = 50)
     private String projectGuid;
 
+
+    @Column(name = "수주금액")
+    private Integer orderAmount;
+
+    @Column(name = "납품장비")
+    private String equipment;
+
     @Builder
-    public Project(String name, Client client, String uniqueCode, Product product, Team team, Memp engineer, Memp subEngineer, Date projectRegDate, String projectGuid) {
+    public Project(String name, Client client, String uniqueCode, Product product, Team team, Memp engineer, Memp subEngineer, Date projectRegDate, String projectGuid,
+                   Integer orderAmount, String equipment ) {
         this.name = name;
         this.client = client;
         this.uniqueCode = uniqueCode;
@@ -70,10 +74,18 @@ public class Project {
         this.subEngineer = subEngineer;
         this.projectRegDate = projectRegDate;
         this.projectGuid = projectGuid;
+        this.orderAmount = orderAmount;
+        this.equipment = equipment;
     }
 
+    // 프로젝트 이름 변경 시 업데이트
+    public void updateProject(String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
 
-    public void updateProject(Product product, Team team, Memp engineer, Memp subEngineer) {
+    public void updateProject(Product product, Team team, Memp engineer, Memp subEngineer, Integer orderAmount, String equipment) {
 
         if (product != null) {
             this.product = product;
@@ -84,14 +96,9 @@ public class Project {
         if (engineer != null) {
             this.engineer = engineer;
         }
-        if (subEngineer != null) {
-            this.subEngineer = subEngineer;
-        }
-    }
+        this.subEngineer = subEngineer;
+        this.orderAmount = orderAmount;
+        this.equipment = equipment;
 
-    public void updateProject(String name) {
-        if (name != null) {
-            this.name = name;
-        }
     }
 }

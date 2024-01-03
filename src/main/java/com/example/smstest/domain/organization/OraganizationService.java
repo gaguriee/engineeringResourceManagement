@@ -35,7 +35,7 @@ public class OraganizationService {
     private final SupportRepository supportRepository;
 
     /**
-     * 팀 정보 조회
+     * [ 팀 정보 조회 ]
      * @param teamId
      * @return
      */
@@ -59,7 +59,7 @@ public class OraganizationService {
     }
 
     /**
-     * 멤버 정보 조회
+     * [ 멤버 정보 조회 ]
      * @param memberId
      * @return
      */

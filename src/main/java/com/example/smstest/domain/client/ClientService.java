@@ -18,21 +18,22 @@ public class ClientService {
     private final ClientRepository clientRepository;
 
     /**
-     * 고객사 검색
+     * [ 고객사 검색 ]
      * @param keyword 고객사 검색 키워드
      * @param pageable
      * @return Page<Client>
      */
     public Page<Client> searchClients(String keyword, Pageable pageable) {
         if (keyword != null) {
+            // 키워드 존재 시 공백 기준으로 잘라서 검색
             String[] words = keyword.split("\\s+");
             String newKeyword = String.join("%", words);
-            return clientRepository.findByNameContainingOrderBySupportCountDesc(newKeyword, pageable);
+            return clientRepository.findAllByNameContainingOrderBySupportCountDesc(newKeyword, pageable);
         }
         return clientRepository.findAllBySupportCount(pageable);
     }
     /**
-     * 고객사 상세정보 가져오기
+     * [ 고객사 상세정보 가져오기 ]
      * @param customerId
      * @return
      */

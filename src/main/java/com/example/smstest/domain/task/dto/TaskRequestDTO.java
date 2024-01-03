@@ -23,5 +23,4 @@ public class TaskRequestDTO {
 
     private Boolean fileDeleted;
 
-
 }

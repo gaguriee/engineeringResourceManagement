@@ -36,7 +36,7 @@ public class ClientController {
     }
 
     /**
-     * 고객사 검색
+     * [ 고객사 검색 ]
      * @param Keyword 검색 키워드
      * @param pageable
      * @param model 고객사 리스트
@@ -58,7 +58,7 @@ public class ClientController {
     }
 
     /**
-     * 고객사 디테일
+     * [ 고객사 디테일 ]
      * @param customerId 해당 고객사 id로 검색
      * @param model 검색 결과 SupportSummary 리스트에 저장 후 전달
      * @return 고객사 디테일 페이지

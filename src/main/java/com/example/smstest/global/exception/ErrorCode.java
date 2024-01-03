@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     /* 400 BAD_REQUEST : 잘못된 요청 */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    FILE_SAVE_ERROR(HttpStatus.BAD_REQUEST, "디스크 공간 부족 또는 기타 파일 시스템 오류입니다."),
     DATE_INVALID(HttpStatus.BAD_REQUEST, "7일 이내의 내역만 업로드 할 수 있습니다."),
 
     /* 403 FORBIDDEN : 인증되지 않은 사용자 */

@@ -18,7 +18,7 @@ public class ProjectService {
     private final LicenseProjectRepository licenseProjectRepository;
 
     /**
-     * 특정 키워드 포함 프로젝트명 조회
+     * [ 특정 키워드 포함 프로젝트명 조회 ]
      * @param keyword
      * @param pageable
      * @return
