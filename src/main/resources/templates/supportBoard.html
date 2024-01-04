@@ -12,10 +12,12 @@
 <body class="bg-gray-100">
 <div th:replace="header :: header"></div>
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
+<!--    필터 사이드바-->
     <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidenav">
         <div class="overflow-y-auto py-8 px-6 h-full bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <ul class="space-y-2">
                 <li>
+<!--                    제품 필터링-->
                     <div th:fragment="dropdownProduct">
                         <button id="multiLevelDropdownButtonProduct" data-dropdown-toggle="dropdownProduct" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
                             <svg aria-hidden="true" class="w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
@@ -47,6 +49,7 @@
                         </div>
                     </div>
                 </li>
+<!--                이슈 필터링-->
                 <li class="mt-3">
                     <div th:fragment="dropdownIssue">
                         <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
@@ -79,6 +82,7 @@
                         </div>
                     </div>
                 </li>
+<!--                상태 필터링-->
                 <li class="mt-3">
                     <div th:fragment="dropdownState">
                         <button id="multiLevelDropdownButtonState" data-dropdown-toggle="dropdownState" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
@@ -101,6 +105,7 @@
                     </div>
                 </li>
             </ul>
+<!--            소속 필터링-->
             <div class="mx-auto max-w-2xl mb-2.5" style="margin-top: 24px">
                 <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
                 <select id="team" name="teamId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
@@ -110,6 +115,7 @@
                     </th:block>
                 </select>
             </div>
+<!--            엔지니어 필터링-->
             <div class="mx-auto max-w-2xl">
                 <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
                 <select id="member" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
@@ -119,6 +125,7 @@
                     </th:block>
                 </select>
             </div>
+<!--            고객사 필터링-->
             <div class="mx-auto max-w-2xl" style="margin-top: 24px">
                 <div class="flex">
                     <span class="font-normal" style="font-size: 12px" >고객사</span>
@@ -131,6 +138,7 @@
                 </datalist>
 
             </div>
+<!--            프로젝트 필터링-->
             <div class="mx-auto max-w-2xl" style="margin-top: 24px">
                 <div class="flex">
                     <span class="font-normal" style="font-size: 12px" >프로젝트</span>
@@ -143,6 +151,7 @@
                 </datalist>
 
             </div>
+<!--            기간 필터링-->
             <div style="margin-top: 24px">
                 <div date-rangepicker class="block items-center align-middle" >
                     <div class="flex">
@@ -161,6 +170,7 @@
                     </div>
                 </div>
             </div>
+<!--            적용버튼-->
             <button id="FilterApplyBtn" onclick="applyFilters()" class="mt-5 w-full h-14 p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-800 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                 적용하기
             </button>
@@ -170,6 +180,7 @@
     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+<!--                검색창-->
                 <div class="w-full md:w-1/2">
                     <form class="flex items-center flex" onsubmit="return submitSearch(event)">
                         <label for="simple-search" class="sr-only">Search</label>
@@ -191,8 +202,8 @@
                         <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                         </svg>
-                        Add space
                     </div>
+<!--                    필터링, 필터링 초기화 버튼-->
                     <div class="flex items-center w-full space-x-3 md:w-auto">
                         <button id="filterBtn" class=" flex items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
@@ -211,7 +222,7 @@
                 </div>
             </div>
             <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
-
+<!--                현재 선택된 필터링 조건-->
                 <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 8px">
                     <div th:each="product : ${selectedProducts}" style="display: block" >
                         <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${product.getName()}">Red</span>
@@ -247,6 +258,7 @@
                       </svg>
                     </span>
                 </div>
+<!--                지원내역 테이블-->
             <div class="max-h-64 overflow-hidden">
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -276,11 +288,8 @@
                         <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
                             <a th:href="@{/details(supportId=${post.id})}" class="flex items-center hover:text-primary-700 dark:hover:text-primary-500">
                                 <span style="font-weight: 500" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
-
-                                <svg th:if="${post.files.size() > 0}" class="w-3 h-3 ml-2.5 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
-                                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
-                                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Z"/>
-                                </svg>
+                                
+                                <img th:if="${post.files.size() > 0}" src="https://e7.pngegg.com/pngimages/637/806/png-clipart-floppy-disk-computer-icons-disk-storage-personal-computer-save-button-blue-rectangle.png" class="w-3 h-3 ml-2.5" alt=""/>
                             </a>
 
                         </td>
@@ -294,6 +303,7 @@
 
             </div>
 
+<!--                페이지네이션-->
             <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
@@ -447,6 +457,7 @@
 
 <script th:inline="javascript">
 
+    // 조회한 지원내역은 작업제목 회색으로 표시
     $(document).ready(function() {
         // 페이지 로드 시 로컬 스토리지에서 클릭 이력 가져오기
         var clickedRows = JSON.parse(localStorage.getItem('clickedRows')) || [];
@@ -574,6 +585,7 @@
     }
 
 
+    // 필터링 적용
     function applyFilters() {
 
         const teamSelect = document.getElementById('team');
@@ -641,11 +653,13 @@
         window.location.href = '/search?' + new URLSearchParams(queryParams).toString();
     }
 
-
+    // 초기화 버튼
     function applyResetBtn() {
         window.location.href = '/search?';
     }
 
+    // 정렬 버튼
+    const sortButton = document.getElementById('sortButton');
     sortButton.addEventListener('click', () => {
         const currentParams = getCurrentURLParams();
         currentParams["sortOrder"] = (currentParams["sortOrder"] === 'desc' ? 'asc' : 'desc');
@@ -656,7 +670,7 @@
     const filterBtn = document.getElementById('filterBtn');
     const sidebar = document.getElementById('default-sidebar');
 
-
+    // 필터 버튼 클릭
     filterBtn.addEventListener('click', () => {
         if (sidebar.classList.contains('open')) {
             sidebar.classList.remove('open');
@@ -681,6 +695,7 @@
         return queryParams;
     }
 
+    // 현재 키워드 검색창 표시
     const simpleSearch = document.getElementById('simple-search');
 
     const currentParams = getCurrentURLParams();
@@ -688,6 +703,7 @@
         simpleSearch.value = currentParams['Keyword'];
     }
 
+    // 페이지네이션 이전, 다음버튼 클릭
     document.addEventListener('DOMContentLoaded', function () {
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
@@ -715,7 +731,7 @@
     });
 
 
-
+    // 검색 제출
     function submitSearch(event) {
         event.preventDefault();
 
@@ -729,6 +745,7 @@
         return false;
     }
 
+    // 페이지 전환
     function pageMove(pageNum) {
         const currentParams = getCurrentURLParams();
         currentParams["page"] = pageNum;

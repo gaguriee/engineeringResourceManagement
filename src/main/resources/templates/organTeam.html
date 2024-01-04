@@ -93,8 +93,8 @@
                 <div class="flex-1 p-4"></div>
                 <div class="flex-5 p-4">
                     <div class="block">
-                        <form class="flex mb-10" th:action="@{/teamInfo}" >
-                            <div class="flex w-full" style="justify-content: flex-end;">
+                        <form class="block mb-10" th:action="@{/teamInfo}" >
+                            <div class=" w-full" style="justify-content: flex-end;">
                                 <input name="teamId" th:value="${team.id}" class="hidden">
                                 <div date-rangepicker class="flex" style="vertical-align: bottom; align-self: flex-end;">
                                     <input th:value="${startDate}" name="startDate" id="startDate" type="date" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
@@ -110,10 +110,20 @@
                                     </button>
                                 </div>
                             </div>
+
                         </form>
 
                         <div id='calendar-container'>
                             <div id='calendar' style="margin-bottom: 24px"></div>
+                        </div>
+
+                        <div class="w-full" style="justify-content: flex-end;">
+                            <button id="csvDownloadBtn" type="button" class="text-white bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-4 focus:outline-none focus:ring-[#24292F]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30 me-2 mb-2">
+                                <svg class="w-4 h-4 mr-1 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
+                                </svg>
+                                금주 작업내역 추출
+                            </button>
                         </div>
 
                     </div>
@@ -146,6 +156,36 @@
 
     const selectedClass = visibleBtn.className;
     const unselectedClass = supportListViewBtn.className;
+
+    const team = [[${team}]];
+
+
+    document.getElementById("csvDownloadBtn").addEventListener("click", function () {
+        excelPrint();
+    });
+
+    console.log(team);
+    function excelPrint() {
+        fetch('/export/' + team.id, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            },
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = team.name + '_주간작업추출';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error generating EXCEL:', error);
+            });
+    }
 
 
     $(document).ready(function () {

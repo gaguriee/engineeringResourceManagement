@@ -6,6 +6,7 @@ import com.example.smstest.domain.project.Project;
 import com.example.smstest.domain.support.entity.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Set;
  * 지원내역 응답 반환, 또는 로깅 시 사용될 DTO
  */
 @Getter
+@ToString
 public class SupportResponse {
 
     private final Long id;

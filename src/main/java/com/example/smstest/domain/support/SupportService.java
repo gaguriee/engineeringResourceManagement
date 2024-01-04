@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -118,7 +119,8 @@ public class SupportService  {
 
         // 삭제된 FileId가 존재할 경우, 기존에 File table에서 해당 id 전부 삭제함
         if (supportRequest.getDeletedFileId() != null){
-            fileRepository.deleteAllById(supportRequest.getDeletedFileId());
+            fileRepository.deleteAllByIdInBatch(supportRequest.getDeletedFileId());
+
         }
 
         if (currentSupport.isPresent()) {
@@ -212,6 +214,7 @@ public class SupportService  {
         support.setEngineer(mempRepository.findById(supportRequest.getEngineerId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
         support.setSupportType(supportTypeRepository.findById(supportRequest.getSupportTypeId()).orElse(null));
+        support.setFiles(null);
 
         // Support 엔티티를 저장하고 반환
         Support newsupport = supportRepository.save(support);
@@ -226,6 +229,7 @@ public class SupportService  {
      * [ 지원내역 삭제 ]
      * @param supportId
      */
+    @Transactional
     public void deleteSupport(Long supportId) {
 
         Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -300,6 +304,8 @@ public class SupportService  {
             savedFile.setSupportId(supportId);
             fileRepository.save(savedFile);
         }
+
+
 
     }
 

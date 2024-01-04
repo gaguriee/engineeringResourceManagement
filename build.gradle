@@ -94,6 +94,9 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' /* Apache Commons FileUpload */
 
+    // jsoup
+    implementation 'org.jsoup:jsoup:1.14.3'
+
 }
 
 tasks.named('test') {

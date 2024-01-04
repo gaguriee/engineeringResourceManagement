@@ -48,6 +48,7 @@
 
     <div class="py-8 px-4 mx-auto max-w-7xl lg:py-16" id="contents" style="background-color: white">
 
+<!--        지원내역 디테일-->
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white" style="padding-bottom: 24px" th:text="${(support.taskTitle != null && support.taskTitle.trim().length() > 0) ? support.taskTitle : '제목 없음'}">Apple iMac 25"</h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white" th:text="${support.project != null ? support.project?.name : 'Unknown'}"></h3>
         <dl class="flex text-sm items-start flex-wrap" style="padding-top: 24px;">
@@ -120,6 +121,7 @@
         </div>
     </div>
 
+<!--    수정 및 삭제 버튼-->
     <div class="flex py-8 px-4 mx-auto max-w-7xl lg:py-16"  th:if="${user.id == support.engineerId || #authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}"  style="background-color: white">
 
         <div class="flex items-center space-x-4" style="padding-top: 24px">
@@ -153,10 +155,16 @@
     const taskTitle = [[${support.taskTitle }]];
     const date = [[${support.supportDate }]];
 
+    // 현재 유저 권한 받기
     var userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
     var hasSuperAdminRole = userAuthorities.some(function(authority) {
         return authority.authority === 'ROLE_SUPERADMIN';
     });
+
+    /**
+     * 지원내역 수정 및 삭제 본인 및 7일 제한
+     * @type {Date}
+     */
 
     var currentDate = new Date();
     var supportDate = new Date(date)
@@ -176,6 +184,23 @@
         editButton.style.display = "none";
     }
 
+    // 삭제창 - X 선택
+    var deleteNo = document.getElementById("deleteNo");
+    if (deleteNo) {
+        deleteNo.addEventListener('click', function () {
+            hideModal('deleteModal');
+        });
+    }
+
+    // 삭제창 - 닫기 선택
+    const deleteCloseButton = document.querySelector('[data-modal-toggle="deleteModal"]');
+    if (deleteCloseButton) {
+        deleteCloseButton.addEventListener('click', function () {
+            hideModal('deleteModal');
+        });
+    }
+
+    // 삭제창 숨기기
     function hideModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -184,19 +209,7 @@
         }
     }
 
-    var deleteNo = document.getElementById("deleteNo");
-    if (deleteNo) {
-        deleteNo.addEventListener('click', function () {
-            hideModal('deleteModal');
-        });
-    }
 
-    const deleteCloseButton = document.querySelector('[data-modal-toggle="deleteModal"]');
-    if (deleteCloseButton) {
-        deleteCloseButton.addEventListener('click', function () {
-            hideModal('deleteModal');
-        });
-    }
 </script>
 <style>
     * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
@@ -345,6 +358,11 @@
     #taskDetails a{
         text-decoration: underline;
     }
+
+    .ql-editor {
+        padding : 0;
+    }
+
 </style>
 </body>
 </html>

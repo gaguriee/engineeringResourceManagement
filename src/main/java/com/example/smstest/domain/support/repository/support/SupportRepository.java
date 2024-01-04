@@ -80,6 +80,20 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
             @Param("endDate") Date endDate
     );
 
+    /**
+     * [ 팀별 주간 지원내역 export ]
+     * @param teamId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Query("SELECT s FROM Support s WHERE s.engineer.team.id = :teamId AND s.supportDate BETWEEN :startDate AND :endDate ORDER BY s.supportDate")
+    List<Support> findByTeamIdAndCreatedAtBetweenOrderBySupportDate(
+            @Param("teamId") Integer teamId,
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate
+    );
+
 
     // 프로젝트 현황
 
