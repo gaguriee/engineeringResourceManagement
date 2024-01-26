@@ -231,7 +231,7 @@ public class FileDownloadController {
 
 
     @GetMapping("/export/{teamId}")
-    public void exportTeamSupport(@PathVariable(required = false) Integer teamId, HttpServletResponse response) throws IOException {
+    public void exportTeamSupport(@PathVariable(name = "teamId") Integer teamId, HttpServletResponse response) throws IOException {
 
         LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
         Date startDate = java.sql.Date.valueOf(sevenDaysAgo);
@@ -276,7 +276,7 @@ public class FileDownloadController {
 
         // header data
         int rowCount = 0; // 데이터가 저장될 행
-        String headerNames[] = new String[]{"지원일자", "엔지니어", "프로젝트명", "제품", "업무구분", "이슈구분", "지원형태", "작업제목", "작업요약", "작업상세"};
+        String headerNames[] = new String[]{"지원일자", "엔지니어", "고객사명", "프로젝트명", "제품", "업무구분", "이슈구분", "지원형태", "작업제목", "작업요약", "작업상세"};
 
         Row headerRow = null;
         Cell headerCell = null;
@@ -296,18 +296,19 @@ public class FileDownloadController {
         for (Support support : supports){
 
             String[] data = new String[]{
-                    support.getSupportDate().toString(),
-                    support.getEngineer().getName(),
-                    support.getProject().getName(),
-                    support.getProduct().getName(),
-                    support.getState().getName(),
-                    support.getIssue().getName(),
-                    support.getSupportType().getName(),
+                    support.getSupportDate() != null ? support.getSupportDate().toString() : null,
+                    support.getEngineer() != null ? support.getEngineer().getName() : null,
+                    support.getProject() != null && support.getProject().getClient() != null ? support.getProject().getClient().getName() : null,
+                    support.getProject() != null ? support.getProject().getName() : null,
+                    support.getProduct() != null ? support.getProduct().getName() : null,
+                    support.getState() != null ? support.getState().getName() : null,
+                    support.getIssue() != null ? support.getIssue().getName() : null,
+                    support.getSupportType() != null ? support.getSupportType().getName() : null,
                     support.getTaskTitle(),
                     support.getTaskSummary(),
-                    getContentWithoutImg(support.getTaskDetails())
-
+                    support.getTaskDetails() != null ? getContentWithoutImg(support.getTaskDetails()) : null
             };
+
             bodyDatass.add(data);
         }
 
