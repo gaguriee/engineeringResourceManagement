@@ -190,7 +190,7 @@ public class SupportService {
                 savePath = System.getProperty("user.dir") + "\\files\\support";
                 filePath = savePath + "\\" + filename;
             } else {
-                savePath = System.getProperty("user.dir") + "/root/files/support";
+                savePath = "/root/files/support";
                 filePath = savePath + "/" + filename;
             }
 
