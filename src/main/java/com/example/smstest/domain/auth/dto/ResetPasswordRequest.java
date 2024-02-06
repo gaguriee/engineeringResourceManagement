@@ -14,11 +14,10 @@ import lombok.Setter;
 public class ResetPasswordRequest {
 
     private String password;
-
     private String password_confirm;
 
     @Builder
-    public ResetPasswordRequest(Long userId, String password, String password_confirm){
+    public ResetPasswordRequest(Long userId, String password, String password_confirm) {
         this.password = password;
         this.password_confirm = password_confirm;
     }

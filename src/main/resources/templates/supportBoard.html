@@ -3,42 +3,80 @@
       lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet"/>
 </head>
 <body class="bg-gray-100">
 <div th:replace="header :: header"></div>
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
-    <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidenav">
+    <!--필터 사이드바-->
+    <aside id="default-sidebar"
+           class="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0"
+           aria-label="Sidenav">
         <div class="overflow-y-auto py-8 px-6 h-full bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <ul class="space-y-2">
                 <li>
+                    <!--제품 필터링-->
                     <div th:fragment="dropdownProduct">
-                        <button id="multiLevelDropdownButtonProduct" data-dropdown-toggle="dropdownProduct" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
-                            <svg aria-hidden="true" class="w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                        <button id="multiLevelDropdownButtonProduct" data-dropdown-toggle="dropdownProduct"
+                                type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <svg aria-hidden="true"
+                                 class="w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                            </svg>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">제품 구분</span>
-                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
                         </button>
-                        <div id="dropdownProduct" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2">
-                            <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="multiLevelDropdownButton">
+                        <div id="dropdownProduct"
+                             class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2">
+                            <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="multiLevelDropdownButton">
                                 <li th:each="category : ${allProductCategories}">
-                                    <button th:id="'categoryButton_' + ${category.id}" th:data-dropdown-toggle="'dropdownProduct_' + ${category.id}" th:text="${category.name}" class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                        <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                                    </svg></button>
+                                    <button th:id="'categoryButton_' + ${category.id}"
+                                            th:data-dropdown-toggle="'dropdownProduct_' + ${category.id}"
+                                            th:text="${category.name}"
+                                            class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                            <path stroke="black" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2" d="m1 9 4-4-4-4"/>
+                                        </svg>
+                                    </button>
 
-                                    <div th:id="'dropdownProduct_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700" style="max-height: 400px; overflow-y: auto;">
+                                    <div th:id="'dropdownProduct_' + ${category.id}"
+                                         class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700"
+                                         style="max-height: 400px; overflow-y: auto;">
 
-                                        <div class="py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200" >
+                                        <div class="py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
                                             <div style="margin-bottom: 4px" th:if="${category.products.size()>1}">
-                                                <input th:id="'selectAll_product_' + ${category.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" th:data-product-category-id="${category.id}" onclick="selectAllProduct(this)">
-                                                <label th:for="'selectAll_product_' + ${category.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">전체 선택</label>
+                                                <input th:id="'selectAll_product_' + ${category.id}" type="checkbox"
+                                                       class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                                       th:data-product-category-id="${category.id}"
+                                                       onclick="selectAllProduct(this)">
+                                                <label th:for="'selectAll_product_' + ${category.id}"
+                                                       class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">전체
+                                                    선택</label>
                                             </div>
                                             <div style="margin-bottom: 4px" th:each="product : ${category.products}">
-                                                <input th:id="'product_' + ${product.id}" th:value="${product.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 product-checkbox" th:data-product-category-id="${category.id}">
-                                                <label th:for="'product_' + ${product.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${product.name} "></label>
+                                                <input th:id="'product_' + ${product.id}" th:value="${product.id}"
+                                                       type="checkbox"
+                                                       class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 product-checkbox"
+                                                       th:data-product-category-id="${category.id}">
+                                                <label th:for="'product_' + ${product.id}"
+                                                       class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                                       th:text="${product.name} "></label>
                                             </div>
                                         </div>
                                     </div>
@@ -47,30 +85,65 @@
                         </div>
                     </div>
                 </li>
+                <!--                이슈 필터링-->
                 <li class="mt-3">
                     <div th:fragment="dropdownIssue">
-                        <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
-                            <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>
+                        <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue" type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <svg aria-hidden="true"
+                                 class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">이슈 구분</span>
-                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
                         </button>
-                        <div id="dropdownIssue" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2" style="width: 340px">
-                            <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="multiLevelDropdownButton">
+                        <div id="dropdownIssue"
+                             class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-600 right-0 mt-2"
+                             style="width: 340px">
+                            <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="multiLevelDropdownButton">
                                 <li th:each="category : ${allIssueCategories}">
-                                    <button th:id="'categoryButton_' + ${category.id}" th:data-dropdown-toggle="'dropdownIssue_' + ${category.id}" th:text="${category.name}" class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                        <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                                    </svg></button>
+                                    <button th:id="'categoryButton_' + ${category.id}"
+                                            th:data-dropdown-toggle="'dropdownIssue_' + ${category.id}"
+                                            th:text="${category.name}"
+                                            class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                            <path stroke="black" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2" d="m1 9 4-4-4-4"/>
+                                        </svg>
+                                    </button>
 
-                                    <div th:id="'dropdownIssue_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700" style="max-height: 400px; width: 340px; overflow-y: auto;">
+                                    <div th:id="'dropdownIssue_' + ${category.id}"
+                                         class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700"
+                                         style="max-height: 400px; width: 340px; overflow-y: auto;">
 
-                                        <div class="py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200" >
+                                        <div class="py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
                                             <div style="margin-bottom: 4px" th:if="${category.issues.size()>1}">
-                                                <input th:id="'selectAll_issue_' + ${category.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" th:data-issue-category-id="${category.id}" onclick="selectAllIssue(this)">
-                                                <label th:for="'selectAll_issue_' + ${category.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">전체 선택</label>
+                                                <input th:id="'selectAll_issue_' + ${category.id}" type="checkbox"
+                                                       class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                                       th:data-issue-category-id="${category.id}"
+                                                       onclick="selectAllIssue(this)">
+                                                <label th:for="'selectAll_issue_' + ${category.id}"
+                                                       class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">전체
+                                                    선택</label>
                                             </div>
                                             <div style="margin-bottom: 4px" th:each="issue : ${category.issues}">
-                                                <input th:id="'issue_' + ${issue.id}" th:value="${issue.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 issue-checkbox" th:data-issue-category-id="${category.id}">
-                                                <label th:for="'issue_' + ${issue.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${issue.name} "></label>
+                                                <input th:id="'issue_' + ${issue.id}" th:value="${issue.id}"
+                                                       type="checkbox"
+                                                       class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 issue-checkbox"
+                                                       th:data-issue-category-id="${category.id}">
+                                                <label th:for="'issue_' + ${issue.id}"
+                                                       class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                                       th:text="${issue.name} "></label>
                                             </div>
                                         </div>
                                     </div>
@@ -79,89 +152,130 @@
                         </div>
                     </div>
                 </li>
+                <!--                상태 필터링-->
                 <li class="mt-3">
                     <div th:fragment="dropdownState">
-                        <button id="multiLevelDropdownButtonState" data-dropdown-toggle="dropdownState" type="button" class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" >
-                            <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+                        <button id="multiLevelDropdownButtonState" data-dropdown-toggle="dropdownState" type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <svg aria-hidden="true"
+                                 class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                                <path fill-rule="evenodd"
+                                      d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">업무 구분</span>
-                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                            <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
                         </button>
-                        <div id="dropdownState" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
-                            <ul class="relative py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200" >
+                        <div id="dropdownState"
+                             class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow w-56 dark:bg-gray-700">
+                            <ul class="relative py-2 px-4 pb-4 text-sm text-gray-700 dark:text-gray-200">
                                 <li class="flex items-center py-2">
-                                    <input th:id="selectAll_state" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" onclick="selectAll()">
-                                    <label th:for="selectAll_state" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">전체 선택</label>
+                                    <input th:id="selectAll_state" type="checkbox"
+                                           class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                           onclick="selectAll()">
+                                    <label th:for="selectAll_state"
+                                           class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">전체
+                                        선택</label>
                                 </li>
                                 <li th:each="state : ${allStates}" class="flex items-center py-2">
-                                    <input th:id="'state_' + ${state.id}" th:value="${state.id}" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" >
-                                    <label th:for="'state_' + ${state.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" th:text="${state.name} "></label>
+                                    <input th:id="'state_' + ${state.id}" th:value="${state.id}" type="checkbox"
+                                           class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                    <label th:for="'state_' + ${state.id}"
+                                           class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                           th:text="${state.name} "></label>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </li>
             </ul>
+            <!--            소속 필터링-->
             <div class="mx-auto max-w-2xl mb-2.5" style="margin-top: 24px">
                 <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                <select id="team" name="teamId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <select id="team" name="teamId"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     <option value="" selected>소속을 선택해주세요.</option>
                     <th:block th:each="team : ${allTeams}">
                         <option th:value="${team.id}" th:text="${team.name}" th:attr="data-teamId=${team.id}"></option>
                     </th:block>
                 </select>
             </div>
+            <!--            엔지니어 필터링-->
             <div class="mx-auto max-w-2xl">
                 <label for="member" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                <select id="member" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <select id="member" name="engineerId"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     <option value="all" selected>엔지니어를 선택해주세요.</option>
                     <th:block th:each="memp : ${allMemps}">
-                        <option th:value="${memp.id}" th:text="${memp.name}" th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
+                        <option th:value="${memp.id}" th:text="${memp.name}"
+                                th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
                     </th:block>
                 </select>
             </div>
+            <!--            고객사 필터링-->
             <div class="mx-auto max-w-2xl" style="margin-top: 24px">
                 <div class="flex">
-                    <span class="font-normal" style="font-size: 12px" >고객사</span>
+                    <span class="font-normal" style="font-size: 12px">고객사</span>
                 </div>
 
                 <label for="customerName"></label>
-                <input type="text"  name="customerName" id="customerName" list="customerList" th:attr="placeholder='고객사를 검색하세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <input type="text" name="customerName" id="customerName" list="customerList"
+                       th:attr="placeholder='고객사를 검색하세요.'"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <datalist id="customerList">
-                    <option th:each="customer : ${allCustomers}" th:value="${customer.name}" ></option>
+                    <option th:each="customer : ${allCustomers}" th:value="${customer.name}"></option>
                 </datalist>
 
             </div>
+            <!--            프로젝트 필터링-->
             <div class="mx-auto max-w-2xl" style="margin-top: 24px">
                 <div class="flex">
-                    <span class="font-normal" style="font-size: 12px" >프로젝트</span>
+                    <span class="font-normal" style="font-size: 12px">프로젝트</span>
                 </div>
 
                 <label for="projectName"></label>
-                <input type="text"  name="projectName" id="projectName" list="projectList" th:attr="placeholder='프로젝트를 검색하세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                <input type="text" name="projectName" id="projectName" list="projectList"
+                       th:attr="placeholder='프로젝트를 검색하세요.'"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <datalist id="projectList">
-                    <option th:each="project : ${allProjects}" th:value="${project.name}" ></option>
+                    <option th:each="project : ${allProjects}" th:value="${project.name}"></option>
                 </datalist>
 
             </div>
+            <!--            기간 필터링-->
             <div style="margin-top: 24px">
-                <div date-rangepicker class="block items-center align-middle" >
+                <div class="block items-center align-middle">
                     <div class="flex">
-                        <span class="font-normal" style="font-size: 12px" >시작일</span>
+                        <span class="font-normal" style="font-size: 12px">시작일</span>
                     </div>
 
                     <div class="mb-2.5">
-                        <input name="start" id="startDate" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
+                        <input name="start" id="startDate" type="date"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="Select date start">
                     </div>
                     <div class="flex">
 
                         <span class="mt-5.5 font-normal" style="font-size: 12px">종료일</span>
                     </div>
                     <div>
-                        <input name="end" id="endDate" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
+                        <input name="end" id="endDate" type="date"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="Select date end">
                     </div>
                 </div>
             </div>
-            <button id="FilterApplyBtn" onclick="applyFilters()" class="mt-5 w-full h-14 p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-800 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+            <!--            적용버튼-->
+            <button id="FilterApplyBtn" onclick="applyFilters()"
+                    class="mt-5 w-full h-14 p-10 py-2 px-4 text-sm font-medium text-white focus:outline-none bg-gray-800 rounded-lg border border-gray-200 hover:bg-gray-700 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    type="button">
                 적용하기
             </button>
         </div>
@@ -170,39 +284,58 @@
     <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+                <!--                검색창-->
                 <div class="w-full md:w-1/2">
                     <form class="flex items-center flex" onsubmit="return submitSearch(event)">
                         <label for="simple-search" class="sr-only">Search</label>
                         <div id="search-container" class="relative w-full">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                     fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                          clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
+                            <input type="text" id="simple-search"
+                                   class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="Search" required="">
                         </div>
-                        <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <button type="submit"
+                                class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Search
                         </button>
                     </form>
                 </div>
                 <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
-                    <div id="space-container" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    <div id="space-container"
+                         class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
                         </svg>
-                        Add space
                     </div>
+                    <!--                    필터링, 필터링 초기화 버튼-->
                     <div class="flex items-center w-full space-x-3 md:w-auto">
-                        <button id="filterBtn" class=" flex items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                        <button id="filterBtn"
+                                class=" flex items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                 class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                      d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                                      clip-rule="evenodd"/>
                             </svg>
                             Filter
                         </button>
-                        <button id="resetBtn" onclick="applyResetBtn()" class="ml-2.5 flex h-full items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                            <svg class="w-3 h-3 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
+                        <button id="resetBtn" onclick="applyResetBtn()"
+                                class="ml-2.5 flex h-full items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                type="button">
+                            <svg class="w-3 h-3 mr-2 text-gray-800 dark:text-white" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
                             </svg>
                             Reset
                         </button>
@@ -211,132 +344,180 @@
                 </div>
             </div>
             <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
-
+                <!--                현재 선택된 필터링 조건-->
                 <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 8px">
-                    <div th:each="product : ${selectedProducts}" style="display: block" >
-                        <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"  th:text="${product.getName()}">Red</span>
+                    <div th:each="product : ${selectedProducts}" style="display: block">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                              th:text="${product.getName()}">Red</span>
                     </div>
                     <div th:each="issue : ${selectedIssues}" style="display: block">
-                        <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"  th:text="${issue.getName()}">Green</span>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              th:text="${issue.getName()}">Green</span>
                     </div>
-                    <div th:each="state : ${selectedStates}"style="display: block" >
-                        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${state.getName()}">Yellow</span>
+                    <div th:each="state : ${selectedStates}" style="display: block">
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"
+                              th:text="${state.getName()}">Yellow</span>
                     </div>
-                    <div th:each="team : ${selectedTeams}" style="display: block" >
-                        <span class="bg-orange-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${team.getName()}">Yellow</span>
+                    <div th:each="team : ${selectedTeams}" style="display: block">
+                        <span class="bg-orange-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"
+                              th:text="${team.getName()}">Yellow</span>
                     </div>
-                    <div th:each="memp : ${selectedMemps}" style="display: block" >
-                        <span class="bg-orange-300 text-yellow-900 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${memp.getName()}">Yellow</span>
+                    <div th:each="memp : ${selectedMemps}" style="display: block">
+                        <span class="bg-orange-300 text-yellow-900 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"
+                              th:text="${memp.getName()}">Yellow</span>
                     </div>
-                    <div style="display: block" >
-                        <span th:if="${selectedcustomerName}" class="bg-purple-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${selectedcustomerName}">Yellow</span>
+                    <div style="display: block">
+                        <span th:if="${selectedcustomerName}"
+                              class="bg-purple-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"
+                              th:text="${selectedcustomerName}">Yellow</span>
                     </div>
-                    <div style="display: block" >
-                        <span th:if="${selectedprojectName}" class="bg-purple-200 text-yellow-900 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300" th:text="${selectedprojectName}">Yellow</span>
+                    <div style="display: block">
+                        <span th:if="${selectedprojectName}"
+                              class="bg-purple-200 text-yellow-900 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300"
+                              th:text="${selectedprojectName}">Yellow</span>
                     </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; flex-direction: row; margin-bottom: 12px">
-                <span th:if="${startDate != null}" th:text="'start '+ ${startDate}" class="mt-1 bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
-                      <svg class="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <span th:if="${startDate != null}" th:text="'start '+ ${startDate}"
+                      class="mt-1 bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                      <svg class="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                           fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
                       </svg>
-                    </span >
-                <span  th:if="${endDate != null}" th:text="'end '+ ${endDate}" class="mt-1 bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
-                      <svg class="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    </span>
+                    <span th:if="${endDate != null}" th:text="'end '+ ${endDate}"
+                          class="mt-1 bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
+                      <svg class="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                           fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
                       </svg>
                     </span>
                 </div>
-            <div class="max-h-64 overflow-hidden">
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">프로젝트명</th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">제품명</th>
-                        <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
-                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 25%" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" >이슈명</th>
-                        <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자
-                            <button id="sortButton" th:attr="data-sortOrder=${sortOrder}">
-                                <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5m0 6 4 4 4-4"/>
-                                </svg>
-                            </button>
-                        </th>
-                        <th scope="col" class="px-4 py-3 w-1/12" style="width: 15%">담당엔지니어</th>
+                <!--                지원내역 테이블-->
+                <div class="max-h-64 overflow-hidden">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+                           style="table-layout: fixed; width: 100%;">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 25%">프로젝트명</th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 20%">제품명</th>
+                            <th scope="col" class="px-4 py-6 w-4/12" style="width: 45%">작업제목</th>
+                            <th scope="col" class="px-4 py-3 w-1/12" style="width: 25%"
+                                th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}">이슈명
+                            </th>
+                            <th scope="col" class="px-4 py-3 w-2/12" style="width: 15%">지원일자
+                                <button id="sortButton" th:attr="data-sortOrder=${sortOrder}">
+                                    <svg class="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="M9 5 5 1 1 5m0 6 4 4 4-4"/>
+                                    </svg>
+                                </button>
+                            </th>
+                            <th scope="col" class="px-4 py-3 w-1/12" style="width: 15%">담당엔지니어</th>
 
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="post : ${posts}" class="border-b dark:border-gray-700" th:data-support-id="${post.id}">
-                        <td class="th-pt px-4 py-3 projectName" th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">고객사</td>
-                        <td class="th-p0 px-4 py-3 productName" >
-                            <span th:unless="${post.productName.equals('-')}" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="post : ${posts}" class="border-b dark:border-gray-700"
+                            th:data-support-id="${post.id}">
+                            <td class="th-pt px-4 py-3 projectName"
+                                th:text="${post.project != null ? (post.project.name.length() > 15 ? post.project.name.substring(0, 15) + '...' : post.project.name) : 'Unknown'}">
+                                고객사
+                            </td>
+                            <td class="th-p0 px-4 py-3 productName">
+                            <span th:unless="${post.productName.equals('-')}"
+                                  class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
                                   th:text="${post.productName}">제품명</span>
-                        </td>
-                        <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
-                            <a th:href="@{/details(supportId=${post.id})}" class="hover:text-primary-700 dark:hover:text-primary-500">
-                                <span style="font-weight: 500" th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
-                            </a>
-                        </td>
-                        <td class="th-p0 px-4 py-3" th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}" th:text="${post.issueType}">이슈</td>
-                        <td class="th-p0 px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
-                        <td class="th-pb px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
-                    </tr>
-                    </tbody>
-                </table>
+                            </td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white task-title-column">
+                                <a th:href="@{/support/{supportId}(supportId=${post.id})}"
+                                   class="flex items-center hover:text-primary-700 dark:hover:text-primary-500">
+                                    <span style="font-weight: 500"
+                                          th:text="${(post.taskTitle != null && post.taskTitle.trim().length() > 0) ? (post.taskTitle.length() > 30 ? post.taskTitle.substring(0, 30) + '...' : post.taskTitle) : (post.taskSummary.length() > 30 ? post.taskSummary.substring(0, 30) + '...' : post.taskSummary)}"></span>
+
+                                    <img th:if="${post.files.size() > 0}"
+                                         src="https://e7.pngegg.com/pngimages/637/806/png-clipart-floppy-disk-computer-icons-disk-storage-personal-computer-save-button-blue-rectangle.png"
+                                         class="w-3 h-3 ml-2.5" alt=""/>
+                                </a>
+
+                            </td>
+                            <td class="th-p0 px-4 py-3"
+                                th:if="${#authorization.expression('hasRole(''ROLE_SUPERADMIN'')')}"
+                                th:text="${post.issueType}">이슈
+                            </td>
+                            <td class="th-p0 px-4 py-3" th:text="${post.supportDate}">2020-01-01</td>
+                            <td class="th-pb px-4 py-3" th:text="${post.engineerName}">엔지니어</td>
+                        </tr>
+                        </tbody>
+                    </table>
 
 
-            </div>
+                </div>
 
-            <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
+                <!--                페이지네이션-->
+                <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+                     aria-label="Table navigation">
     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${posts.totalElements > 0} ? ${posts.pageable.offset + 1} : 0">1</span>
+        <span class="font-semibold text-gray-900 dark:text-white"
+              th:text="${posts.totalElements > 0} ? ${posts.pageable.offset + 1} : 0">1</span>
         -
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${posts.totalElements > (posts.pageable.offset + posts.size)} ? ${posts.pageable.offset + posts.size} : ${posts.totalElements}">10</span>
+        <span class="font-semibold text-gray-900 dark:text-white"
+              th:text="${posts.totalElements > (posts.pageable.offset + posts.size)} ? ${posts.pageable.offset + posts.size} : ${posts.totalElements}">10</span>
         of
         <span class="font-semibold text-gray-900 dark:text-white" th:text="${posts.totalElements}">0</span>
     </span>
-                <ul class="inline-flex items-stretch -space-x-px">
-                    <li>
-                        <a href="#" id="prevBtn" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Previous</span>
-                            <svg class="w-5 h-5 " aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </li>
-                    <th:block th:with="currentGroupNo=${currentPage/5}">
-                        <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
-                            <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
-                                <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
-                                    <button
-                                            type="button"
-                                            th:onclick="'pageMove('+${pageNo}+')'"
-                                            th:classappend=" (${pageNo} == ${currentPage+1}) ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
-                                            th:text="${pageNo}">
-                                    </button>
-                                </th:block>
-                            </li>
+                    <ul class="inline-flex items-stretch -space-x-px">
+                        <li>
+                            <a href="#" id="prevBtn"
+                               class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                <span class="sr-only">Previous</span>
+                                <svg class="w-5 h-5 " aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <th:block th:with="currentGroupNo=${currentPage/5}">
+                            <th:block
+                                    th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
+                                <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}"
+                                    th:if="${pageNo <= totalPages}">
+                                    <th:block
+                                            th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
+                                        <button
+                                                type="button"
+                                                th:onclick="'pageMove('+${pageNo}+')'"
+                                                th:classappend=" (${pageNo} == ${currentPage+1}) ? 'font-semibold active flex items-center justify-center text-sm py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                                                th:text="${pageNo}">
+                                        </button>
+                                    </th:block>
+                                </li>
+
+                            </th:block>
 
                         </th:block>
-
-                    </th:block>
-                    <li>
-                        <a href="#" id="nextBtn" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Next</span>
-                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                        <li>
+                            <a href="#" id="nextBtn"
+                               class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                <span class="sr-only">Next</span>
+                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
-    </div>
 </section>
-<!-- End block -->
 <div th:replace="footer :: footer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
@@ -371,11 +552,11 @@
             font-size: 12px;
         }
 
-        .productName{
+        .productName {
             display: none;
         }
 
-        .projectName{
+        .projectName {
             display: none;
         }
 
@@ -422,17 +603,18 @@
         }
 
         tbody,
-        td{
+        td {
             padding: 0;
         }
 
 
-        #filterBtn{
-            margin: 0px;
+        #filterBtn {
+            margin: 0;
             width: 100%;
         }
 
     }
+
     svg {
         pointer-events: none;
     }
@@ -441,63 +623,45 @@
 
 <script th:inline="javascript">
 
-    $(document).ready(function() {
-        // 페이지 로드 시 로컬 스토리지에서 클릭 이력 가져오기
-        var clickedRows = JSON.parse(localStorage.getItem('clickedRows')) || [];
+    const groupedIssues = [[${groupedIssues}]];
+    const currentPage = [[${currentPage}]];
+    const totalPages = [[${totalPages}]];
 
-        $(document).ready(function() {
-            // 클릭 이벤트 처리
-            $('table tbody tr').on('click', function() {
-                // 클릭된 행의 support id 가져오기
-                var supportId = $(this).data('support-id');
+    const teamSelect = document.getElementById('team');
+    const memberSelect = document.getElementById('member');
+    const initialMembers = [...document.querySelectorAll('#member option')];
+    const sortButton = document.getElementById('sortButton');
+    const filterBtn = document.getElementById('filterBtn');
+    const sidebar = document.getElementById('default-sidebar');
+    const simpleSearch = document.getElementById('simple-search');
+    const currentParams = getCurrentURLParams();
 
-                // supportId가 기존에 존재하지 않을때만 추가
+    $(document).ready(function () {
+
+        // 현재 적용된 키워드 검색창에 추가
+        if (currentParams['Keyword'] != null) {
+            simpleSearch.value = currentParams['Keyword'];
+        }
+
+        // 조회한 지원내역은 작업제목 회색으로 표시
+        const clickedRows = JSON.parse(localStorage.getItem('clickedRows')) || [];
+        $(document).ready(function () {
+            $('table tbody tr').on('click', function () {
+                const supportId = $(this).data('support-id');
                 if (clickedRows.indexOf(supportId) === -1) {
                     clickedRows.push(supportId);
                     localStorage.setItem('clickedRows', JSON.stringify(clickedRows));
                 }
             });
         });
-
-        // 저장된 클릭 이력에 따라 스타일 적용
-        clickedRows.forEach(function(postId) {
+        clickedRows.forEach(function (postId) {
             $('table tbody tr[data-support-id="' + postId + '"]').addClass('clicked-row');
         });
-    });
 
-    function selectAll() {
-        var checkboxes = document.querySelectorAll('[id^="state_"]');
-        var selectAllCheckbox = document.getElementById('selectAll_state');
-        var selectAllChecked = selectAllCheckbox.checked;
-
-        checkboxes.forEach(function(checkbox) {
-            checkbox.checked = selectAllChecked;
-        });
-    }
-
-    function selectAllIssue(checkbox) {
-        var categoryId = checkbox.getAttribute('data-issue-category-id'); // 현재 클릭한 체크박스의 data-category-id 속성을 가져옴
-        var issueCheckboxes = document.querySelectorAll('[data-issue-category-id="' + categoryId + '"].issue-checkbox'); // 같은 카테고리에 속하는 모든 이슈 체크박스를 가져옴
-
-        for (var i = 0; i < issueCheckboxes.length; i++) {
-            issueCheckboxes[i].checked = checkbox.checked; // 현재 클릭한 체크박스의 상태를 모든 이슈 체크박스에 적용
-        }
-    }
-
-    function selectAllProduct(checkbox) {
-        var categoryId = checkbox.getAttribute('data-product-category-id'); // 현재 클릭한 체크박스의 data-category-id 속성을 가져옴
-        var productCheckboxes = document.querySelectorAll('[data-product-category-id="' + categoryId + '"].product-checkbox'); // 같은 카테고리에 속하는 모든 이슈 체크박스를 가져옴
-
-        for (var i = 0; i < productCheckboxes.length; i++) {
-            productCheckboxes[i].checked = checkbox.checked; // 현재 클릭한 체크박스의 상태를 모든 이슈 체크박스에 적용
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
+        // 제품 필터링 버튼 체크
         const categoryButtons = document.querySelectorAll("[data-dropdown-toggle^='dropdownProduct_']");
-
         categoryButtons.forEach(button => {
-            button.addEventListener("click", function() {
+            button.addEventListener("click", function () {
                 const categoryId = button.getAttribute("data-dropdown-toggle").replace("dropdownProduct_", "");
                 const productsContainer = document.querySelector("#dropdownProduct_" + categoryId);
                 const checkboxes = productsContainer.querySelectorAll(".product-checkbox");
@@ -507,9 +671,7 @@
                 }
             });
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", function () {
         // 대분류 버튼 클릭 시 해당 드롭다운 메뉴 표시/숨김
         const categoryButtonsProduct = document.querySelectorAll("[data-dropdown-toggle^='dropdownProduct_']");
         categoryButtonsProduct.forEach(button => {
@@ -529,16 +691,41 @@
             });
         });
 
+        // 페이지네이션 이전/이후 버튼 클릭 핸들러
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (currentPage >= 5) {
+                const prevPage = (parseInt((currentPage - 5) / 5)) * 5;
+                const currentParams = getCurrentURLParams();
+                currentParams['page'] = prevPage + 1;
+                window.location.href = '/support/search?' + new URLSearchParams(currentParams).toString();
+            }
+        });
+
+        nextBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            if (Math.floor(currentPage / 5) < Math.floor((totalPages - 1) / 5)) {
+                const nextPage = (parseInt((currentPage + 5) / 5)) * 5;
+                const currentParams = getCurrentURLParams();
+                currentParams['page'] = nextPage + 1;
+                window.location.href = '/support/search?' + new URLSearchParams(currentParams).toString();
+            }
+        });
     });
 
-    const teamSelect = document.getElementById('team');
-    const memberSelect = document.getElementById('member');
-
-    // 초기 멤버 리스트 저장
-    const initialMembers = [...document.querySelectorAll('#member option')];
+    // 필터링 사이드바 핸들라
+    document.addEventListener('click', (event) => {
+        if (event.target !== sidebar && !sidebar.contains(event.target) && event.target !== filterBtn) {
+            sidebar.classList.remove('open');
+        }
+    });
 
     // 팀 선택 변경 시 이벤트 핸들러
-    teamSelect.addEventListener('change', function() {
+    teamSelect.addEventListener('change', function () {
         const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
 
         // 멤버 선택 옵션 초기화
@@ -554,26 +741,61 @@
         }
     });
 
-    const groupedIssues = /*[[${groupedIssues }]]*/ [];
+    // 정렬 버튼
+    sortButton.addEventListener('click', () => {
+        const currentParams = getCurrentURLParams();
+        currentParams["sortOrder"] = (currentParams["sortOrder"] === 'desc' ? 'asc' : 'desc');
+        currentParams["page"] = 0;
+        window.location.href = "/support/search?" + new URLSearchParams(currentParams).toString();
+    });
 
-    function showCategoryIssues(category) {
-        const issues = groupedIssues[category];
-        const issueList = document.getElementById('issueList');
+    // 필터 버튼 클릭
+    filterBtn.addEventListener('click', () => {
+        if (sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+        } else {
+            sidebar.classList.add('open');
+        }
+    });
 
-        // 이슈 리스트를 화면에 표시
-        issueList.innerHTML = '';
-        issues.forEach(issue => {
-            issueList.innerHTML += `<li>${issue.issueName}</li>`;
+    // 상태(업무) 모두 선택
+    function selectAll() {
+        const checkboxes = document.querySelectorAll('[id^="state_"]');
+        const selectAllCheckbox = document.getElementById('selectAll_state');
+        const selectAllChecked = selectAllCheckbox.checked;
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = selectAllChecked;
         });
     }
 
+    // 이슈 모두 선택
+    function selectAllIssue(checkbox) {
+        const categoryId = checkbox.getAttribute('data-issue-category-id');
+        const issueCheckboxes = document.querySelectorAll('[data-issue-category-id="' + categoryId + '"].issue-checkbox');
 
+        for (let i = 0; i < issueCheckboxes.length; i++) {
+            issueCheckboxes[i].checked = checkbox.checked;
+        }
+    }
+
+    // 제품 모두 선택
+    function selectAllProduct(checkbox) {
+        const categoryId = checkbox.getAttribute('data-product-category-id'); // 현재 클릭한 체크박스의 data-category-id 속성을 가져옴
+        const productCheckboxes = document.querySelectorAll('[data-product-category-id="' + categoryId + '"].product-checkbox'); // 같은 카테고리에 속하는 모든 이슈 체크박스를 가져옴
+
+        for (let i = 0; i < productCheckboxes.length; i++) {
+            productCheckboxes[i].checked = checkbox.checked; // 현재 클릭한 체크박스의 상태를 모든 이슈 체크박스에 적용
+        }
+    }
+
+    // 필터링 적용
     function applyFilters() {
 
         const teamSelect = document.getElementById('team');
         const memberSelect = document.getElementById('member');
-        const customerName = document.getElementById('customerName').value ;
-        const projectName = document.getElementById('projectName').value ;
+        const customerName = document.getElementById('customerName').value;
+        const projectName = document.getElementById('projectName').value;
 
         const selectedProductIds = [];
 
@@ -632,41 +854,13 @@
             }
         });
 
-        window.location.href = '/search?' + new URLSearchParams(queryParams).toString();
+        window.location.href = '/support/search?' + new URLSearchParams(queryParams).toString();
     }
 
-
+    // 초기화 버튼
     function applyResetBtn() {
-        window.location.href = '/search?';
+        window.location.href = '/support/search?';
     }
-
-    sortButton.addEventListener('click', () => {
-        const currentParams = getCurrentURLParams();
-        currentParams["sortOrder"] = (currentParams["sortOrder"] === 'desc' ? 'asc' : 'desc');
-        currentParams["page"] = 0;
-        window.location.href = "/search?" + new URLSearchParams(currentParams).toString();
-    });
-
-    const filterBtn = document.getElementById('filterBtn');
-    const sidebar = document.getElementById('default-sidebar');
-
-
-    filterBtn.addEventListener('click', () => {
-        if (sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-        } else {
-            sidebar.classList.add('open');
-        }
-    });
-
-    document.addEventListener('click', (event) => {
-        if (event.target !== sidebar && !sidebar.contains(event.target) && event.target !== filterBtn) {
-            sidebar.classList.remove('open');
-        }
-    });
-
-    const currentPage = [[${currentPage }]];
-    const totalPages = [[${totalPages }]];
 
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -675,41 +869,7 @@
         return queryParams;
     }
 
-    const simpleSearch = document.getElementById('simple-search');
-
-    const currentParams = getCurrentURLParams();
-    if (currentParams['Keyword']!=null){
-        simpleSearch.value = currentParams['Keyword'];
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-
-        prevBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            if (currentPage >= 5) {
-                const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
-                const currentParams = getCurrentURLParams();
-                currentParams['page'] = prevPage+1;
-                window.location.href = '/search?' + new URLSearchParams(currentParams).toString();
-            }
-        });
-
-        nextBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
-                const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
-                const currentParams = getCurrentURLParams();
-                currentParams['page'] = nextPage+1;
-                window.location.href = '/search?' + new URLSearchParams(currentParams).toString();
-            }
-        });
-    });
-
-
-
+    // 검색 제출
     function submitSearch(event) {
         event.preventDefault();
 
@@ -718,20 +878,35 @@
         const searchInput = document.getElementById("simple-search");
         currentParams["Keyword"] = searchInput.value.trim();
         currentParams["page"] = 0;
-        window.location.href = "/search?" + new URLSearchParams(currentParams).toString();
+        window.location.href = "/support/search?" + new URLSearchParams(currentParams).toString();
 
         return false;
     }
 
+    // 페이지 전환
     function pageMove(pageNum) {
         const currentParams = getCurrentURLParams();
         currentParams["page"] = pageNum;
-        window.location.href = "/search?" + new URLSearchParams(currentParams).toString();
+        window.location.href = "/support/search?" + new URLSearchParams(currentParams).toString();
+    }
+
+    function showCategoryIssues(category) {
+        const issues = groupedIssues[category];
+        const issueList = document.getElementById('issueList');
+
+        // 이슈 리스트를 화면에 표시
+        issueList.innerHTML = '';
+        issues.forEach(issue => {
+            issueList.innerHTML += `<li>${issue.issueName}</li>`;
+        });
     }
 
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
+
     .clicked-row .task-title-column {
         color: #919191; /* 회색으로 변경할 색상 */
     }

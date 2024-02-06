@@ -1,12 +1,20 @@
 package com.example.smstest.domain.support.dto;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
-@Data
-@RequiredArgsConstructor
+/**
+ * 지원내역 등록, 수정 시 사용될 DTO
+ */
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class SupportRequest {
 
     private String taskType;
@@ -38,5 +46,11 @@ public class SupportRequest {
     private Long supportTypeId;
 
     private Float supportTypeHour;
+
+    /**
+     * 지원내역 수정 시 사용할 필드
+     */
+    private Long supportId;
+    private List<Long> deletedFileId;
 
 }

@@ -48,7 +48,6 @@ public class ReqResLogging {
     private String userId;
 
 
-
     public ReqResLogging(String errorType, String httpMethod, String uri, Map<String, Object> params, String logTime, String serverIp, Object requestBody, ErrorCode errorCode, String errorMessage, String userId) {
         this.errorType = errorType;
         this.httpMethod = httpMethod;

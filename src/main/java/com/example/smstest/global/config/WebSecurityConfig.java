@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Thymeleaf에서 sec 속성을 사용할 수 있다. (인증정보에 직접 접근해서 인가를 할 수 있음)
     @Bean
-    public SpringSecurityDialect springSecurityDialect(){
+    public SpringSecurityDialect springSecurityDialect() {
         return new SpringSecurityDialect();
     }
 

@@ -1,5 +1,6 @@
 package com.example.smstest.domain.organization.dto;
 
+import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.support.entity.Support;
 import com.example.smstest.domain.organization.entity.Department;
 import com.example.smstest.domain.auth.entity.Memp;
@@ -9,12 +10,14 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Team 페이지 DTO
+ * Member 페이지 Response DTO
  */
 @Data
-public class TeamInfoDTO {
+public class MemberInfoResponse {
     private List<Memp> memps;
-    private Team team;
     private Department department;
+    private Memp memp;
+    private Team team;
     private List<Support> supports;
+    private List<Client> allClients;
 }

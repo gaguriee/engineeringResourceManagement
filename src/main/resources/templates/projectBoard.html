@@ -2,15 +2,18 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 
     <style>
-        * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+        * {
+            font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+        }
     </style>
 </head>
 <body>
@@ -21,22 +24,33 @@
         <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
             <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
                 <div class="w-full" id="list_header" style="justify-items: end; align-items: end">
+                    <!--프로젝트 검색-->
                     <form class="flex items-center flex" onsubmit="return submitSearch(event)">
                         <label for="simple-search" class="sr-only">Search</label>
                         <div id="search-container" class="relative w-1/2">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                     fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                          clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트 또는 고객사명으로 검색" required="">
+                            <input type="text" id="simple-search"
+                                   class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="프로젝트 또는 고객사명으로 검색" required="">
                         </div>
-                        <button type="submit" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <button type="submit"
+                                class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-lg shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Search
                         </button>
-                        <button id="resetBtn" onclick="applyResetBtn()" class="ml-2.5 flex h-full items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                            <svg class="w-3 h-3 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
+                        <button id="resetBtn" onclick="applyResetBtn()"
+                                class="ml-2.5 flex h-full items-center justify-center max-w-2xl px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                type="button">
+                            <svg class="w-3 h-3 mr-2 text-gray-800 dark:text-white" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                <path stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 1v5h-5M2 19v-5h5m10-4a8 8 0 0 1-14.947 3.97M1 10a8 8 0 0 1 14.947-3.97"/>
                             </svg>
                             Reset
                         </button>
@@ -46,7 +60,9 @@
             <div class="flex-row md:flex-col items-center justify-start space-y-3 md:space-y-0 md:space-x-1 p-4">
 
                 <div class="max-h-64 overflow-hidden">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed; width: 100%;">
+                    <!--                    프로젝트 리스트-->
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+                           style="table-layout: fixed; width: 100%;">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-4 py-3 w-2/12" style="width: 60%">프로젝트명</th>
@@ -57,7 +73,7 @@
                         <tbody>
                         <tr th:each="project : ${projects}" class="border-b dark:border-gray-700">
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
-                                <a th:href="'/project/detail?projectId=' + ${project.id}"
+                                <a th:href="'/project/' + ${project.id}"
                                    th:text="${project.name}" class="hover:text-primary-700 dark:hover:text-primary-500">
                                 </a>
                             </td>
@@ -65,34 +81,43 @@
                         </tr>
                         </tbody>
                     </table>
-
-
                 </div>
 
-                <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
+                <!--                페이지네이션-->
+                <nav class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+                     aria-label="Table navigation">
     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > 0} ? ${projects.pageable.offset + 1} : 0">1</span>
+        <span class="font-semibold text-gray-900 dark:text-white"
+              th:text="${projects.totalElements > 0} ? ${projects.pageable.offset + 1} : 0">1</span>
         -
-        <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements > (projects.pageable.offset + projects.size)} ? ${projects.pageable.offset + projects.size} : ${projects.totalElements}">10</span>
+        <span class="font-semibold text-gray-900 dark:text-white"
+              th:text="${projects.totalElements > (projects.pageable.offset + projects.size)} ? ${projects.pageable.offset + projects.size} : ${projects.totalElements}">10</span>
         of
         <span class="font-semibold text-gray-900 dark:text-white" th:text="${projects.totalElements}">0</span>
     </span>
                     <ul class="inline-flex items-stretch -space-x-px">
                         <li>
-                            <a href="#" id="prevBtn" class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <a href="#" id="prevBtn"
+                               class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                 <span class="sr-only">Previous</span>
-                                <svg class="w-5 h-5 " aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                <svg class="w-5 h-5 " aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                          clip-rule="evenodd"/>
                                 </svg>
                             </a>
                         </li>
                         <th:block th:with="currentGroupNo=${currentPage/5}">
 
-                            <th:block th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
+                            <th:block
+                                    th:with="startPageNo=${currentGroupNo*5 + 1}, endPageNo=${(currentGroupNo + 1)*5}">
 
-                                <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}" th:if="${pageNo <= totalPages}">
-                                    <th:block th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
+                                <li th:each="pageNo : ${#numbers.sequence(startPageNo, endPageNo)}"
+                                    th:if="${pageNo <= totalPages}">
+                                    <th:block
+                                            th:with="currentParams=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest().replaceQueryParam('page', null).build().toUri().query}">
                                         <button
                                                 type="button"
                                                 th:onclick="'pageMove('+${pageNo}+')'"
@@ -106,10 +131,14 @@
 
                         </th:block>
                         <li>
-                            <a href="#" id="nextBtn" class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <a href="#" id="nextBtn"
+                               class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                 <span class="sr-only">Next</span>
-                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                          clip-rule="evenodd"/>
                                 </svg>
                             </a>
                         </li>
@@ -126,36 +155,38 @@
     const currentPage = [[${currentPage }]];
     const totalPages = [[${totalPages }]];
 
-    function applyResetBtn() {
-
-        window.location.href = '/project/search?';
-    }
-
     document.addEventListener('DOMContentLoaded', function () {
+        // 페이지네이션 이전/이후 버튼 클릭 핸들러
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
         prevBtn.addEventListener('click', function (event) {
             event.preventDefault();
             if (currentPage >= 5) {
-                const prevPage = ( parseInt( (currentPage - 5)/5)) * 5;
+                const prevPage = (parseInt((currentPage - 5) / 5)) * 5;
                 const currentParams = getCurrentURLParams();
-                currentParams['page'] = prevPage+1;
+                currentParams['page'] = prevPage + 1;
                 window.location.href = '/project/search?' + new URLSearchParams(currentParams).toString();
             }
         });
 
         nextBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            if (Math.floor(currentPage/5) < Math.floor((totalPages-1)/5) ) {
-                const nextPage = ( parseInt( (currentPage + 5)/5) ) * 5;
+            if (Math.floor(currentPage / 5) < Math.floor((totalPages - 1) / 5)) {
+                const nextPage = (parseInt((currentPage + 5) / 5)) * 5;
                 const currentParams = getCurrentURLParams();
-                currentParams['page'] = nextPage+1;
+                currentParams['page'] = nextPage + 1;
                 window.location.href = '/project/search?' + new URLSearchParams(currentParams).toString();
             }
         });
     });
 
+    // 검색 초기화
+    function applyResetBtn() {
+        window.location.href = '/project/search?';
+    }
+
+    // 현재 페이지의 url params 가져오기
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const queryParams = {};
@@ -163,6 +194,7 @@
         return queryParams;
     }
 
+    // 키워드 검색
     function submitSearch(event) {
         event.preventDefault();
 
@@ -186,7 +218,10 @@
 
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
+
     .task-title-column a {
         display: block;
         overflow: hidden;

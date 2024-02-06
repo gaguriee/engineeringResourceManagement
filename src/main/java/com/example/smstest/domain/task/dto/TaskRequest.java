@@ -5,9 +5,12 @@ import lombok.Setter;
 
 import java.util.Date;
 
+/**
+ * 일정 생성 및 업데이트에 사용되는 DTO
+ */
 @Getter
 @Setter
-public class TaskRequestDTO {
+public class TaskRequest {
 
     private Integer categoryId;
 
@@ -22,6 +25,5 @@ public class TaskRequestDTO {
     private String taskName;
 
     private Boolean fileDeleted;
-
 
 }

@@ -2,13 +2,14 @@
 <html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
 </head>
-<body >
+<body>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -17,9 +18,12 @@
 <section class="bg-white dark:bg-gray-900 ">
     <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-sm text-center">
-            <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">404</h1>
-            <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">NOT FOUND</p>
-            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400" th:text="${message}"></p>
+            <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">
+                404</h1>
+            <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white"
+               th:if="${message == null}">NOT FOUND</p>
+            <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400" th:if="${message != null}"
+               th:text="${message}"></p>
         </div>
     </div>
 </section>
@@ -30,7 +34,9 @@
 
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 </style>
 
 </body>

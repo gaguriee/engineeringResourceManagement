@@ -4,11 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 예외 처리 시 사용될 에러 정의 (custom)
+ */
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
     /* 400 BAD_REQUEST : 잘못된 요청 */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
+    FILE_SAVE_ERROR(HttpStatus.BAD_REQUEST, "디스크 공간 부족 또는 기타 파일 시스템 오류입니다."),
     DATE_INVALID(HttpStatus.BAD_REQUEST, "7일 이내의 내역만 업로드 할 수 있습니다."),
 
     /* 403 FORBIDDEN : 인증되지 않은 사용자 */
@@ -28,7 +32,7 @@ public enum ErrorCode {
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다."),
 
 
-//    500
+    /* 500 : SERVER ERROR : 서버 오류가 발생함 */
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다");
 
 

@@ -1,5 +1,7 @@
 package com.example.smstest.domain.project;
 
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.external.license.LicenseProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +20,31 @@ public class ProjectService {
     private final LicenseProjectRepository licenseProjectRepository;
 
     /**
-     * 특정 키워드 포함 프로젝트명 조회
+     * [ 프로젝트 검색 ]
+     *
      * @param keyword
      * @param pageable
      * @return
      */
     public Page<Project> searchProjects(String keyword, Pageable pageable) {
 
+        // 키워드 포함 검색
         if (keyword != null) {
             String[] words = keyword.split("\\s+");
             String newKeyword = String.join("%", words);
             return projectRepository.findAllByNameContaining(newKeyword, pageable);
         }
-        return projectRepository.findAllByOrderBySupportCountDesc(pageable);    }
+        // 키워드 없을 경우
+        return projectRepository.findAllByOrderBySupportCountDesc(pageable);
+    }
 
+    /**
+     * [ 라이센스 프로젝트 검색 ]
+     *
+     * @param keyword
+     * @param pageable
+     * @return
+     */
     public Page<LicenseProject> searchLicenseProjects(String keyword, Pageable pageable) {
         if (keyword != null) {
             String[] words = keyword.split("\\s+");

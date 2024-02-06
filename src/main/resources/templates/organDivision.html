@@ -2,45 +2,59 @@
 <html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
+    <title>본부별 조회</title>
 </head>
 <body>
 <div th:replace="header :: header"></div>
 
 <section class="bg-white dark:bg-gray-900" style="padding-top: 48px">
-    <nav style="height: 62px" class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+    <nav style="height: 62px"
+         class="justify-between h-16 px-4 py-3 text-gray-700 border border-gray-200 rounded-lg sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+         aria-label="Breadcrumb">
         <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-3 sm:mb-0">
             <li>
                 <div class="flex items-center">
-                    <a th:href="'/department?divisionId='+${division.id}" class="font-bold ml-1 text-sm text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white" th:text="${division.name}"></a>
+                    <a th:href="'/department?divisionId='+${division.id}"
+                       class="font-bold ml-1 text-sm text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                       th:text="${division.name}"></a>
                 </div>
             </li>
         </ol>
     </nav>
+    <!--    소속 (실) 검색-->
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-8">
         <form id="selectForm" action="/team" method="get">
             <label for="department" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-            <select id="department" size="2" name="departmentId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+            <select id="department" size="2" name="departmentId"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                 <th:block th:each="department, iterStat : ${departments}">
-                    <option th:value="${department.id}" th:text="${department.name}" th:selected="${iterStat.index == 0}" ></option>
+                    <option th:value="${department.id}" th:text="${department.name}"
+                            th:selected="${iterStat.index == 0}"></option>
                 </th:block>
             </select>
             <div style="display: flex; align-items: end; justify-content: flex-end;">
-                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                <button type="submit"
+                        class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                     소속 정보 확인하기
                 </button>
             </div>
         </form>
     </div>
 
+    <!--    해당 본부 대상 슈퍼셋 (iframe)-->
     <div class="skeleton mb-6" style="background-color: #F7F7F7;">
-        <iframe class="skeleton iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.division')} + ${division.id}" width="100%" height="550" ></iframe>
-        <iframe class="skeleton iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.division-mobile')}  + ${division.id}" width="100%" height="400" ></iframe>
+        <iframe class="skeleton iframe-pc"
+                th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.division')} + ${division.id}"
+                width="100%" height="550"></iframe>
+        <iframe class="skeleton iframe-mobile hidden"
+                th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.division-mobile')}  + ${division.id}"
+                width="100%" height="400"></iframe>
     </div>
 </section>
 
@@ -48,6 +62,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // 소속(실) 선택 유효성 검사 및 제출
         const form = document.getElementById('selectForm');
         form.addEventListener('submit', function (event) {
             const selectedDepartment = document.getElementById('department').value;
@@ -57,22 +72,22 @@
             }
         });
 
-        var selectForm = document.getElementById('selectForm');
-        var departmentSelect = document.getElementById('department');
+        const selectForm = document.getElementById('selectForm');
+        const departmentSelect = document.getElementById('department');
 
-        departmentSelect.addEventListener('dblclick', function () {
-            // 더블클릭 시 폼을 제출합니다.
+        departmentSelect.addEventListener('dblclick', function () { // 더블클릭 시 제출
             selectForm.submit();
         });
     });
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 
     .skeleton * {
-        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
         background-size: 200% 100%;
-        background-position: 100% 0;
+        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%) 100% 0;
         animation: load 1s infinite;
     }
 

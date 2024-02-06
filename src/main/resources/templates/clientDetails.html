@@ -2,26 +2,38 @@
 <html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
+    <title>고객사 상세조회</title>
 </head>
 <body>
 <div th:replace="header :: header"></div>
 <section class="bg-white dark:bg-gray-900">
-    <div class="mt-14 py-8 px-4 mx-auto max-w-4xl lg:py-8" style="align-items: center; display: grid; align-content: center; text-align: center">
-        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px" th:text="${customer.name}"></h2>
+    <!--    고객사명-->
+    <div class="mt-14 py-8 px-4 mx-auto max-w-4xl lg:py-8"
+         style="align-items: center; display: grid; align-content: center; text-align: center">
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px"
+            th:text="${customer.name}"></h2>
     </div>
+    <!--    고객사 슈퍼셋-->
     <div class="skeleton mb-6" style="background-color: #F7F7F7;">
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer')} + ${customer.id}" width="100%" height="600" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer-mobile')} + ${customer.id}" width="100%" height="400" ></iframe>
+        <iframe class="iframe-pc"
+                th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer')} + ${customer.id}"
+                width="100%" height="600"></iframe>
+        <iframe class="iframe-mobile hidden"
+                th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.customer-mobile')} + ${customer.id}"
+                width="100%" height="400"></iframe>
     </div>
 </section>
 <div th:replace="footer :: footer"></div>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 
     .skeleton * {
         background-size: 200% 100%;

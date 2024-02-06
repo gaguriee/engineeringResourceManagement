@@ -31,7 +31,8 @@ import java.util.UUID;
 public class FileRestController {
 
     /**
-     * 에디터 내 사진 파일 업로드
+     * [ 지원내역 등록 에디터 내 사진 파일 업로드 ]
+     *
      * @param uploadFile
      * @return savePath - 저장경로
      */
@@ -42,11 +43,10 @@ public class FileRestController {
 
         // OS 따라 구분자 분리
         String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")){
+        if (os.contains("win")) {
             savePath = System.getProperty("user.dir") + "\\files\\image";
-        }
-        else{
-            savePath = System.getProperty("user.dir") + "/files/image";
+        } else {
+            savePath = "/root/files/image";
         }
 
         java.io.File uploadPath = new java.io.File(savePath);
@@ -65,11 +65,12 @@ public class FileRestController {
             // 파일명 저장
             uploadFileName = uuid + "_" + uploadFileName;
 
-            java.io.File saveFile = new java.io.File(uploadPath, uploadFileName);
-
             try {
+                java.io.File saveFile = new java.io.File(uploadPath, uploadFileName);
                 multipartFile.transferTo(saveFile);
                 return uploadFileName;
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.FILE_SAVE_ERROR);
             } catch (Exception e) {
                 throw new CustomException(ErrorCode.BAD_REQUEST);
             }
@@ -78,7 +79,8 @@ public class FileRestController {
     }
 
     /**
-     * 에디터 내 사진 파일 첨부
+     * [ 지원내역 등록 에디터 내 업로드한 사진 파일 보여주기 ]
+     *
      * @param fileName
      * @return
      */
@@ -92,11 +94,10 @@ public class FileRestController {
 
         // OS 따라 구분자 분리
         String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")){
+        if (os.contains("win")) {
             savePath = System.getProperty("user.dir") + "\\files\\image\\";
-        }
-        else{
-            savePath = System.getProperty("user.dir") + "/files/image/";
+        } else {
+            savePath = "/root/files/image/";
         }
 
         // 설정한 경로로 파일 다운로드
@@ -111,7 +112,7 @@ public class FileRestController {
 
             result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 
-        } catch (NoSuchFileException e){
+        } catch (NoSuchFileException e) {
             log.error("No Such FileException {}", e.getFile());
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -120,6 +121,12 @@ public class FileRestController {
         return result;
     }
 
+    /**
+     * [ 지원내역 등록 내 에디터에서 base64 형식으로 등록된 img 변환 ]
+     *
+     * @param base64Image
+     * @return
+     */
     @RequestMapping(value = "/uploadBase64", method = RequestMethod.POST)
     public String handleBase64Upload(@RequestBody String base64Image) {
         try {
@@ -130,20 +137,18 @@ public class FileRestController {
             String filePath;
 
             String os = System.getProperty("os.name").toLowerCase();
-            if (os.contains("win")){
+            if (os.contains("win")) {
                 savePath = System.getProperty("user.dir") + "\\files\\image";
                 filePath = savePath + "\\" + filename;
-            }
-            else{
-                savePath = System.getProperty("user.dir") + "/files/image";
+            } else {
+                savePath = "/root/files/image";
                 filePath = savePath + "/" + filename;
             }
 
             if (!new java.io.File(savePath).exists()) {
-                try{
+                try {
                     new java.io.File(savePath).mkdir();
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     e.getStackTrace();
                 }
             }
@@ -165,6 +170,7 @@ public class FileRestController {
         }
     }
 
+    // file name 생성
     public static String truncateAndAppendTimestamp(String base64Image, int maxLength) {
         // 제거할 특수문자 정규식
         String specialCharactersRegex = "[^a-zA-Z0-9]";

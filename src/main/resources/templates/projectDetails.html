@@ -8,12 +8,13 @@
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
+    <title>프로젝트 상세조회</title>
 </head>
 <body style="background-color: white">
 <div th:replace="header :: header"></div>
 
 <!--로딩바-->
-<div id="loadingBar" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+<div id="loadingBar" role="status" class="hidden absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
     <svg aria-hidden="true" class="w-12 h-12 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
          viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -25,7 +26,6 @@
 </div>
 
 <!--프로젝트 수정창-->
-<!--return validateForm()-->
 <div id="projectModifyModal" tabindex="-1" aria-hidden="true"
      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto" style="align-items: center; align-content: center; ">
@@ -49,6 +49,8 @@
             <div>
                 <form onsubmit="return validateForm()" class="grid gap-4 mb-4 sm:grid-cols-2"
                       th:action="@{/project/modify}" method="post" th:object="${projectRequest}">
+
+
                     <label for="projectId" class="hidden"></label>
                     <input type="text" name="projectId" id="projectId" class="hidden" th:field="*{projectId}">
                     <div>
@@ -64,37 +66,112 @@
                     <div>
                         <label for="teamId" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당
                             팀 *</label>
-                        <select id="teamId" name="teamId" th:field="*{teamId}"
+                        <select id="teamId" name="teamId" th:field="*{teamId}" onchange="filterEngineers()"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option value="" selected>담당 팀을 선택해주세요.</option>
                             <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"
-                                    th:attr="data-teamDepartId=${team.getDepartment().getId()}, data-teamId=${team.id}"></option>
+                                    th:attr="data-teamId=${team.id}"></option>
                         </select>
                     </div>
                     <div>
-                        <label for="engineer"
+                        <label for="engineerId"
                                class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 (정)
                             *</label>
-                        <input type="text" id="engineer" name="engineerName" th:field="*{engineerName}"
-                               list="engineerList" th:attr="placeholder='필수 작성'"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <datalist id="engineerList">
-                            <option th:each="memp : ${memps}" th:value="${memp.name}"
+                        <select id="engineerId" name="engineerId" th:field="*{engineerId}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="" selected>담당 엔지니어를 선택해주세요.</option>
+                            <option th:each="memp : ${memps}" th:value="${memp.id}"
+                                    th:text="${memp.name} + ' ('+ ${memp.team.name}+')'"
                                     th:attr="data-memTeamId=${memp.getTeam.getId()}"></option>
-                        </datalist>
+                        </select>
                     </div>
                     <div>
-                        <label for="subEngineer"
-                               class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 (부)</label>
-                        <input type="text" id="subEngineer" th:field="*{subEngineerName}" name="subEngineerName"
-                               list="engineerList" th:attr="placeholder='선택 작성'"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <datalist id="subEngineerList">
-                            <option th:each="memp : ${memps}" th:value="${memp.name}"
-                                    th:attr="data-submemTeamId=${memp.getTeam.getId()}"></option>
-                        </datalist>
+                        <label for="subEngineerId"
+                               class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어
+                            (부)</label>
+                        <select id="subEngineerId" name="engineerId" th:field="*{subEngineerId}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="" selected>부 담당 엔지니어를 선택해주세요.</option>
+                            <option th:each="memp : ${memps}" th:value="${memp.id}"
+                                    th:text="${memp.name} + ' ('+ ${memp.team.name}+')'"
+                                    th:attr="data-memTeamId=${memp.getTeam.getId()}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="orderAmount"
+                               class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">수주금액</label>
+                        <input type="number" th:field="*{orderAmount}" name="orderAmount" id="orderAmount"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                               placeholder="수주 금액을 입력해주세요." min="0.5" step="0.5">
+
+                    </div>
+                    <div class="block">
+                        <label class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">납품장비1</label>
+                        <div class="grid gap-4 grid-cols-3 delivery-equipment">
+                            <input type="text" th:field="*{deliveryEquipmentList[0].deliveryEquipmentId}"
+                                   class="hidden">
+                            <input type="text" th:field="*{deliveryEquipmentList[0].equipmentName}"
+                                   class="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="납품 장비명">
+                            <input type="number" th:field="*{deliveryEquipmentList[0].quantity}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="수량" min="1">
+                        </div>
+                    </div>
+                    <div class="block">
+                        <label class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">납품장비2</label>
+                        <div class="grid gap-4 grid-cols-3 equipment2">
+                            <input type="text" th:field="*{deliveryEquipmentList[1].deliveryEquipmentId}"
+                                   class="hidden">
+                            <input type="text" th:field="*{deliveryEquipmentList[1].equipmentName}"
+                                   class="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="납품 장비명">
+                            <input type="number" th:field="*{deliveryEquipmentList[1].quantity}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="수량" min="1">
+                        </div>
+                    </div>
+                    <div class="block">
+                        <label class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">납품장비3</label>
+                        <div class="grid gap-4 grid-cols-3 equipment3">
+                            <input type="text" th:field="*{deliveryEquipmentList[2].deliveryEquipmentId}"
+                                   class="hidden">
+                            <input type="text" th:field="*{deliveryEquipmentList[2].equipmentName}"
+                                   class="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="납품 장비명">
+                            <input type="number" th:field="*{deliveryEquipmentList[2].quantity}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="수량" min="1">
+                        </div>
+                    </div>
+                    <div class="block">
+                        <label class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">납품장비4</label>
+                        <div class="grid gap-4 grid-cols-3 equipment4">
+                            <input type="text" th:field="*{deliveryEquipmentList[3].deliveryEquipmentId}"
+                                   class="hidden">
+                            <input type="text" th:field="*{deliveryEquipmentList[3].equipmentName}"
+                                   class="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="납품 장비명">
+                            <input type="number" th:field="*{deliveryEquipmentList[3].quantity}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="수량" min="1">
+                        </div>
+                    </div>
+                    <div class="block">
+                        <label class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">납품장비5</label>
+                        <div class="grid gap-4 grid-cols-3 equipment5">
+                            <input type="text" th:field="*{deliveryEquipmentList[4].deliveryEquipmentId}"
+                                   class="hidden">
+                            <input type="text" th:field="*{deliveryEquipmentList[4].equipmentName}"
+                                   class="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="납품 장비명">
+                            <input type="number" th:field="*{deliveryEquipmentList[4].quantity}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="수량" min="1">
+                        </div>
                     </div>
                     <div></div>
+
                     <div style="display: flex; justify-content:flex-end ">
                         <button type="submit" id="projectModifyBtn"
                                 class="text-white inline-flex items-center bg-gray-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ">
@@ -107,7 +184,7 @@
     </div>
 </div>
 
-<!--프로젝트 등록창-->
+<!-- 일정 등록창-->
 <!-- 등록 row 추가 addTaskRow()-->
 <!-- 등록 row 삭제 deleteNewTask()-->
 <!-- 등록 버튼 createTask()-->
@@ -123,7 +200,8 @@
                         일정 등록 추가
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <button id="addTaskButton" onclick="addTaskRow()" class="ml-2.5" style="margin-bottom: 2px" type="button"
+                    <button id="addTaskButton" onclick="addTaskRow()" class="ml-2.5" style="margin-bottom: 2px"
+                            type="button"
                             data-tooltip-target="tooltip-light" data-tooltip-style="light">
                         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                              xmlns="http://www.w3.org/2000/svg" fill="blue" viewBox="0 0 20 20">
@@ -232,6 +310,7 @@
 
     <div class="py-8 px-4 mx-auto lg:py-16" id="contents" style="background-color: white; align-items: center">
 
+        <!--        현재 프로젝트 정보-->
         <h1 class="mb-2 text-2xl font-extrabold leading-none text-gray-900 md:text-2xl dark:text-white"
             style="padding-bottom: 24px" th:text="${project.name}"></h1>
         <h3 class="mb-4 text-lg font-semibold leading-none text-gray-600 md:text-lg dark:text-white"
@@ -248,6 +327,22 @@
                 <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">제품명</dt>
                 <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"
                     th:text="${project.product?.name} ?: ' '"></dd>
+            </div>
+            <div style="margin-right: 20px;"
+                 th:if="${project.deliveryEquipmentList != null and project.deliveryEquipmentList.size() > 0}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">납품장비</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                    <span th:each="equipment, equipmentIndex : ${project.deliveryEquipmentList}">
+                        <span th:if="${equipment.equipmentName != null}"
+                              th:text="${equipment.equipmentName} + '(' + ${equipment.quantity} + ')'"></span>
+                        <span th:if="${!equipmentIndex.last}" class="mr-1">, </span>
+                    </span>
+                </dd>
+            </div>
+            <div style="margin-right: 20px;" th:if="${project.orderAmount != null}">
+                <dt class="mb-2 font-semibold leading-none text-gray-900 dark:text-white">수주금액</dt>
+                <dd class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400"
+                    th:text="${#numbers.formatDecimal(project.orderAmount, 0, 'COMMA', 0, 'POINT')} + '원'"></dd>
             </div>
         </dl>
         <dl class="flex text-sm items-start flex-wrap" th:if="${(project.team != null) || (project.engineer != null)}"
@@ -269,11 +364,10 @@
             </div>
         </dl>
 
-
+        <!--        프로젝트 수정 및 작업 일정 추가, 엑셀 다운로드 버튼-->
         <div style="margin-bottom: 24px;">
             <div class="flex mt-2.5">
                 <button data-modal-target="projectModifyModal" data-modal-toggle="projectModifyModal"
-                        th:if="${#authorization.expression('hasAnyRole(''ROLE_SUPERADMIN'')')}"
                         class="m-2 ml-0 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         type="button">
                     프로젝트 수정
@@ -294,6 +388,7 @@
                 </button>
             </div>
 
+            <!--        뷰 전환 버튼-->
             <ul class="flex flex-wrap mt-8 text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li class="mr-2">
                     <button type="button" id="visibleBtn" style="display: none"
@@ -326,19 +421,23 @@
             </ul>
         </div>
 
-<!--        지원현황 대쉬보드 뷰-->
-        <div id="dashboardView" class="hidden block">
+        <!--        지원현황 대쉬보드 뷰-->
+        <div id="dashboardView" class="hidden">
 
             <div class="skeleton mb-6" style="background-color: #F7F7F7;">
 
-                <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project')} + ${project.id}" width="100%" height="500" ></iframe>
-                <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project-mobile')} + ${project.id}" width="100%" height="400" ></iframe>
+                <iframe class="iframe-pc"
+                        th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project')} + ${project.id}"
+                        width="100%" height="500"></iframe>
+                <iframe class="iframe-mobile hidden"
+                        th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.project-mobile')} + ${project.id}"
+                        width="100%" height="400"></iframe>
 
             </div>
         </div>
 
-<!--        WBS 간트 차트 뷰 :: reload(), -->
-        <div id="chartView" class="hidden block">
+        <!--        WBS 간트 차트 뷰 :: reload(), -->
+        <div id="chartView" class="block">
             <div class="w-full h-10">
                 <button id="refreshChartBtn" type="button" onclick="reload()" class="mb-2.5" style="float: right;">
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
@@ -365,10 +464,11 @@
             </div>
         </div>
 
-<!--        일정 리스트 수정 뷰 :: editTask(), updateTask() -->
+        <!--        일정 리스트 수정 뷰 :: editTask(), updateTask() -->
         <div id="listView" class="hidden">
             <div class="pc-window">
-                <div th:if="${tasks.size()!=0}" class="flex justify-end w-full text-left items-end text-xs text-gray-600 mb-2">파일 수정 시 반영이 지연될 수
+                <div th:if="${tasks.size()!=0}"
+                     class="flex justify-end w-full text-left items-end text-xs text-gray-600 mb-2">파일 수정 시 반영이 지연될 수
                     있습니다. 잠시 후 새로고침 해주세요.
                 </div>
                 <table th:if="${tasks.size()!=0}" id="taskTable"
@@ -514,7 +614,7 @@
 
         </div>
 
-<!--        지원내역 조회 뷰-->
+        <!--        지원내역 조회 뷰-->
         <div id="supportListView"
              class="hidden bg-gray-100 mx-auto w-full rounded-lg text-center items-center justify-center">
             <h3 class="mobile-window mb-4 text-lg font-semibold leading-none text-gray-800 md:text-lg dark:text-white"
@@ -536,7 +636,7 @@
                         <tr th:each="post : ${supports}" class="border-b dark:border-gray-700">
                             <td class="px-4 py-3 th-pt projectName" th:text="${post.supportDate}">2020-01-01</td>
                             <td class="px-4 py-3 text-gray-900 whitespace-nowrap dark:text-white task-title-column min-w-[12rem]">
-                                <a th:href="@{/details(supportId=${post.id})}"
+                                <a th:href="@{/support/{supportId}(supportId=${post.id})}"
                                    class="hover:text-primary-700 dark:hover:text-primary-500">
                                     <!-- 글자수를 최대 30자로 제한, NULL값 처리 -->
                                     <span style="font-weight: 600"
@@ -560,7 +660,8 @@
                         <span class="font-semibold text-gray-900 dark:text-white"
                               th:text="${supports.totalElements > 0} ? ${supports.pageable.offset + supports.size} : 0">10</span>
                         of
-                        <span class="font-semibold text-gray-900 dark:text-white" th:text="${supports.totalElements}">0</span>
+                        <span class="font-semibold text-gray-900 dark:text-white"
+                              th:text="${supports.totalElements}">0</span>
                     </span>
                     <ul class="inline-flex items-stretch -space-x-px">
                         <li>
@@ -736,41 +837,7 @@
     const project = [[${project}]];
     const tasks = [[${tasks}]];
 
-    let maxSize = 50 * 1024 * 1024; //* 한 파일 당 50MB 사이즈 용량 제한
-
-    $(document).ready(function () {
-
-        // 새로고침 시 url 해시 값을 통해 기존 뷰 페이지로 돌아감
-        if (window.location.hash === '#listView') { // 일정 변경 뷰
-            const listViewBtn = document.getElementById("listViewBtn");
-            listViewBtn.click();
-            removeLocationHash();
-        } else if (window.location.hash === '#supportListView') { // 지원내역 조회 뷰
-            const supportListViewBtn = document.getElementById("supportListViewBtn");
-            supportListViewBtn.click();
-            removeLocationHash();
-        }
-
-        // 파일 크기 제한
-        $('.upload_file').change(function () {
-            var file = this.files[0];
-
-            if (file.size > maxSize) {
-                alert("파일 크기는 50MB 이하여야 합니다.");
-                $(this).val(''); // 선택한 파일 초기화
-                return;
-            }
-
-        });
-    });
-
-    function removeLocationHash() {
-        var noHashURL = window.location.href.replace(/#.*$/, '');
-        window.history.replaceState('', document.title, noHashURL)
-    }
-
     const loadingBar = document.getElementById('loadingBar');
-    loadingBar.style.display = 'flex';
 
     const visibleBtn = document.getElementById("visibleBtn");
     const dashboardViewBtn = document.getElementById("dashboardViewBtn");
@@ -785,11 +852,21 @@
     const selectedClass = visibleBtn.className;
     const unselectedClass = listViewBtn.className;
 
-    function reload() {
-        location.reload();
-    }
+    const initialChartView = document.getElementById("chartView").innerHTML;
 
-    document.addEventListener("DOMContentLoaded", function () {
+    let maxSize = 50 * 1024 * 1024; //* 한 파일 당 50MB 사이즈 용량 제한
+
+    $(document).ready(function () {
+
+        // 파일 크기 제한
+        $('.upload_file').change(function () {
+            const file = this.files[0];
+
+            if (file.size > maxSize) {
+                alert("파일 크기는 50MB 이하여야 합니다.");
+                $(this).val(''); // 선택한 파일 초기화
+            }
+        });
 
         dashboardViewBtn.className = selectedClass;
         dashboardView.style.display = "block";
@@ -797,84 +874,116 @@
         listView.style.display = "none";
         supportListView.style.display = "none";
 
-        drawChartView()
-
-        dashboardViewBtn.addEventListener("click", function () {
-            dashboardView.style.display = "block";
-            chartView.style.display = "none";
-            listView.style.display = "none";
-            supportListView.style.display = "none";
-            dashboardViewBtn.className = selectedClass;
-            chartViewBtn.className = unselectedClass;
-            listViewBtn.className = unselectedClass;
-            supportListViewBtn.className = unselectedClass;
+        // WBS 엑셀 생성
+        document.getElementById("csvDownloadBtn").addEventListener("click", function () {
+            excelPrint();
         });
 
-
-        chartViewBtn.addEventListener("click", function () {
-            dashboardView.style.display = "none";
-            chartView.style.display = "block";
-            listView.style.display = "none";
-            supportListView.style.display = "none";
-            dashboardViewBtn.className = unselectedClass;
-            chartViewBtn.className = selectedClass;
-            listViewBtn.className = unselectedClass;
-            supportListViewBtn.className = unselectedClass;
-
-            drawChartView()
-
-        });
-
-        listViewBtn.addEventListener("click", function () {
-            dashboardView.style.display = "none";
-            chartView.style.display = "none";
-            listView.style.display = "block";
-            supportListView.style.display = "none";
-            dashboardViewBtn.className = unselectedClass;
-            chartViewBtn.className = unselectedClass;
-            listViewBtn.className = selectedClass;
-            supportListViewBtn.className = unselectedClass;
-        });
-
-        supportListViewBtn.addEventListener("click", function () {
-            dashboardView.style.display = "none";
-            chartView.style.display = "none";
-            listView.style.display = "none";
-            supportListView.style.display = "block";
-            dashboardViewBtn.className = unselectedClass;
-            chartViewBtn.className = unselectedClass;
-            listViewBtn.className = unselectedClass;
-            supportListViewBtn.className = selectedClass;
-        });
+        // 새로고침 시 url 해시 값을 통해 기존 뷰 페이지로 돌아감
+        if (window.location.hash === '#listView') { // 일정 변경 뷰
+            const listViewBtn = document.getElementById("listViewBtn");
+            listViewBtn.click();
+            removeLocationHash();
+        } else if (window.location.hash === '#supportListView') { // 지원내역 조회 뷰
+            const supportListViewBtn = document.getElementById("supportListViewBtn");
+            supportListViewBtn.click();
+            removeLocationHash();
+        } else if (window.location.hash === '#chartView') { // 지원내역 조회 뷰
+            const chartViewBtn = document.getElementById("chartViewBtn");
+            chartViewBtn.click();
+            removeLocationHash();
+        }
 
     });
 
+    dashboardViewBtn.addEventListener("click", function () {
+        dashboardView.style.display = "block";
+        chartView.style.display = "none";
+        listView.style.display = "none";
+        supportListView.style.display = "none";
+        dashboardViewBtn.className = selectedClass;
+        chartViewBtn.className = unselectedClass;
+        listViewBtn.className = unselectedClass;
+        supportListViewBtn.className = unselectedClass;
+    });
 
-    // 신규 일정 Row 추가
-    function addTaskRow() {
-        var originalRow = document.querySelector('#createTaskTable tbody tr');
 
-        // 기존 행을 복제하여 새로운 작업 행을 생성
-        var newRow = originalRow.cloneNode(true);
+    chartViewBtn.addEventListener("click", function () {
+        dashboardView.style.display = "none";
+        chartView.style.display = "block";
+        listView.style.display = "none";
+        supportListView.style.display = "none";
+        dashboardViewBtn.className = unselectedClass;
+        chartViewBtn.className = selectedClass;
+        listViewBtn.className = unselectedClass;
+        supportListViewBtn.className = unselectedClass;
 
-        // 입력 필드 초기화 (선택 필드를 초기 선택으로 설정하려면 선택 옵션의 value를 고려)
-        newRow.querySelector('select[name="category_create"]').value = "";
-        newRow.querySelector('input[name="taskName"]').value = "";
-        newRow.querySelector('input[name="estimatedStartDate"]').value = "";
-        newRow.querySelector('input[name="estimatedEndDate"]').value = "";
-        newRow.querySelector('input[name="actualStartDate"]').value = "";
-        newRow.querySelector('input[name="actualEndDate"]').value = "";
-        newRow.querySelector('input[name="actualOutput"]').value = "";
+        drawChartView()
 
-        // 새로운 작업 행을 테이블에 추가
-        document.querySelector('#createTaskTable tbody').appendChild(newRow);
+    });
+
+    listViewBtn.addEventListener("click", function () {
+        dashboardView.style.display = "none";
+        chartView.style.display = "none";
+        listView.style.display = "block";
+        supportListView.style.display = "none";
+        dashboardViewBtn.className = unselectedClass;
+        chartViewBtn.className = unselectedClass;
+        listViewBtn.className = selectedClass;
+        supportListViewBtn.className = unselectedClass;
+    });
+
+    supportListViewBtn.addEventListener("click", function () {
+        dashboardView.style.display = "none";
+        chartView.style.display = "none";
+        listView.style.display = "none";
+        supportListView.style.display = "block";
+        dashboardViewBtn.className = unselectedClass;
+        chartViewBtn.className = unselectedClass;
+        listViewBtn.className = unselectedClass;
+        supportListViewBtn.className = selectedClass;
+    });
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    prevBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (currentPage >= 5) {
+            const prevPage = (parseInt((currentPage - 5) / 5)) * 5;
+            const currentParams = getCurrentURLParams();
+            currentParams['page'] = prevPage + 1;
+            window.location.href = '/project/' + project.id + '?' + new URLSearchParams(currentParams).toString() + '#supportListView';
+        }
+    });
+
+    nextBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (Math.floor(currentPage / 5) < Math.floor((totalPages - 1) / 5)) {
+            const nextPage = (parseInt((currentPage + 5) / 5)) * 5;
+            const currentParams = getCurrentURLParams();
+            currentParams['page'] = nextPage + 1;
+            window.location.href = '/project/' + project.id + '?' + new URLSearchParams(currentParams).toString() + '#supportListView';
+        }
+    });
+
+
+    // 기존에 Location 해쉬 값 삭제
+    function removeLocationHash() {
+        var noHashURL = window.location.href.replace(/#.*$/, '');
+        window.history.replaceState('', document.title, noHashURL)
     }
 
-    // 차트 중복 로딩을 방지하기 위한 초기 html 저장
-    const initialChartView = document.getElementById("chartView").innerHTML;
+    // 새로고침
+    function reload() {
+        const currentParams = getCurrentURLParams();
+        window.location.href = '/project/' + project.id + '?' + new URLSearchParams(currentParams).toString() + '#chartView';
+    }
 
     // 차트 로딩
     function drawChartView() {
+        loadingBar.style.display = 'flex';
+
         if (tasks.length < 1) {
             loadingBar.style.display = 'none';
         } else {
@@ -1024,10 +1133,7 @@
         loadingBar.style.display = 'none';
     }
 
-    document.getElementById("csvDownloadBtn").addEventListener("click", function () {
-        excelPrint();
-    });
-
+    // WBS 엑셀 생성
     function excelPrint() {
         fetch('/task/generateExcel?projectId=' + project.id, {
             method: 'GET',
@@ -1054,14 +1160,11 @@
             });
     }
 
-    /**
-     *     프로젝트 수정
-     */
-
+    // 프로젝트 수정 시 유효성 검사
     function validateForm() {
         var productId = document.getElementById("productId");
         var teamId = document.getElementById("teamId");
-        var engineerName = document.getElementById("engineer");
+        var engineerId = document.getElementById("engineerId");
 
         if (productId.value === '') {
             alert("제품을 선택해주세요.");
@@ -1071,13 +1174,14 @@
             alert("담당 팀을 선택해주세요.");
             return false;
         }
-        if (engineerName.value === '') {
+        if (engineerId.value === '') {
             alert("담당 엔지니어를 선택해주세요.");
             return false;
         }
 
     }
 
+    // 현재 url params 가져오기
     function getCurrentURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
         const queryParams = {};
@@ -1085,59 +1189,23 @@
         return queryParams;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
+    // 선택된 팀으로 엔지니어 필터링
+    function filterEngineers() {
+        var selectedTeamId = $("#teamId").val();
 
-        prevBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            if (currentPage >= 5) {
-                const prevPage = (parseInt((currentPage - 5) / 5)) * 5;
-                const currentParams = getCurrentURLParams();
-                currentParams['page'] = prevPage + 1;
-                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
+        $("#engineerId option").each(function () {
+            var memTeamId = $(this).getAttribute("data-memTeamId");
+            if (selectedTeamId === "" || selectedTeamId === memTeamId) {
+                $(this).show();
+            } else {
+                $(this).hide();
             }
         });
 
-        nextBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            if (Math.floor(currentPage / 5) < Math.floor((totalPages - 1) / 5)) {
-                const nextPage = (parseInt((currentPage + 5) / 5)) * 5;
-                const currentParams = getCurrentURLParams();
-                currentParams['page'] = nextPage + 1;
-                window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
-            }
-        });
-    });
+        $("#engineerId").val("");
+    }
 
-    const teamSelect = document.getElementById('teamId');
-    const engineerSelect = document.getElementById('engineerList');
-    const subengineerSelect = document.getElementById('subEngineerList');
-    const engineer = document.getElementById('engineer');
-    const subEngineer = document.getElementById('subEngineer');
-
-    const initialMembers = [...document.querySelectorAll('#engineerList option')];
-
-    // 팀 선택 변경 시 이벤트 핸들러
-    teamSelect.addEventListener('change', function () {
-        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
-
-        engineerSelect.innerHTML = '';
-        subengineerSelect.innerHTML = '';
-
-        engineer.value = null;
-        subEngineer.value = null;
-
-        for (const memberOption of initialMembers) {
-            const memberTeamId = memberOption.getAttribute('data-memTeamId');
-
-            if (memberTeamId === selectedTeamId || selectedTeamId === '') {
-                engineerSelect.appendChild(memberOption.cloneNode(true));
-                subengineerSelect.appendChild(memberOption.cloneNode(true));
-            }
-        }
-    });
-
+    // 일정 업데이트
     function updateTask() {
         var taskRows = document.querySelectorAll('.taskRow');
         var saveButton = document.getElementsByClassName('update-button')[0];
@@ -1275,7 +1343,7 @@
         }
     }
 
-
+    // 신규 일정 생성
     function createTask() {
 
         const taskRows = document.querySelectorAll(".task-row");
@@ -1377,6 +1445,27 @@
 
     }
 
+    // 신규 일정 Row 추가
+    function addTaskRow() {
+        var originalRow = document.querySelector('#createTaskTable tbody tr');
+
+        // 기존 행을 복제하여 새로운 작업 행을 생성
+        var newRow = originalRow.cloneNode(true);
+
+        // 입력 필드 초기화 (선택 필드를 초기 선택으로 설정하려면 선택 옵션의 value를 고려)
+        newRow.querySelector('select[name="category_create"]').value = "";
+        newRow.querySelector('input[name="taskName"]').value = "";
+        newRow.querySelector('input[name="estimatedStartDate"]').value = "";
+        newRow.querySelector('input[name="estimatedEndDate"]').value = "";
+        newRow.querySelector('input[name="actualStartDate"]').value = "";
+        newRow.querySelector('input[name="actualEndDate"]').value = "";
+        newRow.querySelector('input[name="actualOutput"]').value = "";
+
+        // 새로운 작업 행을 테이블에 추가
+        document.querySelector('#createTaskTable tbody').appendChild(newRow);
+    }
+
+    // 파일 추가
     function fileInsert(taskId) {
 
         // 파일 입력 필드
@@ -1403,6 +1492,7 @@
         });
     }
 
+    // 파일 삭제
     function fileDelete(taskId) {
 
         // 파일 입력 필드
@@ -1417,6 +1507,7 @@
         fileButton.innerText = "파일을 선택해주세요.";
     }
 
+    // 일정 추가 중 삭제
     function deleteNewTask(row) {
 
         var table = row.closest("table"); // Find the closest table
@@ -1427,6 +1518,7 @@
 
     }
 
+    // 일정 수정
     function editTask() {
 
         var taskRows = document.querySelectorAll('.taskRow')
@@ -1453,6 +1545,7 @@
 
     }
 
+    // 일정 삭제
     function deleteTask(button, taskId) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/task/delete/' + taskId);
@@ -1471,6 +1564,7 @@
 
     }
 
+    // 날짜 유효성 검사
     function checkDateFormat(dateValue) {
         var datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -1480,10 +1574,11 @@
             return true;
     }
 
+    // 페이지 이동
     function pageMove(pageNum) {
         const currentParams = getCurrentURLParams();
         currentParams["page"] = pageNum;
-        window.location.href = '/project/detail?' + new URLSearchParams(currentParams).toString() + '#supportListView';
+        window.location.href = '/project/' + project.id + '?'  + new URLSearchParams(currentParams).toString() + '#supportListView';
 
     }
 
@@ -1492,6 +1587,7 @@
     * {
         font-family: 'Spoqa Han Sans Neo', 'sans-serif';
     }
+
     .skeleton * {
         background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
         background-size: 200% 100%;

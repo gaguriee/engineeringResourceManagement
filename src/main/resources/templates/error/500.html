@@ -2,13 +2,14 @@
 <html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
 </head>
-<body >
+<body>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -18,8 +19,10 @@
     <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div class="mx-auto max-w-screen-sm text-center">
             <div class="py-12">
-                <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">일시적인 오류가 발생했습니다.</p>
-                <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400" th:if="${message != null}" th:text="${message}"></p>
+                <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">오류가
+                    발생했습니다.</p>
+                <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400" th:if="${message != null}"
+                   th:text="${message}"></p>
             </div>
 
 
@@ -36,8 +39,10 @@
                 </dl>
                 <dl style="padding-top: 24px; padding-bottom: 96px">
                     <dt class="mb-5 font-semibold leading-none text-gray-900 dark:text-white">작업상세</dt>
-                    <div class="w-full mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400 line-break" >
-                        <div id="taskDetails" class="w-full ql-editor" style="white-space: pre-wrap; word-wrap: break-word; word-spacing: 4px;" th:utext="${taskDetails}"></div>
+                    <div class="w-full mb-4 font-light text-gray-700 sm:mb-5 dark:text-gray-400 line-break">
+                        <div id="taskDetails" class="w-full ql-editor"
+                             style="white-space: pre-wrap; word-wrap: break-word; word-spacing: 4px;"
+                             th:utext="${taskDetails}"></div>
                     </div>
                 </dl>
             </div>
@@ -52,17 +57,22 @@
 
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 
     .ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
         padding-left: 4.5em;
     }
+
     .ql-editor .ql-indent-1:not(.ql-direction-rtl) {
         padding-left: 3em;
     }
+
     .ql-editor ol li.ql-indent-1 {
         counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-1 {
         counter-increment: list-1;
     }
@@ -70,24 +80,31 @@
     .ql-editor li.ql-indent-2:not(.ql-direction-rtl) {
         padding-left: 7.5em;
     }
+
     .ql-editor .ql-indent-2:not(.ql-direction-rtl) {
         padding-left: 6em;
     }
+
     .ql-editor ol li.ql-indent-2 {
         counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-2 {
         counter-increment: list-2;
     }
+
     .ql-editor li.ql-indent-3:not(.ql-direction-rtl) {
         padding-left: 10.5em;
     }
+
     .ql-editor .ql-indent-3:not(.ql-direction-rtl) {
         padding-left: 9em;
     }
+
     .ql-editor ol li.ql-indent-3 {
         counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-3 {
         counter-increment: list-3;
     }
@@ -95,12 +112,15 @@
     .ql-editor li.ql-indent-4:not(.ql-direction-rtl) {
         padding-left: 13.5em;
     }
+
     .ql-editor .ql-indent-4:not(.ql-direction-rtl) {
         padding-left: 12em;
     }
+
     .ql-editor ol li.ql-indent-4 {
         counter-reset: list-5 list-6 list-7 list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-4 {
         counter-increment: list-4;
     }
@@ -108,12 +128,15 @@
     .ql-editor li.ql-indent-5:not(.ql-direction-rtl) {
         padding-left: 16.5em;
     }
+
     .ql-editor .ql-indent-5:not(.ql-direction-rtl) {
         padding-left: 15em;
     }
+
     .ql-editor ol li.ql-indent-5 {
         counter-reset: list-6 list-7 list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-5 {
         counter-increment: list-5;
     }
@@ -121,12 +144,15 @@
     .ql-editor li.ql-indent-6:not(.ql-direction-rtl) {
         padding-left: 19.5em;
     }
+
     .ql-editor .ql-indent-6:not(.ql-direction-rtl) {
         padding-left: 18em;
     }
+
     .ql-editor ol li.ql-indent-6 {
         counter-reset: list-7 list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-6 {
         counter-increment: list-6;
     }
@@ -134,12 +160,15 @@
     .ql-editor li.ql-indent-7:not(.ql-direction-rtl) {
         padding-left: 22.5em;
     }
+
     .ql-editor .ql-indent-7:not(.ql-direction-rtl) {
         padding-left: 21em;
     }
+
     .ql-editor ol li.ql-indent-7 {
         counter-reset: list-8 list-9;
     }
+
     .ql-editor ol li.ql-indent-7 {
         counter-increment: list-7;
     }
@@ -147,12 +176,15 @@
     .ql-editor li.ql-indent-8:not(.ql-direction-rtl) {
         padding-left: 25.5em;
     }
+
     .ql-editor .ql-indent-8:not(.ql-direction-rtl) {
         padding-left: 24em;
     }
+
     .ql-editor ol li.ql-indent-8 {
         counter-reset: list-9;
     }
+
     .ql-editor ol li.ql-indent-8 {
         counter-increment: list-8;
     }
@@ -160,18 +192,21 @@
     .ql-editor ol li:not(.ql-direction-rtl), .ql-editor ul li:not(.ql-direction-rtl) {
         padding-left: 1.5em;
     }
+
     .ql-editor ol li {
         counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
         counter-increment: list-0;
     }
+
     .ql-editor ol > li, .ql-editor ul > li {
         list-style-type: none;
     }
+
     .ql-snow * {
         box-sizing: border-box;
     }
 
-    pre{
+    pre {
         padding: 6px;
         font-size: small;
         overflow: auto;
@@ -188,14 +223,16 @@
     #taskDetails h1 {
         font-size: xx-large;
     }
+
     #taskDetails h2 {
         font-size: x-large;
     }
+
     #taskDetails h3 {
         font-size: large;
     }
 
-    #taskDetails a{
+    #taskDetails a {
         text-decoration: underline;
     }
 </style>

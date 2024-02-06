@@ -20,9 +20,11 @@ public class File {
     @GeneratedValue
     private Long id;
 
+    // 지원내역에 첨부 되었을 경우
     @Column(name = "support_id")
     private Long supportId;
 
+    // 일정에 첨부 되었을 경우
     @Column(name = "task_id")
     private Long taskId;
 

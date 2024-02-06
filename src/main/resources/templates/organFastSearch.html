@@ -2,22 +2,25 @@
 <html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
-
+    <title>소속별 조회</title>
 </head>
 <body>
 <div th:replace="header :: header"></div>
 <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased" style="padding-top: 48px; padding-bottom: 84px">
 
     <div class="mt-4 mx-auto max-w-screen-md px-4 lg:px-12">
+        <!--        페이지 상단 내 소속 정보 빠른 보기-->
         <div class="inline-flex rounded-md shadow-sm">
             <a th:href="'/department?divisionId='+${user.getTeam().getDepartment().getDivision().getId()}"
                th:text="${user.getTeam().getDepartment().getDivision().getName()}"
-               aria-current="page" class="px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+               aria-current="page"
+               class="px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
             </a>
             <a th:href="'/team?departmentId='+${user.getTeam().getDepartment().getId()}"
                th:text="${user.getTeam().getDepartment().getName()}"
@@ -47,53 +50,75 @@
                     </a>
                 </th:block>
 
+                <!--                소속 검색-->
                 <form id="selectDepartmentForm" action="/team" method="get" class="flex mt-2">
-                    <label for="department" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                    <select id="department" name="departmentId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <label for="department"
+                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                    <select id="department" name="departmentId"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="" selected>소속을 선택해주세요.</option>
                         <th:block th:each="department : ${departments}">
-                            <option th:value="${department.id}" th:text="${department.name}" th:attr="data-departId=${department.id}"></option>
+                            <option th:value="${department.id}" th:text="${department.name}"
+                                    th:attr="data-departId=${department.id}"></option>
                         </th:block>
                     </select>
 
                     <div style="display: flex; align-items: end; justify-content: flex-end;">
-                        <button type="submit" class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        <button type="submit"
+                                class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                             실별 조회
                         </button>
                     </div>
                 </form>
 
-                <form id="selectTeamForm" action="/teamInfo" method="get" class="flex mt-2"> <!-- Specify the action and method for the form -->
+                <!--                팀 검색-->
+                <form id="selectTeamForm" action="/teamInfo" method="get" class="flex mt-2">
+                    <!-- Specify the action and method for the form -->
                     <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                    <select id="team" name="teamId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <select id="team" name="teamId"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         <option value="" selected>팀을 선택해주세요.</option>
                         <th:block th:each="team : ${teams}">
-                            <option th:value="${team.id}" th:text="${team.name}" th:attr="data-teamDepartId=${team.getDepartment().getId()}, data-teamId=${team.id}"></option>
+                            <option th:value="${team.id}" th:text="${team.name}"
+                                    th:attr="data-teamDepartId=${team.getDepartment().getId()}, data-teamId=${team.id}"></option>
                         </th:block>
                     </select>
 
                     <div style="display: flex; align-items: end; justify-content: flex-end;">
-                        <button type="submit" class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        <button type="submit"
+                                class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                             팀별 조회
                         </button>
                     </div>
                 </form>
 
-                <form id="selectMemberForm" onsubmit="return validateForm()" method="get" class="flex mt-2" action="/memberInfo">
+                <!--                엔지니어 검색-->
+                <form id="selectMemberForm" onsubmit="return validateForm()" method="get" class="flex mt-2"
+                      action="/memberInfo">
                     <input type="hidden" id="memberId" name="memberId" value="">
-                    <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
-                    <input type="text" id="engineer" autocomplete="off" list="engineerList" th:attr="placeholder='엔지니어를 검색해주세요.'" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <label for="engineer"
+                           class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                    <input type="text" id="engineer" autocomplete="off" list="engineerList"
+                           th:attr="placeholder='엔지니어를 검색해주세요.'"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     <datalist id="engineerList">
-                        <option th:each="memp : ${memps}" th:value="${memp.name} + ' ('+ ${memp.team.name}+')'" th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
+                        <option th:each="memp : ${memps}" th:value="${memp.name} + ' ('+ ${memp.team.name}+')'"
+                                th:attr="data-memTeamId=${memp.getTeam.getId()}, data-memId=${memp.id}"></option>
                     </datalist>
                     <div style="display: flex; align-items: end; justify-content: flex-end;">
-                        <button type="submit" class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        <button type="submit"
+                                class="ml-2 inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                             팀원 조회
                         </button>
                     </div>
                 </form>
-                <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+
+                <!--                검색 관련 알림-->
+                <div id="alertEngineerNotExist"
+                     class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                     role="alert" style="margin-top: 24px; ">
+                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                     </svg>
                     <span class="sr-only">Info</span>
@@ -111,53 +136,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
-    var memps = /*[[${memps}]]*/ [];
+    const memps = /*[[${memps}]]*/ [];
 
     const departmentSelect = document.getElementById('department');
     const teamSelect = document.getElementById('team');
     const memberSelect = document.getElementById('engineerList');
 
+    // 검색 전 초기 멤버 및 팀옵션
     const initialMembers = [...document.querySelectorAll('#engineerList option')];
     const initialTeams = [...document.querySelectorAll('#team option')];
-
-
-    document.getElementById('engineer').addEventListener('input', function() {
-        var selectedOption = document.querySelector('#engineerList option[value="' + this.value + '"]');
-        if (selectedOption) {
-            document.getElementById('memberId').value = selectedOption.getAttribute('data-memId');
-        } else {
-            document.getElementById('memberId').value = '';
-        }
-    });
-
-    departmentSelect.addEventListener('change', function() {
-        const selectedDepartId = departmentSelect.options[departmentSelect.selectedIndex].getAttribute('data-departId');
-
-        teamSelect.innerHTML = '<option value="all" th:attr="data-teamId=null" selected>전체</option>\n';
-
-        for (const teamOption of initialTeams) {
-            const teamDepartId = teamOption.getAttribute('data-teamDepartId');
-
-            if (teamDepartId === selectedDepartId || selectedDepartId === '') {
-                teamSelect.appendChild(teamOption.cloneNode(true));
-            }
-        }
-    });
-
-    teamSelect.addEventListener('change', function() {
-        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
-
-        memberSelect.innerHTML = '';
-
-        for (const memberOption of initialMembers) {
-            const memberTeamId = memberOption.getAttribute('data-memTeamId');
-
-            if (memberTeamId === selectedTeamId || selectedTeamId === '') {
-                memberSelect.appendChild(memberOption.cloneNode(true));
-            }
-        }
-    });
-
 
     document.addEventListener('DOMContentLoaded', function () {
         const form1 = document.getElementById('selectDepartmentForm');
@@ -178,20 +165,68 @@
         });
     });
 
+    // 엔지니어 검색
+    document.getElementById('engineer').addEventListener('input', function () {
+        const selectedOption = document.querySelector('#engineerList option[value="' + this.value + '"]');
+        if (selectedOption) {
+            document.getElementById('memberId').value = selectedOption.getAttribute('data-memId');
+        } else {
+            document.getElementById('memberId').value = '';
+        }
+    });
+
+    //  소속 선택이 변경되었을 때
+    departmentSelect.addEventListener('change', function () {
+        // 선택된 소속 아이디 가져오기
+        const selectedDepartId = departmentSelect.options[departmentSelect.selectedIndex].getAttribute('data-departId');
+
+        // 팀 선택 옵션 초기화
+        teamSelect.innerHTML = '<option value="all" th:attr="data-teamId=null" selected>전체</option>\n';
+
+        // 선택된 소속에 해당하는 팀을 보여주기
+        for (const teamOption of initialTeams) {
+            const teamDepartId = teamOption.getAttribute('data-teamDepartId');
+
+            if (teamDepartId === selectedDepartId || selectedDepartId === '') {
+                teamSelect.appendChild(teamOption.cloneNode(true));
+            }
+        }
+    });
+
+    // 팀 선택이 변경되었을 때
+    teamSelect.addEventListener('change', function () {
+        // 선택된 팀 아이디 가져오기
+        const selectedTeamId = teamSelect.options[teamSelect.selectedIndex].getAttribute('data-teamId');
+
+        // 멤버 선택 옵션 초기화
+        memberSelect.innerHTML = '';
+
+        // 선택된 팀에 해당하는 엔지니어만 보여주기
+        for (const memberOption of initialMembers) {
+            const memberTeamId = memberOption.getAttribute('data-memTeamId');
+
+            if (memberTeamId === selectedTeamId || selectedTeamId === '') {
+                memberSelect.appendChild(memberOption.cloneNode(true));
+            }
+        }
+    });
+
+    // 엔지니어 유효성 검사
     function validateForm() {
 
-        var memberName = document.getElementById('engineer').value;
-        var containsEngineerName = memps.some(function(m) {
+        const memberName = document.getElementById('engineer').value;
+        const containsEngineerName = memps.some(function (m) {
 
             return m.name + ' (' + m.team?.name + ')' === memberName;
         });
 
+        // 엔지니어 미존재 알림창 띄움
         var alertEngineerNotExist = document.getElementById('alertEngineerNotExist');
 
-        if (! containsEngineerName){ // 기존에 등록되지 않은 엔지니어
+        if (!containsEngineerName) { // 기존에 등록되지 않은 엔지니어
             alertEngineerNotExist.style.display = 'flex';
             return false;
-        }else{
+        } else {
             alertEngineerNotExist.style.display = 'none';
             return true;
         }
@@ -199,7 +234,9 @@
     }
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 </style>
 </body>
 </html>

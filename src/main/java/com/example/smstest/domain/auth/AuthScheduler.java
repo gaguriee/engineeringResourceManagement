@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 유저 관리와 관련된 스케줄러
+ * - 매주 탈퇴 유저 체크 메소드
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -23,13 +27,13 @@ public class AuthScheduler {
     public void deactivateUsersWithStatusZero() {
         List<Memp> memps = mempRepository.findAllByActiveTrue();
         for (Memp memp : memps) {
-            Optional<Employee> employee= employeeRepository.findByUserid(memp.getUsername());
-            if (employee.isPresent()){
+            Optional<Employee> employee = employeeRepository.findFirstByUserid(memp.getUsername());
+            if (employee.isPresent()) {
                 int userStatus = employee.get().getUserstatus();
                 if (userStatus == 0) {
                     memp.setActive(false);
                     mempRepository.save(memp);
-                    log.info("Deactivate User :: "+ memp);
+                    log.info("Deactivate User :: " + memp);
                 }
             }
         }

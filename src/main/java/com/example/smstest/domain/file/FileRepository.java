@@ -2,14 +2,23 @@ package com.example.smstest.domain.file;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 /**
  * File 테이블과 상호작용
  */
 public interface FileRepository extends JpaRepository<File, Long> {
 
-    List<File> deleteAllBySupportId(Long supportId);
+    /**
+     * [ 지원내역 삭제 시 함께 등록된 모든 File 삭제 ]
+     *
+     * @param supportId
+     */
+    void deleteAllBySupportId(Long supportId);
+
+    /**
+     * [ 일정 삭제 시 함께 등록된 모든 File 삭제 ]
+     *
+     * @param taskId
+     */
     void deleteAllByTaskId(Long taskId);
 
 }

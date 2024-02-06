@@ -7,7 +7,7 @@ import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.domain.support.entity.State;
 import com.example.smstest.domain.support.repository.StateRepository;
-import com.example.smstest.domain.support.repository.SupportRepository;
+import com.example.smstest.domain.support.repository.support.SupportRepository;
 import com.example.smstest.global.exception.CustomException;
 import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,7 @@ public class MainController {
 
     /**
      * 메인 페이지
+     *
      * @param model
      * @return 레더 차트를 위한 전체/팀별 데이터, 팝업 데이터 전달
      */
@@ -52,7 +53,7 @@ public class MainController {
             radarchartYear = LocalDate.now().getYear();
         }
 
-        Memp memp = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+        Memp memp = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElse(null);
         model.addAttribute("user", memp);
 
@@ -65,29 +66,21 @@ public class MainController {
             teamColorMap.put(team.getName(), team.getColor());
         }
 
+        // N본부 업무 집중도 분석
         List<Map<String, Long>> resultInN = supportRepository.findTotalSupportTypeHourByState_N(radarchartYear);
+
+        // N본부 팀별 업무 집중도 분석
         List<Object[]> resultByTeamInN = supportRepository.findTotalSupportTypeHourByStateAndTeam_N(radarchartYear);
         Map<String, Map<String, Double>> resultMapByTeamInN = new HashMap<>();
+        getResultMapByTeam(resultByTeamInN, resultMapByTeamInN);
 
+        // E본부 업무 집중도 분석
         List<Map<String, Long>> resultInE = supportRepository.findTotalSupportTypeHourByState_E(radarchartYear);
+
+        // E본부 팀별 업무 집중도 분석
         List<Object[]> resultByTeamInE = supportRepository.findTotalSupportTypeHourByStateAndTeam_E(radarchartYear);
         Map<String, Map<String, Double>> resultMapByTeamInE = new HashMap<>();
-
-        for (Object[] row : resultByTeamInN) {
-            String teamName = (String) row[0];
-            String stateName = (String) row[1];
-            Double totalHour = (Double) row[2];
-
-            resultMapByTeamInN.computeIfAbsent(teamName, k -> new TreeMap<>(Comparator.comparingInt(this::getStateOrder))).put(stateName, totalHour);
-        }
-
-        for (Object[] row : resultByTeamInE) {
-            String teamName = (String) row[0];
-            String stateName = (String) row[1];
-            Double totalHour = (Double) row[2];
-
-            resultMapByTeamInE.computeIfAbsent(teamName, k -> new TreeMap<>(Comparator.comparingInt(this::getStateOrder))).put(stateName, totalHour);
-        }
+        getResultMapByTeam(resultByTeamInE, resultMapByTeamInE);
 
         // 팝업
 
@@ -100,6 +93,9 @@ public class MainController {
         model.addAttribute("announcements", announcements);
         model.addAttribute("stateNames", states.stream().map(State::getName).toArray());
 
+        model.addAttribute("teamColorMap", teamColorMap);
+        model.addAttribute("radarchartYear", radarchartYear);
+
         // N본부
         model.addAttribute("resultInN", resultInN);
         model.addAttribute("resultMapByTeamInN", resultMapByTeamInN);
@@ -108,12 +104,51 @@ public class MainController {
         model.addAttribute("resultInE", resultInE);
         model.addAttribute("resultMapByTeamInE", resultMapByTeamInE);
 
-        model.addAttribute("teamColorMap", teamColorMap);
-        model.addAttribute("radarchartYear", radarchartYear);
-
         return "main";
     }
 
+
+    /**
+     * 메인 팝업창 그만보기 옵션
+     *
+     * @param request
+     * @param announcementId 팝업 Id
+     * @return 실행 결과 전달
+     */
+    @PostMapping("/dismissAnnouncement")
+    public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
+
+        Memp currentUser = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Optional<Announcement> announcementOptional = announcementRepository.findById(announcementId);
+
+        if (announcementOptional.isPresent()) {
+            Announcement announcement = announcementOptional.get();
+
+            if (!announcement.getDismissedUsers().contains(currentUser.getId())) {
+                announcement.getDismissedUsers().add(currentUser.getId());
+                announcementRepository.save(announcement);
+            }
+
+            return ResponseEntity.ok("Announcement dismissed.");
+        } else {
+            return ResponseEntity.badRequest().body("Announcement not found.");
+        }
+    }
+
+    // 레이더 차트 로딩 시 업무(상태) 아래와 같은 순서로 정렬
+    private void getResultMapByTeam(List<Object[]> resultByTeamInN, Map<String, Map<String, Double>> resultMapByTeamInN) {
+        for (Object[] row : resultByTeamInN) {
+            String teamName = (String) row[0];
+            String stateName = (String) row[1];
+            Double totalHour = (Double) row[2];
+
+            resultMapByTeamInN.computeIfAbsent(teamName, k -> new TreeMap<>(Comparator.comparingInt(this::getStateOrder))).put(stateName, totalHour);
+        }
+    }
+
+    // State 우선순위 순서로 가져오기
     private int getStateOrder(String stateName) {
         switch (stateName) {
             case "납품":
@@ -133,32 +168,5 @@ public class MainController {
         }
     }
 
-    /**
-     * 메인 팝업창 그만보기 옵션
-     * @param request
-     * @param announcementId 팝업 Id
-     * @return 실행 결과 전달
-     */
-    @PostMapping("/dismissAnnouncement")
-    public ResponseEntity<String> dismissAnnouncement(HttpServletRequest request, @RequestParam Integer announcementId) {
-
-        Memp currentUser = mempRepository.findByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        Optional<Announcement> announcementOptional = announcementRepository.findById(announcementId);
-
-        if (announcementOptional.isPresent()) {
-            Announcement announcement = announcementOptional.get();
-
-            if (!announcement.getDismissedUsers().contains(currentUser.getId())) {
-                announcement.getDismissedUsers().add(currentUser.getId());
-                announcementRepository.save(announcement);
-            }
-
-            return ResponseEntity.ok("Announcement dismissed.");
-        } else {
-            return ResponseEntity.badRequest().body("Announcement not found.");
-        }
-    }
 
 }

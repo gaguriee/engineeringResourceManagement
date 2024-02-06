@@ -19,12 +19,23 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 전역 에러 핸들러, 서버 발생 오류를 필터링 후 로깅 또는 에러 페이지를 반환
+ */
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends RuntimeException {
 
+    /**
+     * DB 내 예외와 관련된 에러 처리
+     * @param e
+     * @param model
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(DataAccessResourceFailureException.class)
-    public String handleJDBCConnectionException(DataAccessResourceFailureException e,  Model model, HttpServletRequest request) throws IOException {
+    public String handleJDBCConnectionException(DataAccessResourceFailureException e, Model model, HttpServletRequest request) throws IOException {
         model.addAttribute("message", "데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.");
 
         Map<String, Object> params = getParams(request);
@@ -38,8 +49,8 @@ public class GlobalExceptionHandler extends RuntimeException {
         String serverIp = InetAddress.getLocalHost().getHostAddress();
         Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
 
-        model.addAttribute("requestBody", requestBody );
-        model.addAttribute("params", params );
+        model.addAttribute("requestBody", requestBody);
+        model.addAttribute("params", params);
 
         // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
 
@@ -64,6 +75,14 @@ public class GlobalExceptionHandler extends RuntimeException {
 
     }
 
+    /**
+     * 사전 정의한 Custom 예외 처리, 로깅 후 에러 페이지 반환
+     * @param e
+     * @param model
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(CustomException.class)
     public String CustomException(CustomException e, Model model, HttpServletRequest request) throws IOException {
         model.addAttribute("message", e.getErrorCode().getMessage());
@@ -80,7 +99,7 @@ public class GlobalExceptionHandler extends RuntimeException {
         String serverIp = InetAddress.getLocalHost().getHostAddress();
         Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
 
-        model.addAttribute("request", requestBody );
+        model.addAttribute("request", requestBody);
 
         // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
 
@@ -99,19 +118,25 @@ public class GlobalExceptionHandler extends RuntimeException {
 
         log.info(reqResLogging.toString());
 
-        if (e.getErrorCode().getHttpStatus().equals(HttpStatus.BAD_REQUEST)){
+        if (e.getErrorCode().getHttpStatus().equals(HttpStatus.BAD_REQUEST)) {
             return "error/400.html";
-        }
-        else if (e.getErrorCode().getHttpStatus().equals(HttpStatus.FORBIDDEN)){
+        } else if (e.getErrorCode().getHttpStatus().equals(HttpStatus.FORBIDDEN)) {
             return "error/403.html";
-        }
-        else if (e.getErrorCode().getHttpStatus().equals(HttpStatus.NOT_FOUND)){
+        } else if (e.getErrorCode().getHttpStatus().equals(HttpStatus.NOT_FOUND)) {
             return "error/404.html";
         }
 
         return "error/500.html";
     }
 
+    /**
+     * 파일 요청 시 발생할 수 있는 예외 처리
+     * @param e
+     * @param model
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleMultipartException(Exception e, Model model, HttpServletRequest request) throws IOException {
@@ -127,8 +152,8 @@ public class GlobalExceptionHandler extends RuntimeException {
         String serverIp = InetAddress.getLocalHost().getHostAddress();
         Object requestBody = new ObjectMapper().readTree(request.getInputStream().readAllBytes());
 
-        model.addAttribute("requestBody", requestBody );
-        model.addAttribute("params", params );
+        model.addAttribute("requestBody", requestBody);
+        model.addAttribute("params", params);
 
         // Request Body, Params, URI, Method, Server IP와 에러 내용을 함께 출력
 
@@ -153,6 +178,7 @@ public class GlobalExceptionHandler extends RuntimeException {
         return "error/500";
     }
 
+    // 파라미터 가져오기
     public static Map<String, Object> getParams(HttpServletRequest request) {
         Map<String, Object> jsonObject = new HashMap<>();
         Enumeration<String> paramNames = request.getParameterNames();
