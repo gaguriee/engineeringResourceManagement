@@ -35,7 +35,7 @@ import java.util.List;
 
 
 /**
- * 파일 Download 관련 PDF
+ * 파일 Download 관련 Controller
  */
 @Controller
 @RequiredArgsConstructor
@@ -328,7 +328,7 @@ public class FileDownloadController {
         /**
          * download
          */
-        String fileName = "spring_excel_download";
+        String fileName = "support_excel_download";
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
@@ -348,9 +348,6 @@ public class FileDownloadController {
         for (Element el : els) {
             el.remove();
         }
-
-        // 3. 검증
-        Elements elsVerify = doc.select("img");
 
         return doc.select("body").text( ); // body안에 데이터를 스트링으로 변환
     }

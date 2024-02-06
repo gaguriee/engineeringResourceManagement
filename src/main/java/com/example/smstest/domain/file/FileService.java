@@ -21,6 +21,7 @@ public class FileService {
 
     /**
      * [ 파일 저장 ]
+     *
      * @param fileDto
      * @return
      * @throws UnknownHostException
@@ -32,6 +33,7 @@ public class FileService {
 
     /**
      * [ 일정 삭제 시 해당 일정에 첨부된 파일 삭제 ]
+     *
      * @param taskId
      */
     @Transactional
@@ -41,6 +43,7 @@ public class FileService {
 
     /**
      * [ 파일 가져오기 ]
+     *
      * @param id
      * @return FileDto
      */
@@ -48,7 +51,7 @@ public class FileService {
     public FileDto getFile(Long id) {
         Optional<File> file = fileRepository.findById(id);
 
-        if (file.isPresent()){
+        if (file.isPresent()) {
 
             return FileDto.builder()
                     .id(id)
@@ -56,9 +59,7 @@ public class FileService {
                     .filename(file.get().getFilename())
                     .filePath(file.get().getFilePath())
                     .build();
-        }
-
-        else {
+        } else {
             throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         }
 

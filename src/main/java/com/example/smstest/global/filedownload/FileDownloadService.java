@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * File Download 관련 Service
+ */
 @Service
 public class FileDownloadService {
 

@@ -2,8 +2,8 @@ package com.example.smstest.domain.organization;
 
 import com.example.smstest.domain.auth.MempRepository;
 import com.example.smstest.domain.auth.entity.Memp;
-import com.example.smstest.domain.organization.dto.MemberInfoDTO;
-import com.example.smstest.domain.organization.dto.TeamInfoDTO;
+import com.example.smstest.domain.organization.dto.MemberInfoResponse;
+import com.example.smstest.domain.organization.dto.TeamInfoResponse;
 import com.example.smstest.domain.organization.entity.Department;
 import com.example.smstest.domain.organization.entity.Division;
 import com.example.smstest.domain.organization.entity.Team;
@@ -50,6 +50,7 @@ public class OrganizationController {
 
     /**
      * [ 소속 빠른 검색 ]
+     *
      * @param model
      * @return 본부, 실, 팀, 멤버 전체 데이터 전달
      */
@@ -80,7 +81,8 @@ public class OrganizationController {
 
 
     /**
-     * [ 본부별 조회 페이지 (E본부, N본부 등) ] -> 실 선택 (2실, 4실 등)
+     * [ 본부별 조회 페이지 (E본부, N본부 등) ] - 실 선택 (2실, 4실 등)
+     *
      * @param divisionId 본부 Id
      * @param model
      * @return 현재 선택된 본부, 해당 본부에 포함되는 실 데이터 전달
@@ -104,7 +106,8 @@ public class OrganizationController {
     }
 
     /**
-     * [ 실별 조회 페이지 (2실, 4실 등) ] -> 팀 선택 (N팀, B팀 등)
+     * [ 실별 조회 페이지 (2실, 4실 등) ] - 팀 선택 (N팀, B팀 등)
+     *
      * @param departmentId
      * @param model
      * @return 현재 선택된 실, 해당 실에 포함되는 팀 데이터 전달
@@ -124,7 +127,8 @@ public class OrganizationController {
     }
 
     /**
-     * [ 팀별 조회 페이지 (N팀, B팀 등) ] -> 엔지니어 선택
+     * [ 팀별 조회 페이지 (N팀, B팀 등) ] - 엔지니어 선택
+     *
      * @param teamId
      * @param model
      * @return 현재 선택된 팀, 해당 팀에 포함되는 엔지니어 데이터 전달
@@ -136,22 +140,22 @@ public class OrganizationController {
                            Model model) {
 
         // Default : 현재 시간 기준 3달 전 ~ 현재
-        if (startDate==null && endDate==null){
+        if (startDate == null && endDate == null) {
             LocalDate threeMonthsAgo = LocalDate.now().minusMonths(3);
             startDate = java.sql.Date.valueOf(threeMonthsAgo);
             endDate = java.sql.Date.valueOf(LocalDate.now());
         }
 
         // team id와 기간으로 해당 팀 정보 및 지원내역 반환
-        TeamInfoDTO teamInfoDTO = oraganizationService.getTeamInfo(teamId, startDate, endDate);
+        TeamInfoResponse teamInfoResponse = oraganizationService.getTeamInfo(teamId, startDate, endDate);
 
-        if (teamInfoDTO != null) {
-            model.addAttribute("memps", teamInfoDTO.getMemps());
-            model.addAttribute("team", teamInfoDTO.getTeam());
-            model.addAttribute("department", teamInfoDTO.getDepartment());
-            model.addAttribute("division", teamInfoDTO.getDepartment().getDivision());
+        if (teamInfoResponse != null) {
+            model.addAttribute("memps", teamInfoResponse.getMemps());
+            model.addAttribute("team", teamInfoResponse.getTeam());
+            model.addAttribute("department", teamInfoResponse.getDepartment());
+            model.addAttribute("division", teamInfoResponse.getDepartment().getDivision());
 
-            model.addAttribute("supports", teamInfoDTO.getSupports());
+            model.addAttribute("supports", teamInfoResponse.getSupports());
         } else {
             model.addAttribute("errorMessage", "해당 팀을 찾을 수 없습니다.");
         }
@@ -162,7 +166,8 @@ public class OrganizationController {
     }
 
     /**
-     * [ 엔지니어 디테일 페이지 (N팀, B팀 등) ] -> 엔지니어 선택
+     * [ 엔지니어 디테일 페이지 (N팀, B팀 등) ] - 엔지니어 선택
+     *
      * @param memberId
      * @param model
      * @return 현재 선택된 팀, 엔지니어 정보 전달
@@ -182,17 +187,17 @@ public class OrganizationController {
         }
 
         // member Id와 고객사 id, 기간으로 해당 팀 정보 및 지원내역 반환
-        MemberInfoDTO memberInfoDTO = oraganizationService.getMemberInfo(memberId, clientId, startDate, endDate);
+        MemberInfoResponse memberInfoResponse = oraganizationService.getMemberInfo(memberId, clientId, startDate, endDate);
 
-        model.addAttribute("memps", mempRepository.findAllByTeamIdAndActiveTrue(memberInfoDTO.getTeam().getId()));
+        model.addAttribute("memps", mempRepository.findAllByTeamIdAndActiveTrue(memberInfoResponse.getTeam().getId()));
 
-        model.addAttribute("member", memberInfoDTO.getMemp());
-        model.addAttribute("team", memberInfoDTO.getTeam());
-        model.addAttribute("department", memberInfoDTO.getDepartment());
-        model.addAttribute("division", memberInfoDTO.getDepartment().getDivision());
+        model.addAttribute("member", memberInfoResponse.getMemp());
+        model.addAttribute("team", memberInfoResponse.getTeam());
+        model.addAttribute("department", memberInfoResponse.getDepartment());
+        model.addAttribute("division", memberInfoResponse.getDepartment().getDivision());
 
-        model.addAttribute("supports", memberInfoDTO.getSupports());
-        model.addAttribute("allClients", memberInfoDTO.getAllClients());
+        model.addAttribute("supports", memberInfoResponse.getSupports());
+        model.addAttribute("allClients", memberInfoResponse.getAllClients());
 
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);

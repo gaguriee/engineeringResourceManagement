@@ -27,13 +27,13 @@ public class AuthScheduler {
     public void deactivateUsersWithStatusZero() {
         List<Memp> memps = mempRepository.findAllByActiveTrue();
         for (Memp memp : memps) {
-            Optional<Employee> employee= employeeRepository.findFirstByUserid(memp.getUsername());
-            if (employee.isPresent()){
+            Optional<Employee> employee = employeeRepository.findFirstByUserid(memp.getUsername());
+            if (employee.isPresent()) {
                 int userStatus = employee.get().getUserstatus();
                 if (userStatus == 0) {
                     memp.setActive(false);
                     mempRepository.save(memp);
-                    log.info("Deactivate User :: "+ memp);
+                    log.info("Deactivate User :: " + memp);
                 }
             }
         }

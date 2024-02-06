@@ -6,9 +6,8 @@ import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
 import com.example.smstest.external.employee.Employee;
 import com.example.smstest.external.employee.EmployeeRepository;
-import com.example.smstest.global.exception.CustomException;
-import com.example.smstest.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
 /**
  * 사용자가 로그인 시 자동 실행
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -40,7 +40,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private String basicPassword;
 
     /**
-     * 사용자 인증 작업 진행 ( 정보 검색 -> 반환 -> 예외 처리 - UsernameNotFoundException )
+     * 사용자 인증 작업 진행 ( 정보 검색 - 반환 - 예외 처리 : UsernameNotFoundException )
+     *
      * @param username the username identifying the user whose data is required.
      * @return UserDetails
      * @throws UsernameNotFoundException
@@ -57,7 +58,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
         Optional<Memp> memp = mempRepository.findFirstByUsernameAndActiveTrue(username);
-        if (memp.isPresent()){
+        if (memp.isPresent()) {
             return saveCurrentUser(currentTimestamp, memp.get());
         }
 
@@ -81,7 +82,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // 인사정보 DB에서 로컬 ERM DB와 매칭되는 팀 정보 가져옴, 없을 경우 에러 반환
         Team team = teamRepository.findFirstByName(employee.getDepartment().getDeptname())
-                .orElseThrow(() -> new CustomException(ErrorCode.TEAM_NOT_FOUND));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with team: " + employee.getDepartment().getDeptname()));
 
         // 신규 유저 객체 생성, 저장
         Memp newMemp = Memp.builder()
@@ -95,10 +96,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .active(true)
                 .build();
 
-        try{
+        try {
             mempRepository.save(newMemp);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
+            log.error("Error occurred for user {}: {}. Exception in [loadUserByUsername] : {}",
+                    username, e.getMessage(), e.getStackTrace()[0]);
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
 
@@ -107,9 +109,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /**
      * 신규 유저 DB에 저장하기
-     * @param currentTimestamp
-     * @param currentUser
-     * @return
+     * @param currentTimestamp 현재 시간
+     * @param currentUser 현재 유저
+     * @return 유저 Auth값
      */
     @NotNull
     private UserDetails saveCurrentUser(Timestamp currentTimestamp, Memp currentUser) {

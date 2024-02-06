@@ -1,5 +1,6 @@
-package com.example.smstest.domain.project;
+package com.example.smstest.domain.project.repository;
 
+import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.support.entity.Support;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

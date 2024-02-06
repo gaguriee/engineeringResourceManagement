@@ -40,6 +40,7 @@ public class MainController {
 
     /**
      * 메인 페이지
+     *
      * @param model
      * @return 레더 차트를 위한 전체/팀별 데이터, 팝업 데이터 전달
      */
@@ -109,6 +110,7 @@ public class MainController {
 
     /**
      * 메인 팝업창 그만보기 옵션
+     *
      * @param request
      * @param announcementId 팝업 Id
      * @return 실행 결과 전달
@@ -145,6 +147,8 @@ public class MainController {
             resultMapByTeamInN.computeIfAbsent(teamName, k -> new TreeMap<>(Comparator.comparingInt(this::getStateOrder))).put(stateName, totalHour);
         }
     }
+
+    // State 우선순위 순서로 가져오기
     private int getStateOrder(String stateName) {
         switch (stateName) {
             case "납품":

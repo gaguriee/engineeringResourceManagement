@@ -1,18 +1,22 @@
-package com.example.smstest.domain.project;
+package com.example.smstest.domain.project.entity;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.Client;
-import com.example.smstest.domain.support.entity.Product;
 import com.example.smstest.domain.organization.entity.Team;
-import lombok.*;
+import com.example.smstest.domain.support.entity.Product;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
+/**
+ * 프로젝트 Entity
+ */
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @RequiredArgsConstructor
 @Table(name = "project")
 public class Project {
@@ -59,12 +63,12 @@ public class Project {
     @Column(name = "수주금액")
     private Integer orderAmount;
 
-    @Column(name = "납품장비")
-    private String equipment;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<DeliveryEquipment> deliveryEquipmentList;
 
     @Builder
     public Project(String name, Client client, String uniqueCode, Product product, Team team, Memp engineer, Memp subEngineer, Date projectRegDate, String projectGuid,
-                   Integer orderAmount, String equipment ) {
+                   Integer orderAmount, List<DeliveryEquipment> deliveryEquipmentList) {
         this.name = name;
         this.client = client;
         this.uniqueCode = uniqueCode;
@@ -75,7 +79,7 @@ public class Project {
         this.projectRegDate = projectRegDate;
         this.projectGuid = projectGuid;
         this.orderAmount = orderAmount;
-        this.equipment = equipment;
+        this.deliveryEquipmentList = deliveryEquipmentList;
     }
 
     // 프로젝트 이름 변경 시 업데이트
@@ -85,7 +89,7 @@ public class Project {
         }
     }
 
-    public void updateProject(Product product, Team team, Memp engineer, Memp subEngineer, Integer orderAmount, String equipment) {
+    public void updateProject(Product product, Team team, Memp engineer, Memp subEngineer, Integer orderAmount) {
 
         if (product != null) {
             this.product = product;
@@ -98,7 +102,6 @@ public class Project {
         }
         this.subEngineer = subEngineer;
         this.orderAmount = orderAmount;
-        this.equipment = equipment;
 
     }
 }

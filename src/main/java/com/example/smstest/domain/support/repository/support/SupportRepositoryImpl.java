@@ -1,4 +1,5 @@
 package com.example.smstest.domain.support.repository.support;
+
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.entity.QSupport;
 import com.example.smstest.domain.support.entity.Support;
@@ -15,6 +16,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+/**
+ * SupportRepositoryCustom를 상속하여 QueryDSL 메소드 구체화
+ */
 @Transactional(readOnly = true)
 public class SupportRepositoryImpl implements SupportRepositoryCustom {
 

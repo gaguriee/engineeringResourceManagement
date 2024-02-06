@@ -3,8 +3,8 @@ package com.example.smstest.domain.task;
 import com.example.smstest.domain.file.FileDto;
 import com.example.smstest.domain.file.FileService;
 import com.example.smstest.domain.file.MD5Generator;
-import com.example.smstest.domain.project.ProjectRepository;
-import com.example.smstest.domain.task.dto.TaskRequestDTO;
+import com.example.smstest.domain.project.repository.ProjectRepository;
+import com.example.smstest.domain.task.dto.TaskRequest;
 import com.example.smstest.domain.task.entity.Task;
 import com.example.smstest.domain.task.repository.TaskCategoryRepository;
 import com.example.smstest.domain.task.repository.TaskRepository;
@@ -43,6 +43,7 @@ public class TaskService {
 
     /**
      * 일정 삭제
+     *
      * @param taskId
      * @return
      */
@@ -56,6 +57,7 @@ public class TaskService {
 
     /**
      * 기존 일정 업데이트
+     *
      * @param taskId
      * @param json
      * @param file
@@ -72,16 +74,17 @@ public class TaskService {
 
     /**
      * 신규 일정 등록
+     *
      * @param projectId
      * @param json
      * @param file
      * @return
      */
     public String saveTask(Long projectId, Map<String, Object> json,
-                            MultipartFile file) {
+                           MultipartFile file) {
 
         ObjectMapper mapper = new ObjectMapper();
-        TaskRequestDTO taskRequest = mapper.convertValue(json,TaskRequestDTO.class);
+        TaskRequest taskRequest = mapper.convertValue(json, TaskRequest.class);
 
         Task task = new Task();
         task.setProject(projectRepository.findById(projectId).get());
@@ -98,6 +101,7 @@ public class TaskService {
 
     /**
      * json으로 받은 Request를 TaskRequestDto로 매핑
+     *
      * @param json
      * @param file
      * @param task
@@ -107,7 +111,7 @@ public class TaskService {
                                      MultipartFile file, Task task) {
 
         ObjectMapper mapper = new ObjectMapper();
-        TaskRequestDTO updatedTask = mapper.convertValue(json,TaskRequestDTO.class);
+        TaskRequest updatedTask = mapper.convertValue(json, TaskRequest.class);
 
         task.setCategory(taskCategoryRepository.findById(updatedTask.getCategoryId()).get());
         task.setTaskName(updatedTask.getTaskName());
@@ -116,7 +120,7 @@ public class TaskService {
         task.setActualStartDate(updatedTask.getActualStartDate());
         task.setActualEndDate(updatedTask.getActualEndDate());
 
-        if (updatedTask.getFileDeleted()){
+        if (updatedTask.getFileDeleted()) {
             task.setFiles(null);
             fileService.deleteAllByTaskId(task.getId());
         }
@@ -128,14 +132,15 @@ public class TaskService {
 
     /**
      * 요청 들어온 file 저장
+     *
      * @param file
      * @param newTask
      * @return
      */
-    private String setTaskFile(MultipartFile file, Task newTask){
+    private String setTaskFile(MultipartFile file, Task newTask) {
 
         // 요청 들어온 file이 없을 경우 그냥 return
-        if (file == null){
+        if (file == null) {
             return "작업 목록이 성공적으로 저장되었습니다.";
         }
 
@@ -153,27 +158,25 @@ public class TaskService {
 
             // OS 따라 구분자 분리
             String os = System.getProperty("os.name").toLowerCase();
-            if (os.contains("win")){
+            if (os.contains("win")) {
                 savePath = System.getProperty("user.dir") + "\\files\\task";
                 filePath = savePath + "\\" + filename;
-            }
-            else{
-                savePath = System.getProperty("user.dir") + "/files/task";
+            } else {
+                savePath = "/root/files/task";
                 filePath = savePath + "/" + filename;
             }
 
 
             if (!new java.io.File(savePath).exists()) {
-                try{
+                try {
                     new java.io.File(savePath).mkdir();
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     e.getStackTrace();
                 }
             }
 
             file.transferTo(new java.io.File(filePath));
-            
+
             // 이전에 등록되어 있던 File 삭제
             fileService.deleteAllByTaskId(newTask.getId());
 
@@ -190,7 +193,7 @@ public class TaskService {
 
             return "작업 목록이 성공적으로 저장되었습니다.";
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new CustomException(ErrorCode.BAD_REQUEST);
 
@@ -242,7 +245,7 @@ public class TaskService {
         Cell headerCell = null;
 
         headerRow = sheet.createRow(rowCount++);
-        for(int i=0; i<headerNames.length; i++) {
+        for (int i = 0; i < headerNames.length; i++) {
             headerCell = headerRow.createCell(i);
             headerCell.setCellValue(headerNames[i]); // 데이터 추가
             headerCell.setCellStyle(headerXssfCellStyle); // 스타일 추가
@@ -253,12 +256,12 @@ public class TaskService {
          */
         ArrayList<String[]> bodyDatass = new ArrayList<>();
 
-        for (int i = 0; i < tasks.size(); i++){
+        for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);
 
-            String fileName = null ;
+            String fileName = null;
 
-            if (!task.getFiles().isEmpty()){
+            if (!task.getFiles().isEmpty()) {
                 fileName = task.getFiles().stream().findFirst().get().getOrigFilename();
             }
 
@@ -279,14 +282,14 @@ public class TaskService {
 
         int previousCategoryId = 0;
 
-        for( int i = 0; i< bodyDatass.size(); i++) {
+        for (int i = 0; i < bodyDatass.size(); i++) {
 
             int currentCategoryId = tasks.get(i).getCategory().getId();
-            if (previousCategoryId != currentCategoryId){
+            if (previousCategoryId != currentCategoryId) {
                 Row categoryRow = null;
                 Cell categoryCell = null;
 
-                sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0,6));
+                sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0, 6));
 
                 XSSFCellStyle categoryXssfCellStyle = (XSSFCellStyle) workbook.createCellStyle();
 
@@ -317,7 +320,7 @@ public class TaskService {
             String[] bodyDatas = bodyDatass.get(i);
             bodyRow = sheet.createRow(rowCount++);
 
-            for(int j=0; j<bodyDatas.length; j++) {
+            for (int j = 0; j < bodyDatas.length; j++) {
 
                 bodyCell = bodyRow.createCell(j);
                 bodyCell.setCellValue(bodyDatas[j]); // 데이터 추가

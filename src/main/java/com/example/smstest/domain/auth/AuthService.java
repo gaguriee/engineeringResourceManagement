@@ -36,7 +36,7 @@ public class AuthService {
      *
      * @param resetPasswordRequest 비밀번호 재설정 DTO
      */
-    public void savePassword(ResetPasswordRequest resetPasswordRequest){
+    public void savePassword(ResetPasswordRequest resetPasswordRequest) {
 
         // 현재 로그인한 유저 객체 받아옴
         Memp memp = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -51,6 +51,7 @@ public class AuthService {
 
     /**
      * [ 부서 이동 신청 ]
+     *
      * @param memberId
      * @return
      * @throws CustomException

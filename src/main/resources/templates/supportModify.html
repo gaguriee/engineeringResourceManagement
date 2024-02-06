@@ -2,85 +2,130 @@
 <html lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link rel="favicon" href="/templates/favicon.ico">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <title>지원내역 수정</title>
 
 </head>
 <body>
 <div th:replace="header :: header"></div>
-
 <section class="bg-white dark:bg-gray-900">
 
-<!--    상태 및 이슈, 제품 가이드 사이드바-->
-    <div id="readStateDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
+    <!--    상태 및 이슈, 제품 가이드 사이드바-->
+    <div id="readStateDrawer"
+         class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800"
+         tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
         <div style="display: flex; margin-top: 48px">
-            <h4 id="drawer-label_state" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white" >업무구분 가이드</h4>
-            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            <h4 id="drawer-label_state" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white">
+                업무구분 가이드</h4>
+            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true"
+                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
             </svg>
         </div>
         <div class="separator" style="margin-top: 8px; width: 100%; height: 1px; background-color: lightgray"></div>
 
         <ul style="margin-top: 12px">
-            <li th:each="state : ${states}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
-                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;" th:text="${state.name}"></span>
+            <li th:each="state : ${states}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white"
+                style="font-size: 12px; display: grid; margin-top: 24px">
+                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;"
+                      th:text="${state.name}"></span>
                 <span style="font-weight: normal; color: gray" th:text="${state.description}"></span>
             </li>
         </ul>
-        <button type="button" data-drawer-dismiss="readStateDrawer" aria-controls="readStateDrawer" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        <button type="button" data-drawer-dismiss="readStateDrawer" aria-controls="readStateDrawer"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"></path>
+            </svg>
             <span class="sr-only">Close menu</span>
         </button>
 
     </div>
-    <div id="readIssueDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
+    <div id="readIssueDrawer"
+         class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800"
+         tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
         <div style="display: flex; margin-top: 48px">
-            <h4 id="drawer-label_issue" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white" >이슈구분 가이드</h4>
-            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            <h4 id="drawer-label_issue" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white">
+                이슈구분 가이드</h4>
+            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true"
+                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
             </svg>
         </div>
 
         <ul>
-            <li th:each="category : ${issueCategories}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
+            <li th:each="category : ${issueCategories}"
+                class="mb-2 font-medium leading-none text-gray-700 dark:text-white"
+                style="font-size: 12px; display: grid; margin-top: 24px">
                 <hr style="margin-bottom: 18px">
-                <span style="font-size: 17px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap; color: red" th:text="${category.name}"></span>
+                <span style="font-size: 17px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap; color: red"
+                      th:text="${category.name}"></span>
                 <ul style="margin-top: 12px; margin-left: 4px">
-                    <li th:each="issue : ${category.issues}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
-                        <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;" th:text="${issue.name}"></span>
+                    <li th:each="issue : ${category.issues}"
+                        class="mb-2 font-medium leading-none text-gray-700 dark:text-white"
+                        style="font-size: 12px; display: grid; margin-top: 24px">
+                        <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;"
+                              th:text="${issue.name}"></span>
                         <span style="font-weight: normal; color: gray" th:text="${issue.description}"></span>
                     </li>
                 </ul>
 
             </li>
         </ul>
-        <button type="button" data-drawer-dismiss="readIssueDrawer" aria-controls="readIssueDrawer" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        <button type="button" data-drawer-dismiss="readIssueDrawer" aria-controls="readIssueDrawer"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"></path>
+            </svg>
             <span class="sr-only">Close menu</span>
         </button>
     </div>
-    <div id="readProductDrawer" class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
+    <div id="readProductDrawer"
+         class="overflow-y-auto fixed top-0 left-0 z-40 p-4 w-full max-w-xs h-screen bg-white transition-transform -translate-x-full dark:bg-gray-800"
+         tabindex="-1" aria-labelledby="drawer-label" aria-hidden="true">
         <div style="display: flex; margin-top: 48px">
-            <h4 id="drawer-label_product" class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white" >제품구분 가이드</h4>
-            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            <h4 id="drawer-label_product"
+                class="mb-1.5 leading-none text-xl font-semibold text-gray-900 dark:text-white">제품구분 가이드</h4>
+            <svg class="w-5 h-5 text-gray-800 dark:text-white" style="margin-left: 2px" aria-hidden="true"
+                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
             </svg>
         </div>
         <div class="separator" style="margin-top: 8px; width: 100%; height: 1px; background-color: lightgray"></div>
 
         <ul style="margin-top: 12px">
             <!--            제품명 중 하이픈(-) 제외-->
-            <li th:each="product : ${products}" th:unless="${product.id == 24}" class="mb-2 font-medium leading-none text-gray-700 dark:text-white" style="font-size: 12px; display: grid; margin-top: 24px">
-                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;" th:text="${product.name}"></span>
+            <li th:each="product : ${products}" th:unless="${product.id == 24}"
+                class="mb-2 font-medium leading-none text-gray-700 dark:text-white"
+                style="font-size: 12px; display: grid; margin-top: 24px">
+                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px; white-space: pre-wrap;"
+                      th:text="${product.name}"></span>
                 <span style="font-weight: normal; color: gray" th:text="${product.description}"></span>
             </li>
         </ul>
-        <button type="button" data-drawer-dismiss="readProductDrawer" aria-controls="readProductDrawer" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        <button type="button" data-drawer-dismiss="readProductDrawer" aria-controls="readProductDrawer"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"></path>
+            </svg>
             <span class="sr-only">Close menu</span>
         </button>
     </div>
@@ -88,49 +133,63 @@
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white" style="padding-bottom: 48px">지원내역 수정</h2>
 
-<!--        지원내역 수정 폼-->
-        <form id="submitForm" th:action="@{/modify}" method="post" enctype="multipart/form-data">
+        <!--        지원내역 수정 폼-->
+        <form id="submitForm" th:action="@{/support/modify}" method="post" enctype="multipart/form-data">
 
             <label for="supportId" class="hidden"></label>
-            <input type="text"  name="supportId" id="supportId" class="hidden">
+            <input type="text" name="supportId" id="supportId" class="hidden">
 
             <div class="sm:col-span-2" style="padding-bottom: 24px">
-                <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목 *</label>
-                <textarea name = "taskTitle" id="taskTitle" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" maxlength="60" placeholder="제목은 필수입니다. (60자 이내)"></textarea>
+                <label for="taskTitle" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 제목
+                    *</label>
+                <textarea name="taskTitle" id="taskTitle" rows="1"
+                          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                          maxlength="60" placeholder="제목은 필수입니다. (60자 이내)"></textarea>
             </div>
             <div class="sm:col-span-2" style="padding-bottom: 24px">
                 <label for="project" class="hidden"></label>
-                <input type="text"  name="project" id="project" class="hidden">
-                <label for="projectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트 검색 *</label>
+                <input type="text" name="project" id="project" class="hidden">
+                <label for="projectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">프로젝트 검색
+                    *</label>
                 <div id="projectSearchBtn" class="relative">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                             viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                  clip-rule="evenodd"/>
                         </svg>
                     </div>
-                    <input type="text" name="projectrName" readonly id="projectName" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="프로젝트를 선택해주세요." required="">
+                    <input type="text" name="projectrName" readonly id="projectName"
+                           class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                           placeholder="프로젝트를 선택해주세요." required="">
                 </div>
                 <div class="mt-1.5 " style="text-align: end; align-content: end; align-items: end">
                 </div>
                 <div class="mt-2.5" th:if="${recentProjects.size() > 0}">
-                    <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
+                    <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800"
+                         role="alert">
                         <span class="sr-only">Info</span>
                         <div>
                             <span class="font-medium">최근 등록한 프로젝트</span>
-                            <table class="mt-2 w-full text-sm text-left text-gray-500 dark:text-gray-400" s>
+                            <table class="mt-2 w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <tbody>
                                 <tr th:each="project : ${recentProjects}" class="dark:border-gray-700">
                                     <td th:text="${project.company.companyName}">고객사</td>
                                     <td class="px-2">
                                         <a href="#" th:onclick="setProject([[${project}]])"
-                                           th:text="${project.projectName}" class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
+                                           th:text="${project.projectName}"
+                                           class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
                                         </a>
                                     </td>
                                     <td class="px-2">
                                         <a href="#" th:onclick="setProject([[${project}]])"
                                            class="text-blue-800 hover:text-primary-700 dark:hover:text-primary-500">
-                                            <svg class="w-3 h-3 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                            <svg class="w-3 h-3 text-blue-800 dark:text-white" aria-hidden="true"
+                                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                      stroke-linejoin="round" stroke-width="2"
+                                                      d="M1 5.917 5.724 10.5 15 1.5"/>
                                             </svg>
                                         </a>
                                     </td>
@@ -139,254 +198,340 @@
                             </table>
                         </div>
                     </div>
-            </div>
-
-            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-4">
-                <div>
-                    <div style="display: flex; ">
-                        <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분 *</label>
-
-                        <div >
-                            <button id="readStateButton" type="button" data-drawer-target="readStateDrawer" data-drawer-show="readStateDrawer" aria-controls="readStateDrawer">
-                                <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
-                                </svg>
-                            </button>
-                        </div>
-
-                    </div>
-                    <select id="state" name="stateId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <option value="" selected>업무구분을 선택해주세요.</option>
-                        <th:block th:each="state : ${states}">
-                            <option th:value="${state.id}" th:text="${state.name}" data-description="${state.description}"></option>
-                        </th:block>
-                    </select>
                 </div>
 
-
-                <div class="sm:col-span-2" >
-                    <label for="supportDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지원일자 *</label>
-                    <input type="date" name="supportDate" id="supportDate" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                </div>
-                <div>
-                    <div style="display: flex; ">
-                        <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">이슈구분 *</span>
-
-                        <div >
-                            <button id="readIssueButton" type="button" data-drawer-target="readIssueDrawer" data-drawer-show="readIssueDrawer" aria-controls="readIssueDrawer">
-                                <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
-                                </svg>
-                            </button>
-                        </div>
-
-                    </div>
-
-                    <div th:fragment="dropdownIssue">
-                        <input type="hidden" id="selectedIssue" name="issueId" value="" />
-                        <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue" type="button" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 flex w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <span id="selectedIssueText" class="flex-1 text-left whitespace-nowrap">이슈구분을 선택해주세요.</span>
-                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                        </button>
-                        <!-- Dropdown menu -->
-                        <div id="dropdownIssue" class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-600" style="width: 300px">
-                            <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="multiLevelDropdownButton">
-                                <li th:each="category : ${issueCategories}">
-                                    <button type="button" th:id="'categoryButton_' + ${category.id}" th:data-dropdown-toggle="'dropdownIssue_' + ${category.id}"  class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                        <span class="flex-1 text-left whitespace-nowrap" th:text="${category.name}"></span>
-                                        <svg class="w-2.5 h-2.5 ml-2.5 mt-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10" style="vertical-align: middle">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                                        </svg>
-                                    </button>
-
-                                    <div th:id="'dropdownIssue_' + ${category.id}" class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700" style="max-height: 400px; overflow-y: auto; width: 300px">
-                                        <ul class="py-4 px-2 text-sm text-gray-700 dark:text-gray-200" >
-                                            <li th:each="issue : ${category.issues}">
-                                                <button type="button" th:id="'issue_' + ${issue.id}" th:data-issue-id="${issue.id}" th:data-issue-name="${issue.name}" class="w-full flex px-1 py-1 text-sm text-gray-900 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-600 text-left" onclick="selectIssue(this)">
-                                                    <span th:text="${issue.name}"></span>
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="mt-2.5 ">
-                        <div class="flex p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                            <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                            </svg>
-                            <span class="sr-only">Info</span>
-                            <div>
-                                <span class="font-medium">정기점검이라면?</span>
-                                <ul class=" mt-1.5 ml-1 list-disc list-inside">
-                                    <li>프로젝트 중복 시 1개 선택 후 등록</li>
-                                    <li>작업 요약에 제품명을 전부 기입</li>
-                                    <li>제품별 지원내역 등록 불필요</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
+                <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 pb-4">
                     <div>
                         <div style="display: flex; ">
-                            <label for="product" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">제품명 *</label>
+                            <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">업무구분
+                                *</label>
 
-                            <div >
-                                <button id="readProductButton" type="button" data-drawer-target="readProductDrawer" data-drawer-show="readProductDrawer" aria-controls="readProductDrawer">
-                                    <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
+                            <div>
+                                <button id="readStateButton" type="button" data-drawer-target="readStateDrawer"
+                                        data-drawer-show="readStateDrawer" aria-controls="readStateDrawer">
+                                    <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white"
+                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                         viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
                                     </svg>
                                 </button>
                             </div>
 
                         </div>
-                        <select id="product" name="productId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <option value="" selected>제품명을 선택해주세요.</option>
-                            <!-- Iterate over the issues list and add each issue's name as an option -->
-                            <th:block th:each="product : ${products}">
-                                <option th:value="${product.id}" th:text="${product.name}"></option>
+                        <select id="state" name="stateId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="" selected>업무구분을 선택해주세요.</option>
+                            <th:block th:each="state : ${states}">
+                                <option th:value="${state.id}" th:text="${state.name}"
+                                        data-description="${state.description}"></option>
                             </th:block>
                         </select>
+                    </div>
+
+
+                    <div class="sm:col-span-2">
+                        <label for="supportDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지원일자
+                            *</label>
+                        <input type="date" name="supportDate" id="supportDate"
+                               class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                     </div>
                     <div>
-                        <label for="engineer" class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어 *</label>
-                        <select id="engineer" name="engineerId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                            <th:block th:each="memp : ${memps}">
-                                <option th:value="${memp.id}" th:text="${memp.name} + ' ('+${memp.team.name}+')'"></option>
-                            </th:block>
-                        </select>
+                        <div style="display: flex; ">
+                            <span class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">이슈구분 *</span>
+
+                            <div>
+                                <button id="readIssueButton" type="button" data-drawer-target="readIssueDrawer"
+                                        data-drawer-show="readIssueDrawer" aria-controls="readIssueDrawer">
+                                    <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white"
+                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                         viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div th:fragment="dropdownIssue">
+                            <input type="hidden" id="selectedIssue" name="issueId" value=""/>
+                            <button id="multiLevelDropdownButtonIssue" data-dropdown-toggle="dropdownIssue"
+                                    type="button"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 flex w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <span id="selectedIssueText"
+                                      class="flex-1 text-left whitespace-nowrap">이슈구분을 선택해주세요.</span>
+                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500" fill="currentColor"
+                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                          clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div id="dropdownIssue"
+                                 class="hidden ml-6 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-600"
+                                 style="width: 300px">
+                                <ul class="relative py-2 px-2 text-sm text-gray-700 dark:text-gray-200"
+                                    aria-labelledby="multiLevelDropdownButton">
+                                    <li th:each="category : ${issueCategories}">
+                                        <button type="button" th:id="'categoryButton_' + ${category.id}"
+                                                th:data-dropdown-toggle="'dropdownIssue_' + ${category.id}"
+                                                class="flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <span class="flex-1 text-left whitespace-nowrap"
+                                                  th:text="${category.name}"></span>
+                                            <svg class="w-2.5 h-2.5 ml-2.5 mt-1" aria-hidden="true"
+                                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10"
+                                                 style="vertical-align: middle">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                      stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                                            </svg>
+                                        </button>
+
+                                        <div th:id="'dropdownIssue_' + ${category.id}"
+                                             class="z-60 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
+                                             style="max-height: 400px; overflow-y: auto; width: 300px">
+                                            <ul class="py-4 px-2 text-sm text-gray-700 dark:text-gray-200">
+                                                <li th:each="issue : ${category.issues}">
+                                                    <button type="button" th:id="'issue_' + ${issue.id}"
+                                                            th:data-issue-id="${issue.id}"
+                                                            th:data-issue-name="${issue.name}"
+                                                            class="w-full flex px-1 py-1 text-sm text-gray-900 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-600 text-left"
+                                                            onclick="selectIssue(this)">
+                                                        <span th:text="${issue.name}"></span>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-2.5 ">
+                            <div class="flex p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+                                 role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div>
+                                    <span class="font-medium">정기점검이라면?</span>
+                                    <ul class=" mt-1.5 ml-1 list-disc list-inside">
+                                        <li>프로젝트 중복 시 1개 선택 후 등록</li>
+                                        <li>작업 요약에 제품명을 전부 기입</li>
+                                        <li>제품별 지원내역 등록 불필요</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div>
+                        <div>
+                            <div style="display: flex; ">
+                                <label for="product"
+                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">제품명
+                                    *</label>
 
-                </div>
+                                <div>
+                                    <button id="readProductButton" type="button" data-drawer-target="readProductDrawer"
+                                            data-drawer-show="readProductDrawer" aria-controls="readProductDrawer">
+                                        <svg style="margin-left: 2px" class="w-4 h-4 text-red-500 dark:text-white"
+                                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                             viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
+                                                  d="M7.529 7.988a2.502 2.502 0 0 1 5 .191A2.441 2.441 0 0 1 10 10.582V12m-.01 3.008H10M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/>
+                                        </svg>
+                                    </button>
+                                </div>
 
-                <div class="w-full">
-                    <label for="supportType" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지원 형태 *</label>
-                    <div class="flex">
-                        <div class="w-1/2 pr-1">
-                            <select id="supportType" name="supportTypeId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                <option value="" selected>지원 형태</option>
-                                <th:block th:each="supportType : ${supportTypes}">
-                                    <option th:value="${supportType.id}" th:text="${supportType.name}"></option>
+                            </div>
+                            <select id="product" name="productId"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <option value="" selected>제품명을 선택해주세요.</option>
+                                <!-- Iterate over the issues list and add each issue's name as an option -->
+                                <th:block th:each="product : ${products}">
+                                    <option th:value="${product.id}" th:text="${product.name}"></option>
                                 </th:block>
                             </select>
                         </div>
-                        <div class="w-1/2 pl-1">
-                            <label for="supportTypeHour">
-                                <input type="number" name="supportTypeHour" id="supportTypeHour" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 시간"  min="0.5" step="0.5" >
-                            </label>
+                        <div>
+                            <label for="engineer"
+                                   class="mt-2.5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">담당 엔지니어
+                                *</label>
+                            <select id="engineer" name="engineerId"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <th:block th:each="memp : ${memps}">
+                                    <option th:value="${memp.id}"
+                                            th:text="${memp.name} + ' ('+${memp.team.name}+')'"></option>
+                                </th:block>
+                            </select>
                         </div>
+
+                    </div>
+
+                    <div class="w-full">
+                        <label for="supportType" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">지원
+                            형태 *</label>
+                        <div class="flex">
+                            <div class="w-1/2 pr-1">
+                                <select id="supportType" name="supportTypeId"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                    <option value="" selected>지원 형태</option>
+                                    <th:block th:each="supportType : ${supportTypes}">
+                                        <option th:value="${supportType.id}" th:text="${supportType.name}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="w-1/2 pl-1">
+                                <label for="supportTypeHour">
+                                    <input type="number" name="supportTypeHour" id="supportTypeHour"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                           placeholder="지원 시간" min="0.5" step="0.5">
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                        <label for="redmineIssue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인
+                            일감</label>
+                        <input type="number" name="redmineIssue" id="redmineIssue"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                               placeholder="장애 등록 시 관련 레드마인 일감 번호 필수" min="0">
                     </div>
 
                 </div>
                 <div>
-                    <label for="redmineIssue" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">레드마인 일감</label>
-                    <input type="number" name="redmineIssue" id="redmineIssue" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="장애 등록 시 관련 레드마인 일감 번호 필수"  min="0">
-                </div>
+                    <div class="flex p-4 mb-8 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+                         role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-medium">[참고] 지원 업무시간 입력</span>
+                            <ul class=" mt-1.5 ml-1 list-disc list-inside mb-2">
+                                <li>일일 : 8시간(09시~18시, 점심시간 1시간 제외)</li>
+                                <li>외근 : 9시간(09시~20시까지 외근 시, 점심/저녁 총 2시간 제외한 업무시간 입력)</li>
+                                <li><b>지원 시간 입력 단위 : 최소 30분(0.5), 1시간(1), 1시간30분(1.5)</b></li>
+                            </ul>
 
-            </div>
-            <div>
-                <div class="flex p-4 mb-8 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                    </svg>
-                    <span class="sr-only">Info</span>
-                    <div>
-                        <span class="font-medium" >[참고] 지원 업무시간 입력</span>
-                        <ul class=" mt-1.5 ml-1 list-disc list-inside mb-2">
-                            <li>일일 : 8시간(09시~18시, 점심시간 1시간 제외)</li>
-                            <li>외근 : 9시간(09시~20시까지 외근 시, 점심/저녁 총 2시간 제외한 업무시간 입력)</li>
-                            <li><b>지원 시간 입력 단위 : 최소 30분(0.5), 1시간(1), 1시간30분(1.5)</b></li>
-                        </ul>
-
-                        <span class="font-medium" style="color: red; ">[중요] 추가 및 수정/삭제 기간</span>
-                        <ul class=" mt-1.5 ml-1 list-disc list-inside">
-                            <li>금일을 기준으로 <b>7일 전</b> 까지만 수정 혹은 추가 가능</li>
-                            <li  style="color: red; ">초과되어 업로드 하지 못하는 내역이 있는 경우 본부장 결재 필요</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sm:col-span-2" style="padding-bottom: 24px">
-                <label for="taskSummary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" >작업 요약 *</label>
-                <textarea name = "taskSummary" id="taskSummary" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 내역을 요약해주세요." ></textarea>
-            </div>
-            <div class="sm:col-span-2">
-                <label for="taskDetails" class="mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세 *</label>
-                <textarea name = "taskDetails" id="taskDetails" rows="16" class="hidden p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="지원 작업 상세 내역 (스크립트 포함)" ></textarea>
-                <div id="editor" class="bg-gray-50" style="height: 400px"></div>
-            </div>
-            <div class="form-group row mt-4">
-                <div class="col-sm-10">
-                    <div class="custom-file" id="inputFile">
-                        <label class="custom-file-label block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Upload files</label>
-                        <input name="files" class="custom-file-input block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="multiple_files" type="file" multiple>
-                    </div>
-                </div>
-                <input id="deletedFileId" name="deletedFileId" type="hidden">
-
-
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">업로드 가능한 최대 파일 크기는 50MB 입니다.</p>
-
-                <div class="mt-1" id="attachedList" style="font-size: small; color: gray">
-                    <div th:each="file : ${support.getFiles()}">
-                        <div class="flex" th:id="${file.id}">
-                            <p th:text="${file.origFilename}" ></p>
-                            <button type="button" th:onclick="'deleteOldFile('+${file.id}+')'" th:fileSize = "${file.size}" style="color: red">X</button>
+                            <span class="font-medium" style="color: red; ">[중요] 추가 및 수정/삭제 기간</span>
+                            <ul class=" mt-1.5 ml-1 list-disc list-inside">
+                                <li>금일을 기준으로 <b>7일 전</b> 까지만 수정 혹은 추가 가능</li>
+                                <li style="color: red; ">초과되어 업로드 하지 못하는 내역이 있는 경우 본부장 결재 필요</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
-<!--                지원내역 수정 관련 알림 메시지-->
+
+                <div class="sm:col-span-2" style="padding-bottom: 24px">
+                    <label for="taskSummary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 요약
+                        *</label>
+                    <textarea name="taskSummary" id="taskSummary" rows="8"
+                              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="지원 내역을 요약해주세요."></textarea>
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="taskDetails" class="mb-2 text-sm font-medium text-gray-900 dark:text-white">작업 상세
+                        *</label>
+                    <textarea name="taskDetails" id="taskDetails" rows="16"
+                              class="hidden p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="지원 작업 상세 내역 (스크립트 포함)"></textarea>
+                    <div id="editor" class="bg-gray-50" style="height: 400px"></div>
+                </div>
+                <div class="form-group row mt-4">
+                    <div class="col-sm-10">
+                        <div class="custom-file" id="inputFile">
+                            <label class="custom-file-label block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                   for="multiple_files">Upload files</label>
+                            <input name="files"
+                                   class="custom-file-input block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                   id="multiple_files" type="file" multiple>
+                        </div>
+                    </div>
+                    <input id="deletedFileId" name="deletedFileId" type="hidden">
+
+
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">업로드 가능한 최대 파일 크기는 50MB
+                        입니다.</p>
+
+                    <div class="mt-1" id="attachedList" style="font-size: small; color: gray">
+                        <div th:each="file : ${support.getFiles()}">
+                            <div class="flex" th:id="${file.id}">
+                                <p th:text="${file.origFilename}"></p>
+                                <button type="button" th:onclick="'deleteOldFile('+${file.id}+')'"
+                                        th:fileSize="${file.size}" style="color: red">X
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                지원내역 수정 관련 알림 메시지-->
                 <div id="alert" class="h-36">
-                <div id="alertEngineerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                    </svg>
-                    <span class="sr-only">Info</span>
-                    <div>
-                        <span class="font-medium">등록되지 않은 엔지니어입니다. 관리자에 문의해주세요.</span>
+                    <div id="alertEngineerNotExist"
+                         class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                         role="alert" style="margin-top: 24px; ">
+                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-medium">등록되지 않은 엔지니어입니다. 관리자에 문의해주세요.</span>
+                        </div>
                     </div>
-                </div>
-                <div id="alertCustomerNotExist" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                    </svg>
-                    <span class="sr-only">Info</span>
-                    <div>
-                        <span class="font-medium">등록되지 않은 고객사입니다. 신규 등록을 진행해주세요.</span>
+                    <div id="alertCustomerNotExist"
+                         class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                         role="alert" style="margin-top: 24px; ">
+                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-medium">등록되지 않은 고객사입니다. 신규 등록을 진행해주세요.</span>
+                        </div>
                     </div>
-                </div>
-                <div id="alertForm7daysOver" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                    </svg>
-                    <span class="sr-only">Info</span>
-                    <div>
-                        <span class="font-medium">지원내역 수정은 7일 이내에만 가능합니다.</span>
+                    <div id="alertFormDaysOver"
+                         class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                         role="alert" style="margin-top: 24px; ">
+                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-medium">지원내역 수정은 7일 이내에만 가능합니다.</span>
+                        </div>
                     </div>
-                </div>
-                <div id="alertForm" class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert" style="margin-top: 24px; ">
-                    <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                    </svg>
-                    <span class="sr-only">Info</span>
-                    <div>
-                        <span class="font-medium">필수 항목을 전부 작성해주세요.</span>
+                    <div id="alertForm"
+                         class="hidden items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                         role="alert" style="margin-top: 24px; ">
+                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            <span class="font-medium">필수 항목을 전부 작성해주세요.</span>
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
-
-            <div style="display: flex; align-items: end; justify-content: flex-end;">
-                <button type="button" onclick="validateAndSubmit()" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                    등록하기
-                </button>
-            </div>
+                <div style="display: flex; align-items: end; justify-content: flex-end;">
+                    <button type="button" onclick="validateAndSubmit()"
+                            class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        등록하기
+                    </button>
+                </div>
             </div>
 
         </form>
@@ -398,30 +543,245 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
 
-<script  th:inline="javascript">
+<script th:inline="javascript">
+
+    const support = [[${support }]];    // 기존 support data
+    const licenseProject = [[${licenseProject }]];    // 기존 license project
+
+    const memps = [[${memps}]];
+    const user = [[${user}]];
+
+    const userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
+    const hasSuperAdminRole = userAuthorities.some(function (authority) {
+        return authority.authority === 'ROLE_SUPERADMIN';
+    });
+    let minRegistrableDate;
+
+    // 지원내역 상세 내 에디터 옵션 설정
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        [{'header': 1}, {'header': 2}],
+        [{'list': 'ordered'}, {'list': 'bullet'}],
+
+        [{'color': []}, {'background': []}],
+        ['image', 'link'],
+    ];
+
+    let totalMaxSize = 100 * 1024 * 1024;  //* 총 100MB 사이즈 용량 제한
+    let totalFileSize = 0;
+    let maxSize = 50 * 1024 * 1024; //* 한 파일 당 50MB 사이즈 용량 제한
+
+    //* 혁신성과 (Innovation performance) : IP 통칭
+
+    // 혁신성과 state Id
+    const IPStateId = "5";
+    // 혁신성과 issue 대분류 Id
+    const IPIssueCategoryId = "9";
+    // 혁신성과용 제품명 "-" product Id
+    const IPProductId = "24";
+
+    // 기존에 첨부되어있던 file Id
+    const oldFilesId = [];
+
+    // 지원내역 기본 정보 입력
+    const taskTitle = document.getElementById('taskTitle');
+    const product = document.getElementById('product');
+    const issue = document.getElementById('selectedIssue');
+    const state = document.getElementById('state');
+    const engineer = document.getElementById('engineer');
+    const supportType = document.getElementById('supportType');
+    const supportTypeHour = document.getElementById('supportTypeHour');
+    const supportDate = document.getElementById('supportDate');
+    const taskSummary = document.getElementById('taskSummary');
+    const taskDetails = document.getElementById('taskDetails');
+    const redmineIssue = document.getElementById('redmineIssue');
+    const supportId = document.getElementById('supportId');
+    const projectName = document.getElementById('projectName');
+    const project = document.getElementById('project');
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        quilljsediterInit();
+        getRegistrableDate();
+
+        assignDefaultValues();
+
+        // 대분류 버튼 클릭 시 해당 드롭다운 메뉴 표시/숨김
+        const categoryButtonsProduct = document.querySelectorAll("[data-dropdown-toggle^='dropdownProduct_']");
+        categoryButtonsProduct.forEach(button => {
+            button.addEventListener("click", function () {
+                const dropdownId = this.getAttribute("data-dropdown-toggle");
+                const dropdown = document.getElementById(dropdownId);
+                dropdown.classList.toggle("hidden");
+            });
+        });
+
+        const categoryButtonsIssue = document.querySelectorAll("[data-dropdown-toggle^='dropdownIssue_']");
+        categoryButtonsIssue.forEach(button => {
+            button.addEventListener("click", function () {
+                const dropdownId = this.getAttribute("data-dropdown-toggle");
+                const dropdown = document.getElementById(dropdownId);
+                dropdown.classList.toggle("hidden");
+            });
+        });
 
 
-    const support = [[${support }]];
-    const licenseProject = [[${licenseProject }]];
+        // 지원내역 첨부파일 등록 설정
+        let dataTransfer = new DataTransfer();
 
-    /**
-     * 지원내역 기본 정보 입력
-     */
+        // 기존 등록된 파일 용량 미리 더하기
+        support.files.forEach(file => {
+            totalFileSize += file.size;
+        });
 
-    var taskTitle = document.getElementById('taskTitle');
-    var product = document.getElementById('product');
-    var issue = document.getElementById('selectedIssue');
-    var state = document.getElementById('state');
-    var engineer = document.getElementById('engineer');
-    var supportType = document.getElementById('supportType');
-    var supportTypeHour = document.getElementById('supportTypeHour');
-    var supportDate = document.getElementById('supportDate');
-    var taskSummary = document.getElementById('taskSummary');
-    var taskDetails = document.getElementById('taskDetails');
-    var redmineIssue = document.getElementById('redmineIssue');
-    var supportId = document.getElementById('supportId');
-    var projectName = document.getElementById('projectName');
-    var project = document.getElementById('project');
+        // 파일 첨부 핸들러
+        const handler = {
+            init() {
+                const fileInput = document.querySelector('.custom-file-input');
+
+                const preview = document.querySelector('#attachedList');
+                fileInput.addEventListener('change', () => {
+
+                    // 파일 용량 제한
+                    let fileSize = fileInput.files[0].size; //업로드한 파일용량
+                    totalFileSize += fileSize;
+
+                    if (fileSize > maxSize) {
+                        alert("파일첨부 사이즈는 50MB 이내로 가능합니다.");
+                        $(".custom-file-input").val(''); //업로드한 파일 제거
+                        totalFileSize -= fileSize;
+                    } else if (totalFileSize > totalMaxSize) {
+                        alert("한번에 업로드 할 수 있는 파일첨부 사이즈는 100MB 이내입니다.");
+                        $(".custom-file-input").val(''); //업로드한 파일 제거
+                        totalFileSize -= fileSize;
+                    } else {
+                        const files = Array.from(fileInput.files);
+
+                        files.forEach(file => {
+
+                            dataTransfer.items.add(file)
+
+                            preview.innerHTML += `
+                        <p id="${file.lastModified}">
+                            ${file.name}
+                            <button style="color: red" data-index='${file.lastModified}' class='file-remove'>X</button>
+                        </p>`;
+                        });
+                    }
+
+                    document.querySelector('.custom-file-input').files = dataTransfer.files;
+                });
+            },
+
+            removeFile: () => {
+                document.addEventListener('click', (e) => {
+
+                    if (e.target.className !== 'file-remove') return;
+                    const removeTargetId = e.target.dataset.index;
+                    const removeTarget = document.getElementById(removeTargetId);
+                    const files = document.querySelector('.custom-file-input').files;
+                    dataTransfer = new DataTransfer();
+
+                    Array.from(files).forEach(file => {
+                        if (file.lastModified != removeTargetId) {
+                            dataTransfer.items.add(file);
+                        } else {
+                            totalFileSize -= file.size;
+                        }
+                    });
+
+                    document.querySelector('.custom-file-input').files = dataTransfer.files;
+
+                    removeTarget.remove();
+                })
+            }
+        }
+
+        handler.init()
+        handler.removeFile()
+
+        // 프로젝트 검색버튼 클릭 시 /project/select 페이지 로딩
+        window.onload = function () {
+            document.getElementById("projectSearchBtn").onclick = function () {
+                window.open("/project/select", "", "width=1000px,height=600px,top=200px,left=200px;");
+            }
+        };
+
+        // 제품명 선택 시 "-" 제외
+        product.querySelectorAll("option").forEach(option => {
+            option.hidden = IPProductId === option.value;
+        });
+
+        // 업무 변경 핸들러
+        state.addEventListener("change", function () {
+            const selectedStateId = this.value;
+
+            if (selectedStateId === IPStateId) {
+
+                // 모든 카테고리를 숨김
+                const allCategories = document.querySelectorAll('[id^="categoryButton_"]');
+                allCategories.forEach(category => {
+                    category.style.display = 'none';
+                });
+
+                const selectedCategory = document.getElementById(`categoryButton_` + IPIssueCategoryId);
+                selectedCategory.style.display = 'flex';
+
+                product.querySelectorAll("option").forEach(option => {
+                    option.hidden = IPProductId !== option.value;
+                });
+
+                document.getElementById('selectedIssue').value = null;
+                document.getElementById('selectedIssueText').innerHTML = "업무구분을 선택해주세요.";
+                document.getElementById('multiLevelDropdownButtonIssue').click();
+
+                product.value = IPProductId;
+
+            } else {
+
+                const allCategories = document.querySelectorAll('[id^="categoryButton_"]');
+                allCategories.forEach(category => {
+                    category.style.display = 'flex';
+                });
+
+                const selectedCategory = document.getElementById(`categoryButton_9`);
+                selectedCategory.style.display = 'none';
+
+                product.querySelectorAll("option").forEach(option => {
+                    option.hidden = IPProductId === option.value;
+                });
+
+                document.getElementById('selectedIssue').value = null;
+                document.getElementById('selectedIssueText').innerHTML = "업무구분을 선택해주세요.";
+                document.getElementById('multiLevelDropdownButtonIssue').click();
+
+                product.value = '';
+
+            }
+
+        });
+    });
+
+    // 기존 정보 로드
+    function assignDefaultValues() {
+        // 기존 값 세팅
+        assignValue(taskTitle, support.taskTitle);
+        assignValue(product, support.product?.id);
+        assignValue(issue, support.issue?.id);
+        assignValue(state, support.state.id);
+        assignValue(engineer, support.engineer?.id);
+        assignValue(supportType, support.supportType?.id);
+        assignValue(supportTypeHour, support.supportTypeHour);
+        assignValue(supportDate, support.supportDate);
+        assignValue(taskSummary, support.taskSummary);
+        assignValue(taskDetails, support.taskDetails);
+        assignValue(redmineIssue, support.redmineIssue);
+        assignValue(supportId, support.id);
+        assignValue(projectName, support.project?.name);
+        assignValue(project, JSON.stringify(licenseProject));
+
+        document.getElementById('selectedIssueText').innerHTML = support.issue?.name;
+    }
 
     function assignValue(inputElement, value) {
         if (inputElement !== null && value != null) {
@@ -429,85 +789,63 @@
         }
     }
 
-    assignValue(taskTitle, support.taskTitle);
-    assignValue(product, support.product?.id);
-    assignValue(issue, support.issue?.id);
-    assignValue(state, support.state.id);
-    assignValue(engineer, support.engineer?.id);
-    assignValue(supportType, support.supportType?.id);
-    assignValue(supportTypeHour, support.supportTypeHour);
-    assignValue(supportDate, support.supportDate);
-    assignValue(taskSummary, support.taskSummary);
-    assignValue(taskDetails, support.taskDetails);
-    assignValue(redmineIssue, support.redmineIssue);
-    assignValue(supportId, support.id);
-    assignValue(projectName, support.project?.name);
-    assignValue(project, JSON.stringify(licenseProject));
+    // 기존 파일 중 삭제된 파일 id 저장
+    function deleteOldFile(id) {
+        const file = document.getElementById(id)
+        file.remove();
+        totalFileSize -= file.fileSize;
+        oldFilesId.push(id);
 
-    document.getElementById('selectedIssueText').innerHTML =support.issue.name;
+        document.getElementById("deletedFileId").value = oldFilesId;
+    }
 
     /**
      * 이후 대부분 지원내역 등록과 동일
      */
 
+    // 유효성 검사 후 제출
     function validateAndSubmit() {
         validateForm().then(function (isValid) {
             if (isValid) {
                 document.getElementById("submitForm").submit();
             }
         })
-            .catch(function(err) {
+            .catch(function (err) {
                 console.error(err); // Error 출력
             });
     }
 
-    var toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    // 등록 가능 기한 가져오기
+    function getRegistrableDate() {
 
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        ['image', 'link'],
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: '/support/get-registrable-date',
+                method: "GET",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data != null) {
+                        resolve(false);
+                        minRegistrableDate = data;
 
-    ];
-
-    function quilljsediterInit(){
-        var option = {
-            modules: {
-                toolbar: toolbarOptions,
-                clipboard: {
-                    matchVisual: false // true로 설정하면 비주얼 매칭을 사용합니다.
-                },
-                keyboard: {
-                    auto: false,
-                    bindings: {
-                        'list autofill': {
-                            prefix: false
+                        // 최대 날짜를 오늘 날짜로 설정
+                        const supportDateInput = document.getElementById('supportDate');
+                        supportDateInput.max = getTodayDate();
+                        if (!hasSuperAdminRole) {
+                            supportDateInput.min = data;
                         }
                     }
+
+                },
+                error: function (data) {
+                    console.log("error : " + data);
+                    reject(false);
                 }
-            },
-            placeholder: '지원 작업 상세 내역을 작성해주세요. (스크립트 포함)',
-            theme: 'snow'
-        };
-
-
-        quill = new Quill('#editor', option);
-
-        const delta = quill.clipboard.convert(support.taskDetails);
-
-        quill.setContents(delta, 'silent');
-
-        quill.root.innerHTML = support.taskDetails;
-
-        quill.on('text-change', function() {
-            document.getElementById("taskDetails").value = quill.root.innerHTML;
-        });
-        quill.getModule('toolbar').addHandler('image', function () {
-            selectLocalImage();
+            });
         });
     }
 
+    // 에디터 내 이미지 선택 시 핸들러
     function selectLocalImage() {
         const fileInput = document.createElement('input');
         fileInput.setAttribute('type', 'file');
@@ -517,22 +855,20 @@
 
         fileInput.addEventListener("change", function () {  // change 이벤트로 input 값이 바뀌면 실행
 
-            if ($(this).val() !== "") { // 파일이 있을때만.
+            if ($(this).val() !== "") { // 파일이 있을때만
 
-                var ext = $(this).val().split(".").pop().toLowerCase();
+                const ext = $(this).val().split(".").pop().toLowerCase();
 
-                if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp"]) == -1) {
+                if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp"]) === -1) {
 
                     alert("jpg, jpeg, png, bmp, gif 파일만 업로드 가능합니다.");
-
                     return;
-
                 }
 
 
-                var fileSize = this.files[0].size;
+                const fileSize = this.files[0].size;
 
-                var maxSize = 20 * 1024 * 1024;
+                const maxSize = 20 * 1024 * 1024;
 
                 if (fileSize > maxSize) {
 
@@ -564,212 +900,61 @@
                         console.log(err);
                     }
                 });
-
             }
-
         });
     }
 
-    quilljsediterInit();
-
-    var oldFilesId = [];
-
-    var dataTransfer = new DataTransfer();
-
-    let totalMaxSize = 100 * 1024 * 1024;  //* 총 100MB 사이즈 용량 제한
-    let totalFileSize = 0;
-    let maxSize = 50 * 1024 * 1024; //* 한 파일 당 50MB 사이즈 용량 제한
-
-
-    support.files.forEach(file => {
-       totalFileSize += file.size;
-    });
-
-    const handler = {
-        init() {
-            const fileInput = document.querySelector('.custom-file-input');
-
-            const preview = document.querySelector('#attachedList');
-            fileInput.addEventListener('change', () => {
-
-                // 파일 용량 제한
-                let fileSize = fileInput.files[0].size; //업로드한 파일용량
-                totalFileSize += fileSize;
-
-                if(fileSize > maxSize){
-                    alert("파일첨부 사이즈는 50MB 이내로 가능합니다.");
-                    $(".custom-file-input").val(''); //업로드한 파일 제거
-                    totalFileSize -= fileSize;
+    // 에디터 초기화
+    function quilljsediterInit() {
+        const option = {
+            modules: {
+                toolbar: toolbarOptions,
+                clipboard: {
+                    matchVisual: false
+                },
+                keyboard: {
+                    auto: false,
+                    bindings: {
+                        'list autofill': {
+                            prefix: false
+                        }
+                    }
                 }
-                else if(totalFileSize > totalMaxSize){
-                    alert("한번에 업로드 할 수 있는 파일첨부 사이즈는 100MB 이내입니다.");
-                    $(".custom-file-input").val(''); //업로드한 파일 제거
-                    totalFileSize -= fileSize;
-                }
-                else{
-                    const files = Array.from(fileInput.files);
+            },
+            placeholder: '지원 작업 상세 내역을 작성해주세요. (스크립트 포함)',
+            theme: 'snow'
+        };
 
-                    files.forEach(file => {
+        quill = new Quill('#editor', option);
 
-                        dataTransfer.items.add(file)
+        const delta = quill.clipboard.convert(support.taskDetails);
 
-                        preview.innerHTML += `
-                        <p id="${file.lastModified}">
-                            ${file.name}
-                            <button style="color: red" data-index='${file.lastModified}' class='file-remove'>X</button>
-                        </p>`;
-                    });
-                }
+        quill.setContents(delta, 'silent');
 
-                document.querySelector('.custom-file-input').files = dataTransfer.files;
-            });
-        },
+        quill.root.innerHTML = support.taskDetails;
 
-        removeFile: () => {
-            document.addEventListener('click', (e) => {
-                if(e.target.className !== 'file-remove') return;
-                const removeTargetId = e.target.dataset.index;
-                const removeTarget = document.getElementById(removeTargetId);
-                const files = document.querySelector('.custom-file-input').files;
-                dataTransfer = new DataTransfer();
-
-                Array.from(files)
-                    .filter(file => file.lastModified != removeTargetId)
-                    .forEach(file => {
-                        dataTransfer.items.add(file);
-                    });
-
-                document.querySelector('.custom-file-input').files = dataTransfer.files;
-
-                removeTarget.remove();
-            })
-        }
+        quill.on('text-change', function () {
+            document.getElementById("taskDetails").value = quill.root.innerHTML;
+        });
+        quill.getModule('toolbar').addHandler('image', function () {
+            selectLocalImage();
+        });
     }
 
-    /**
-     * 기존 파일 중 삭제된 파일 id 저장
-     * @param id
-     */
-    function deleteOldFile(id){
-        const file = document.getElementById(id)
-        file.remove();
-        totalFileSize -= file.fileSize;
-        oldFilesId.push(id);
-
-        document.getElementById("deletedFileId").value = oldFilesId;
-    }
-
-
-    handler.init()
-    handler.removeFile()
-
-    var memps = [[${memps}]];
-    var user = [[${user}]] ;
-
-    function setProject(project){
+    // /project/select 페이지 내에서 선택된 프로젝트 반영
+    function setProject(project) {
         document.getElementById('project').value = JSON.stringify(project);
         document.getElementById('projectName').value = project.projectName;
     }
 
-    window.onload = function(){
-        document.getElementById("projectSearchBtn").onclick = function(){
-            window.open("/project/select","","width=1000px,height=600px,top=200px,left=200px;");
-        }
-    };
-
+    // 이슈 선택
     function selectIssue(element) {
         document.getElementById('selectedIssue').value = element.getAttribute('data-issue-id');
-        document.getElementById('selectedIssueText').innerHTML  = element.getAttribute('data-issue-name');
+        document.getElementById('selectedIssueText').innerHTML = element.getAttribute('data-issue-name');
         document.getElementById('multiLevelDropdownButtonIssue').click();
     }
 
-    // 페이지 로딩 후 실행
-    document.addEventListener("DOMContentLoaded", function () {
-        // 대분류 버튼 클릭 시 해당 드롭다운 메뉴 표시/숨김
-        const categoryButtonsProduct = document.querySelectorAll("[data-dropdown-toggle^='dropdownProduct_']");
-        categoryButtonsProduct.forEach(button => {
-            button.addEventListener("click", function () {
-                const dropdownId = this.getAttribute("data-dropdown-toggle");
-                const dropdown = document.getElementById(dropdownId);
-                dropdown.classList.toggle("hidden");
-            });
-        });
-
-        const categoryButtonsIssue = document.querySelectorAll("[data-dropdown-toggle^='dropdownIssue_']");
-        categoryButtonsIssue.forEach(button => {
-            button.addEventListener("click", function () {
-                const dropdownId = this.getAttribute("data-dropdown-toggle");
-                const dropdown = document.getElementById(dropdownId);
-                dropdown.classList.toggle("hidden");
-            });
-        });
-
-    });
-
-    /**
-     *     혁신성과 이슈/제품 제한
-     */
-
-    const allowedProductIds = ["24"];
-    const stateSelect = document.getElementById("state");
-    const productSelect = document.getElementById("product");
-
-    productSelect.querySelectorAll("option").forEach(option => {
-        option.hidden = allowedProductIds.includes(option.value);
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        stateSelect.addEventListener("change", function () {
-            const selectedStateId = this.value;
-
-            if (selectedStateId === "5") {
-
-                // 모든 카테고리를 숨김
-                const allCategories = document.querySelectorAll('[id^="categoryButton_"]');
-                allCategories.forEach(category => {
-                    category.style.display = 'none';
-                });
-
-                const selectedCategory = document.getElementById(`categoryButton_9`);
-                selectedCategory.style.display = 'flex';
-
-                productSelect.querySelectorAll("option").forEach(option => {
-                    option.hidden = !allowedProductIds.includes(option.value);
-                });
-
-                document.getElementById('selectedIssue').value = null;
-                document.getElementById('selectedIssueText').innerHTML  = "업무구분을 선택해주세요.";
-                document.getElementById('multiLevelDropdownButtonIssue').click();
-
-                productSelect.value = 24
-
-            } else {
-
-                const allCategories = document.querySelectorAll('[id^="categoryButton_"]');
-                allCategories.forEach(category => {
-                    category.style.display = 'flex';
-                });
-
-                const selectedCategory = document.getElementById(`categoryButton_9`);
-                selectedCategory.style.display = 'none';
-
-                productSelect.querySelectorAll("option").forEach(option => {
-                    option.hidden = allowedProductIds.includes(option.value);
-                });
-
-                document.getElementById('selectedIssue').value = null;
-                document.getElementById('selectedIssueText').innerHTML  = "업무구분을 선택해주세요.";
-                document.getElementById('multiLevelDropdownButtonIssue').click();
-
-                productSelect.value = '';
-
-            }
-
-        });
-
-    });
-
+    // 지원 날짜 max 오늘로 제한
     function getTodayDate() {
         const today = [[${currentDate}]];
         const todayDate = new Date(today);
@@ -780,31 +965,7 @@
         return `${year}-${month}-${day}`;
     }
 
-    function getSevenDaysAgo() {
-        const today = [[${currentDate}]];
-        const sevenDaysAgo = new Date(today); // 7일 전 날짜를 저장할 변수
-
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7); // 현재 날짜에서 7일을 빼서 7일 전의 날짜를 계산
-
-        const year = sevenDaysAgo.getFullYear();
-        const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, '0');
-        const day = String(sevenDaysAgo.getDate()).padStart(2, '0');
-
-        return `${year}-${month}-${day}`;
-    }
-
-
-    var userAuthorities = /*[[${#authentication.getAuthorities()}]]*/ [];
-    var hasSuperAdminRole = userAuthorities.some(function(authority) {
-        return authority.authority === 'ROLE_SUPERADMIN';
-    });
-
-    const supportDateInput = document.getElementById('supportDate');
-    supportDateInput.max = getTodayDate();
-    if (!hasSuperAdminRole){
-        supportDateInput.min = getSevenDaysAgo();
-    }
-
+    // 제출 시 세션 유효성 검사
     function validateForm() {
 
         return new Promise(function (resolve, reject) {
@@ -829,22 +990,23 @@
         });
     }
 
+    // 지원내역 제출 시 데이터 유효성 검사
     function handleFormValidation(resolve) {
 
-        var taskTitle = document.getElementById('taskTitle').value;
-        var product = document.getElementById('product').value;
-        var issue = document.getElementById('selectedIssue').value;
-        var state = document.getElementById('state').value;
-        var engineer = document.getElementById('engineer').value;
-        var supportType = document.getElementById('supportType').value;
-        var supportTypeHour = document.getElementById('supportTypeHour').value;
-        var supportDate = document.getElementById('supportDate').value;
-        var taskSummary = document.getElementById('taskSummary').value;
-        var taskDetails = document.getElementById('taskDetails').value;
-        var project = document.getElementById('project').value;
+        const taskTitle = document.getElementById('taskTitle').value;
+        const product = document.getElementById('product').value;
+        const issue = document.getElementById('selectedIssue').value;
+        const state = document.getElementById('state').value;
+        const engineer = document.getElementById('engineer').value;
+        const supportType = document.getElementById('supportType').value;
+        const supportTypeHour = document.getElementById('supportTypeHour').value;
+        const supportDate = document.getElementById('supportDate').value;
+        const taskSummary = document.getElementById('taskSummary').value;
+        const taskDetails = document.getElementById('taskDetails').value;
+        const project = document.getElementById('project').value;
 
-        var alertForm = document.getElementById('alertForm');
-        var alertForm7daysOver = document.getElementById('alertForm7daysOver');
+        const alertForm = document.getElementById('alertForm');
+        const alertFormDaysOver = document.getElementById('alertFormDaysOver');
 
 
         if (
@@ -863,13 +1025,11 @@
         ) {
             alertForm.style.display = 'flex';
             resolve(false);
-        }
-
-        else{
+        } else {
             alertForm.style.display = 'none';
 
-            if (!hasSuperAdminRole && getSevenDaysAgo() > supportDate){
-                alertForm7daysOver.style.display = 'flex';
+            if (!hasSuperAdminRole && minRegistrableDate > supportDate) {
+                alertFormDaysOver.style.display = 'flex';
                 resolve(false);
             }
 
@@ -877,14 +1037,14 @@
 
             const ajaxRequests = [];
 
-            imgTags.forEach(function(img) {
+            imgTags.forEach(function (img) {
                 var currentSrc = img.getAttribute('src');
 
                 if (currentSrc.startsWith('data:image')) {
 
                     const splitDataURI = currentSrc.split(',')
 
-                    if (splitDataURI[0].indexOf('base64') >= 0){
+                    if (splitDataURI[0].indexOf('base64') >= 0) {
                         const ajaxRequest = $.ajax({
                             type: 'post',
                             enctype: 'multipart/form-data',
@@ -911,7 +1071,7 @@
                 }
             });
 
-            if (ajaxRequests.length===0){
+            if (ajaxRequests.length === 0) {
                 resolve(true);
             }
             $.when.apply($, ajaxRequests).done(function () {
@@ -924,7 +1084,9 @@
     }
 </script>
 <style>
-    * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 
     .ql-clipboard {
         left: -100000px;

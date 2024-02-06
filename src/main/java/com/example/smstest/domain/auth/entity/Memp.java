@@ -37,7 +37,7 @@ public class Memp {
     @Column(name = "캘린더색상", nullable = true)
     private String calenderColor;
 
-    @Column(unique =true)
+    @Column(unique = true)
     private String username;
 
     @ToString.Exclude
@@ -76,6 +76,7 @@ public class Memp {
 
     /**
      * 패스워드 인코딩
+     *
      * @param passwordEncoder
      */
     public void encodePassword(PasswordEncoder passwordEncoder) {

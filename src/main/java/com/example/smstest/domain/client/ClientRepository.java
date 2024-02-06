@@ -15,6 +15,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     /**
      * 지원내역 수 내림차 순으로 고객사 리스트 (Page)가져오기
+     *
      * @param pageable
      * @return 고객사 리스트 (Page)
      */
@@ -23,6 +24,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     /**
      * 지원내역 수 내림차 순으로 특정 키워드를 포함한 고객사 리스트 (Page) 가져오가
+     *
      * @param keyword
      * @param pageable
      * @return 고객사 리스트 (Page)
@@ -35,6 +37,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     /**
      * 지원내역 수 내림차 순으로 고객사 리스트 가져오기
+     *
      * @return 고객사 리스트
      */
     @Query("SELECT c FROM Client c WHERE c IN (SELECT p.client FROM Project p JOIN Support s ON p.id = s.project.id GROUP BY p.client.id ORDER BY COUNT(s.id) DESC)")
@@ -42,6 +45,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     /**
      * companyGuid로 해당 고객사 존재하는지 찾기
+     *
      * @param companyGuid
      * @return 존재 여부
      */
@@ -49,6 +53,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     /**
      * companyGuid에 매칭되는 첫번째 요소 가져오기
+     *
      * @param companyGuid
      * @return 고객사 객체
      */

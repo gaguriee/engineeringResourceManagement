@@ -4,6 +4,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
+bootJar {
+    archiveFileName = 'somansa_erm_build.jar'
+}
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'

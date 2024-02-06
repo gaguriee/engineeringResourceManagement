@@ -2,8 +2,8 @@ package com.example.smstest.external.license;
 
 import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.client.ClientRepository;
-import com.example.smstest.domain.project.Project;
-import com.example.smstest.domain.project.ProjectRepository;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,7 +23,7 @@ public class ProjectScheduler {
     private final ProjectRepository projectRepository;
     private final ClientRepository clientRepository;
 
-//    @Scheduled(fixedDelay = 1000000000)
+    //    @Scheduled(fixedDelay = 1000000000)
     @Scheduled(cron = "0 0 0/6 * * ?") // 매일 6시간 간격으로 실행
     public void scheduleGetInitialFiles() {
 
@@ -39,8 +39,7 @@ public class ProjectScheduler {
                     Client newClient = clientRepository.findFirstByCompanyGuid(licenseProject.getCompany().getCompanyGuid());
                     newClient.setName(licenseProject.getCompany().getCompanyName());
                     clientRepository.save(newClient);
-                }
-                else{
+                } else {
                     Client newClient = new Client();
                     newClient.setName(licenseProject.getCompany().getCompanyName());
                     newClient.setCompanyGuid(licenseProject.getCompany().getCompanyGuid());

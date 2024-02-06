@@ -23,6 +23,7 @@ public class TaskController {
 
     /**
      * 일정 삭제
+     *
      * @param taskId
      * @return
      */
@@ -34,6 +35,7 @@ public class TaskController {
 
     /**
      * 기존 일정 수정 (파일 첨부)
+     *
      * @param taskId
      * @param json
      * @param file
@@ -41,13 +43,14 @@ public class TaskController {
      */
     @PostMapping("/update/{taskId}")
     @ResponseBody
-    public String updateTask(@PathVariable Long taskId,@RequestPart Map<String, Object> json,
+    public String updateTask(@PathVariable Long taskId, @RequestPart Map<String, Object> json,
                              @RequestPart(required = false) MultipartFile file) {
         return taskService.updateTask(taskId, json, file);
     }
 
     /**
      * 신규 일정 등록 (파일 첨부)
+     *
      * @param projectId
      * @param json
      * @param file
@@ -62,6 +65,7 @@ public class TaskController {
 
     /**
      * WBS 작업 히스토리 다운로드
+     *
      * @param projectId
      * @param response
      * @throws IOException

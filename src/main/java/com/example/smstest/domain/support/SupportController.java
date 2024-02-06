@@ -5,11 +5,12 @@ import com.example.smstest.domain.auth.MempRepository;
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.client.Client;
 import com.example.smstest.domain.client.ClientRepository;
-import com.example.smstest.domain.file.*;
+import com.example.smstest.domain.file.FileDto;
+import com.example.smstest.domain.file.FileService;
 import com.example.smstest.domain.organization.entity.Team;
 import com.example.smstest.domain.organization.repository.TeamRepository;
-import com.example.smstest.domain.project.Project;
-import com.example.smstest.domain.project.ProjectRepository;
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.domain.support.dto.SupportFilterCriteria;
 import com.example.smstest.domain.support.dto.SupportRequest;
 import com.example.smstest.domain.support.dto.SupportResponse;
@@ -23,6 +24,7 @@ import com.example.smstest.global.exception.ErrorCode;
 import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -48,6 +50,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,11 +60,11 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/support")
 public class SupportController {
 
     private final SupportService supportService;
     private final FileService fileService;
-
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final IssueRepository issueRepository;
@@ -75,6 +78,8 @@ public class SupportController {
     private final ProjectRepository projectRepository;
     private final LicenseProjectRepository licenseProjectRepository;
 
+    @Value("${somansa.registration-period}")
+    private int registrationPeriod;
 
     /**
      * 날짜 형태를 자동으로 bind해주는 메소드
@@ -87,19 +92,20 @@ public class SupportController {
 
     /**
      * [ 지원내역 조회 ]
+     *
      * @param customerName 고객사명 (String)
-     * @param projectName 프로젝트명 (String)
-     * @param teamId 팀 id
-     * @param productId 제품 id
-     * @param issueId 이슈 id
-     * @param stateId 상태(업무) id
-     * @param engineerId 엔지니어 id
-     * @param Keyword 검색 키워드
-     * @param startDate 시작일
-     * @param endDate 종료일
-     * @param sortOrder 정렬방식 (desc, asc)
-     * @param pageable 페이지네이션할 때 사용하는 파라미터 (현재 페이지, 총 페이지 수, offset 등)
-     * @param model Controller 에서 생성된 데이터를 담아 View 로 전달할 때 사용하는 객체 ( key:value 형식 )
+     * @param projectName  프로젝트명 (String)
+     * @param teamId       팀 id
+     * @param productId    제품 id
+     * @param issueId      이슈 id
+     * @param stateId      상태(업무) id
+     * @param engineerId   엔지니어 id
+     * @param Keyword      검색 키워드
+     * @param startDate    시작일
+     * @param endDate      종료일
+     * @param sortOrder    정렬방식 (desc, asc)
+     * @param pageable     페이지네이션할 때 사용하는 파라미터 (현재 페이지, 총 페이지 수, offset 등)
+     * @param model        Controller 에서 생성된 데이터를 담아 View 로 전달할 때 사용하는 객체 ( key:value 형식 )
      * @return 지원내역 검색 결과 뷰
      */
     @GetMapping("/search")
@@ -113,7 +119,7 @@ public class SupportController {
                                          @RequestParam(required = false) String Keyword,
                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
-                                         @RequestParam(required = false, defaultValue = "desc")  String sortOrder,
+                                         @RequestParam(required = false, defaultValue = "desc") String sortOrder,
                                          Pageable pageable,
                                          Model model) {
 
@@ -212,12 +218,13 @@ public class SupportController {
 
     /**
      * [ 지원내역 상세 보기 ]
+     *
      * @param supportId 지원내역 id
      * @param model
      * @return
      */
-    @GetMapping("/details")
-    public String getDetails(@RequestParam(required = false) Long supportId, Model model) {
+    @GetMapping("/{supportId}")
+    public String getDetails(@PathVariable Long supportId, Model model) {
         Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -231,6 +238,7 @@ public class SupportController {
 
     /**
      * [ 지원내역 등록 뷰 리턴 ]
+     *
      * @param model
      * @return
      */
@@ -244,7 +252,8 @@ public class SupportController {
 
     /**
      * [ 지원내역 등록하기 ]
-     * @param files 업로드 시 받아오는 파일 리스트
+     *
+     * @param files          업로드 시 받아오는 파일 리스트
      * @param supportRequest 지원내역 등록/수정 시 매핑되는 DTO
      * @return
      */
@@ -253,26 +262,31 @@ public class SupportController {
 
         SupportResponse supportResponse = supportService.createSupport(files, supportRequest);
 
-        return "redirect:/details?supportId="+supportResponse.getId();
+        return "redirect:/support/" + supportResponse.getId();
     }
 
 
     /**
      * [ 지원내역 수정 뷰 리턴 ]
      * - 등록과 거의 동일, 해당 support Id로 기존 정보 가져와서 수정페이지에 보여줌
+     *
      * @param supportId
      * @param model
      * @return
      */
-    @GetMapping("/modify")
-    public String modifyView(@RequestParam(required = false) Long supportId, Model model) {
+    @GetMapping("/modify/{supportId}")
+    public String modifyView(@PathVariable Long supportId, Model model) {
 
         // 기존 지원내역 가져옴
         Support support = supportRepository.findById(supportId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
+        if (!supportService.checkRegistrationAuthority(support)) {
+            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
+        }
+
         // 기존 프로젝트 -> 라이센스 프로젝트 형식으로 매핑 (구조 통일 목적)
-        LicenseProject licenseProject =  licenseProjectRepository.findFirstByCompany_CompanyGuidAndProjectGuid(support.getProject().getClient().getCompanyGuid(), support.getProject().getProjectGuid())
+        LicenseProject licenseProject = licenseProjectRepository.findFirstByCompany_CompanyGuidAndProjectGuid(support.getProject().getClient().getCompanyGuid(), support.getProject().getProjectGuid())
                 .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
 
         model.addAttribute("support", support);
@@ -286,8 +300,9 @@ public class SupportController {
 
 
     /**
-     * [ 지원내역 수정하기 ]
+     * [ 지원내역 수정 ]
      * - 등록과 거의 동일, 등록은 신규 엔티티를 생성 후 save하는 것이라면, 수정은 기존 엔티티를 supportId로 검색 후 update한 뒤 save
+     *
      * @param files
      * @param supportRequest
      * @return
@@ -297,33 +312,34 @@ public class SupportController {
 
         SupportResponse supportResponse = supportService.modifySupport(files, supportRequest);
 
-        return "redirect:/details?supportId="+supportResponse.getId();
+        return "redirect:/support/" + supportResponse.getId();
     }
 
     /**
      * [ 지원내역 삭제 ]
+     *
      * @param supportId
      * @return 지원내역 조회 페이지로 리다이렉트
      */
-    @PostMapping("/delete")
-    public String deleteSupport(@RequestParam(required = false) Long supportId) {
+    @PostMapping("/delete/{supportId}")
+    public String deleteSupport(@PathVariable Long supportId) {
 
         supportService.deleteSupport(supportId);
 
-        return "redirect:/search?";
+        return "redirect:/support/search?";
     }
 
     /**
      * [ 지원내역 첨부파일 다운로드 메소드 ]
+     *
      * @param fileId
      * @return
-     * @throws IOException
      */
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) {
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.getFilePath());
-        try{
+        try {
             Resource resource = new InputStreamResource(Files.newInputStream(path));
             String encodedFileName = new String(fileDto.getOrigFilename().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
 
@@ -333,14 +349,39 @@ public class SupportController {
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"");
 
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException(ErrorCode.FILE_NOT_FOUND);
         }
-
     }
 
-    // 지원내역 등록/수정 페이지 로드 시 필요한 data들을 model 객체에 넣습니다.
+    /**
+     * 등록/수정/삭제 관련 권한 확인
+     *
+     * @param supportId
+     * @return
+     */
+    @GetMapping("/check-registration-authority/{supportId}")
+    public ResponseEntity<Boolean> checkRegistrationAuthority(@PathVariable Long supportId) {
+        Support support = supportRepository.findById(supportId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        return ResponseEntity.ok(supportService.checkRegistrationAuthority(support));
+    }
+
+    /**
+     * 등록 가능 기한 가져오기
+     *
+     * @return
+     */
+    @GetMapping("/get-registrable-date")
+    public ResponseEntity<LocalDate> getRegistrableDate() {
+
+        LocalDate minRegistration = LocalDate.now().minusDays(registrationPeriod);
+
+        return ResponseEntity.ok(minRegistration);
+    }
+
+    // 지원내역 등록/수정 페이지 로드 시 필요한 data들을 model 객체에 insert
     private void setDefaultSupportCreateView(Model model) {
 
         Memp user = mempRepository.findFirstByUsernameAndActiveTrue(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -370,6 +411,7 @@ public class SupportController {
         List<SupportType> supportTypes = supportTypeRepository.findAll();
         List<ProductCategory> productCategories = productCategoryRepository.findAll();
 
+        // 최근 등록한 5개의 지원내역의 프로젝트 가져오기
         List<Support> top5Supports = supportRepository.findTop5ByEngineerIdOrderByCreatedAtDesc(user.getId());
         List<Project> recentProjects = projectRepository.findDistinctProjectsBySupports(top5Supports);
 

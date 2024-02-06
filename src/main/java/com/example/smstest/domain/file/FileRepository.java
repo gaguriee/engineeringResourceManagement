@@ -9,12 +9,14 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     /**
      * [ 지원내역 삭제 시 함께 등록된 모든 File 삭제 ]
+     *
      * @param supportId
      */
     void deleteAllBySupportId(Long supportId);
 
     /**
      * [ 일정 삭제 시 함께 등록된 모든 File 삭제 ]
+     *
      * @param taskId
      */
     void deleteAllByTaskId(Long taskId);

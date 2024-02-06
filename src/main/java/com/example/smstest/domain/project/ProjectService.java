@@ -1,5 +1,7 @@
 package com.example.smstest.domain.project;
 
+import com.example.smstest.domain.project.entity.Project;
+import com.example.smstest.domain.project.repository.ProjectRepository;
 import com.example.smstest.external.license.LicenseProject;
 import com.example.smstest.external.license.LicenseProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class ProjectService {
 
     /**
      * [ 프로젝트 검색 ]
+     *
      * @param keyword
      * @param pageable
      * @return
@@ -32,10 +35,12 @@ public class ProjectService {
             return projectRepository.findAllByNameContaining(newKeyword, pageable);
         }
         // 키워드 없을 경우
-        return projectRepository.findAllByOrderBySupportCountDesc(pageable);    }
+        return projectRepository.findAllByOrderBySupportCountDesc(pageable);
+    }
 
     /**
      * [ 라이센스 프로젝트 검색 ]
+     *
      * @param keyword
      * @param pageable
      * @return

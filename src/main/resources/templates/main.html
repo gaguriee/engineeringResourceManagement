@@ -1,65 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      lang="kor">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css"  rel="stylesheet" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.css" rel="stylesheet"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
     <link rel="icon" type="image/ico" th:href="@{../static/favicon.ico}">
     <link rel="preload" href="https://erm2.somansa.com/superset/dashboard/1/?standalone=2&slice_id=4" as="document">
     <link rel="preload" href="https://erm2.somansa.com/superset/dashboard/8/?standalone=2&slice_id=4" as="document">
-
-    <style>
-        * { font-family: 'Spoqa Han Sans Neo', 'sans-serif'; }
-
-        .skeleton * {
-            background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%);
-            background-size: 200% 100%;
-            background-position: 100% 0;
-            animation: load 1s infinite;
-        }
-
-        @keyframes load {
-            100% {
-                background-position: -100% 0;
-            }
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .radar-chart {
-            padding: 24px;
-            padding-left: 164px;
-            padding-right: 164px;
-
-        }
-
-        @media (max-width: 1064px) {
-
-            .iframe-pc {
-                display: none;
-            }
-
-            .iframe-mobile {
-                display: block;
-            }
-
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-
-            .radar-chart {
-                padding-left: 0px;
-                padding-right: 0px;
-            }
-        }
-
-    </style>
+    <title>메인페이지</title>
 
 </head>
 
@@ -67,28 +18,38 @@
 <div th:replace="header :: header"></div>
 
 
-<section class="bg-white dark:bg-gray-900" >
+<section class="bg-white dark:bg-gray-900">
 
     <th:block th:each="announcement : ${announcements}"
               th:if="${user != null and not #lists.contains(announcement.dismissedUsers, user.id)}">
-        <div th:id="'modal_' + ${announcement.id}" tabindex="-1" class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full" aria-modal="true">
+        <div th:id="'modal_' + ${announcement.id}" tabindex="-1"
+             class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+             aria-modal="true">
             <div class="relative w-full max-w-2xl max-h-full">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white" th:text="${announcement.title}"></h3>
-                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" th:attr="data-modal-hide= ${announcement.id}">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white"
+                            th:text="${announcement.title}"></h3>
+                        <button type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                th:attr="data-modal-hide= ${announcement.id}">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                             </svg>
                             <span class="sr-only">Close modal</span>
                         </button>
                     </div>
                     <div class="p-6 space-y-6">
                         <div class="mb-4 w-full">
-                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400" style="white-space: pre-wrap; word-wrap: break-word;" th:text="${announcement.content}"></p>
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400"
+                               style="white-space: pre-wrap; word-wrap: break-word;"
+                               th:text="${announcement.content}"></p>
                         </div>
                         <label class="inline-flex items-center">
-                            <input type="checkbox" th:id="'dismissCheckbox_'+${announcement.id}"  class="form-checkbox h-4 w-4 text-blue-600" />
+                            <input type="checkbox" th:id="'dismissCheckbox_'+${announcement.id}"
+                                   class="form-checkbox h-4 w-4 text-blue-600"/>
                             <span class="ml-2 text-gray-700 dark:text-gray-400">다시 보지 않음</span>
                         </label>
                     </div>
@@ -97,7 +58,8 @@
                                 type="button"
                                 class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 th:attr="data-modal-hide= ${announcement.id}"
-                        >확인</button>
+                        >확인
+                        </button>
                     </div>
                 </div>
             </div>
@@ -105,14 +67,18 @@
     </th:block>
 
     <div class="skeleton" style="background-color: #F7F7F7;">
-        <iframe class="iframe-pc" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa')}" width="100%" height="800" ></iframe>
-        <iframe class="iframe-mobile hidden" th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa-mobile')}" width="100%" height="600" ></iframe>
+        <iframe class="iframe-pc"
+                th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa')}"
+                width="100%" height="800"></iframe>
+        <iframe class="iframe-mobile hidden"
+                th:src="${@environment.getProperty('superset.server')} + ${@environment.getProperty('superset.somansa-mobile')}"
+                width="100%" height="600"></iframe>
     </div>
 
 
     <div style="background-color: #F7F7F7; padding: 0 32px 32px;width: 100%">
-        <p class="text-xs pt-4 pb-2">* 하단의 차트는  필터링 적용 범위가 아닙니다.</p>
-        <div class="flex pb-2" >
+        <p class="text-xs pt-4 pb-2">* 하단의 차트는 필터링 적용 범위가 아닙니다.</p>
+        <div class="flex pb-2">
             <a th:each="year : ${allSupportYears}"
                th:href="'?radarchartYear=' + ${year}"
                th:text="${year}"
@@ -121,17 +87,21 @@
             </a>
         </div>
 
-        <div class="grid-container" >
-            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+        <div class="grid-container">
+            <div class="radar-chart"
+                 style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
                 <canvas id="overallRadarChart_N"></canvas>
             </div>
-            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <div class="radar-chart"
+                 style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
                 <canvas id="teamRadarChart_N"></canvas>
             </div>
-            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <div class="radar-chart"
+                 style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
                 <canvas id="overallRadarChart_E"></canvas>
             </div>
-            <div class="radar-chart" style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
+            <div class="radar-chart"
+                 style="width: 100%; background-color: white; display: flex; justify-content: center; align-items: center; ">
                 <canvas id="teamRadarChart_E"></canvas>
             </div>
         </div>
@@ -140,47 +110,66 @@
 </section>
 
 <div th:replace="footer :: footer"></div>
+<style>
+    * {
+        font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+    }
 
+    .skeleton * {
+        background-size: 200% 100%;
+        background: linear-gradient(120deg, #e5e5e5 30%, #f0f0f0 38%, #f0f0f0 40%, #e5e5e5 48%) 100% 0;
+        animation: load 1s infinite;
+    }
+
+    @keyframes load {
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .radar-chart {
+        padding: 24px 164px;
+
+    }
+
+    @media (max-width: 1064px) {
+
+        .iframe-pc {
+            display: none;
+        }
+
+        .iframe-mobile {
+            display: block;
+        }
+
+        .grid-container {
+            grid-template-columns: 1fr;
+        }
+
+        .radar-chart {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+</style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
 <script th:inline="javascript">
 
     let user = [[${user}]];
 
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.style.display = 'none';
-    }
+    const resultMapByTeamInN = [[${resultMapByTeamInN}]];
+    const resultMapByTeamInE = [[${resultMapByTeamInE }]];
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const confirmButtons = document.querySelectorAll('[data-modal-hide]');
-        confirmButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var modalId = 'modal_' + button.getAttribute('data-modal-hide');
-                if (user != null){
-                    dismissAnnouncement(button.getAttribute('data-modal-hide'));
-                }
-                closeModal(modalId);
-            });
-        });
-    });
-
-    function dismissAnnouncement(announcementId) {
-        if (document.getElementById('dismissCheckbox_'+announcementId).checked) {
-            fetch(`/dismissAnnouncement?announcementId=${announcementId}`, {
-                method: 'POST'
-            })
-                .then(response => response.text())
-                .then(data => {
-                });
-        }
-    }
-
-    var resultMapByTeamInN  = [[${resultMapByTeamInN}]] ;
-    var resultMapByTeamInE  = [[${resultMapByTeamInE }]] ;
-
-    var teamColorMap = [[${teamColorMap}]] ;
-    var colorIndex = 0;
+    const teamColorMap = [[${teamColorMap}]];
+    let colorIndex = 0;
 
     const customStateOrder = ['납품', 'WA', 'MA', 'Pre-Sales', '협업', '업무혁신'];
 
@@ -211,8 +200,8 @@
 
     Object.keys(resultMapByTeamInN).forEach(teamName => {
 
-        var color = teamColorMap[teamName];
-        var transparentColor =  addAlphaChannel(color, 0.3);
+        const color = teamColorMap[teamName];
+        const transparentColor = addAlphaChannel(color, 0.3);
         colorIndex++;
 
         const teamData = resultMapByTeamInN[teamName];
@@ -229,8 +218,8 @@
 
     Object.keys(resultMapByTeamInE).forEach(teamName => {
 
-        var color = teamColorMap[teamName];
-        var transparentColor =  addAlphaChannel(color, 0.3);
+        const color = teamColorMap[teamName];
+        const transparentColor = addAlphaChannel(color, 0.3);
         colorIndex++;
 
         const teamData = resultMapByTeamInE[teamName];
@@ -251,8 +240,8 @@
     const overallCtx_E = document.getElementById('overallRadarChart_E').getContext('2d');
     const teamCtx_E = document.getElementById('teamRadarChart_E').getContext('2d');
 
-    var resultInN = [[${resultInN}]] ;
-    var resultInE = [[${resultInE}]] ;
+    const resultInN = [[${resultInN}]];
+    const resultInE = [[${resultInE}]];
 
     // 기술N본부 데이터셋 추가
     const overallDataset_N = [{
@@ -270,7 +259,7 @@
     // 기술E본부 데이터셋 추가
     const overallDataset_E = [{
         label: "기술E본부",
-        data:[],
+        data: [],
         backgroundColor: 'rgba(99,148,255, 0.2)',
         borderColor: 'rgb(99,148,255,1)',
         borderWidth: 2
@@ -280,7 +269,7 @@
         overallDataset_E[0].data.push(item.totalSupportTypeHour);
     });
 
-    var overallRadarChart_N = new Chart(overallCtx_N, {
+    const overallRadarChart_N = new Chart(overallCtx_N, {
         type: 'radar',
         data: {
             labels: resultInN.map(item => item.state),
@@ -316,7 +305,7 @@
         }
     });
 
-    var teamRadarChart_N = new Chart(teamCtx_N, {
+    const teamRadarChart_N = new Chart(teamCtx_N, {
         type: 'radar',
         data: {
             labels: stateNames_N,
@@ -352,7 +341,7 @@
         }
     });
 
-    var overallRadarChart_E = new Chart(overallCtx_E, {
+    const overallRadarChart_E = new Chart(overallCtx_E, {
         type: 'radar',
         data: {
             labels: resultInE.map(item => item.state),
@@ -387,7 +376,7 @@
             }
         }
     });
-    var teamRadarChart_E = new Chart(teamCtx_E, {
+    const teamRadarChart_E = new Chart(teamCtx_E, {
         type: 'radar',
         data: {
             labels: stateNames_E,
@@ -423,12 +412,40 @@
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const confirmButtons = document.querySelectorAll('[data-modal-hide]');
+        confirmButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                const modalId = 'modal_' + button.getAttribute('data-modal-hide');
+                if (user != null) {
+                    dismissAnnouncement(button.getAttribute('data-modal-hide'));
+                }
+                closeModal(modalId);
+            });
+        });
+    });
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'none';
+    }
+
+    function dismissAnnouncement(announcementId) {
+        if (document.getElementById('dismissCheckbox_' + announcementId).checked) {
+            fetch(`/dismissAnnouncement?announcementId=${announcementId}`, {
+                method: 'POST'
+            })
+                .then(response => response.text())
+                .then(data => {
+                });
+        }
+    }
 
     function addAlphaChannel(hexColor, alpha) {
         // 주어진 16진수 색상 코드를 RGBA 형식으로 변환
-        var r = parseInt(hexColor.slice(1, 3), 16);
-        var g = parseInt(hexColor.slice(3, 5), 16);
-        var b = parseInt(hexColor.slice(5, 7), 16);
+        const r = parseInt(hexColor.slice(1, 3), 16);
+        const g = parseInt(hexColor.slice(3, 5), 16);
+        const b = parseInt(hexColor.slice(5, 7), 16);
 
         // 변환된 RGBA 형식을 사용하여 투명도를 추가한 문자열 생성
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;

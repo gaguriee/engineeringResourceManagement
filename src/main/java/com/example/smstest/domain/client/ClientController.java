@@ -11,10 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,7 +25,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
-
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,9 +33,10 @@ public class ClientController {
 
     /**
      * [ 고객사 검색 ]
-     * @param Keyword 검색 키워드
+     *
+     * @param Keyword  검색 키워드
      * @param pageable
-     * @param model 고객사 리스트
+     * @param model    고객사 리스트
      * @return 고객사 리스트 페이지
      */
     @GetMapping("/search")
@@ -59,12 +56,13 @@ public class ClientController {
 
     /**
      * [ 고객사 디테일 ]
+     *
      * @param customerId 해당 고객사 id로 검색
-     * @param model 검색 결과 SupportSummary 리스트에 저장 후 전달
+     * @param model      검색 결과 SupportSummary 리스트에 저장 후 전달
      * @return 고객사 디테일 페이지
      */
-    @GetMapping("/details")
-    public String getDetails(@RequestParam(required = false) Integer customerId, Model model) {
+    @GetMapping("/{customerId}")
+    public String getDetails(@PathVariable Integer customerId, Model model) {
         Client client = clientService.getClientDetails(customerId);
         model.addAttribute("customer", client);
 

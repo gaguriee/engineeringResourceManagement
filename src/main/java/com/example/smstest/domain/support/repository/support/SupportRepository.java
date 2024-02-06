@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * Support 엔티티에 접근하기 위한 사용자 정의 쿼리 메소드를 정의
+ * Spring Data JPA를 구현하기 위한 JpaRepository와 QueryDSL 사용을 위한 SupportRepositoryCustom 확장
  */
 public interface SupportRepository extends JpaRepository<Support, Long>, SupportRepositoryCustom {
 
@@ -68,9 +69,9 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
      * [ 팀별 조회페이지 ]
      * 팀 ID와 지원 날짜 범위로 Support 항목을 찾습니다.
      *
-     * @param teamId     팀의 ID.
-     * @param startDate  지원 날짜 범위의 시작 날짜.
-     * @param endDate    지원 날짜 범위의 끝 날짜.
+     * @param teamId    팀의 ID.
+     * @param startDate 지원 날짜 범위의 시작 날짜.
+     * @param endDate   지원 날짜 범위의 끝 날짜.
      * @return Support 엔티티의 목록.
      */
     @Query("SELECT s FROM Support s WHERE s.engineer.team.id = :teamId AND s.supportDate BETWEEN :startDate AND :endDate")
@@ -82,6 +83,7 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
 
     /**
      * [ 팀별 주간 지원내역 export ]
+     *
      * @param teamId
      * @param startDate
      * @param endDate
@@ -119,6 +121,7 @@ public interface SupportRepository extends JpaRepository<Support, Long>, Support
     List<Integer> findAllYear();
 
     // N본부
+
     /**
      * [ 메인페이지 레이더차트 "기술 N본부 업무 집중도 분석" ]
      * N 본부에서 지정한 연도에 대한 각 지원 유형별 지원 시간 합계를 반환합니다.

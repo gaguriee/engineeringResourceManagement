@@ -1,7 +1,7 @@
 package com.example.smstest.domain.task.entity;
 
 import com.example.smstest.domain.file.File;
-import com.example.smstest.domain.project.Project;
+import com.example.smstest.domain.project.entity.Project;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -76,7 +76,7 @@ public class Task {
     public Set<File> getFiles() throws UnknownHostException {
         InetAddress localhost = InetAddress.getLocalHost();
 
-        if (files == null){
+        if (files == null) {
             return null;
         }
 

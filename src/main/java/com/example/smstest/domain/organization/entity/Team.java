@@ -26,4 +26,5 @@ public class Team {
 
     @Column(name = "color")
     private String color;
+
 }

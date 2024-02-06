@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface LicenseProjectRepository extends JpaRepository<LicenseProject, String> {
 
     Optional<LicenseProject> findFirstByCompany_CompanyGuidAndProjectGuid(String companyGuid, String projectGuid);
+
     @Query("SELECT p FROM LicenseProject p WHERE " +
             "(:keyword is null OR p.projectName LIKE %:keyword% OR p.company.companyName LIKE %:keyword% OR p.projectCode LIKE %:keyword%) " +
             "ORDER BY p.projectRegDate DESC")

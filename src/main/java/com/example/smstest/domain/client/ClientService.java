@@ -19,9 +19,10 @@ public class ClientService {
 
     /**
      * [ 고객사 검색 ]
-     * @param keyword 고객사 검색 키워드
+     *
+     * @param keyword
      * @param pageable
-     * @return Page<Client>
+     * @return
      */
     public Page<Client> searchClients(String keyword, Pageable pageable) {
         if (keyword != null) {
@@ -32,8 +33,10 @@ public class ClientService {
         }
         return clientRepository.findAllBySupportCount(pageable);
     }
+
     /**
      * [ 고객사 상세정보 가져오기 ]
+     *
      * @param customerId
      * @return
      */

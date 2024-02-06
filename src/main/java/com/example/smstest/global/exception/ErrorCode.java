@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 예외 처리 시 사용될 에러 정의 (custom)
+ */
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
@@ -29,7 +32,7 @@ public enum ErrorCode {
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다."),
 
 
-//    500
+    /* 500 : SERVER ERROR : 서버 오류가 발생함 */
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러가 발생했습니다");
 
 

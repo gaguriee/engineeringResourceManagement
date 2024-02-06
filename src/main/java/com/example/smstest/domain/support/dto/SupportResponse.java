@@ -2,7 +2,7 @@ package com.example.smstest.domain.support.dto;
 
 import com.example.smstest.domain.auth.entity.Memp;
 import com.example.smstest.domain.file.File;
-import com.example.smstest.domain.project.Project;
+import com.example.smstest.domain.project.entity.Project;
 import com.example.smstest.domain.support.entity.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,7 +54,7 @@ public class SupportResponse {
     private final Set<File> files;
 
     @Builder
-    public SupportResponse(Long id, String productName, Project project, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails,Set<File> files) {
+    public SupportResponse(Long id, String productName, Project project, String issueType, Long issueId, String state, String engineerName, Long engineerId, String subEngineerName, Date supportDate, String supportType, Float supportTypeHour, String redmineIssue, String taskTitle, String taskSummary, String taskDetails, Set<File> files) {
         this.id = id;
         this.productName = productName;
         this.project = project;
@@ -75,7 +75,7 @@ public class SupportResponse {
     }
 
 
-    public static SupportResponse entityToResponse(Support support){
+    public static SupportResponse entityToResponse(Support support) {
         return SupportResponse.builder()
                 .id(support.getId())
                 .productName(Optional.ofNullable(support.getProduct()).map(Product::getName).orElse(null))
